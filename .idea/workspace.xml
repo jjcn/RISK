@@ -7,9 +7,8 @@
     <list default="true" id="65a0ffb7-737d-46fe-8844-85058d990f51" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/main/java/edu/duke/ece651/group4/RISK/client/PlayerApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/edu/duke/ece651/group4/RISK/client/PlayerApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/edu/duke/ece651/group4/RISK/server/ClientThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/edu/duke/ece651/group4/RISK/server/ClientThread.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/edu/duke/ece651/group4/RISK/server/HostApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/edu/duke/ece651/group4/RISK/server/HostApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/edu/duke/ece651/group4/RISK/server/PlayerState.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/edu/duke/ece651/group4/RISK/server/PlayerState.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/test/java/edu/duke/ece651/group4/RISK/client/AppTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/test/java/edu/duke/ece651/group4/RISK/client/AppTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shared/src/test/java/edu/duke/ece651/group4/RISK/shared/ClientTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/shared/src/test/java/edu/duke/ece651/group4/RISK/shared/ClientTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,7 +47,62 @@
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="npm" />
   </component>
-  <component name="RunManager" selected="Gradle.PlayerAppTest.testPlace">
+  <component name="RunManager" selected="Gradle.HostAppTest">
+    <configuration default="true" type="ArquillianTestNG" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="CLASS" />
+      <properties />
+      <listeners />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ClientTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="--tests &quot;edu.duke.ece651.group4.RISK.shared.ClientTest&quot;" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":shared:test" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="ClientTest.test_socket" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="--tests &quot;edu.duke.ece651.group4.RISK.shared.ClientTest.test_socket&quot;" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":shared:test" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
     <configuration name="HostAppTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -61,6 +115,27 @@
         <option name="taskNames">
           <list>
             <option value=":server:test" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="PlayerAppTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="--tests &quot;edu.duke.ece651.group4.RISK.client.PlayerAppTest&quot;" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":client:test" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -91,32 +166,13 @@
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="TerritoryTest.Test_equals" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="--tests &quot;edu.duke.ece651.group4.RISK.shared.TerritoryTest.Test_equals&quot;" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":shared:test" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <method v="2" />
-    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.PlayerAppTest.testPlace" />
         <item itemvalue="Gradle.HostAppTest" />
-        <item itemvalue="Gradle.TerritoryTest.Test_equals" />
+        <item itemvalue="Gradle.ClientTest" />
+        <item itemvalue="Gradle.PlayerAppTest" />
+        <item itemvalue="Gradle.ClientTest.test_socket" />
+        <item itemvalue="Gradle.PlayerAppTest.testPlace" />
       </list>
     </recent_temporary>
   </component>
@@ -130,7 +186,7 @@
       <updated>1616106072628</updated>
       <workItem from="1616106075302" duration="32000" />
       <workItem from="1616106123078" duration="1518000" />
-      <workItem from="1616689244753" duration="3672000" />
+      <workItem from="1616689244753" duration="5328000" />
     </task>
     <servers />
   </component>
