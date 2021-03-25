@@ -64,18 +64,13 @@ public class PlayerApp {
         }
 
         for(Order p : orders){
-
-            this.playerClient.sendObject((PlaceOrder)p);
-//            sendInfo((PlaceOrder)p,this.playerClient);
+            this.playerClient.sendObject(p);
         }
 
         this.theWorld = (World) this.playerClient.recvObject();
         this.out.println("All placement are done");
         this.out.println(this.myView.displayWorld( this.theWorld ));
 
-        if(!this.theWorld.checkLost(this.myPlayer.getName())){
-            this.out.println("To " + this.myPlayer.getName() + ", world did not update the units ");
-        }
     }
 
     public World getTheWorld() {
@@ -102,11 +97,18 @@ public class PlayerApp {
         while(!exit){
             exit = this.myPlayer.checkExit();
             World newWorld = null;
-            this.theWorld = (World) receiveInfo(newWorld,this.playerClient);
-            this.out.println(this.myView.displayWorld( this.theWorld ));
+            this.theWorld =  (World) this.playerClient.recvObject();
             String report = (String) this.playerClient.recvObject();
-            this.out.println("Turn Ended");
+            if(exit){
+                this.playerClient.sendObject("Exit");
+            }
+            else{
+                this.playerClient.sendObject("nonExit");
+            }
+
+            this.out.println(this.myView.displayWorld( this.theWorld));
             this.out.println(report);
+            this.out.println("Turn Ended");
 
             if(this.theWorld.isGameEnd()) {
                 this.out.println("Winner is " + this.theWorld.getWinner());
@@ -132,22 +134,16 @@ public class PlayerApp {
                     BasicOrder m = receiveMessage;
                     if (receiveMessage.getActionName() != 'D') {
                         m = new BasicOrder(new String(receiveMessage.getSrcName()),
-                                           new String(receiveMessage.getDesName()),
-                                           receiveMessage.getActTroop().clone(),
-                                           receiveMessage.getActionName());
+                                new String(receiveMessage.getDesName()),
+                                receiveMessage.getActTroop().clone(),
+                                receiveMessage.getActionName());
                     }else{
                         turnEnd=true;
 
                     }
 
                     executeOrder(receiveMessage);
-//                    if(message==null){
-                        received = true;
-//                    }else{
-//                        out.println(message);
-//                        throw new IllegalArgumentException();
-//                    }
-
+                    received = true;
                     this.out.println("Action updated");
                     this.out.println(this.myView.displayWorld(this.theWorld));
                     sendInfo(m, this.playerClient);
@@ -163,10 +159,8 @@ public class PlayerApp {
         World newWorld = null;
 //        this.theWorld=(World) receiveInfo(newWorld,this.playerClient);
         this.theWorld = (World) this.playerClient.recvObject();
-
         String report=(String) this.playerClient.recvObject();
-
-
+        this.playerClient.sendObject("nonExit");
         this.out.println("Turn Ended");
         this.out.println(report);
         this.out.println(this.myView.displayWorld(this.theWorld));
@@ -177,9 +171,9 @@ public class PlayerApp {
      */
     private void executeOrder(BasicOrder receiveMessage){
         if (receiveMessage.getActionName() == 'M') {
-             this.theWorld.moveTroop(receiveMessage);
+            this.theWorld.moveTroop(receiveMessage);
         } else if (receiveMessage.getActionName() == 'A') {
-             this.theWorld.attackATerritory(receiveMessage);
+            this.theWorld.attackATerritory(receiveMessage);
         }
 
 
@@ -200,14 +194,14 @@ public class PlayerApp {
 
         while (!setConnect) {
             try {
-                System.out.println(instruct1);
-                String hostName = inRead.readLine();
-                System.out.println(hostName);
-                System.out.println(instruct2);
-                String port = inRead.readLine();
-                System.out.println(port);
-//                String hostName = "Alexs-MacBook-Pro.local";
-//                String port = "9999";
+//                System.out.println(instruct1);
+//                String hostName = inRead.readLine();
+//                System.out.println(hostName);
+//                System.out.println(instruct2);
+//                String port = inRead.readLine();
+//                System.out.println(port);
+                String hostName = "Alexs-MacBook-Pro.local";
+                String port = "9999";
                 myClient = new Client(hostName, port);
                 setConnect = true;
             } catch (Exception e) {
