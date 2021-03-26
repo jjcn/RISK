@@ -56,6 +56,15 @@ public class ClientThread extends Thread{
      * */
     protected void sendInitTerritory() throws IOException {this.theClient.sendObject(this.initTerritory); }
 
+    protected void updatePlayerState() throws IOException, ClassNotFoundException {
+        String s = (String) this.theClient.recvObject();
+        System.out.println("receice state from client: " + s);
+        if(s.equals("Exit")){
+            playerState.changeStateTo("Exit");
+            System.out.println("change state to Exit");
+        }
+    }
+
     /*
      * This is to select territory for each player.
      * */
@@ -82,7 +91,6 @@ public class ClientThread extends Thread{
             newOrder = (BasicOrder) receiveInfo(newOrder, this.theClient);
             updateActionOnWorld(newOrder);
         }
-
     }
 
     /*
@@ -147,22 +155,29 @@ public class ClientThread extends Thread{
                 barrier.await(); // Wait everyone to finish their actions
 
                 while (!hostState.isFinishUpdate()) {} // wait hostState to update the world
-                sendWorldToClient();
-                sendWarReportToClient();
-                barrier.await();
-
-                //Everyone need to change their state after this
-                if (isPlayerLost()) {
-                    playerState.changeStateTo("Lose");
-                    System.out.println(this.playerName + "lose the game now.");
+                System.out.println(playerState.isExit());
+                if(!playerState.isExit()){
+                    sendWorldToClient();
+                    sendWarReportToClient();
+                    updatePlayerState();
                 }
-                else{
-                    playerState.changeStateTo("Ready");
+                System.out.println("Sent world and map");
+                barrier.await();
+                System.out.println("Done waiting for all threads");
+                //Everyone need to change their state after this
+                if(!playerState.isExit()){
+                    if (isPlayerLost()) {
+                        playerState.changeStateTo("Lose");
+                        System.out.println(this.playerName + "lose the game now.");
+                    }
+                    else{
+                        playerState.changeStateTo("Ready");
+                    }
                 }
                 //check If the game ends, send message to all players and quit
                 if(isGameEnd()){
                     playerState.changeStateTo("Quit");
-                     // if we find a winner, and hostState will be endGame. Every thread should close
+                    // if we find a winner, and hostState will be endGame. Every thread should close
                     System.out.println(this.playerName + "quit the game.");
                     this.theClient.close();
                     break;

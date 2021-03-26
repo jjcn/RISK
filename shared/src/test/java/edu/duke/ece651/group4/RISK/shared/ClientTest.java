@@ -99,21 +99,6 @@ class ClientTest {
     @Test
     public void test_sendAndRecvWorldOBject()throws IOException, ClassNotFoundException{
 
-//        World world = new World(15);
-//        Player p1 = new TextPlayer("p1");
-//        Player p2 = new TextPlayer("p2");
-//        ArrayList<Territory> terrs = new ArrayList<Territory>();
-//        terrs.add(new Territory("terr1", p1, 2, new Random(0)));
-//        terrs.add(new Territory("terr2", p1, 3, new Random(0)));
-//        terrs.add(new Territory("terr3", p2, 1, new Random(0)));
-//        terrs.add(new Territory("terr4", p2, 4, new Random(0)));
-//        for (Territory terr : terrs) {
-//            world.addTerritory(terr);
-//        }
-//        world.addConnection("terr1", "terr2");
-//        world.addConnection("terr2", "terr3");
-//        world.addConnection("terr3", "terr4");
-
         Player p1 = new TextPlayer("p1");
         Player p2 = new TextPlayer("p2");
         World world = new World(6);
@@ -146,4 +131,7 @@ class ClientTest {
         }
         clientSocket.close();
     }
+
+
+
 }
