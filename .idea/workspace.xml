@@ -6,9 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="65a0ffb7-737d-46fe-8844-85058d990f51" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/edu/duke/ece651/group4/RISK/client/PlayerApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/edu/duke/ece651/group4/RISK/client/PlayerApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/test/java/edu/duke/ece651/group4/RISK/client/AppTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/test/java/edu/duke/ece651/group4/RISK/client/AppTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shared/src/test/java/edu/duke/ece651/group4/RISK/shared/ClientTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/shared/src/test/java/edu/duke/ece651/group4/RISK/shared/ClientTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,19 +45,6 @@
     <property name="nodejs_package_manager_path" value="npm" />
   </component>
   <component name="RunManager" selected="Gradle.HostAppTest">
-    <configuration default="true" type="ArquillianTestNG" factoryName="" nameIsGenerated="true">
-      <option name="arquillianRunConfiguration">
-        <value>
-          <option name="containerStateName" value="" />
-        </value>
-      </option>
-      <option name="TEST_OBJECT" value="CLASS" />
-      <properties />
-      <listeners />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="ClientTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -186,7 +170,8 @@
       <updated>1616106072628</updated>
       <workItem from="1616106075302" duration="32000" />
       <workItem from="1616106123078" duration="1518000" />
-      <workItem from="1616689244753" duration="5328000" />
+      <workItem from="1616689244753" duration="6501000" />
+      <workItem from="1616772203096" duration="1792000" />
     </task>
     <servers />
   </component>
