@@ -6,6 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="65a0ffb7-737d-46fe-8844-85058d990f51" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/client/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/redeploy.sh" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/redeploy.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/server/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/test/java/edu/duke/ece651/group4/RISK/server/ClientThreadTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/test/java/edu/duke/ece651/group4/RISK/server/ClientThreadTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -171,7 +175,7 @@
       <workItem from="1616106075302" duration="32000" />
       <workItem from="1616106123078" duration="1518000" />
       <workItem from="1616689244753" duration="6501000" />
-      <workItem from="1616772203096" duration="1792000" />
+      <workItem from="1616772203096" duration="2107000" />
     </task>
     <servers />
   </component>
