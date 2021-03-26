@@ -133,27 +133,5 @@ class ClientTest {
     }
 
 
-    @Test
-    public void test_socket() throws IOException, ClassNotFoundException {
 
-        new Thread(() -> {
-            try {
-                Socket s = hostSocket.accept();
-                assertNotNull(s);
-                Client clientSocket = new Client(s);
-                String res = (String) clientSocket.recvObject();
-                clientSocket.close();
-                clientSocket.sendObject(res);
-                clientSocket.close();
-            } catch (IOException | ClassNotFoundException ignored) {
-            }
-        }).start();
-        Client clientSocket = new Client("localhost", String.valueOf(PORT));
-        clientSocket.sendObject("from client");
-        clientSocket.close();
-        Client clientSocket2 = new Client("localhost", String.valueOf(PORT));
-        String res2 = (String) clientSocket2.recvObject();
-        assertEquals(res2,"from client");
-        clientSocket2.close();
-    }
 }
