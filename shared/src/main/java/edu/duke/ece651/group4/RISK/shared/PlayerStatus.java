@@ -4,6 +4,8 @@ import java.util.HashMap;
 
 /**
  * This class records information that is player-specific.
+ * Allows reading of all info, 
+ * and modifying of tech level & resource quantities.
  */
 public class PlayerStatus {
     /**
@@ -49,7 +51,7 @@ public class PlayerStatus {
      * @param i is the number to add to tech level. 
      *          Can be positive, 0, or negative.
      */
-    public int modifyTechlevel(int i) {
+    public int modifyTechLevel(int i) {
         techLevel += i;
         return techLevel;
     }
