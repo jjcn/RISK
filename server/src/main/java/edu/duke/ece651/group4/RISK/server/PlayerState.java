@@ -45,7 +45,7 @@ public class PlayerState{
      * @return true, if it is. otherwise false
      * */
     public boolean isDoneOneTurn(){
-        return getState().equals( "EndOneTurn") | isLose() | isQuit();
+        return getState().equals( "EndOneTurn") | isLose() | isQuit() | isExit();
     }
     /*
      * This change a player state
@@ -53,5 +53,13 @@ public class PlayerState{
      * */
     public void changeStateTo(String s){
         this.state = s;
+    }
+
+    /*
+     * this check if the client exit
+     * @return true, if it is. otherwise false
+     * */
+    public boolean isExit(){
+        return getState().equals( "Exit");
     }
 }

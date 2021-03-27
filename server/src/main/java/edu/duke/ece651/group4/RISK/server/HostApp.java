@@ -146,7 +146,6 @@ public class HostApp implements Runnable {
         while(true) {
             if(hostState.isAllPlayersDoneOneTurn()) {
                 finishBattlesOneTurn();
-
             }
             if(hostState.isALlThreadsQuit()) {
                 System.out.println("The host quits after all threads quit.");
@@ -162,7 +161,7 @@ public class HostApp implements Runnable {
 
     public static void main(String[] args) throws IOException {
         ServerSocket hostSocket = new ServerSocket(9999);
-        HostApp hostApp = new HostApp(hostSocket,3);
+        HostApp hostApp = new HostApp(hostSocket,1);
         hostApp.run();
     }
 }
