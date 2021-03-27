@@ -1,6 +1,7 @@
 package edu.duke.ece651.group4.RISK.shared;
 
-import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This class records information that is player-specific.
@@ -8,30 +9,29 @@ import java.util.HashMap;
  * and modifying of tech level & resource quantities.
  */
 public class PlayerStatus {
-    /**
-     * Types of resources.
-     */
-    private enum Resource {FOOD, TECH};
 
     private String playerName;
     private int techLevel;
-    private HashMap<Resource, Integer> resourceList;
+    private Set<Resource> resources;
 
     public PlayerStatus(String playerName, 
                         int techLevel, 
-                        HashMap<Resource, Integer> resourceList) {
+                        Set<Resource> resources) {
         this.playerName = playerName;
         this.techLevel = techLevel;
-        this.resourceList = resourceList;
+        this.resources = resources;
     }
 
-    public PlayerStatus(String playerName) {
-        this(playerName, 1, null);
-        HashMap<Resource, Integer> map = new HashMap<>();
-        for (Resource r : Resource.values()) {
-            map.put(r, 0);
+    public PlayerStatus(String playerName, 
+                        int techLevel, 
+                        Resource... resources) {
+        this.playerName = playerName;
+        this.techLevel = techLevel;
+        Set<Resource> set = new HashSet<>();
+        for (Resource r : resources) {
+            set.add(r);
         }
-        this.resourceList = map;
+        this.resources = set;
     }
 
     public String getName() {
@@ -42,12 +42,12 @@ public class PlayerStatus {
         return techLevel;
     }
 
-    public HashMap<Resource, Integer> getResouceList() {
-        return resourceList;
+    public Set<Resource> getResouceList() {
+        return resources;
     }
 
     /**
-     * Changes the tech level.
+     * Changes the player's tech level.
      * @param i is the number to add to tech level. 
      *          Can be positive, 0, or negative.
      */
@@ -58,11 +58,15 @@ public class PlayerStatus {
 
     /**
      * Change the quantity of a resource.
-     * @param resource is the enum type of the resource.
+     * @param resource is a particular resource to modify quantity.
      * @param i is the number to add to resource quantity. 
      *          Can be positive, 0, or negative.
      */
-    public void modifyResources(Resource resource, int i) {
-        resourceList.put(resource, resourceList.get(resource) + i);
+    public void modifyResource(Resource resource, int i) {
+        for (Resource r : resources) {
+            if (r.equalsName(resource)) {
+                resource.modifyQuantity(i);
+            }
+        }
     }
 }

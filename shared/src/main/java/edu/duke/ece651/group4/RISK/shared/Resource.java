@@ -1,7 +1,7 @@
 package edu.duke.ece651.group4.RISK.shared;
 
 /**
- * A of resource
+ * Template of a generic resource.
  */
 public class Resource {
     String name;
@@ -22,6 +22,29 @@ public class Resource {
 
     public int getQuantity() {
         return quantity;
+    }
+
+    public void setQuantity(int i) {
+        quantity = i;
+    }
+
+    /**
+     * Change the quantity of a resource.
+     * @param resource is the enum type of the resource.
+     * @param i is the number to add to resource quantity. 
+     *          Can be positive, 0, or negative.
+     */
+    public void modifyQuantity(int i) {
+        quantity += i;
+    }
+
+    /**
+     * Check if the resources are of the same type.
+     * @return true, if the resources have the same name;
+     *         false, if not.
+     */
+    public boolean equalsName(Resource otherResource) {
+        return otherResource.getName().equals(name);
     }
 
     @Override
