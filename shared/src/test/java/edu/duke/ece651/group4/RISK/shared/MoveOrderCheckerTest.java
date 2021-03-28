@@ -88,11 +88,12 @@ public class MoveOrderCheckerTest {
         World world = createWorld(troopsConnected);
 
         BasicOrder order1 = new BasicOrder("Narnia", "Roshar", new Troop(3, green), 'M');
-        assertEquals(NOT_SAME_OWNER_MSG, moc.checkMyOrder(order1, world));
+        assertEquals(String.format(NOT_SAME_OWNER_MSG, "Roshar"), 
+                        moc.checkMyOrder(order1, world));
 
         BasicOrder order2 = new BasicOrder("Oz", "Gondor", new Troop(3, green), 'M');
-        assertEquals(NOT_SAME_OWNER_MSG, moc.checkMyOrder(order2, world));
-    }
+        assertEquals(String.format(NOT_SAME_OWNER_MSG, "Gondor"), 
+                         moc.checkMyOrder(order2, world));    }
 
     @Test
     public void testMoveOrderCheckerNotMoveOrder() {

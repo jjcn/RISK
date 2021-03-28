@@ -42,7 +42,7 @@ public class MoveOrderChecker implements Serializable {
             Player owner = start.getOwner();
             // if the start and end do not have the same owner
             if (!start.getOwner().equals(end.getOwner())) {
-                return NOT_SAME_OWNER_MSG;
+                return String.format(NOT_SAME_OWNER_MSG, end.getName());
             }
             // if not reachable
             Queue<Territory> queue = new LinkedList<>();

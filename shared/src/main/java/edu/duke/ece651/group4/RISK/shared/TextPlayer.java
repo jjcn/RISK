@@ -20,7 +20,7 @@ public class TextPlayer implements Player, Serializable {
         actionTypes.put('M', "(M)ove");
         actionTypes.put('A', "(A)ttack");
         this.rnd = rnd;
-        this.testMode=mode;
+        this.testMode = mode;
     }
 
     public TextPlayer(PrintStream out, Reader inputReader, String playerName) {
@@ -33,7 +33,7 @@ public class TextPlayer implements Player, Serializable {
         this.out = null;
         this.actionTypes = new HashMap<>();
         this.rnd = null;
-        this.testMode=false;
+        this.testMode = false;
     }
 
     /**

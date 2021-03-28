@@ -93,6 +93,19 @@ public class World implements Serializable {
         }
         territories.addRandomEdges(numTerrs, new Random());
     }
+
+    /**
+     * Overloading constructor that takes an array of territories names.
+     * @param terrNames is an array of territory names.
+     */
+    public World(String[] terrNames) {
+        this(new Graph<Territory>(), new Random());
+
+        for (int i = 1; i <= terrNames.length; i++) {
+            addTerritory(new Territory(terrNames[i]));
+        }
+        territories.addRandomEdges(terrNames.length, new Random());
+    }
  
     /**
      * Get a deep copy of a world object.
