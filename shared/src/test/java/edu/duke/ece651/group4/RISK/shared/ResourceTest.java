@@ -46,7 +46,7 @@ public class ResourceTest {
     }
 
     @Test
-    public void testEqaulsName() {
+    public void testEqualsName() {
         Resource food1 = new Resource("food", 1);
         Resource food2 = new Resource("food", 0);
         Resource food3 = new Resource("food", 0);
@@ -60,7 +60,7 @@ public class ResourceTest {
     }
 
     @Test
-    public void testEqauls() {
+    public void testEquals() {
         Resource food1 = new Resource("food", 1);
         Resource food2 = new Resource("food", 0);
         Resource food3 = new Resource("food", 0);

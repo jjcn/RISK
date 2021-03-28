@@ -4,8 +4,8 @@ package edu.duke.ece651.group4.RISK.shared;
  * Template of a generic resource.
  */
 public class Resource {
-    String name;
-    int quantity;
+    private String name;
+    private int quantity;
 
     public Resource() {
         this(null, 0);
@@ -51,8 +51,8 @@ public class Resource {
     public boolean equals(Object other) {
         if (other != null && other.getClass().equals(getClass())) {
             Resource otherResource = (Resource)other;
-            return otherResource.name.equals(name) &&
-                   otherResource.quantity == quantity;
+            return otherResource.getName().equals(name) &&
+                   otherResource.getQuantity() == quantity;
         }
         else {
             return false;
