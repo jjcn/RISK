@@ -114,7 +114,6 @@ public class ClientThread extends Thread {
         }
     }
 
-
     /*
      * This is a function to check if  the player in this clientThread lost the game
      * It will iterate all territories in the world to see if there is a terr that belongs to this Player
@@ -123,7 +122,6 @@ public class ClientThread extends Thread {
     protected boolean isPlayerLost(){
         return this.theWorld.checkLost(this.playerName);
     }
-
 
     /*
      * This is to check if there is only one winner in the world after the world
@@ -193,7 +191,7 @@ public class ClientThread extends Thread {
             }
 
 
-        }catch (Exception ignored){
+        } catch (Exception ignored){
 
         }
     }

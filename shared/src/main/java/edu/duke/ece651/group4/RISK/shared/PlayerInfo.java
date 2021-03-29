@@ -8,13 +8,13 @@ import java.util.Set;
  * Allows reading of all info, 
  * and modifying of tech level & resource quantities.
  */
-public class PlayerStatus {
+public class PlayerInfo {
 
     private String playerName;
     private int techLevel;
     private Set<Resource> resources;
 
-    public PlayerStatus(String playerName, 
+    public PlayerInfo(String playerName, 
                         int techLevel, 
                         Set<Resource> resources) {
         this.playerName = playerName;
@@ -22,7 +22,7 @@ public class PlayerStatus {
         this.resources = resources;
     }
 
-    public PlayerStatus(String playerName, 
+    public PlayerInfo(String playerName, 
                         int techLevel, 
                         Resource... resources) {
         this.playerName = playerName;

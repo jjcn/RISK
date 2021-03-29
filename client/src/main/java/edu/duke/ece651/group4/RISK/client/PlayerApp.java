@@ -40,6 +40,10 @@ public class PlayerApp {
         return myPlayer;
     }
 
+    public World getTheWorld() {
+        return this.theWorld;
+    }
+
     /**
      * Do placement phase which place units on the board before game start
      */
@@ -71,51 +75,6 @@ public class PlayerApp {
         this.out.println("All placement are done");
         this.out.println(this.myView.displayWorld( this.theWorld ));
 
-    }
-
-    public World getTheWorld() {
-        return this.theWorld;
-    }
-
-    /**
-     * Run the game and stop when the player loss then check exit or not
-     */
-    public void runGame() throws IOException, ClassNotFoundException {
-        this.out.println(this.myView.displayWorld(this.theWorld));
-        while(!this.theWorld.checkLost(this.myPlayer.getName()) && !this.theWorld.isGameEnd()) {
-            doActionPhase();
-        }
-        if(this.theWorld.checkLost(this.myPlayer.getName())) {
-            this.out.println("You lost");
-        }
-        if(this.theWorld.isGameEnd()) {
-            this.out.println("Winner is " + this.theWorld.getWinner());
-            return;
-        }
-
-        boolean exit = false;
-        while(!exit){
-            exit = this.myPlayer.checkExit();
-            World newWorld = null;
-            this.theWorld =  (World) this.playerClient.recvObject();
-            String report = (String) this.playerClient.recvObject();
-            if(exit){
-                this.playerClient.sendObject("Exit");
-            }
-            else{
-                this.playerClient.sendObject("nonExit");
-            }
-
-            this.out.println(this.myView.displayWorld( this.theWorld));
-            this.out.println(report);
-            this.out.println("Turn Ended");
-
-            if(this.theWorld.isGameEnd()) {
-                this.out.println("Winner is " + this.theWorld.getWinner());
-                return;
-            }
-        }
-        this.playerClient.close();
     }
 
     /**
@@ -175,14 +134,70 @@ public class PlayerApp {
         } else if (receiveMessage.getActionName() == 'A') {
             this.theWorld.attackATerritory(receiveMessage);
         }
+    }
 
+    public static Object receiveInfo(Object o, Client c){
+        try {
+            o = c.recvObject();
+        } catch (Exception e) {
+            System.out.println("Socket receive object problem!");
+        }
+
+        return o;
+    }
+
+    public static void sendInfo(Object o, Client c) throws IOException {
+
+        try {
+            c.sendObject(o);
+        } catch (Exception e) {
+            System.out.println("Socket send object problem!");
+        }
 
 
     }
 
+     
+    /**
+     * Run the game and stop when the player loss then check exit or not
+     */
+    public void runGame() throws IOException, ClassNotFoundException {
+        this.out.println(this.myView.displayWorld(this.theWorld));
+        while(!this.theWorld.checkLost(this.myPlayer.getName()) && !this.theWorld.isGameEnd()) {
+            doActionPhase();
+        }
+        if(this.theWorld.checkLost(this.myPlayer.getName())) {
+            this.out.println("You lost");
+        }
+        if(this.theWorld.isGameEnd()) {
+            this.out.println("Winner is " + this.theWorld.getWinner());
+            return;
+        }
 
+        boolean exit = false;
+        while(!exit){
+            exit = this.myPlayer.checkExit();
+            World newWorld = null;
+            this.theWorld =  (World) this.playerClient.recvObject();
+            String report = (String) this.playerClient.recvObject();
+            if(exit){
+                this.playerClient.sendObject("Exit");
+            }
+            else{
+                this.playerClient.sendObject("nonExit");
+            }
 
+            this.out.println(this.myView.displayWorld( this.theWorld));
+            this.out.println(report);
+            this.out.println("Turn Ended");
 
+            if(this.theWorld.isGameEnd()) {
+                this.out.println("Winner is " + this.theWorld.getWinner());
+                return;
+            }
+        }
+        this.playerClient.close();
+    }
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         String instruct1 = "Please enter the hostName";
@@ -225,30 +240,5 @@ public class PlayerApp {
         PlayerApp myApp=new PlayerApp(myClient,name,System.out,inRead,gameWorld,15);
         myApp.doPlacementPhase();
         myApp.runGame();
-
-
     }
-
-    public static Object receiveInfo(Object o, Client c){
-
-        try {
-            o = c.recvObject();
-        } catch (Exception e) {
-            System.out.println("Socket receive object problem!");
-        }
-
-        return o;
-    }
-
-    public static void sendInfo(Object o, Client c) throws IOException {
-
-        try {
-            c.sendObject(o);
-        } catch (Exception e) {
-            System.out.println("Socket send object problem!");
-        }
-
-
-    }
-
 }
