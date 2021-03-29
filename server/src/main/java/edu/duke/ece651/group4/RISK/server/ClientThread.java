@@ -29,14 +29,13 @@ public class ClientThread extends Thread {
         this.playerName = playerName;
         this.barrier = barrier;
         this.playerID = playerID;
-        this.initTerritory=initTerritory;
+        this.initTerritory = initTerritory;
     }
 
     /*
      *  This sends a player info to each Client.
      * */
     protected void sendPlayerNameToClient() throws IOException {
-
         this.theClient.sendObject(this.playerName);
     }
 
@@ -44,7 +43,7 @@ public class ClientThread extends Thread {
      *  This send the newest worldMap to the Client
      * */
     protected void sendWorldToClient() throws IOException {
-        World sendWorld=this.theWorld.clone();
+        World sendWorld = this.theWorld.clone();
         this.theClient.sendObject(sendWorld);
 
     }
@@ -75,14 +74,14 @@ public class ClientThread extends Thread {
      * This is to select territory for each player.
      * */
     protected void selectUnits() throws IOException, ClassNotFoundException {
-        int orderNum=this.initTerritory.size();
-        System.out.println("To " + this.playerName + ", orderNum: "+ orderNum );
-        while(orderNum>0) {
+        int orderNum = this.initTerritory.size();
+        System.out.println("To " + this.playerName + ", orderNum: " + orderNum );
+        while(orderNum > 0) {
             PlaceOrder newOrder = null;
-            newOrder = (PlaceOrder)  this.theClient.recvObject();
-            System.out .println("thread: start update selectunits");
+            newOrder = (PlaceOrder) this.theClient.recvObject();
+            System.out.println("thread: start update selectunits");
             this.theWorld.stationTroop(newOrder.getDesName(),newOrder.getActTroop());
-            System.out .println("thread: finish update selectunits");
+            System.out.println("thread: finish update selectunits");
             orderNum--;
         }
 
