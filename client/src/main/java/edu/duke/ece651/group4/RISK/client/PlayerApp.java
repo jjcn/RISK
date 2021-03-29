@@ -40,6 +40,17 @@ public class PlayerApp {
         return myPlayer;
     }
 
+    public void sendAccountInfo(String name,String pwd,boolean signUp) throws IOException, ClassNotFoundException {
+////        Message m;
+//        if(signUp){
+//
+//        }else{
+//
+//        }
+////        this.playerClient.sendObject(m);
+//        String response = (String) this.playerClient.recvObject();
+    }
+
     /**
      * Do placement phase which place units on the board before game start
      */

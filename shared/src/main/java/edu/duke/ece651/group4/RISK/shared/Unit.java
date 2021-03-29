@@ -9,5 +9,7 @@ public interface Unit {
     public Unit clone();
 
     public int attackPoint();
+
+    public String getJobName();
 }
 
