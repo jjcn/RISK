@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CyclicBarrier;
 
-public class ClientThread extends Thread{
+public class ClientThread extends Thread {
     World theWorld;
     PlayerState playerState;
     HostState hostState;
@@ -17,7 +17,11 @@ public class ClientThread extends Thread{
     List<Territory> initTerritory;
     int playerID;
 
-    public ClientThread(World w, String playerName, int playerID, CyclicBarrier barrier, PlayerState playerState, Client theClient,HostState hoststate, List<Territory> initTerritory){
+    public ClientThread(World w, String playerName, int playerID, 
+                        CyclicBarrier barrier, 
+                        PlayerState playerState,
+                        Client theClient, HostState hoststate, 
+                        List<Territory> initTerritory) {
         this.theWorld = w;
         this.playerState = playerState;
         this.theClient  = theClient;
@@ -54,7 +58,9 @@ public class ClientThread extends Thread{
     /*
      * This send init territory to each player.
      * */
-    protected void sendInitTerritory() throws IOException {this.theClient.sendObject(this.initTerritory); }
+    protected void sendInitTerritory() throws IOException {
+        this.theClient.sendObject(this.initTerritory); 
+    }
 
     protected void updatePlayerState() throws IOException, ClassNotFoundException {
         String s = (String) this.theClient.recvObject();
@@ -101,9 +107,9 @@ public class ClientThread extends Thread{
     synchronized protected void updateActionOnWorld(BasicOrder receiveMessage){
         System.out.println(this.playerName +  receiveMessage.getActionName());
         if (receiveMessage.getActionName() == 'M') {
-            this.theWorld.moveTroop(theWorld.findTerritory(receiveMessage.getSrcName()), receiveMessage.getActTroop(), theWorld.findTerritory(receiveMessage.getDesName()));
+            this.theWorld.moveTroop(receiveMessage);
         } else if (receiveMessage.getActionName() == 'A') {
-            this.theWorld.attackATerritory(theWorld.findTerritory(receiveMessage.getSrcName()), receiveMessage.getActTroop(), theWorld.findTerritory(receiveMessage.getDesName()));
+            this.theWorld.attackATerritory(receiveMessage);
         } else {
             playerState.changeStateTo("EndOneTurn");
         }

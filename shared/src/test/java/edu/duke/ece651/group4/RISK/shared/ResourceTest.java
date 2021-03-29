@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 public class ResourceTest {
-    /*
+    
     @Test
     public void testGetName() {
         Resource food = new Resource("food", 1);
@@ -73,5 +73,5 @@ public class ResourceTest {
         assertFalse(food1.equals(tech2));
         assertFalse(tech1.equals(tech2));
     }
-    */
+    
 }
