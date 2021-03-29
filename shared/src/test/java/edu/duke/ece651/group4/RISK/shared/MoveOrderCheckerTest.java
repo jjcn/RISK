@@ -7,9 +7,12 @@ import org.junit.jupiter.api.Test;
 import java.io.*;
 
 public class MoveOrderCheckerTest {
-    private final String NOT_SAME_OWNER_MSG = "Cannot move troop to a territory with different owner.";
     private final String NOT_MOVE_ORDER_MSG = "This is not a move order.";
-    private final String NOT_REACHABLE_MSG = "There is not a path of territories that all belongs to you.";
+    private final String NOT_SAME_OWNER_MSG = 
+        "Cannot move troop to %s, which belongs to another player.";
+    private final String NOT_REACHABLE_MSG = 
+        "Cannot reach from %s to %s. " +
+        "Other players' territories are blocking the way.";
 
     PrintStream out = null;
     Reader inputReader = null;
@@ -47,7 +50,6 @@ public class MoveOrderCheckerTest {
             world.addTerritory(new Territory(name));
         }
         world.addConnection("Narnia", "Midkemia");
-        world.addConnection("Narnia", "Midkemia");
         world.addConnection("Narnia", "Elantris");
         world.addConnection("Midkemia", "Elantris");
         world.addConnection("Midkemia", "Scadrial");
@@ -62,6 +64,7 @@ public class MoveOrderCheckerTest {
         world.addConnection("Scadrial", "Hogwarts");
         world.addConnection("Scadrial", "Mordor");
         world.addConnection("Mordor", "Hogwarts");
+        world.addConnection("Roshar", "Hogwarts");
 
         for (int i = 0; i < troops.length; i++) {
             world.stationTroop(names[i], troops[i]);
@@ -85,11 +88,12 @@ public class MoveOrderCheckerTest {
         World world = createWorld(troopsConnected);
 
         BasicOrder order1 = new BasicOrder("Narnia", "Roshar", new Troop(3, green), 'M');
-        assertEquals(NOT_SAME_OWNER_MSG, moc.checkMyOrder(order1, world));
+        assertEquals(String.format(NOT_SAME_OWNER_MSG, "Roshar"), 
+                        moc.checkMyOrder(order1, world));
 
         BasicOrder order2 = new BasicOrder("Oz", "Gondor", new Troop(3, green), 'M');
-        assertEquals(NOT_SAME_OWNER_MSG, moc.checkMyOrder(order2, world));
-    }
+        assertEquals(String.format(NOT_SAME_OWNER_MSG, "Gondor"), 
+                         moc.checkMyOrder(order2, world));    }
 
     @Test
     public void testMoveOrderCheckerNotMoveOrder() {
@@ -103,15 +107,21 @@ public class MoveOrderCheckerTest {
     }
 
     @Test
-    public void testMoveOrderCheckerNotLinked() {
+    public void testMoveOrderCheckerNotReachable() {
         World world = createWorld(troopsSeparated);
-
-        // TODO: This test fails
-        /*
+        
         BasicOrder order1 = new BasicOrder("Roshar", "Hogwarts", new Troop(3, green), 'M');
         assertEquals(null, moc.checkMyOrder(order1, world));
-        */
+        
         BasicOrder order2 = new BasicOrder("Roshar", "Oz", new Troop(3, green), 'M');
-        assertEquals(NOT_REACHABLE_MSG, moc.checkMyOrder(order2, world));
+        assertEquals(String.format(NOT_REACHABLE_MSG, "Roshar", "Oz"), 
+                    moc.checkMyOrder(order2, world));
+
+        BasicOrder order3 = new BasicOrder("Gondor", "Mordor", new Troop(3, red), 'M');
+        assertEquals(null, moc.checkMyOrder(order3, world));
+
+        BasicOrder order4 = new BasicOrder("Midkemia", "Mordor", new Troop(3, red), 'M');
+        assertEquals(String.format(NOT_REACHABLE_MSG, "Midkemia", "Mordor"), 
+                    moc.checkMyOrder(order4, world));
     }
 }

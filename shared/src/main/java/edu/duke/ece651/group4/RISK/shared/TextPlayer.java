@@ -20,7 +20,7 @@ public class TextPlayer implements Player, Serializable {
         actionTypes.put('M', "(M)ove");
         actionTypes.put('A', "(A)ttack");
         this.rnd = rnd;
-        this.testMode=mode;
+        this.testMode = mode;
     }
 
     public TextPlayer(PrintStream out, Reader inputReader, String playerName) {
@@ -33,7 +33,7 @@ public class TextPlayer implements Player, Serializable {
         this.out = null;
         this.actionTypes = new HashMap<>();
         this.rnd = null;
-        this.testMode=false;
+        this.testMode = false;
     }
 
     /**
@@ -107,7 +107,7 @@ public class TextPlayer implements Player, Serializable {
             String des = readInput("Please input the territory name you would like to send troop to:");
             int pop = readInteger("Please input the number of soldiers you would like to send:");
 
-            Troop troop = testMode?new Troop(pop, this, this.rnd):new Troop(pop, this,new Random());
+            Troop troop = testMode?new Troop(pop, this, this.rnd):new Troop(pop, this);
             return new BasicOrder(src, des, troop, actionName);
         }
     }
@@ -208,7 +208,7 @@ public class TextPlayer implements Player, Serializable {
                 out.print("You have placed more soldier than you have.\n");
                 return null;
             }
-            Troop troop = testMode?new Troop(add, this, this.rnd):new Troop(add, this,new Random());
+            Troop troop = testMode?new Troop(add, this, this.rnd):new Troop(add, this);
             orders.add(new PlaceOrder(name, troop));
         }
         if (remain > 0) {

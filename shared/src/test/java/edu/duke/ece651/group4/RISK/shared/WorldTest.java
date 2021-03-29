@@ -18,19 +18,29 @@ public class WorldTest {
     /**
      * Error messages
      */
-    final String NOT_ENOUGH_TROOP_MSG = "The troop size you want is larger than that on this territory.";
     final String INDIVISIBLE_MSG = "Number of territories is not divisible by number of groups.";
     final String TERRITORY_NOT_FOUND_MSG = "The territory specified by the name '%s' is not found.";
     final String NOT_POSITIVE_MSG = "Number should be positive.";
-    // move checker
-    private final String NOT_SAME_OWNER_MSG = "Cannot move troop to a territory with different owner.";
-    private final String NOT_MOVE_ORDER_MSG = "This is not a move order.";
-    private final String NOT_REACHABLE_MSG = "There is not a path of territories that all belongs to you.";
-    // attack checker
-    private final String SAME_OWNER_MSG = "Cannot attack a territory with the same owner.";
-    private final String NOT_ATTACK_ORDER_MSG = "This is not an attack order.";
-    private final String NOT_ADJACENT_MSG = "The attack should be performed on adjacent territories.";
-
+    // for general order
+    protected final String NOT_YOUR_TROOP_MSG = 
+        "Error: You tried to move troops on %s, which belongs to another player: %s";
+    protected final String UNKNOWN_BASIC_ORDER_TYPE = 
+        "'%c' is not a valid basic order type.";
+    protected final String NOT_ENOUGH_TROOP_MSG = 
+        "Cannot move out a troop of size larger than %d on %s, " +
+        "but you entered a troop of size %d.";
+    // for move
+    private final String NOT_SAME_OWNER_MSG = 
+        "Cannot move troop to %s, which belongs to another player.";
+    private final String NOT_REACHABLE_MSG = 
+        "Cannot reach from %s to %s. " +
+        "Other players' territories are blocking the way.";
+    // for attack
+    protected final String SAME_OWNER_MSG = 
+        "Cannot attack %s, which belongs to you.";
+    protected final String NOT_ADJACENT_MSG = 
+        "You tried to attack from %s to %s, which are not adjacent territories. %n" +
+        "You can only attack territories directly adjacent to your territories.";
     /**
      * Creates a world for test. 
      * Territory layout is the same as that on Evolution 1 requirements.
@@ -123,6 +133,15 @@ public class WorldTest {
     }
 
     @Test
+    public void testSetRandom() {
+        World world = createWorldSimple();
+        Random seed = new Random(0);
+
+        world.setRandom("1", seed);
+        world.setRandom(new Territory("2"), seed);
+    }
+
+    @Test
     public void testAddTerritory() {
         World world = new World();
         List<Territory> expected = new ArrayList<>();
@@ -173,14 +192,15 @@ public class WorldTest {
 
     @Test
     public void testStationTroop() {
-        World world = createWorld();
-        world.stationTroop("Narnia", new Troop(8, green));
-        world.stationTroop("Gondor", new Troop(14, red));
+        World world = createWorldSimple();
+        world.stationTroop("1", new Troop(8, green));
+        world.stationTroop("2", new Troop(10, red));
+        world.stationTroop("2", 4); // this will initialize the territory again
 
-        assertEquals(8, world.findTerritory("Narnia").checkPopulation());
-        assertEquals(green, world.findTerritory("Narnia").getOwner());
-        assertEquals(14, world.findTerritory("Gondor").checkPopulation());
-        assertEquals(red, world.findTerritory("Gondor").getOwner());
+        assertEquals(8, world.findTerritory("1").checkPopulation());
+        assertEquals(green, world.findTerritory("1").getOwner());
+        assertEquals(4, world.findTerritory("2").checkPopulation());
+        assertEquals(red, world.findTerritory("2").getOwner());
     }
 
     @Test
@@ -188,9 +208,10 @@ public class WorldTest {
         World world = createWorld(troopsSeparated);
         // Valid
         BasicOrder move1 = new BasicOrder("Gondor", "Mordor", new Troop(13, red), 'm');
-        BasicOrder move2 = new BasicOrder("Elantris", "Scadrial", new Troop(6, blue), 'M');
         assertDoesNotThrow(() -> world.moveTroop(move1));
-        assertDoesNotThrow(() -> world.moveTroop(move2));
+        assertDoesNotThrow(() -> world.moveTroop(world.findTerritory("Elantris"),
+                                                new Troop(6, blue), 
+                                                world.findTerritory("Scadrial")));
     }
 
     @Test
@@ -198,7 +219,9 @@ public class WorldTest {
         World world = createWorld(troopsSeparated);
         // Troop size 
         BasicOrder move3 = new BasicOrder("Elantris", "Scadrial", new Troop(8, blue), 'M');
-        assertThrows(IllegalArgumentException.class, () -> world.moveTroop(move3), NOT_ENOUGH_TROOP_MSG);
+        assertThrows(IllegalArgumentException.class, 
+                        () -> world.moveTroop(move3), 
+                        NOT_ENOUGH_TROOP_MSG);
     }
 
     @Test
@@ -207,8 +230,12 @@ public class WorldTest {
         // Territory name does not exist
         BasicOrder move4 = new BasicOrder("No", "Scadrial", new Troop(3, blue), 'M');
         BasicOrder move5 = new BasicOrder("Elantris", "No", new Troop(3, blue), 'M');
-        assertThrows(NoSuchElementException.class, () -> world.moveTroop(move4), TERRITORY_NOT_FOUND_MSG);
-        assertThrows(NoSuchElementException.class, () -> world.moveTroop(move5), TERRITORY_NOT_FOUND_MSG);   
+        assertThrows(NoSuchElementException.class, 
+                        () -> world.moveTroop(move4), 
+                        TERRITORY_NOT_FOUND_MSG);
+        assertThrows(NoSuchElementException.class, 
+                        () -> world.moveTroop(move5),
+                        TERRITORY_NOT_FOUND_MSG);
     } 
 
     @Test
@@ -217,8 +244,12 @@ public class WorldTest {
         // Not same owner
         BasicOrder move6 = new BasicOrder("Elantris", "Gondor", new Troop(3, blue), 'M');
         BasicOrder move7 = new BasicOrder("Gondor", "Oz", new Troop(3, blue), 'M');
-        assertThrows(IllegalArgumentException.class, () -> world.moveTroop(move6), NOT_SAME_OWNER_MSG);
-        assertThrows(IllegalArgumentException.class, () -> world.moveTroop(move7), NOT_SAME_OWNER_MSG);
+        assertThrows(IllegalArgumentException.class,
+                        () -> world.moveTroop(move6), 
+                        NOT_SAME_OWNER_MSG);
+        assertThrows(IllegalArgumentException.class, 
+                        () -> world.moveTroop(move7), 
+                        NOT_SAME_OWNER_MSG);
     }
 
     @Test
@@ -227,26 +258,35 @@ public class WorldTest {
         // Not reachable
         BasicOrder move1 = new BasicOrder("Narnia", "Oz", new Troop(3, blue), 'M');
         BasicOrder move2 = new BasicOrder("Oz", "Hogwarts", new Troop(3, blue), 'M');
-        assertThrows(IllegalArgumentException.class, () -> world.moveTroop(move1), NOT_REACHABLE_MSG);
-        assertThrows(IllegalArgumentException.class, () -> world.moveTroop(move2), NOT_REACHABLE_MSG);
+        assertThrows(IllegalArgumentException.class, 
+                        () -> world.moveTroop(move1), 
+                        NOT_REACHABLE_MSG);
+        assertThrows(IllegalArgumentException.class, 
+                        () -> world.moveTroop(move2), 
+                        NOT_REACHABLE_MSG);
     }
 
     @Test
     public void testAttackValid() {
         World world = createWorld(troopsSeparated);
         BasicOrder atk1 = new BasicOrder("Gondor", "Oz", new Troop(13, red), 'a');
-        BasicOrder atk2 = new BasicOrder("Narnia", "Elantris", new Troop(6, green), 'A');
-        assertDoesNotThrow(() -> world.moveTroop(atk1));
-        assertDoesNotThrow(() -> world.moveTroop(atk2));
+        assertDoesNotThrow(() -> world.attackATerritory(atk1));
+        assertDoesNotThrow(() -> world.attackATerritory(world.findTerritory("Narnia"),
+                                                        new Troop(6, green),
+                                                        world.findTerritory("Elantris")));
     }
 
     @Test
     public void testAttackNonExistTerritory() {
         World world = createWorld(troopsSeparated);
-        BasicOrder atk1 = new BasicOrder("Gondor", "No", new Troop(13, red), 'a');
+        BasicOrder atk1 = new BasicOrder("Gondor", "No", new Troop(13, red), 'A');
         BasicOrder atk2 = new BasicOrder("No", "Elantris", new Troop(6, green), 'A');
-        assertThrows(NoSuchElementException.class, () -> world.moveTroop(atk1), TERRITORY_NOT_FOUND_MSG);
-        assertThrows(NoSuchElementException.class, () -> world.moveTroop(atk2), TERRITORY_NOT_FOUND_MSG);   
+        assertThrows(NoSuchElementException.class, 
+                        () -> world.attackATerritory(atk1), 
+                        TERRITORY_NOT_FOUND_MSG);
+        assertThrows(NoSuchElementException.class, 
+                        () -> world.attackATerritory(atk2), 
+                        TERRITORY_NOT_FOUND_MSG);   
     }
 
     @Test
@@ -254,8 +294,12 @@ public class WorldTest {
         World world = createWorld(troopsSeparated);
         BasicOrder atk1 = new BasicOrder("Elantris", "Scadrial", new Troop(1, blue), 'A');
         BasicOrder atk2 = new BasicOrder("Gondor", "Mordor", new Troop(6, red), 'A');
-        assertThrows(IllegalArgumentException.class, () -> world.moveTroop(atk1), SAME_OWNER_MSG);
-        assertThrows(IllegalArgumentException.class, () -> world.moveTroop(atk2), SAME_OWNER_MSG);   
+        assertThrows(IllegalArgumentException.class, 
+                        () -> world.attackATerritory(atk1), 
+                        SAME_OWNER_MSG);
+        assertThrows(IllegalArgumentException.class, 
+                        () -> world.attackATerritory(atk2), 
+                        SAME_OWNER_MSG);   
     }
 
     @Test
@@ -263,10 +307,27 @@ public class WorldTest {
         World world = createWorld(troopsSeparated);
         BasicOrder atk1 = new BasicOrder("Elantris", "Oz", new Troop(1, blue), 'A');
         BasicOrder atk2 = new BasicOrder("Gondor", "Roshar", new Troop(6, red), 'A');
-        assertThrows(IllegalArgumentException.class, () -> world.moveTroop(atk1), NOT_ADJACENT_MSG);
-        assertThrows(IllegalArgumentException.class, () -> world.moveTroop(atk2), NOT_ADJACENT_MSG);   
+        assertThrows(IllegalArgumentException.class, 
+                        () -> world.attackATerritory(atk1), 
+                        NOT_ADJACENT_MSG);
+        assertThrows(IllegalArgumentException.class,
+                        () -> world.attackATerritory(atk2),
+                        NOT_ADJACENT_MSG);   
     }    
     
+    @Test
+    public void testCheckBasicOrder() {
+        World world = createWorld(troopsSeparated);
+        BasicOrder move = new BasicOrder("Elantris", "Scadrial", new Troop(8, blue), 'M');
+        assertEquals(String.format(NOT_ENOUGH_TROOP_MSG, 
+                        world.findTerritory("Elantris").checkPopulation(),
+                        "Elantris", 8),
+                     world.checkBasicOrder(move));
+
+        BasicOrder atk = new BasicOrder("Gondor", "Mordor", new Troop(6, red), 'A');
+        assertEquals(String.format(SAME_OWNER_MSG, "Mordor"), world.checkBasicOrder(atk));
+    }
+
     @Test
     public void testDoAllBattles() {
         World world = createWorld(troopsSeparated);
@@ -312,12 +373,20 @@ public class WorldTest {
         
         World world = createWorld(); // evolution 1 example world, has 9 territories
         
-        assertThrows(IllegalArgumentException.class, () -> world.divideTerritories(-1), NOT_POSITIVE_MSG);
-        assertThrows(IllegalArgumentException.class, () -> world.divideTerritories(0), NOT_POSITIVE_MSG);
+        assertThrows(IllegalArgumentException.class, 
+                    () -> world.divideTerritories(-1), 
+                    NOT_POSITIVE_MSG);
+        assertThrows(IllegalArgumentException.class, 
+                    () -> world.divideTerritories(0), 
+                    NOT_POSITIVE_MSG);
         assertDoesNotThrow(() -> world.divideTerritories(1));
-        assertThrows(IllegalArgumentException.class, () -> world.divideTerritories(2), INDIVISIBLE_MSG);
+        assertThrows(IllegalArgumentException.class, 
+                    () -> world.divideTerritories(2), 
+                    INDIVISIBLE_MSG);
         assertDoesNotThrow(() -> world.divideTerritories(3));
-        assertThrows(IllegalArgumentException.class, () -> world.divideTerritories(18), INDIVISIBLE_MSG);
+        assertThrows(IllegalArgumentException.class, 
+                    () -> world.divideTerritories(18), 
+                    INDIVISIBLE_MSG);
 
         Map<Integer, List<Territory>> groups = world.divideTerritories(3);
         // test number of groups
@@ -353,7 +422,9 @@ public class WorldTest {
         assertEquals(13, world2.findTerritory("Narnia").checkPopulation());
         assertEquals(6, world2.findTerritory("Roshar").checkPopulation());
 
-        assertThrows(IllegalArgumentException.class, () -> world2.addUnitToAll(-1), NOT_POSITIVE_MSG);
+        assertThrows(IllegalArgumentException.class, 
+                    () -> world2.addUnitToAll(-1), 
+                    NOT_POSITIVE_MSG);
     }
 
     @Test

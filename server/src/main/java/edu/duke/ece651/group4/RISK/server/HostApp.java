@@ -30,6 +30,8 @@ public class HostApp implements Runnable {
 
     /*
      * This constructs the hostApp
+     * @param hostSocket is the instance of ServerSocket
+     * @param num is the number of territories assigned to each player
      * */
     HostApp(ServerSocket hostSocket,int num){
         this.hostSocket = hostSocket;
@@ -94,7 +96,6 @@ public class HostApp implements Runnable {
      * Will assign a PlayerID to each thread we are creating
      *
      *  */
-
     protected void setUpClients() {
         int PlayerID = 0;
         try {
@@ -104,8 +105,10 @@ public class HostApp implements Runnable {
                 PlayerState playerState = new PlayerState("Ready");
                 playerNames.add( "Player" + PlayerID);
                 hostState.addOnePlayerState(playerState);
-                ClientThread theThread = new ClientThread(theWorld, playerNames.get(PlayerID), PlayerID, barrier, playerState,
-                        theClient, hostState,this.groups.get(PlayerID));
+                ClientThread theThread = new ClientThread(theWorld, playerNames.get(PlayerID), 
+                                                          PlayerID, barrier, playerState,
+                                                          theClient, hostState,
+                                                          this.groups.get(PlayerID));
                 theThread.start();
                 PlayerID += 1;
             }
@@ -143,10 +146,14 @@ public class HostApp implements Runnable {
         while(true) {
             if(hostState.isAllPlayersDoneOneTurn()) {
                 finishBattlesOneTurn();
-
             }
             if(hostState.isALlThreadsQuit()) {
                 System.out.println("The host quits after all threads quit.");
+                try {
+                    hostSocket.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 break;  // we should decide to quit the game after all thread  quit.
             }
         }
@@ -154,7 +161,7 @@ public class HostApp implements Runnable {
 
     public static void main(String[] args) throws IOException {
         ServerSocket hostSocket = new ServerSocket(9999);
-        HostApp hostApp = new HostApp(hostSocket,3);
+        HostApp hostApp = new HostApp(hostSocket,1);
         hostApp.run();
     }
 }

@@ -17,16 +17,16 @@ import java.util.Queue;
  *    same player.
  * 
  * Also checks if the order is a move order.
- * 
  */
 public class MoveOrderChecker implements Serializable {
-    private final String NOT_SAME_OWNER_MSG = "Cannot move troop to a territory with different owner.";
-    private final String NOT_MOVE_ORDER_MSG = "This is not a move order.";
-    private final String NOT_REACHABLE_MSG = "There is not a path of territories that all belongs to you.";
+    protected final String NOT_MOVE_ORDER_MSG = "This is not a move order.";
+    protected final String NOT_SAME_OWNER_MSG = 
+        "Cannot move troop to %s, which belongs to another player.";
+    protected final String NOT_REACHABLE_MSG = 
+        "Cannot reach from %s to %s. " +
+        "Other players' territories are blocking the way.";
 
-    public MoveOrderChecker() {
-        super();
-    }
+    public MoveOrderChecker() {}
 
     /**
      * Checks if a move order is legal.
@@ -42,13 +42,11 @@ public class MoveOrderChecker implements Serializable {
             Player owner = start.getOwner();
             // if the start and end do not have the same owner
             if (!start.getOwner().equals(end.getOwner())) {
-                return NOT_SAME_OWNER_MSG;
+                return String.format(NOT_SAME_OWNER_MSG, end.getName());
             }
-            // if not linked
-            // TODO: this has bugs!!!
+            // if not reachable
             Queue<Territory> queue = new LinkedList<>();
             Set<Territory> visited = new HashSet<>();
-            
             queue.add(start);
             visited.add(start);
             while (queue.size() != 0) {
@@ -66,7 +64,7 @@ public class MoveOrderChecker implements Serializable {
                         }
                 }
             }
-            return NOT_REACHABLE_MSG;
+            return String.format(NOT_REACHABLE_MSG, start.getName(), end.getName());
         }
         // if not move order
         return NOT_MOVE_ORDER_MSG;

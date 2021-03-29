@@ -1,6 +1,7 @@
 package edu.duke.ece651.group4.RISK.server;
 
 import edu.duke.ece651.group4.RISK.shared.*;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -27,11 +28,12 @@ class HostAppTest {
         new Thread(() -> {
             try {
                 hostSocket = new ServerSocket(PORT);// initialize the server
-                HostApp hostApp = new HostApp(hostSocket,1);
-                String str = "q\ns\n1\n";
+                HostApp hostApp = new HostApp(hostSocket,2);
+                String str = "s\n1\n";
                 InputStream input = new ByteArrayInputStream(str.getBytes("UTF-8"));
                 assertNotNull(input);
                 System.setIn(input);
+                assertEquals(false, hostApp.isNumeric(null));
                 hostApp.run();
             } catch (IOException ignored) {
             }
@@ -52,8 +54,9 @@ class HostAppTest {
 
     private HashSet<PlaceOrder> createOnePlaceOrders(){
         HashSet<PlaceOrder> orders = new HashSet<>();
-        Troop troop = new Troop(15,new TextPlayer("player0"), new Random());
-        orders.add(new PlaceOrder("player0", troop));
+        Troop troop = new Troop(15,new TextPlayer("Player0"), new Random());
+        orders.add(new PlaceOrder("1", troop));
+        orders.add(new PlaceOrder("2", troop));
         return orders;
     }
 
@@ -68,8 +71,14 @@ class HostAppTest {
                 c1.recvObject();
                 c1.recvObject();
                 c1.recvObject();
-                c1.sendObject(createOnePlaceOrders()); //setupUnits
+                HashSet<PlaceOrder> orders = createOnePlaceOrders();
+                for(PlaceOrder p: orders){
+                    c1.sendObject(p);
+                }
+                 //setupUnits
+                System.out.println("Player: Send PlaceOrder");
                 c1.recvObject();
+                System.out.println("Player: receive World");
                 c1.sendObject(createOneDoneOrder());
                 c1.recvObject();
                 c1.recvObject();

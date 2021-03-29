@@ -32,6 +32,7 @@ public class ClientThread extends Thread{
      *  This sends a player info to each Client.
      * */
     protected void sendPlayerNameToClient() throws IOException {
+
         this.theClient.sendObject(this.playerName);
     }
 
@@ -50,26 +51,32 @@ public class ClientThread extends Thread{
         this.theClient.sendObject(this.hostState.getWarReport());
     }
 
-//    public void sendTerritoryToClient() throws IOException {
-//
-//        Territory test=this.theWorld.findTerritory("4").clone();
-//        this.theClient.sendObject(test);
-//    }
-
     /*
      * This send init territory to each player.
      * */
     protected void sendInitTerritory() throws IOException {this.theClient.sendObject(this.initTerritory); }
 
+    protected void updatePlayerState() throws IOException, ClassNotFoundException {
+        String s = (String) this.theClient.recvObject();
+        System.out.println("receice state from client: " + s);
+        if(s.equals("Exit")){
+            playerState.changeStateTo("Exit");
+            System.out.println("change state to Exit");
+        }
+    }
+
     /*
      * This is to select territory for each player.
      * */
-    protected void selectUnits(){
+    protected void selectUnits() throws IOException, ClassNotFoundException {
         int orderNum=this.initTerritory.size();
+        System.out.println("To " + this.playerName + ", orderNum: "+ orderNum );
         while(orderNum>0) {
             PlaceOrder newOrder = null;
-            newOrder = (PlaceOrder) receiveInfo(newOrder, this.theClient);
+            newOrder = (PlaceOrder)  this.theClient.recvObject();
+            System.out .println("thread: start update selectunits");
             this.theWorld.stationTroop(newOrder.getDesName(),newOrder.getActTroop());
+            System.out .println("thread: finish update selectunits");
             orderNum--;
         }
 
@@ -84,7 +91,6 @@ public class ClientThread extends Thread{
             newOrder = (BasicOrder) receiveInfo(newOrder, this.theClient);
             updateActionOnWorld(newOrder);
         }
-
     }
 
     /*
@@ -95,20 +101,12 @@ public class ClientThread extends Thread{
     synchronized protected void updateActionOnWorld(BasicOrder receiveMessage){
         System.out.println(this.playerName +  receiveMessage.getActionName());
         if (receiveMessage.getActionName() == 'M') {
-//            System.out.println(this.playerName + " start to move");
-//            System.out.println(this.playerName + " ActTroop: " + receiveMessage.getActTroop().checkTroopSize());
-//            System.out.println(this.playerName + " ActTroop: " + receiveMessage.getSrcName());
-//            System.out.println(this.playerName + " Des: " +receiveMessage.getDesName());
             this.theWorld.moveTroop(theWorld.findTerritory(receiveMessage.getSrcName()), receiveMessage.getActTroop(), theWorld.findTerritory(receiveMessage.getDesName()));
-//            System.out.println(this.playerName + " finish move");
         } else if (receiveMessage.getActionName() == 'A') {
-//            System.out.println(this.playerName +  " start to attack");
             this.theWorld.attackATerritory(theWorld.findTerritory(receiveMessage.getSrcName()), receiveMessage.getActTroop(), theWorld.findTerritory(receiveMessage.getDesName()));
         } else {
-//            System.out.println(this.playerName +  " Done game");
             playerState.changeStateTo("EndOneTurn");
         }
-//        System.out.println(new WorldTextView(this.theWorld).displayWorld());
     }
 
 
@@ -130,21 +128,6 @@ public class ClientThread extends Thread{
         return this.theWorld.isGameEnd();
     }
 
-//    /*
-//     *  This function is to get name of winner and will send it to all clients
-//     * */
-//    private String getWinnerName(){
-//        return this.theWorld.getWinner();
-//    }
-//
-//    /*
-//     *  This message to Winner Name to everyone.
-//     * */
-//    private void sendWinnerMessage(){
-//        sendInfo(getWinnerName() + " is the winner!",this.theClient);
-//    }
-
-
     @Override
     public void run(){
         System.out.println( this.playerName + " gets connected with the server.");
@@ -152,10 +135,8 @@ public class ClientThread extends Thread{
         try {
             barrier.await();
             sendPlayerNameToClient();
-//            this.theClient.sendObject(this.playerName);
             System.out.println("To " + this.playerName + ", send the name" );
             sendWorldToClient();
-//            this.theClient.sendObject(this.theWorld);
             System.out.println("To " + this.playerName + ", send the world" );
             sendInitTerritory();
             System.out.println("To " + this.playerName + ", send territories" );
@@ -174,23 +155,31 @@ public class ClientThread extends Thread{
                 barrier.await(); // Wait everyone to finish their actions
 
                 while (!hostState.isFinishUpdate()) {} // wait hostState to update the world
-                sendWorldToClient();
-                sendWarReportToClient();
-                barrier.await();
-
-                //Everyone need to change their state after this
-                if (isPlayerLost()) {
-                    playerState.changeStateTo("Lose");
-                    System.out.println(this.playerName + "lose the game now.");
+                System.out.println(playerState.isExit());
+                if(!playerState.isExit()){
+                    sendWorldToClient();
+                    sendWarReportToClient();
+                    updatePlayerState();
                 }
-                else{
-                    playerState.changeStateTo("Ready");
+                System.out.println("Sent world and map");
+                barrier.await();
+                System.out.println("Done waiting for all threads");
+                //Everyone need to change their state after this
+                if(!playerState.isExit()){
+                    if (isPlayerLost()) {
+                        playerState.changeStateTo("Lose");
+                        System.out.println(this.playerName + "lose the game now.");
+                    }
+                    else{
+                        playerState.changeStateTo("Ready");
+                    }
                 }
                 //check If the game ends, send message to all players and quit
                 if(isGameEnd()){
                     playerState.changeStateTo("Quit");
-//                    sendWinnerMessage();
+                    // if we find a winner, and hostState will be endGame. Every thread should close
                     System.out.println(this.playerName + "quit the game.");
+                    this.theClient.close();
                     break;
                 }
 
@@ -198,8 +187,7 @@ public class ClientThread extends Thread{
                 hostState.changeStateTo("WaitForUpdateWorld");
             }
 
-//            sendWinnerMessage(); // If we find winner, this thread will close
-            // if we find a winner, and hostState will be endGame. Every thread should close
+
         }catch (Exception ignored){
 
         }
@@ -215,5 +203,6 @@ public class ClientThread extends Thread{
 
         return o;
     }
+
 
 }

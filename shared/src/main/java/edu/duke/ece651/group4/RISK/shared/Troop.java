@@ -33,6 +33,10 @@ public class Troop implements Serializable {
         this.owner = owner;
     }
 
+    /**
+     * Do battle between two troops
+     * @param enemy shows the enemy troop attack in
+     */
     public Troop combat(Troop enemy) {
         while (this.checkTroopSize() != 0 && enemy.checkTroopSize() != 0) {
             Unit myUnit = this.dispatchUnit();
@@ -47,23 +51,37 @@ public class Troop implements Serializable {
         }
         return enemy;
     }
-
+    /**
+     * Check population of troop
+     */
     public int checkTroopSize() {
         return this.population.size();
     }
 
+    /**
+     * delete a specific unit from troop
+     */
     private void loseUnit(Unit loss) {
         this.population.remove(loss);
     }
 
+    /**
+     * send a unit from troop
+     */
     public Unit dispatchUnit() {
         return this.population.get(0);
     }
 
+    /**
+     * receive a specific unit
+     */
     public void receiveUnit(Unit target) {
         this.population.add(target);
     }
 
+    /**
+     * Send out specific number of troops
+     */
     public Troop sendTroop(int number){
         ArrayList<Unit> sub = new ArrayList<>();
         for(int i = 0; i < number; i++){
@@ -74,10 +92,16 @@ public class Troop implements Serializable {
         return new Troop(sub, getOwner());
     }
 
+    /**
+     * Check if troop win the fight
+     */
     public boolean checkWin(){
         return this.checkTroopSize()>0;
     }
 
+    /**
+     * receive specific number of troops
+     */
     public void receiveTroop(Troop subTroop){
         while(subTroop.checkTroopSize() != 0){
             Unit newMember=subTroop.dispatchUnit();
@@ -85,6 +109,10 @@ public class Troop implements Serializable {
             subTroop.loseUnit(newMember);
         }
     }
+
+    /**
+     * return owner of troop
+     */
     public Player getOwner(){
 
         return this.owner;

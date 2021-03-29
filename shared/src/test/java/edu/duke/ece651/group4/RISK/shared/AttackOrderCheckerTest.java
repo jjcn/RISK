@@ -7,9 +7,12 @@ import org.junit.jupiter.api.Test;
 import java.io.*;
 
 public class AttackOrderCheckerTest {
-    private final String SAME_OWNER_MSG = "Cannot attack a territory with the same owner.";
-    private final String NOT_ATTACK_ORDER_MSG = "This is not an attack order.";
-    private final String NOT_ADJACENT_MSG = "The attack should be performed on adjacent territories.";
+    protected final String NOT_ATTACK_ORDER_MSG = "This is not an attack order.";
+    protected final String SAME_OWNER_MSG = 
+        "Cannot attack %s, which belongs to you.";
+    protected final String NOT_ADJACENT_MSG = 
+        "You tried to attack from %s to %s, which are not adjacent territories. %n" +
+        "You can only attack territories directly adjacent to your territories.";
 
     PrintStream out = null;
     Reader inputReader = null;
@@ -80,10 +83,12 @@ public class AttackOrderCheckerTest {
         World world = createWorld(names, troopsConnected);   
 
         BasicOrder order1 = new BasicOrder("Narnia", "Midkemia", new Troop(3, green), 'A');
-        assertEquals(SAME_OWNER_MSG, aoc.checkMyOrder(order1, world));
+        assertEquals(String.format(SAME_OWNER_MSG, "Midkemia"), 
+                    aoc.checkMyOrder(order1, world));
 
         BasicOrder order2 = new BasicOrder("Gondor", "Mordor", new Troop(3, red), 'A');
-        assertEquals(SAME_OWNER_MSG, aoc.checkMyOrder(order2, world));
+        assertEquals(String.format(SAME_OWNER_MSG, "Mordor"), 
+                    aoc.checkMyOrder(order2, world));
     }
 
     @Test
@@ -102,10 +107,12 @@ public class AttackOrderCheckerTest {
         World world = createWorld(names, troopsConnected);
 
         BasicOrder order1 = new BasicOrder("Narnia", "Scadrial", new Troop(3, green), 'A');
-        assertEquals(NOT_ADJACENT_MSG, aoc.checkMyOrder(order1, world));
+        assertEquals(String.format(NOT_ADJACENT_MSG, "Narnia", "Scadrial"), 
+                    aoc.checkMyOrder(order1, world));
 
         BasicOrder order2 = new BasicOrder("Scadrial", "Gondor", new Troop(3, blue), 'A');
-        assertEquals(NOT_ADJACENT_MSG, aoc.checkMyOrder(order2, world));
+        assertEquals(String.format(NOT_ADJACENT_MSG, "Scadrial", "Gondor"),
+                    aoc.checkMyOrder(order2, world));
     }
 
 }
