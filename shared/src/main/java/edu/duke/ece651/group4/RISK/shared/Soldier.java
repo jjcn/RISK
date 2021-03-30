@@ -1,6 +1,7 @@
 package edu.duke.ece651.group4.RISK.shared;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -73,6 +74,11 @@ public class Soldier implements Unit, Serializable {
     return this.levelBonus.get(this.level);
   }
 
+  public void setJob(String newJob){
+    this.jobName=newJob;
+    this.level=this.levelNames.indexOf(newJob);
+  }
+
   public int attackPoint(){
     return this.randInt(0,20)+this.getBonus();
   }
@@ -88,6 +94,10 @@ public class Soldier implements Unit, Serializable {
 
   public int getLevel(){
     return this.level;
+  }
+
+  public ArrayList<String> getLevelNames(){
+    return (ArrayList<String>)this.levelNames;
   }
 
 
