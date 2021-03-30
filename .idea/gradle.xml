@@ -13,8 +13,8 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/client" />
-            <option value="$PROJECT_DIR$/riscapp" />
             <option value="$PROJECT_DIR$/riskapp" />
+            <option value="$PROJECT_DIR$/riskclient" />
             <option value="$PROJECT_DIR$/server" />
             <option value="$PROJECT_DIR$/shared" />
           </set>
