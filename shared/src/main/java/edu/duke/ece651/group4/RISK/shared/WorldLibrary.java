@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This class contains instances of World.
+ * This class stores instances of World.
  */
 public class WorldLibrary {
     Map<String, World> lib = new HashMap<>(); 
