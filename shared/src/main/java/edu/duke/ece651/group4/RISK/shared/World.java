@@ -89,7 +89,7 @@ public class World implements Serializable {
         this(new Graph<Territory>(), new Random());
 
         for (int i = 1; i <= numTerrs; i++) {
-            addTerritory(new Territory(String.format("%d", i)));
+            addTerritory(new Territory(String.format("%c", 'a'+ i)));
         }
         territories.addRandomEdges(numTerrs, new Random());
     }
