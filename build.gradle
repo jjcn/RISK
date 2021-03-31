@@ -6,6 +6,7 @@
  */
 plugins {
     id 'com.bmuschko.clover' version '2.2.3'
+
 }
 
 subprojects {
@@ -120,3 +121,6 @@ task resolveDependencies {
    }
 }
 
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
