@@ -21,4 +21,15 @@ public class RISKApplication extends Application {
         this.rnd=new Random();
     }
 
+    public String sendAccountInfo(String name,String pwd,String actName) throws IOException, ClassNotFoundException {
+//        Message m= new Message(actName,name,pwd);
+        this.playerClient.sendObject(m);
+        String response = (String) this.playerClient.recvObject();
+        return response;
+    }
+
+    public String sendSignIn(String name,String pwd) throws IOException, ClassNotFoundException{
+        return sendAccountInfo(name,pwd,"signIn");
+    }
+
 }
