@@ -9,6 +9,7 @@
   <component name="ChangeListManager">
     <list default="true" id="65a0ffb7-737d-46fe-8844-85058d990f51" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/app/src/main/java/edu/duke/ece651/group4/RISK/client/RISKApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/app/src/main/java/edu/duke/ece651/group4/RISK/client/RISKApplication.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -274,6 +275,8 @@
       <workItem from="1616689244753" duration="6501000" />
       <workItem from="1616772203096" duration="2647000" />
       <workItem from="1616824465937" duration="4052000" />
+      <workItem from="1617210020030" duration="57000" />
+      <workItem from="1617210150365" duration="428000" />
     </task>
     <task id="LOCAL-00001" summary="login_module lot of problem">
       <created>1617045834246</created>
