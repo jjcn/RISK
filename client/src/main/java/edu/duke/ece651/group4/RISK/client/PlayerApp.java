@@ -57,7 +57,7 @@ public class PlayerApp {
             try {
                 orders = this.myPlayer.doPlacement(myGroup, this.totalPopulation);
 
-                for(Order p:orders) {
+                for(Order p : orders) {
                     PlaceOrder newOrder=(PlaceOrder) p;
 
                     this.theWorld.findTerritory(newOrder.getDesName());

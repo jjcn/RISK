@@ -7,7 +7,8 @@
 plugins {
     id 'com.bmuschko.clover' version '2.2.3'
 }
-subprojects{
+
+subprojects {
     apply plugin: "java"
     apply plugin: "com.bmuschko.clover"
     repositories {
@@ -22,21 +23,25 @@ subprojects{
         clover 'org.openclover:clover:4.3.1'
         testCompile "org.mockito:mockito-core:2.+"
     }
-    clover{
-    compiler{
-        additionalArgs = "-g:lines,source,vars"
+
+    clover {
+        compiler{
+            additionalArgs = "-g:lines,source,vars"
+        }
     }
-    }
-    test{
-        testLogging{
+
+    test {
+        testLogging {
             showStandardStreams = true
             exceptionFormat = 'full'
         }
     }
+
     test {
         // Use junit platform for unit tests
         useJUnitPlatform()
     }
+
     configurations {
         testPkg {
             extendsFrom(testRuntime)
@@ -48,37 +53,40 @@ subprojects{
         from sourceSets.test.output
     }
     
-    
     artifacts {
         testPkg testCode
     }
 }
 
 // Project specific stuff
-project (':shared'){
+project (':shared') {
 }
-project (':server'){
+
+project (':server') {
     dependencies {
         implementation project(':shared')
         testImplementation project(path: ':shared', configuration: "testPkg")
     }
 }
-project (':client'){
+
+project (':client') {
     dependencies {
         implementation project(':shared')
         testImplementation project(path: ':shared', configuration: "testPkg")
     } 
 }
-    clover{
-        enabled = true
-        report {
-            json = true
-            html = true
-        }
-        compiler{
-            additionalArgs = "-g:lines,source,vars"
-        }
+
+clover{
+    enabled = true
+    report {
+        json = true
+        html = true
     }
+    compiler{
+        additionalArgs = "-g:lines,source,vars"
+    }
+}
+
 tasks.register("run-server") {
     dependsOn project('server').getTasksByName('run',false)
     group = 'Run Client/Server'

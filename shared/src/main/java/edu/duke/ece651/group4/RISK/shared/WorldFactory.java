@@ -4,24 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This class stores instances of World.
+ * This class create instances of pre-defined World templates.
+ * Add new create*** methods as new templates.
  */
-public class WorldLibrary {
-    Map<String, World> lib = new HashMap<>(); 
-    
-    public WorldLibrary() {
-        lib = new HashMap<String, World>();
-        lib.put("random6", createRandomWorld(6));
-        lib.put("random10", createRandomWorld(10));
-        lib.put("random12", createRandomWorld(12));
-        lib.put("fantasy", createFantasyWorld());
-    }
+public class WorldFactory {
 
-    public World getWorldByName(String name) {
-        return lib.get(name);
-    }
+    public WorldFactory() {}
 
-    private World createRandomWorld(int numTerrs) {
+    public World createRandomWorld(int numTerrs) {
         return new World(numTerrs);
     }
 
@@ -34,7 +24,7 @@ public class WorldLibrary {
      * E------R----H
      * @return a world object.
      */
-    private World createFantasyWorld() {
+    public World createFantasyWorld() {
         World world = new World();
         String names[] = 
         "Narnia, Midkemia, Oz, Gondor, Mordor, Hogwarts, Scadrial, Elantris, Roshar".split(", ");
