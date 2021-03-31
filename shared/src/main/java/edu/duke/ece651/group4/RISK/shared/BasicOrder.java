@@ -1,18 +1,21 @@
 package edu.duke.ece651.group4.RISK.shared;
 
-import java.io.Serializable;
-
-public class BasicOrder implements Order, Serializable {
+public class BasicOrder implements Order {
+    private Character actionName;
     private String src;
     private String des;
     private Troop troop;
-    private Character actionName;
-
+    
     public BasicOrder(String src, String des, Troop troop, Character name) {
         this.src = src;
         this.des = des;
         this.troop = troop;
         this.actionName = name;
+    }
+
+    @Override
+    public Character getActionName() {
+        return actionName;
     }
 
     public String getSrcName() {
@@ -27,10 +30,6 @@ public class BasicOrder implements Order, Serializable {
         return troop;
     }
 
-    @Override
-    public Character getActionName() {
-        return actionName;
-    }
 }
 
 

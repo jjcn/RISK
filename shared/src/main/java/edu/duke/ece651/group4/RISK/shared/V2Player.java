@@ -4,10 +4,13 @@ import java.io.*;
 import java.util.*;
 
 /**
- * A evolution2 player.
- * Supported actions: done, move, attack, upgrade tech, upgrade troop. 
+ * A evolution2-compatible player.
+ * Supported orders: done, move, attack, upgrade tech, upgrade troop. 
  */
-public class AndroidPlayer implements Player, Serializable {
+/**
+ * This should integrate with Android Activities.
+ */
+public class V2Player implements Player, Serializable {
     private String playerName;
     private PlayerInfo info;
     final private Map<Character, String> actionTypes;
@@ -18,18 +21,30 @@ public class AndroidPlayer implements Player, Serializable {
     final private Random rnd;
     final private boolean testMode;
     
-    public AndroidPlayer(String playerName, PlayerInfo info,
-                         HashMap<Character, String> actionTypes,
-                         PrintStream out, Reader inputReader, 
-                         Random rnd, boolean testMode) {
+    public V2Player(String playerName, PlayerInfo info,
+                    HashMap<Character, String> actionTypes,
+                    Random rnd, boolean testMode) {
         this.playerName = playerName;
-        this.info = info;
-        
+        this.info = info;    
         this.actionTypes = actionTypes;
 
-        this.inputReader = (BufferedReader) inputReader;
-        this.out = out;
-        
+        out = System.out;
+        inputReader = new BufferedReader(new Reader(){
+
+            @Override
+            public void close() throws IOException {
+                // TODO Auto-generated method stub
+                
+            }
+
+            @Override
+            public int read(char[] arg0, int arg1, int arg2) throws IOException {
+                // TODO Auto-generated method stub
+                return 0;
+            }
+            
+        });
+
         this.rnd = rnd;
         this.testMode = testMode;
     }
@@ -37,12 +52,10 @@ public class AndroidPlayer implements Player, Serializable {
     /**
      * Creates a player with a default list of possible actions.
      */
-    public AndroidPlayer(String playerName, PlayerInfo info,
-                         PrintStream out, Reader inputReader, 
-                         Random rnd, boolean testMode) {
+    public V2Player(String playerName, PlayerInfo info,
+                    Random rnd, boolean testMode) {
         this(playerName, info,
-            new HashMap<>(),          
-            out, inputReader, 
+            new HashMap<>(),
             rnd, testMode);
 
         actionTypes.put('D', "(D)one");
@@ -52,32 +65,9 @@ public class AndroidPlayer implements Player, Serializable {
         actionTypes.put('U', "(U)pgrade troop");
     }
 
-    public AndroidPlayer(String playerName, PlayerInfo info,
-                         PrintStream out, Reader inputReader) {
+    public V2Player(String playerName, PlayerInfo info) {
         this(playerName, info,
-            out, inputReader,
             new Random(), false);
-    }
-
-    public AndroidPlayer(String playerName, PlayerInfo info) {
-        this(playerName, info,
-            null, null,
-            null, false);
-    }
-
-    /**
-     * This asks the user to input their name for this game and then constructs the Player. Output:
-     * <p>
-     * "Please enter your name in this game:
-     *
-     * @param out         the output stream.
-     * @param inputReader to read from user.
-     * @throws IOException
-     */
-    public AndroidPlayer(PrintStream out, Reader inputReader) throws IOException {
-        this("", new PlayerInfo(""), 
-            out, inputReader);
-        this.playerName = readInput("Please enter your name in this game:");
     }
 
     /**
@@ -108,7 +98,7 @@ public class AndroidPlayer implements Player, Serializable {
     @Override
     public BasicOrder doOneAction() throws IOException {
         StringBuilder instr = new StringBuilder(this.playerName + 
-        " what would you like to do?\n");
+                                                    " what would you like to do?\n");
         
         for (String act : actionTypes.values()) {
             if (act != "(D)one") {
