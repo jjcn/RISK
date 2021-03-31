@@ -8,58 +8,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="65a0ffb7-737d-46fe-8844-85058d990f51" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/externalDependencies.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules/myapplication/RISK.myapplication.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules/myapplication/RISK.myapplication.main.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules/myapplication/RISK.myapplication.test.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules/riscapp/RISK.riscapp.main.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules/riskapp/RISK.riskapp.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules/riskapp/RISK.riskapp.main.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules/riskapp/RISK.riskapp.test.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/.classpath" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/.gitattributes" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/.project" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/.settings/org.eclipse.buildship.core.prefs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/bin/main/edu/duke/ece651/group4/RISK/client/PlayerApp.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/build.gradle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/gradle/wrapper/gradle-wrapper.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/gradlew" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/gradlew.bat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/riskapp/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/riskapp/build.gradle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/riskapp/proguard-rules.pro" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/riskapp/src/androidTest/java/edu/duke/ece651/group4/riskapp/ExampleInstrumentedTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/riskapp/src/main/AndroidManifest.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/riskapp/src/main/java/edu/duke/ece651/group4/riskapp/LoginActivity.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/riskapp/src/main/res/drawable-v24/ic_launcher_foreground.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/riskapp/src/main/res/drawable/ic_launcher_background.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/riskapp/src/main/res/layout/activity_login.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/riskapp/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/riskapp/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/riskapp/src/main/res/mipmap-hdpi/ic_launcher.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/riskapp/src/main/res/mipmap-hdpi/ic_launcher_round.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/riskapp/src/main/res/mipmap-mdpi/ic_launcher.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/riskapp/src/main/res/mipmap-mdpi/ic_launcher_round.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/riskapp/src/main/res/mipmap-xhdpi/ic_launcher.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/riskapp/src/main/res/mipmap-xhdpi/ic_launcher_round.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/riskapp/src/main/res/mipmap-xxhdpi/ic_launcher.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/riskapp/src/main/res/mipmap-xxhdpi/ic_launcher_round.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/riskapp/src/main/res/mipmap-xxxhdpi/ic_launcher.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/riskapp/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/riskapp/src/main/res/values/colors.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/riskapp/src/main/res/values/strings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/riskapp/src/main/res/values/styles.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/riskapp/src/test/java/edu/duke/ece651/group4/riskapp/ExampleUnitTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/edu/duke/ece651/group4/RISK/client/PlayerApp.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/test/java/edu/duke/ece651/group4/RISK/client/AppTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/settings.gradle" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -134,7 +83,7 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/client" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
