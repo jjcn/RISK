@@ -3,39 +3,66 @@ package edu.duke.ece651.group4.RISK.shared;
 import java.io.*;
 import java.util.*;
 
+/**
+ * A evolution2 player.
+ * Supported actions: done, move, attack, upgrade tech, upgrade troop. 
+ */
 public class AndroidPlayer implements Player, Serializable {
     private String playerName;
+    private PlayerInfo info;
+    final private Map<Character, String> actionTypes;
+
     final private PrintStream out;
     final private BufferedReader inputReader;
-    final private HashMap<Character, String> actionTypes;
+
     final private Random rnd;
     final private boolean testMode;
-
-    public AndroidPlayer(PrintStream out, Reader inputReader, String playerName, Random rnd,boolean mode) {
+    
+    public AndroidPlayer(String playerName, PlayerInfo info,
+                         HashMap<Character, String> actionTypes,
+                         PrintStream out, Reader inputReader, 
+                         Random rnd, boolean testMode) {
         this.playerName = playerName;
+        this.info = info;
+        
+        this.actionTypes = actionTypes;
+
         this.inputReader = (BufferedReader) inputReader;
         this.out = out;
-        this.actionTypes = new HashMap<>();
+        
+        this.rnd = rnd;
+        this.testMode = testMode;
+    }
+
+    /**
+     * Creates a player with a default list of possible actions.
+     */
+    public AndroidPlayer(String playerName, PlayerInfo info,
+                         PrintStream out, Reader inputReader, 
+                         Random rnd, boolean testMode) {
+        this(playerName, info,
+            new HashMap<>(),          
+            out, inputReader, 
+            rnd, testMode);
+
         actionTypes.put('D', "(D)one");
         actionTypes.put('M', "(M)ove");
         actionTypes.put('A', "(A)ttack");
         actionTypes.put('T', "Upgrade (T)ech");
-        actionTypes.put('U', "(U)pgrade unit");
-        this.rnd = rnd;
-        this.testMode = mode;
+        actionTypes.put('U', "(U)pgrade troop");
     }
 
-    public AndroidPlayer(PrintStream out, Reader inputReader, String playerName) {
-        this(out, inputReader, playerName, new Random(),false);
+    public AndroidPlayer(String playerName, PlayerInfo info,
+                         PrintStream out, Reader inputReader) {
+        this(playerName, info,
+            out, inputReader,
+            new Random(), false);
     }
 
-    public AndroidPlayer(String playerName) {
-        this.playerName = playerName;
-        this.inputReader = null;
-        this.out = null;
-        this.actionTypes = new HashMap<>();
-        this.rnd = null;
-        this.testMode = false;
+    public AndroidPlayer(String playerName, PlayerInfo info) {
+        this(playerName, info,
+            null, null,
+            null, false);
     }
 
     /**
@@ -48,23 +75,9 @@ public class AndroidPlayer implements Player, Serializable {
      * @throws IOException
      */
     public AndroidPlayer(PrintStream out, Reader inputReader) throws IOException {
-        this(out, inputReader, "");
+        this("", new PlayerInfo(""), 
+            out, inputReader);
         this.playerName = readInput("Please enter your name in this game:");
-    }
-
-    /**
-     * Print instructions out to user and reader one line of input.
-     *
-     * @return String of user's input
-     * @throws IOException
-     */
-    private String readInput(String instr) throws IOException {
-        out.print(instr + "\n");
-        String input = inputReader.readLine();
-        if (input == null) {
-            throw new EOFException("Can't read input.\n");
-        }
-        return input;
     }
 
     /**
@@ -94,12 +107,15 @@ public class AndroidPlayer implements Player, Serializable {
      */
     @Override
     public BasicOrder doOneAction() throws IOException {
-        StringBuilder instr = new StringBuilder(this.playerName + " what would you like to do?\n");
+        StringBuilder instr = new StringBuilder(this.playerName + 
+        " what would you like to do?\n");
+        
         for (String act : actionTypes.values()) {
             if (act != "(D)one") {
                 instr.append(act + "\n");
             }
         }
+
         instr.append("(D)one\n");
         Character actionName = readActionName(instr.toString());
         if (actionName == 'D') {
@@ -112,6 +128,25 @@ public class AndroidPlayer implements Player, Serializable {
             Troop troop = testMode?new Troop(pop, this, this.rnd):new Troop(pop, this);
             return new BasicOrder(src, des, troop, actionName);
         }
+        /**
+         * TODO: this is a primitive obsession, 
+         * have to add if (actionName == 'U') and others ...
+         */
+    }
+  
+    /**
+     * Print instructions out to user and reader one line of input.
+     *
+     * @return String of user's input
+     * @throws IOException
+     */
+    private String readInput(String instr) throws IOException {
+        out.print(instr + "\n");
+        String input = inputReader.readLine();
+        if (input == null) {
+            throw new EOFException("Can't read input.\n");
+        }
+        return input;
     }
 
     /**
@@ -132,6 +167,15 @@ public class AndroidPlayer implements Player, Serializable {
             instr = "Please choose a valid action type:";
         }
         return action;
+    }
+  
+    private int readInteger(String instr) throws IOException {
+        String inputInt = "";
+        while (!isNumeric(inputInt)) {
+            inputInt = readInput(instr);
+            instr = "The input is not one int, please input again:";
+        }
+        return Integer.parseInt(inputInt);
     }
 
     private char getInChar(String instr) throws IOException {
@@ -223,36 +267,28 @@ public class AndroidPlayer implements Player, Serializable {
     /**
      * Upgrade player's tech level
      */
-    public void upgradeTech() {
+    public void upgradeTech(int n) {
         // TODO
-    }
-
-    private int readInteger(String instr) throws IOException {
-        String inputInt = "";
-        while (!isNumeric(inputInt)) {
-            inputInt = readInput(instr);
-            instr = "The input is not one int, please input again:";
-        }
-        return Integer.parseInt(inputInt);
+        this.info.modifyTechLevel(n);
     }
 
     /**
+     * Checks if a string contains an integer.
      * Blanks before and after the string is accepted.
      *
      * @param str from the input source.
-     * @return true is the input string contains one and only one valid integer.
+     * @return true, if the input string contains one and only one valid integer.
      */
     private boolean isNumeric(String str) {
-        str = str.trim();
-        if (!str.equals("")) {
-            for (int i = 0; i < str.length(); i++) {
-                if (!Character.isDigit(str.charAt(i))) {
-                    return false;
-                }
-            }
-            return true;
+        if (str == null) {
+            return false;
         }
-        return false;
+        try {
+            Integer.parseInt(str);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return  true;
     }
 
     /**

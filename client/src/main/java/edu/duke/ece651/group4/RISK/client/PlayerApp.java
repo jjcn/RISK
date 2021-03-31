@@ -40,8 +40,15 @@ public class PlayerApp {
         return myPlayer;
     }
 
-    public World getTheWorld() {
-        return this.theWorld;
+    public void sendAccountInfo(String name,String pwd,boolean signUp) throws IOException, ClassNotFoundException {
+////        Message m;
+//        if(signUp){
+//
+//        }else{
+//
+//        }
+////        this.playerClient.sendObject(m);
+//        String response = (String) this.playerClient.recvObject();
     }
 
     /**
@@ -163,7 +170,8 @@ public class PlayerApp {
      */
     public void runGame() throws IOException, ClassNotFoundException {
         this.out.println(this.myView.displayWorld(this.theWorld));
-        while(!this.theWorld.checkLost(this.myPlayer.getName()) && !this.theWorld.isGameEnd()) {
+        while(!this.theWorld.checkLost(this.myPlayer.getName()) && 
+              !this.theWorld.isGameEnd()) {
             doActionPhase();
         }
         if(this.theWorld.checkLost(this.myPlayer.getName())) {

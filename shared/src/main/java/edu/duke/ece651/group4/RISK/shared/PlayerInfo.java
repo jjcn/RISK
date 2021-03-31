@@ -12,26 +12,41 @@ public class PlayerInfo {
 
     private String playerName;
     private int techLevel;
+    private final int maxTechLevel; // max tech level a player can reach
     private Set<Resource> resources;
 
     public PlayerInfo(String playerName, 
-                        int techLevel, 
+                        int techLevel, int maxTechLevel,
                         Set<Resource> resources) {
         this.playerName = playerName;
         this.techLevel = techLevel;
+        this.maxTechLevel = maxTechLevel;
         this.resources = resources;
     }
 
     public PlayerInfo(String playerName, 
-                        int techLevel, 
+                        int techLevel, int maxTechLevel,
                         Resource... resources) {
         this.playerName = playerName;
         this.techLevel = techLevel;
+        this.maxTechLevel = maxTechLevel;
         Set<Resource> set = new HashSet<>();
         for (Resource r : resources) {
             set.add(r);
         }
         this.resources = set;
+    }
+
+    /**
+     * Default player info, only provide a player name.
+     * start at tech level 1, can reach 6.
+     * start with 2 resources with quantity 0, food & tech.
+     * @param playerName
+     */
+    public PlayerInfo(String playerName) {
+        this(playerName, 1, 6, 
+            new Resource("food", 0),
+            new Resource("tech", 0));
     }
 
     public String getName() {
@@ -52,7 +67,12 @@ public class PlayerInfo {
      *          Can be positive, 0, or negative.
      */
     public int modifyTechLevel(int i) {
-        techLevel += i;
+        if (0 < techLevel + i && techLevel + i > maxTechLevel) {
+            techLevel += i;
+        }
+        else {
+            throw new IllegalArgumentException();
+        } 
         return techLevel;
     }
 

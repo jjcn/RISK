@@ -282,6 +282,15 @@ public class World implements Serializable {
     }
 
     /**
+     * Modifies a player's tech level by n.
+     * @param info is a player's data.
+     * @param n is the number of tech levels to modify.
+     */
+    public void upgradeTech(PlayerInfo info, int n) {
+        info.modifyTechLevel(n);
+    }
+
+    /**
      * Iterate over all territories around the world, and do battles on them.
      * @return A summary of battle info on all territories.
      */
