@@ -23,4 +23,5 @@ public class PlaceOrder implements Order {
     public Troop getActTroop() {
         return troop;
     }
+
 }

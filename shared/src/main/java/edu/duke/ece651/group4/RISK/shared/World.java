@@ -282,11 +282,15 @@ public class World implements Serializable {
     }
 
     /**
-     * Modifies a player's tech level by n.
-     * @param info is a player's data.
-     * @param n is the number of tech levels to modify.
+     * Upgrades troop on a territory.
+     * @param terr is the territory from which units are selected to upgrade.
+     * @param info is player data.
+     * @param nUnit is the number of units to upgrade.
+     * @param from is the units' level before upgrade.
+     * @param to is the units' level after upgrade.
      */
-    public void upgradeTech(PlayerInfo info, int n) {
+    public void upgradeTroop(Territory terr, PlayerInfo info, 
+                            int nUnit, int from, int to) {
         info.modifyTechLevel(n);
     }
 

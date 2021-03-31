@@ -71,6 +71,14 @@ public class V2Player implements Player, Serializable {
     }
 
     /**
+     * Executes an order.
+     * @param order
+     */
+    public void execute(Order order) {
+        // TODO
+    }
+
+    /**
      * Output sample:
      * <p>
      * what would you like to do?\n
@@ -121,6 +129,9 @@ public class V2Player implements Player, Serializable {
         /**
          * TODO: this is a primitive obsession, 
          * have to add if (actionName == 'U') and others ...
+         * 
+         * NOTE: what this function really does is
+         *       construting an Order object from user input.
          */
     }
   
