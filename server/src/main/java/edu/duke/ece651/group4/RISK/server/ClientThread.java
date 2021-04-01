@@ -98,19 +98,41 @@ public class ClientThread extends Thread {
     }
 
 
-    protected void runGame() {
+    protected  void placeUnits(){
+        if(gameOnGoing.isDonePlaceUnits){
+            return;
+        }
+        // start placeUnits
 
+
+    }
+
+    protected void doActionPhase(){
+
+    }
+
+    protected void checkResultOneTurn(){
+
+    }
+
+    protected void runGame() {
+        if(gameOnGoing == null){
+            return;
+        }
+        placeUnits();
+        doActionPhase();
+        checkResultOneTurn();
     }
 
 
     @Override
     public void run() {
-        // 1.User
+        // Part1.User
         //   1.1 LogIn
         //   1.2 SignUp
         //   1.3 Exit the App
 
-        // 2. init games:
+        // Part2. init games:
         //    2.1 create a game
         //          start a gameRunner
         //    2.2 join a game
@@ -118,7 +140,7 @@ public class ClientThread extends Thread {
         //          if the game is old, loadGame()
         //    2.3 LogOut
 
-       // 3. game play: When game is active (has the game runner) || playerIsInThisGame:
+       // Part3. game play: When game is active (has the game runner) || playerIsInThisGame:
         //  3.1 Initialization info including:
         //      send init World
         //      send territories
@@ -135,9 +157,9 @@ public class ClientThread extends Thread {
         //             go back to 2.
         //             after delete the gameRunner, make sure store the game. (Everyone should wait until the user is back)
         while (true) {
-
-            setUpUser();
-            setUpGame();
+            setUpUser(); //part1 above
+            setUpGame(); //part2 above
+            runGame();//part3 above
         }
     }
 }

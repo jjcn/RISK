@@ -15,6 +15,7 @@ public class Game {
     World theWorld;
     CyclicBarrier barrier;
     boolean isOnActionPhase;
+    boolean isDonePlaceUnits;
     public Game(int gameID, int numUsers) {
         this.gameID = gameID;
         this.numUsers = numUsers;
@@ -23,6 +24,7 @@ public class Game {
         this.barrier = new CyclicBarrier(numUsers);
         this.isOnActionPhase = false;
         this.numUsersSwitchOut  = 0;
+        this.isDonePlaceUnits = false;
     }
 
     /*
@@ -30,11 +32,14 @@ public class Game {
     * until the game starts actionPhase
     * */
     synchronized public void startActionPhase(){
+        isDonePlaceUnits = true;
         isOnActionPhase = true;
     }
+
     public void endActionPhase(){
         isOnActionPhase = false;
     }
+
     public boolean isOnActionPhase(){
         return isOnActionPhase;
     }
@@ -42,6 +47,7 @@ public class Game {
     private boolean isFull(){
         return usersOnGame.size() == numUsers;
     }
+
     private boolean isEmpty(){
         return usersOnGame.size() == 0;
     }
@@ -115,6 +121,7 @@ public class Game {
      * same world
      * */
     synchronized protected void placeUnitsOnWorld(){
+
     }
     /*
      * This is to upgrade for each player.
