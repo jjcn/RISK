@@ -69,6 +69,7 @@ project (':server') {
         testImplementation project(path: ':shared', configuration: "testPkg")
     }
 }
+<<<<<<< HEAD
 
 project (':client') {
     dependencies {
@@ -85,6 +86,23 @@ clover{
     }
     compiler{
         additionalArgs = "-g:lines,source,vars"
+=======
+//project (':client'){
+//    dependencies {
+//        implementation project(':shared')
+//        testImplementation project(path: ':shared', configuration: "testPkg")
+//    }
+//}
+    clover{
+        enabled = true
+        report {
+            json = true
+            html = true
+        }
+        compiler{
+            additionalArgs = "-g:lines,source,vars"
+        }
+>>>>>>> 78643cb0f50d584ded725bee72195f2988943a4c
     }
 }
 
@@ -92,12 +110,6 @@ tasks.register("run-server") {
     dependsOn project('server').getTasksByName('run',false)
     group = 'Run Client/Server'
     description = 'Run the Server'
-}
-
-tasks.register("run-client") {
-    dependsOn project('client').getTasksByName('run',false)
-    group = 'Run Client/Server'
-    description = 'Run the Client'
 }
 
 tasks.withType(JavaCompile) {
