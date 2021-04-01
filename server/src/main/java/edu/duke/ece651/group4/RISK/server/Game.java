@@ -10,15 +10,33 @@ import java.util.concurrent.CyclicBarrier;
 public class Game {
     final int gameID;
     int numUsers;
+    int numUsersSwitchOut;
     HashSet<User> usersOnGame;
     World theWorld;
     CyclicBarrier barrier;
+    boolean isOnActionPhase;
     public Game(int gameID, int numUsers) {
         this.gameID = gameID;
         this.numUsers = numUsers;
         this.usersOnGame = new HashSet<User>();
         this.theWorld = null; // This should use init function to get a world based on the number of players
         this.barrier = new CyclicBarrier(numUsers);
+        this.isOnActionPhase = false;
+        this.numUsersSwitchOut  = 0;
+    }
+
+    /*
+    * When a user switch in, he/she has to wait for joining
+    * until the game starts actionPhase
+    * */
+    synchronized public void startActionPhase(){
+        isOnActionPhase = true;
+    }
+    public void endActionPhase(){
+        isOnActionPhase = false;
+    }
+    public boolean isOnActionPhase(){
+        return isOnActionPhase;
     }
 
     private boolean isFull(){
@@ -28,6 +46,15 @@ public class Game {
         return usersOnGame.size() == 0;
     }
 
+    public boolean isUserInGame(User u){
+        if(usersOnGame.contains(u)){
+            return true;
+        }
+        return false;
+    }
+    /*
+    *
+    * */
     synchronized public  boolean addUser(User u){
         if(isFull()){
             return false;
@@ -36,7 +63,7 @@ public class Game {
         return true;
     }
 
-    synchronized public  boolean removeUser(User u){
+    synchronized public boolean removeUser(User u){
         if(isEmpty()){
             return false;
         }
@@ -45,6 +72,24 @@ public class Game {
         this.barrier = new CyclicBarrier(numUsers);
         return true;
     }
+
+    synchronized public void switchOutUser(User u){
+        if(!isUserInGame(u)){
+            return;
+        }
+        this.numUsersSwitchOut += 1;
+        this.barrier = new CyclicBarrier(numUsers - this.numUsersSwitchOut);
+        return;
+    }
+    synchronized public void switchInUser(User u){
+        if(!isUserInGame(u)){
+            return;
+        }
+        this.numUsersSwitchOut -= 1;
+        this.barrier = new CyclicBarrier(numUsers - this.numUsersSwitchOut);
+        return;
+    }
+
 
     public void barrierWait(){
         try {
