@@ -266,7 +266,8 @@ public class V2Player implements Player, Serializable {
     }
 
     /**
-     * Upgrade player's tech level
+     * Upgrade player's tech level by n.
+     * @param n is the number to add onto a player's tech level.
      */
     public void upgradeTech(int n) {
         // TODO

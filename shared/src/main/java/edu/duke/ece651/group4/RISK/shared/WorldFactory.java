@@ -1,8 +1,5 @@
 package edu.duke.ece651.group4.RISK.shared;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * This class create instances of pre-defined World templates.
  * Add new create*** methods as new templates.

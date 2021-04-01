@@ -66,14 +66,16 @@ public class PlayerInfo {
      * @param i is the number to add to tech level. 
      *          Can be positive, 0, or negative.
      */
-    public int modifyTechLevel(int i) {
+    public void modifyTechLevel(int i) {
+        final String TECHLEVEL_INVALID_MODIFY_MSG = 
+            "Modifying tech level by %s is not suppported.";
         if (0 < techLevel + i && techLevel + i > maxTechLevel) {
             techLevel += i;
         }
         else {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(
+                String.format(TECHLEVEL_INVALID_MODIFY_MSG, i));
         } 
-        return techLevel;
     }
 
     /**
@@ -83,6 +85,7 @@ public class PlayerInfo {
      *          Can be positive, 0, or negative.
      */
     public void modifyResource(Resource resource, int i) {
+        // TODO: use lambdas?
         for (Resource r : resources) {
             if (r.equalsName(resource)) {
                 resource.modifyQuantity(i);

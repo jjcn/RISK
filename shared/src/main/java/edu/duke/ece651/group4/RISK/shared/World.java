@@ -34,6 +34,7 @@ public class World implements Serializable {
      * All territories in the world. Implemented with a graph structure.
      */
     public Graph<Territory> territories;
+    
     private final OrderChecker basicOrderChecker;
     private final Random rnd;
 
