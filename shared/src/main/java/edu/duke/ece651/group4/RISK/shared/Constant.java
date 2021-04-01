@@ -7,13 +7,13 @@ public class Constant {
     public static final String SOCKET_HOSTNAME = "localhost";
     public static final int SOCKET_PORT = 9999;
 
-    //Messgae
+    //Message
     public static final String MESS_LOG = "MessageLog";
     public static final String MESS_GAME = "MessageGame";
     public static final String MESS_ACTION = "MessageAction";
 
     //Log:
-    public static final String LOG_IN = "LogIn";
+    public static final String LOG_SIGNIN = "LogIn";
     public static final String LOG_SIGNUP = "LogSignUp";
     public static final String LOG_EXIT = "LogExit";
     //invalid

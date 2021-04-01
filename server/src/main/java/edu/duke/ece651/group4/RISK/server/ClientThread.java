@@ -1,9 +1,8 @@
 package edu.duke.ece651.group4.RISK.server;
 
 import edu.duke.ece651.group4.RISK.shared.Client;
+import edu.duke.ece651.group4.RISK.shared.message.GameMessage;
 import edu.duke.ece651.group4.RISK.shared.message.LogMessage;
-
-import java.io.IOException;
 import java.util.HashSet;
 
 import static edu.duke.ece651.group4.RISK.shared.Constant.*;
@@ -22,30 +21,29 @@ public class ClientThread extends Thread {
         this.ownerUser = null;
     }
 
+
     /*
      * This deals with users log In, Signup, etc.
      * UserMessage
      * */
-    public String setUpUser() throws IOException, ClassNotFoundException {
+    public String setUpUser() {
         if (ownerUser != null) {
             return null;
         }
-
         while(true){
             LogMessage logMessage = (LogMessage) this.theClient.recvObject(); //receive a LogMessage
             String action = logMessage.getAction();
-            if(action == LOG_IN){
+            if(action.equals(LOG_SIGNIN) ){
                 String resIn = tryLogIn(logMessage.getUsername(), logMessage.getPassword());
                 this.theClient.sendObject(resIn);
                 if(resIn == null){
                     return null;
                 }
             }
-            if(action == LOG_SIGNUP){
+            if(action.equals(LOG_SIGNUP) ){
                 String resUp = trySignUp(logMessage.getUsername(), logMessage.getPassword());
                 this.theClient.sendObject(resUp);
             }
-
         }
 
     }
@@ -79,15 +77,31 @@ public class ClientThread extends Thread {
         return null;
     }
 
+    protected void setUpGame() {
+        if(gameOnGoing != null){
+            return;
+        }
+        //1.send the gameInfo to Client
+
+        //2. select an option
+        while(true){
+            GameMessage gameMessage = (GameMessage) this.theClient.recvObject();
+            String action = gameMessage.getAction();
+            if(action.equals(GAME_CREATE)){
+                return;
+            }
+            if(action.equals(GAME_JOIN)){
+
+                return; // if Join successfully
+            }
+        }
+    }
+
+
     protected void runGame() {
 
     }
 
-    protected void setUpGame() {
-        if(gameOnGoing!=null){
-            return;
-        }
-    }
 
     @Override
     public void run() {
@@ -104,7 +118,7 @@ public class ClientThread extends Thread {
         //          if the game is old, loadGame()
         //    2.3 LogOut
 
-        // 3. game play: When game is active (has the game runner) || playerIsInThisGame:
+       // 3. game play: When game is active (has the game runner) || playerIsInThisGame:
         //  3.1 Initialization info including:
         //      send init World
         //      send territories
@@ -121,16 +135,9 @@ public class ClientThread extends Thread {
         //             go back to 2.
         //             after delete the gameRunner, make sure store the game. (Everyone should wait until the user is back)
         while (true) {
-            try {
-                setUpUser();
-                break;
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
+
+            setUpUser();
             setUpGame();
-            runGame();
         }
     }
 }

@@ -13,9 +13,10 @@ public class BasicMessage {
     String source;
     String type;
     String action;
-    public BasicMessage(String source, String type){
+    public BasicMessage(String source, String type, String action){
         this.source = source;
         this.type = type;
+        this.action = action;
     }
 
     public String getType(){
