@@ -1,35 +1,46 @@
 package edu.duke.ece651.group4.RISK.client;
-import java.util.Random;
 
 import android.app.Application;
-import android.content.SharedPreferences;
+import android.os.Message;
+import edu.duke.ece651.group4.RISK.shared.*;
 
-import java.net.Socket;
+import java.io.IOException;
+import java.util.Random;
 
 public class RISKApplication extends Application {
-    private Client playerClient;
+    private static Client playerClient;
     private World theWorld;
-    private final int totalPopulation;
+    private int totalPopulation;
     private Random rnd;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        this.playerClient=new Client("localhost", "9999");
+        try {
+            this.playerClient=new Client("localhost", "9999");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         this.theWorld=null;
-        this.totalPopulation=15;
+        this.totalPopulation = 15;
         this.rnd=new Random();
     }
 
-    public String sendAccountInfo(String name,String pwd,String actName) throws IOException, ClassNotFoundException {
-//        Message m= new Message(actName,name,pwd);
-        this.playerClient.sendObject(m);
-        String response = (String) this.playerClient.recvObject();
+    public static String sendAccountInfo(String name, String pwd, String actName) throws IOException, ClassNotFoundException {
+        Message m= new Message();
+        playerClient.sendObject(m);
+        String response = (String) playerClient.recvObject();
         return response;
     }
 
-    public String sendSignIn(String name,String pwd) throws IOException, ClassNotFoundException{
-        return sendAccountInfo(name,pwd,"signIn");
+    public static String sendSignIn(String name,String pwd) {
+        try {
+            return sendAccountInfo(name, pwd, "signIn");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
-
 }

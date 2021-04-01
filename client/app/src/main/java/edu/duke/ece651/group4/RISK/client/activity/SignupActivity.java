@@ -4,13 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import edu.duke.ece651.group4.RISK.client.R;
 
-public class RoomActivity extends AppCompatActivity {
+public class SignupActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_room);
+        setContentView(R.layout.activity_signup);
     }
-
-
 }

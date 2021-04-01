@@ -1,8 +1,10 @@
 <resources>
     <string name="app_name">client</string>
-    <string name="DEVINFO">Duke university course ECE651 group4</string>
+    <string name="DEVINFO">Duke university @ECE651 @group4</string>
     <string name="WELCOME">Welcome to RISC!\nReally Interesting Strategic Conquest Game!</string>
     <string name="LOGIN">Log in</string>
     <string name="USERNAME">Your name</string>
     <string name="PASSWORD">Password</string>
+    <string name="SIGNUP">Sign up</string>
+    <string name="CREROOM">create new room</string>
 </resources>
