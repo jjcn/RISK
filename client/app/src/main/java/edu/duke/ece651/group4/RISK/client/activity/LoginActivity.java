@@ -9,6 +9,8 @@ import android.os.Bundle;
 import edu.duke.ece651.group4.RISK.client.R;
 import edu.duke.ece651.group4.RISK.client.RISKApplication;
 
+import java.util.Objects;
+
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.*;
 import static edu.duke.ece651.group4.RISK.client.utility.Instruction.showByToast;
 
@@ -30,31 +32,27 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void impUI() {
-        impAccountInput();
         impLoginBt();
         impSignUpBt();
     }
 
-    private void impAccountInput() {
+    private void impLoginBt(){
         nameET = findViewById(R.id.editTextTextAccount);
         passwordET = findViewById(R.id.editTextTextPassword);
-        // read input
-        CharSequence nameIn = nameET.getText();
-        CharSequence passwordIn = passwordET.getText();
-        if (nameIn != null && passwordIn != null){
-            name = nameIn.toString();
-            password = passwordIn.toString();
-        }
-    }
-
-    private void impLoginBt(){
         logInButton = findViewById(R.id.buttonLogin);
+
         logInButton.setOnClickListener(v -> {
             logInButton.setClickable(false);
+            name = Objects.requireNonNull(nameET.getText()).toString();
+            password = Objects.requireNonNull(passwordET.getText()).toString();
+
+            // TODO: true result function to place.
             String result = "no account";//sendSignIn(name,password);// checkNamePwdMatch
+            if(name.equals("A") && password.equals("123")){
+                result = null;
+            }
 
             if( result == null) { //match
-                Log.i(TAG,"test result exists");
                 Intent roomIntent = new Intent(LoginActivity.this, RoomActivity.class);
                 startActivity(roomIntent);
                 finish();
