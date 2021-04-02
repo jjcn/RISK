@@ -3,9 +3,12 @@ package edu.duke.ece651.group4.RISK.client;
 import android.app.Application;
 import android.os.Message;
 import edu.duke.ece651.group4.RISK.shared.*;
+import edu.duke.ece651.group4.RISK.shared.message.LogMessage;
 
 import java.io.IOException;
 import java.util.Random;
+
+import static edu.duke.ece651.group4.RISK.shared.Constant.*;
 
 public class RISKApplication extends Application {
     private static Client playerClient;
@@ -17,7 +20,7 @@ public class RISKApplication extends Application {
     public void onCreate() {
         super.onCreate();
         try {
-            this.playerClient=new Client("localhost", "9999");
+            this.playerClient=new Client(SOCKET_HOSTNAME, SOCKET_PORT);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -26,16 +29,39 @@ public class RISKApplication extends Application {
         this.rnd=new Random();
     }
 
-    public static String sendAccountInfo(String name, String pwd, String actName) throws IOException, ClassNotFoundException {
-        Message m= new Message();
+    protected static String sendAccountInfo(String name, String pwd, String actName) throws IOException, ClassNotFoundException {
+        LogMessage m= new LogMessage(name,pwd,actName);
         playerClient.sendObject(m);
         String response = (String) playerClient.recvObject();
         return response;
     }
 
+    /*
+     * This send SignIn info
+     * @param name is username
+     * @param pwd is the password
+     * @return null if succeed, a error message if false
+     * */
     public static String sendSignIn(String name,String pwd) {
         try {
-            return sendAccountInfo(name, pwd, "signIn");
+            return sendAccountInfo(name, pwd, LOG_IN);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /*
+    * This send SignUP info
+    * @param name is username
+    * @param pwd is the password
+    * @return null if succeed, a error message if false
+    * */
+    public static String sendSignUp(String name,String pwd) {
+        try {
+            return sendAccountInfo(name, pwd, LOG_SIGNUP);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {

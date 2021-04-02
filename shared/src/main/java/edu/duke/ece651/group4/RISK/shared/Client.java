@@ -33,9 +33,9 @@ public class Client  {
     *  @param hostName is the server hostname
     *  @param port is the server port
     */
-    public Client(String hostName, String port) throws IOException {
+    public Client(String hostName, int port) throws IOException {
         InetAddress host = InetAddress.getByName(hostName);
-        this.socket = new Socket(host.getHostAddress(), Integer.parseInt(port));
+        this.socket = new Socket(host.getHostAddress(), port);
         setUpObjectStream();
     }
 
