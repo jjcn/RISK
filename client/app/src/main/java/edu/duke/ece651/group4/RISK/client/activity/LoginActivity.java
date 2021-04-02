@@ -1,10 +1,7 @@
 package edu.duke.ece651.group4.RISK.client.activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.View;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,15 +10,17 @@ import edu.duke.ece651.group4.RISK.client.R;
 import edu.duke.ece651.group4.RISK.client.RISKApplication;
 
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.*;
+import static edu.duke.ece651.group4.RISK.client.utility.Instruction.showByToast;
 
 public class LoginActivity extends AppCompatActivity {
+    private static final String TAG = LoginActivity.class.getSimpleName();
     private EditText nameET;
     private EditText passwordET;
     private Button logInButton;
     private Button signupButton;
 
-    String name = "A";
-    String password = "123";
+    String name = "";
+    String password = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,53 +32,42 @@ public class LoginActivity extends AppCompatActivity {
     private void impUI() {
         impAccountInput();
         impLoginBt();
-        impSignInBt();
+        impSignUpBt();
     }
 
     private void impAccountInput() {
         nameET = findViewById(R.id.editTextTextAccount);
         passwordET = findViewById(R.id.editTextTextPassword);
-        nameET.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
+        // read input
+        CharSequence nameIn = nameET.getText();
+        CharSequence passwordIn = passwordET.getText();
+        if (nameIn != null && passwordIn != null){
+            name = nameIn.toString();
+            password = passwordIn.toString();
+        }
     }
 
     private void impLoginBt(){
         logInButton = findViewById(R.id.buttonLogin);
         logInButton.setOnClickListener(v -> {
-            CharSequence nameIn = nameET.getText();
-            CharSequence passwordIn = passwordET.getText();
-            if (nameIn == null || passwordIn == null){
-                return;
-            }
-
             logInButton.setClickable(false);
-            String result = sendSignIn(nameIn.toString(),passwordIn.toString());// checkNamePwdMatch(nameIn.toString(), passwordIn.toString());
+            String result = "no account";//sendSignIn(name,password);// checkNamePwdMatch
 
             if( result == null) { //match
-                Intent gameIntent = new Intent(LoginActivity.this, RoomActivity.class);
-                startActivity(gameIntent);
+                Log.i(TAG,"test result exists");
+                Intent roomIntent = new Intent(LoginActivity.this, RoomActivity.class);
+                startActivity(roomIntent);
                 finish();
             }
             else{
-                // show password not valid.
+                showByToast(this,result);// show account err message
                 logInButton.setClickable(true);
                 return;
             }
         });
     }
 
-    private void impSignInBt() {
+    private void impSignUpBt() {
         signupButton = findViewById(R.id.buttonSignUp);
         signupButton.setOnClickListener(v -> {
             Intent signupIntent = new Intent(LoginActivity.this, SignupActivity.class);
@@ -88,11 +76,4 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void saveAccount() {
-        SharedPreferences sp = getSharedPreferences("Accounts", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sp.edit();
-        editor.putString("username", name);
-        editor.putString("password", password);
-        editor.commit();
-    }
 }
