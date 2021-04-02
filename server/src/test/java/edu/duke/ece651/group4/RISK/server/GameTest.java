@@ -35,8 +35,7 @@ class GameTest {
         }).start();
     }
 
-    @Test
-    public void test_latch(){
 
-    }
+
+
 }

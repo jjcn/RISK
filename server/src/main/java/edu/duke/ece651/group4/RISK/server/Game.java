@@ -16,57 +16,33 @@ public class Game {
     private World theWorld;
     private CyclicBarrier barrier;
     private CountDownLatch latch;
-    private boolean isOnActionPhase;
-    private boolean isDonePlaceUnits;
+    public GameState gameState;
     public Game(int gameID, int numUsers) {
         this.gameID = gameID;
         this.numUsers = numUsers;
         this.usersOnGame = new HashSet<User>();
         this.theWorld = null; // This should use init function to get a world based on the number of players
         this.barrier = new CyclicBarrier(numUsers);
-        this.isOnActionPhase = false;
+        this.gameState = new GameState();
         this.numUsersSwitchOut  = 0;
-        this.isDonePlaceUnits = false;
         this.latch = new CountDownLatch(numUsers);
     }
 
-    /*
-    * When a user switch in, he/she has to wait for joining
-    * until the game starts actionPhase
-    * */
-    synchronized public void startActionPhase(){
-        this.latch = new CountDownLatch(numUsers - numUsersSwitchOut);
-        isDonePlaceUnits = true;
-        isOnActionPhase = true;
-    }
-
-    public void endActionPhase(){
-        isOnActionPhase = false;
-    }
-
-    public boolean isOnActionPhase(){
-        return isOnActionPhase;
-    }
-
-    public boolean isDonePlaceUnits(){
-        return isDonePlaceUnits;
-    }
     private boolean isFull(){
         return usersOnGame.size() == numUsers;
     }
-
     private boolean isEmpty(){
         return usersOnGame.size() == 0;
     }
-
     public boolean isUserInGame(User u){
         if(usersOnGame.contains(u)){
             return true;
         }
         return false;
     }
+
     /*
-    *
+    *  operations to User
     * */
     synchronized public  boolean addUser(User u){
         if(isFull()){
@@ -103,10 +79,9 @@ public class Game {
         return;
     }
 
-    public void latchCountDown(){
-        this.latch.countDown();
-    }
-
+    /*
+    * Communication between threads
+    * */
     public void barrierWait(){
         try {
             this.barrier.await();
@@ -117,16 +92,37 @@ public class Game {
         }
     }
 
-    protected void finishOneTurn(){
+
+    /*
+    * This class do final calculate on the world after
+    * all users finish their one turn
+    * */
+    public void finishOneTurn(){
         try {
             this.latch.await();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
         // After all players finish their actions, do final updates after one turn
-
     }
+
+    /*
+    * This checks a user if lose
+    * */
+
+    public boolean checkIfLose(){
+        return false;
+    }
+
+
+    /*
+    * This class check if the game is ended.
+    * */
+    public boolean isEndGame(){
+        return false;
+    }
+
+
     /*
      * This function is used to update world with any action received from the Client
      * This function has to be locked. This is because all players are sharing the

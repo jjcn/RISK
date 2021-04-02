@@ -99,7 +99,7 @@ public class ClientThread extends Thread {
 
 
     protected  void placeUnits(){
-        if(gameOnGoing.isDonePlaceUnits()){
+        if(gameOnGoing.gameState.isDonePlaceUnits()){
             return;
         }
         // start placeUnits
@@ -109,7 +109,7 @@ public class ClientThread extends Thread {
 
     protected void doActionPhase(){
         // if Done or SwitchOut
-        gameOnGoing.latchCountDown();
+
     }
 
     protected void checkResultOneTurn(){
