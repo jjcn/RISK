@@ -27,6 +27,7 @@ public class ClientThread extends Thread {
      * UserMessage
      * */
     public String setUpUser() {
+        System.out.print("setup");
         if (ownerUser != null) {
             return null;
         }

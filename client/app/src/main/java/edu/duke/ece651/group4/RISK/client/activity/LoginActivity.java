@@ -46,8 +46,7 @@ public class LoginActivity extends AppCompatActivity {
             name = Objects.requireNonNull(nameET.getText()).toString();
             password = Objects.requireNonNull(passwordET.getText()).toString();
 
-            // TODO: true result function to place.
-            String result = "no account";//sendSignIn(name,password);// checkNamePwdMatch
+            String result = sendSignIn(name,password);// checkNamePwdMatch
             if(name.equals("A") && password.equals("123")){
                 result = null;
             }
@@ -70,7 +69,6 @@ public class LoginActivity extends AppCompatActivity {
         signupButton.setOnClickListener(v -> {
             Intent signupIntent = new Intent(LoginActivity.this, SignupActivity.class);
             startActivity(signupIntent);
-            finish();
         });
     }
 

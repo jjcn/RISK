@@ -2,8 +2,6 @@ package edu.duke.ece651.group4.RISK.client.utility;
 
 import android.content.Context;
 import android.view.Gravity;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 public class Instruction {

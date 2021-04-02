@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.widget.Button;
 import android.widget.EditText;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,8 +11,11 @@ import edu.duke.ece651.group4.RISK.client.R;
 
 import java.util.Objects;
 
-import static edu.duke.ece651.group4.RISK.client.Constant.*;
+import static edu.duke.ece651.group4.RISK.client.Constant.EMPTY_INPUT;
+import static edu.duke.ece651.group4.RISK.client.Constant.SUCCESS_SIGNUP;
+import static edu.duke.ece651.group4.RISK.client.RISKApplication.sendSignUp;
 import static edu.duke.ece651.group4.RISK.client.utility.Instruction.showByToast;
+
 
 public class SignupActivity extends AppCompatActivity {
     private EditText nameET;
@@ -30,6 +32,8 @@ public class SignupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         impUI();
     }
 
@@ -88,8 +92,8 @@ public class SignupActivity extends AppCompatActivity {
                 signupButton.setClickable(true);
                 return;
             }
-            // TODO: result to be replaced with true func.
-            String result = null; //sendSignUp(name,password);
+
+            String result = sendSignUp(name,password);
             if (result == null) {
                 Intent loginIntent = new Intent(SignupActivity.this, LoginActivity.class);
                 showByToast(this, SUCCESS_SIGNUP);
@@ -103,13 +107,13 @@ public class SignupActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode==KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-            Intent loginIntent = new Intent(this,LoginActivity.class);
-            startActivity(loginIntent);
-            this.finish();
-        }
-        return false;
-    }
+//    @Override
+//    public boolean onKeyDown(int keyCode, KeyEvent event) {
+//        if (keyCode==KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+//            Intent loginIntent = new Intent(this,LoginActivity.class);
+//            startActivity(loginIntent);
+//            this.finish();
+//        }
+//        return false;
+//    }
 }

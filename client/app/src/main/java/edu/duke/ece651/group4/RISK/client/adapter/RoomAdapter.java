@@ -5,9 +5,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import edu.duke.ece651.group4.RISK.shared.message.GameMessage;
+
+import java.util.List;
 
 public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.ViewHolder> {
-    // private List<RoomInfo> rooms;
+    private List<GameMessage> rooms;
 
     @NonNull
     @Override
