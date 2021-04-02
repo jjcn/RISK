@@ -34,8 +34,4 @@ class GameTest {
             System.out.println("Done wait");
         }).start();
     }
-
-
-
-
 }
