@@ -9,16 +9,14 @@ import static edu.duke.ece651.group4.RISK.shared.Constant.MESS_LOG;
 public class LogMessage extends BasicMessage{
     String password;
     String username;
-    String action;
-    public LogMessage(String source, String type,String username,String password, String action) {
-        super(source, type);
+    public LogMessage(String source, String type, String action, String username,String password) {
+        super(source, type, action);
         this.password = password;
         this.username = username;
-        this.action = action;
     }
 
-    public LogMessage(String username, String password,String action){
-        this(MESS_LOG,username,username, password, action);
+    public LogMessage(String action, String username, String password){
+        this(null,MESS_LOG, action,username, password);
     }
 
     public String getPassword(){

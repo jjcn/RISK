@@ -7,13 +7,13 @@ public class Constant {
     public static final String SOCKET_HOSTNAME = "localhost";
     public static final int SOCKET_PORT = 9999;
 
-    //Messgae
+    //Message
     public static final String MESS_LOG = "MessageLog";
     public static final String MESS_GAME = "MessageGame";
     public static final String MESS_ACTION = "MessageAction";
 
     //Log:
-    public static final String LOG_IN = "LogIn";
+    public static final String LOG_SIGNIN = "LogIn";
     public static final String LOG_SIGNUP = "LogSignUp";
     public static final String LOG_EXIT = "LogExit";
     //invalid
@@ -33,5 +33,16 @@ public class Constant {
     public static final String GAME_JOIN = "GameJoin";
     public static final String GAME_EXIT = "GameExit";
 
+    //PlayerState
+    public static final String PLAYER_STATE_READY = "PLAYER_STATE_READY";
+    public static final String PLAYER_STATE_LOSE = "PLAYER_STATE_LOSE";
+    public static final String PLAYER_STATE_END_ONE_TURN = "PLAYER_STATE_END_ONE_TURN";
+    public static final String PLAYER_STATE_QUIT = "PLAYER_STATE_QUIT";
+    public static final String PLAYER_STATE_SWITCH_OUT ="PLAYER_STATE_SWITCH_OUT" ;
+    public static final String PLAYER_STATE_EXIT = "PLAYER_STATE_EXIT";
+
+    //GameState
+    public static final String GAME_STATE_WAIT_TO_UPDATE = "GAME_STATE_WAIT_TO_UPDATE";
+    public static final String GAME_STATE_DONE_UPDATE = "GAME_STATE_DONE_UPDATE";
 
 }
