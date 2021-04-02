@@ -1,23 +1,26 @@
 package edu.duke.ece651.group4.RISK.server;
 
+import static edu.duke.ece651.group4.RISK.shared.Constant.*;
+
 /*
  * This class handles the state of players
  * Player State:
- * 1. Ready: ready to receive the message from the client
- * 2. Lose: lose the game, this time, host will only send the world to each player but will not do any actions
- *   from them
- * 3. EndOneTurn: Finish one turn of the game, will wait for host to update the world
- * 4. Quit: quit the game. If we find the winner, each thread will send winner message to each client and close the thread
+ * 1. PLAYERSTATE_READY: ready to receive the message from the client
+ * 2. PLAYERSTATE_LOSE: lose the game, this time, host will only send the world to each player but will not do any actions
+ *    from them
+ * 3. PLAYERSTATE_ENDONETURN : Finish one turn of the game, will wait for host to update the world
+ * 4. PLAYERSTATE_QUIT: quit the game. If we find the winner, each thread will send winner message to each client and close the thread
+ * 5. PLAYERSTATE_SWITCHOUT: user switch out from this game
  * */
 public class PlayerState{
-
+    String username;
     String state;
     /*
      * This contruct a PlayerState
      * @param startState is the start state
      * */
     public PlayerState(String startState){
-        state = startState;
+        state = PLAYER_STATE_READY;
     }
 
     /*
@@ -31,21 +34,21 @@ public class PlayerState{
      * @return true, if it is. otherwise false
      * */
     public boolean isLose() {
-        return getState().equals("Lose") ;
+        return getState().equals(PLAYER_STATE_LOSE) ;
     }
     /*
      * this check if the player quits
      * @return true, if it is. otherwise false
      * */
     public boolean isQuit(){
-        return getState().equals( "Quit");
+        return getState().equals(PLAYER_STATE_QUIT);
     }
     /*
      * this check if the player done one turn
      * @return true, if it is. otherwise false
      * */
     public boolean isDoneOneTurn(){
-        return getState().equals( "EndOneTurn") | isLose() | isQuit() | isExit();
+        return getState().equals( PLAYER_STATE_END_ONE_TURN) | isLose() | isQuit() | isExit();
     }
     /*
      * This change a player state
@@ -60,6 +63,6 @@ public class PlayerState{
      * @return true, if it is. otherwise false
      * */
     public boolean isExit(){
-        return getState().equals( "Exit");
+        return getState().equals( PLAYER_STATE_EXIT);
     }
 }

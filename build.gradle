@@ -22,6 +22,8 @@ subprojects{
         testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.1'
         clover 'org.openclover:clover:4.3.1'
         testCompile "org.mockito:mockito-core:2.+"
+     //   implementation 'org.junit.jupiter:junit-jupiter:5.4.2'
+
     }
     clover{
     compiler{
@@ -110,3 +112,4 @@ task resolveDependencies {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+

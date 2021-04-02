@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">client</string>
+    <string name="app_name">RISK</string>
     <string name="DEVINFO">Duke university @ECE651 @group4</string>
     <string name="WELCOME">Welcome to RISC!\nReally Interesting Strategic Conquest Game!</string>
     <string name="LOGIN">Log in</string>
@@ -7,4 +7,8 @@
     <string name="PASSWORD">Password</string>
     <string name="SIGNUP">Sign up</string>
     <string name="CREROOM">create new room</string>
+    <string name="PASSWORDCHECK">Input the password again</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <string name="BACK">Back</string>
 </resources>
