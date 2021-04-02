@@ -5,17 +5,19 @@ import edu.duke.ece651.group4.RISK.shared.World;
 
 import java.util.HashSet;
 import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 
 public class Game {
-    final int gameID;
-    int numUsers;
-    int numUsersSwitchOut;
-    HashSet<User> usersOnGame;
-    World theWorld;
-    CyclicBarrier barrier;
-    boolean isOnActionPhase;
-    boolean isDonePlaceUnits;
+    private final int gameID;
+    private int numUsers;
+    private int numUsersSwitchOut;
+    private HashSet<User> usersOnGame;
+    private World theWorld;
+    private CyclicBarrier barrier;
+    private CountDownLatch latch;
+    private boolean isOnActionPhase;
+    private boolean isDonePlaceUnits;
     public Game(int gameID, int numUsers) {
         this.gameID = gameID;
         this.numUsers = numUsers;
@@ -25,6 +27,7 @@ public class Game {
         this.isOnActionPhase = false;
         this.numUsersSwitchOut  = 0;
         this.isDonePlaceUnits = false;
+        this.latch = new CountDownLatch(numUsers);
     }
 
     /*
@@ -32,6 +35,7 @@ public class Game {
     * until the game starts actionPhase
     * */
     synchronized public void startActionPhase(){
+        this.latch = new CountDownLatch(numUsers - numUsersSwitchOut);
         isDonePlaceUnits = true;
         isOnActionPhase = true;
     }
@@ -44,6 +48,9 @@ public class Game {
         return isOnActionPhase;
     }
 
+    public boolean isDonePlaceUnits(){
+        return isDonePlaceUnits;
+    }
     private boolean isFull(){
         return usersOnGame.size() == numUsers;
     }
@@ -96,6 +103,9 @@ public class Game {
         return;
     }
 
+    public void latchCountDown(){
+        this.latch.countDown();
+    }
 
     public void barrierWait(){
         try {
@@ -107,13 +117,24 @@ public class Game {
         }
     }
 
+    protected void finishOneTurn(){
+        try {
+            this.latch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
+        // After all players finish their actions, do final updates after one turn
+
+    }
     /*
      * This function is used to update world with any action received from the Client
      * This function has to be locked. This is because all players are sharing the
      * same world
      * */
     synchronized protected void updateActionOnWorld(){
+
+
     }
     /*
      * This is to select territory for each player.
