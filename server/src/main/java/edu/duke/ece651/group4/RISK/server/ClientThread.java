@@ -1,211 +1,167 @@
 package edu.duke.ece651.group4.RISK.server;
 
-import edu.duke.ece651.group4.RISK.shared.*;
+import edu.duke.ece651.group4.RISK.shared.Client;
+import edu.duke.ece651.group4.RISK.shared.message.GameMessage;
+import edu.duke.ece651.group4.RISK.shared.message.LogMessage;
+import java.util.HashSet;
 
-
-import java.io.IOException;
-import java.util.List;
-import java.util.concurrent.CyclicBarrier;
+import static edu.duke.ece651.group4.RISK.shared.Constant.*;
 
 public class ClientThread extends Thread {
-    World theWorld;
-    PlayerState playerState;
-    HostState hostState;
+    HashSet<Game> games;
+    HashSet<User> users;
     Client theClient;
-    String playerName;
-    CyclicBarrier barrier;
-    List<Territory> initTerritory;
-    int playerID;
+    User ownerUser;
+    Game gameOnGoing;
 
-    public ClientThread(World w, String playerName, int playerID, 
-                        CyclicBarrier barrier, 
-                        PlayerState playerState,
-                        Client theClient, HostState hoststate, 
-                        List<Territory> initTerritory) {
-        this.theWorld = w;
-        this.playerState = playerState;
-        this.theClient  = theClient;
-        this.hostState = hoststate;
-        this.playerName = playerName;
-        this.barrier = barrier;
-        this.playerID = playerID;
-        this.initTerritory = initTerritory;
+    public ClientThread(HashSet<Game> games, HashSet<User> users, Client theClient) {
+        this.games = games;
+        this.users = users;
+        this.theClient = theClient;
+        this.ownerUser = null;
     }
+
 
     /*
-     *  This sends a player info to each Client.
+     * This deals with users log In, Signup, etc.
+     * UserMessage
      * */
-    protected void sendPlayerNameToClient() throws IOException {
-        this.theClient.sendObject(this.playerName);
-    }
-
-    /*
-     *  This send the newest worldMap to the Client
-     * */
-    protected void sendWorldToClient() throws IOException {
-        World sendWorld = this.theWorld.clone();
-        this.theClient.sendObject(sendWorld);
-
-    }
-    /*
-     *  This send the newest WarReport to the Client
-     * */
-    protected void sendWarReportToClient() throws IOException {
-        this.theClient.sendObject(this.hostState.getWarReport());
-    }
-
-    /*
-     * This send init territory to each player.
-     * */
-    protected void sendInitTerritory() throws IOException {
-        this.theClient.sendObject(this.initTerritory); 
-    }
-
-    protected void updatePlayerState() throws IOException, ClassNotFoundException {
-        String s = (String) this.theClient.recvObject();
-        System.out.println("receice state from client: " + s);
-        if(s.equals("Exit")){
-            playerState.changeStateTo("Exit");
-            System.out.println("change state to Exit");
+    public String setUpUser() {
+        System.out.print("setup");
+        if (ownerUser != null) {
+            return null;
         }
-    }
-
-    /*
-     * This is to select territory for each player.
-     * */
-    protected void selectUnits() throws IOException, ClassNotFoundException {
-        int orderNum = this.initTerritory.size();
-        System.out.println("To " + this.playerName + ", orderNum: " + orderNum );
-        while(orderNum > 0) {
-            PlaceOrder newOrder = null;
-            newOrder = (PlaceOrder) this.theClient.recvObject();
-            System.out.println("thread: start update selectunits");
-            this.theWorld.stationTroop(newOrder.getDesName(),newOrder.getActTroop());
-            System.out.println("thread: finish update selectunits");
-            orderNum--;
+        while(true){
+            LogMessage logMessage = (LogMessage) this.theClient.recvObject(); //receive a LogMessage
+            String action = logMessage.getAction();
+            if(action.equals(LOG_SIGNIN) ){
+                String resIn = tryLogIn(logMessage.getUsername(), logMessage.getPassword());
+                this.theClient.sendObject(resIn);
+                if(resIn == null){
+                    return null;
+                }
+            }
+            if(action.equals(LOG_SIGNUP) ){
+                String resUp = trySignUp(logMessage.getUsername(), logMessage.getPassword());
+                this.theClient.sendObject(resUp);
+            }
         }
 
     }
 
     /*
-     * This handles all orders from the Client
+     * This tries to let a user log in.
+     * @return null if succeed, a error message if fail
      * */
+    protected String tryLogIn(String username, String password) {
+        for (User u : users) {
+            if (u.checkUsernamePassword(username, password)) {
+                this.ownerUser = u;
+                return null;
+            }
+        }
+        return INVALID_LOGIN;
+    }
+
+    /*
+     * This tries to sign up a user.
+     * @return null if succeed, a error message if fail
+     * */
+    protected String trySignUp(String username, String password) {
+        for (User u : users) {
+            if (u.checkUsername(username)) {
+                return INVALID_SIGNUP;
+            }
+        }
+        User newUser = new User(users.size(), username, password);
+        users.add(newUser);
+        return null;
+    }
+
+    protected void setUpGame() {
+        if(gameOnGoing != null){
+            return;
+        }
+        //1.send the gameInfo to Client
+
+        //2. select an option
+        while(true){
+            GameMessage gameMessage = (GameMessage) this.theClient.recvObject();
+            String action = gameMessage.getAction();
+            if(action.equals(GAME_CREATE)){
+                return;
+            }
+            if(action.equals(GAME_JOIN)){
+
+                return; // if Join successfully
+            }
+        }
+    }
+
+
+    protected  void placeUnits(){
+        if(gameOnGoing.gameState.isDonePlaceUnits()){
+            return;
+        }
+        // start placeUnits
+
+
+    }
+
     protected void doActionPhase(){
-        while( !playerState.isDoneOneTurn()) {
-            BasicOrder newOrder = null;
-            newOrder = (BasicOrder) receiveInfo(newOrder, this.theClient);
-            updateActionOnWorld(newOrder);
+        // if Done or SwitchOut
+
+    }
+
+    protected void checkResultOneTurn(){
+
+    }
+
+    protected void runGame() {
+        if(gameOnGoing == null){
+            return;
         }
+        placeUnits();
+        doActionPhase();
+        checkResultOneTurn();
     }
 
-    /*
-     * This function is used to update world with any action received from the Client
-     * This function has to be locked. This is because all players are sharing the
-     * same world
-     * */
-    synchronized protected void updateActionOnWorld(BasicOrder receiveMessage){
-        System.out.println(this.playerName +  receiveMessage.getActionName());
-        if (receiveMessage.getActionName() == 'M') {
-            this.theWorld.moveTroop(receiveMessage);
-        } else if (receiveMessage.getActionName() == 'A') {
-            this.theWorld.attackATerritory(receiveMessage);
-        } else {
-            playerState.changeStateTo("EndOneTurn");
-        }
-    }
-
-    /*
-     * This is a function to check if  the player in this clientThread lost the game
-     * It will iterate all territories in the world to see if there is a terr that belongs to this Player
-     * If a player lose, we will change the playerState to Lose
-     * */
-    protected boolean isPlayerLost(){
-        return this.theWorld.checkLost(this.playerName);
-    }
-
-    /*
-     * This is to check if there is only one winner in the world after the world
-     * is updated by the host
-     * */
-    protected boolean isGameEnd(){
-        return this.theWorld.isGameEnd();
-    }
 
     @Override
-    public void run(){
-        System.out.println( this.playerName + " gets connected with the server.");
-        System.out.println( "Please wait for other player to get connected.");
-        try {
-            barrier.await();
-            sendPlayerNameToClient();
-            System.out.println("To " + this.playerName + ", send the name" );
-            sendWorldToClient();
-            System.out.println("To " + this.playerName + ", send the world" );
-            sendInitTerritory();
-            System.out.println("To " + this.playerName + ", send territories" );
-            barrier.await();
-            selectUnits();
-            System.out.println("To " + this.playerName + ", update select Units ");
-            barrier.await();
-            sendWorldToClient();
-            System.out.println("To " + this.playerName + ", send the first complete world.");
-            /*
-             * keep receiving message from the Client to do action
-             * */
-            while(true) {
-                doActionPhase();
-                System.out.println(this.playerName + "finish this turn of moving and attacking.");
-                barrier.await(); // Wait everyone to finish their actions
+    public void run() {
+        // Part1.User
+        //   1.1 LogIn
+        //   1.2 SignUp
+        //   1.3 Exit the App
 
-                while (!hostState.isFinishUpdate()) {} // wait hostState to update the world
-                System.out.println(playerState.isExit());
-                if(!playerState.isExit()){
-                    sendWorldToClient();
-                    sendWarReportToClient();
-                    updatePlayerState();
-                }
-                System.out.println("Sent world and map");
-                barrier.await();
-                System.out.println("Done waiting for all threads");
-                //Everyone need to change their state after this
-                if(!playerState.isExit()){
-                    if (isPlayerLost()) {
-                        playerState.changeStateTo("Lose");
-                        System.out.println(this.playerName + "lose the game now.");
-                    }
-                    else{
-                        playerState.changeStateTo("Ready");
-                    }
-                }
-                //check If the game ends, send message to all players and quit
-                if(isGameEnd()){
-                    playerState.changeStateTo("Quit");
-                    // if we find a winner, and hostState will be endGame. Every thread should close
-                    System.out.println(this.playerName + "quit the game.");
-                    this.theClient.close();
-                    break;
-                }
+        // Part2. init games:
+        //    2.1 create a game
+        //          start a gameRunner
+        //    2.2 join a game
+        //          if the game is new, add game.addUser
+        //          if the game is old, loadGame()
+        //    2.3 LogOut
 
-                barrier.await();
-                hostState.changeStateTo("WaitForUpdateWorld");
-            }
-
-
-        } catch (Exception ignored){
-
+       // Part3. game play: When game is active (has the game runner) || playerIsInThisGame:
+        //  3.1 Initialization info including:
+        //      send init World
+        //      send territories
+        //      recv assigned units
+        //      send World again
+        //  3.2 ActionsPhase:
+        //        3.21 Each Turn
+        //             Game will deal with Actions: Move, Attack, Upgrade, Done, Exit, SwitchOut
+        //             After each Done or Exit, this thread will wait for gameRunner to update the results
+        //        3.22 If player lose:
+        //             no exits: keep sending results
+        //             exits: change the barrier in game runner.
+        //        3.21 If player SwitchOut:
+        //             go back to 2.
+        //             after delete the gameRunner, make sure store the game. (Everyone should wait until the user is back)
+        while (true) {
+            setUpUser(); //part1 above
+            setUpGame(); //part2 above
+            runGame();//part3 above
         }
     }
-
-    protected Object receiveInfo(Object o, Client c){
-
-        try {
-            o = c.recvObject();
-        } catch (Exception e) {
-            System.out.println("Socket name problem!");
-        }
-
-        return o;
-    }
-
-
 }

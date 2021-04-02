@@ -12,156 +12,52 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CyclicBarrier;
+import java.util.HashSet;
+
+import static edu.duke.ece651.group4.RISK.shared.Constant.SOCKET_PORT;
+
 
 public class HostApp implements Runnable {
     ServerSocket hostSocket;
-    World theWorld;
-    HostState hostState;
-    int numOfPlayers;
-    ArrayList<String> playerNames;
-    CyclicBarrier barrier;
-    private int numTerritoryPerPlayer;
-    HashMap<Integer, List<Territory>> groups;
-
-    /*
-     * This constructs the hostApp
-     * @param hostSocket is the instance of ServerSocket
-     * @param num is the number of territories assigned to each player
-     * */
-    HostApp(ServerSocket hostSocket,int num){
-        this.hostSocket = hostSocket;
-        this.hostState = new HostState("WaitForUpdateWorld");
-        this.barrier = null;
-        this.numOfPlayers = 0;
-        this.theWorld = null;
-        this.playerNames = new ArrayList<>();
-        this.numTerritoryPerPlayer=num;
-        this.groups= new HashMap<>();
-
+    HashSet<Game> games;
+    HashSet<User> users;
+    static int port ;
+    public HostApp(ServerSocket s){
+        this.hostSocket = s;
+        games = new HashSet<Game>();
+        users = new HashSet<User>();
+        port = SOCKET_PORT;
     }
 
-    /*
-     *  This function is to read init info about this whole game
-     *  This need to set up the world, the number of players.
-     *  First, we read all info we need to set up a world.
-     *  We need to set up the number of players.
-     *  We need to assign PlayerID to each block of territories
-     *  We need to create ListArray<String> Player Names
-     *  We need to make sure all variables related world and players are initialized
-     * */
-
-    protected void setUpWorld() {
-        String instruct1 = "Please enter the Player Number";
-        BufferedReader inRead = new BufferedReader(new InputStreamReader(System.in));
-
-        int playerNum = 0;
-        while (playerNum == 0) {
-            try {
-                System.out.println(instruct1);
-                String playerNumRead = inRead.readLine();
-                if (!isNumeric(playerNumRead)) {
-                    throw new IllegalArgumentException();
-                }
-                playerNum = Integer.parseInt(playerNumRead);
-
-            } catch (Exception e) {
-                System.out.println("Please enter correct number!");
-            }
-        }
-        this.numOfPlayers=playerNum;
-        this.theWorld=new World(playerNum*this.numTerritoryPerPlayer);
-        this.groups=(HashMap<Integer, List<Territory>>) this.theWorld.divideTerritories(playerNum);
-    }
-
-    protected boolean isNumeric(String strNum) {
-        if (strNum == null) {
-            return false;
-        }
-        try {
-            double d = Double.parseDouble(strNum);
-        } catch (NumberFormatException nfe) {
-            return false;
-        }
-        return true;
-    }
-
-
-    /*
-     * This setup connection between server and clients
-     * Will assign a PlayerID to each thread we are creating
-     *
-     *  */
-    protected void setUpClients() {
-        int PlayerID = 0;
-        try {
-            while(PlayerID < numOfPlayers) {
-                Socket s = hostSocket.accept();
-                Client theClient = new Client(s);
-                PlayerState playerState = new PlayerState("Ready");
-                playerNames.add( "Player" + PlayerID);
-                hostState.addOnePlayerState(playerState);
-                ClientThread theThread = new ClientThread(theWorld, playerNames.get(PlayerID), 
-                                                          PlayerID, barrier, playerState,
-                                                          theClient, hostState,
-                                                          this.groups.get(PlayerID));
-                theThread.start();
-                PlayerID += 1;
-            }
-        }catch(IOException e){
-            System.out.println("Socket Problem");
-        }
-    }
-
-    /*
-     * This will finish all attacks on world and get a final new world.
-     * And change the hostSate to "finishUpdateMap"
-     * If some players are not done with one turn, skip
-     * */
-
-    protected void finishBattlesOneTurn() {
-        if(!hostState.isFinishUpdate()) {
-            String warReport = theWorld.doAllBattles();
-            hostState.updateWarReport(warReport);
-            this.theWorld.addUnitToAll(1);
-            hostState.changeStateTo("finishUpdateWorld");
-
-            System.out.println("The host finish updating the world after do all battles.");
-        }
-    }
-
-
-    /*
-     * This is the the main function of the game process
-     * */
-    public void run() {
-        setUpWorld();
-        barrier = new CyclicBarrier(numOfPlayers);
-        setUpClients();
-
-        while(true) {
-            if(hostState.isAllPlayersDoneOneTurn()) {
-                finishBattlesOneTurn();
-            }
-            if(hostState.isALlThreadsQuit()) {
-                System.out.println("The host quits after all threads quit.");
-                try {
-                    hostSocket.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                break;  // we should decide to quit the game after all thread  quit.
-            }
-        }
-    }
 
     public static void main(String[] args) throws IOException {
-        ServerSocket hostSocket = new ServerSocket(9999);
-        HostApp hostApp = new HostApp(hostSocket,1);
+        ServerSocket hostSocket = new ServerSocket(port);
+        HostApp hostApp = new HostApp(hostSocket);
         hostApp.run();
+    }
+    /*
+     * This setup connection between server and clients
+     * it will create a ClientThread to deal with all stuff
+     * including user logIn and Game Playing with this specific client.
+     * This thread will exist if someone open a PlayerApp
+     * and will close if this PlayerApp close. THe main reason we adopt this
+     * design pattern is to save the resource of threads.
+     *  */
+    public void acceptConnection(){
+        try {
+            while(true) {
+                Socket s = hostSocket.accept();
+                Client theClient = new Client(s);
+                ClientThread theThread = new ClientThread(games, users,theClient);
+                theThread.start();
+            }
+        }catch(IOException e){
+            System.out.println("HostApp: Issue with acceptConnection.");
+        }
+    }
+
+    @Override
+    public void run() {
+        acceptConnection();
     }
 }

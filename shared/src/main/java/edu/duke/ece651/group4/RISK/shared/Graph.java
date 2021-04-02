@@ -113,7 +113,7 @@ public class Graph<T> implements Serializable {
      */
     public List<T> getAdjacentVertices(T key) {
         List<T> ans = new ArrayList<>();
-        int i = vertices.indexOf(key);
+        int i = indexOfVertex(key);
         for (int j = 0; j < adjMatrix[i].length; j++) {
             if (adjMatrix[i][j] == true) {
                 ans.add(vertices.get(j));
@@ -123,8 +123,12 @@ public class Graph<T> implements Serializable {
     }
 
     public void setWeight(T vertex, int i) {
-        weights.set(vertices.indexOf(vertex), i);
+        weights.set(indexOfVertex(vertex), i);
     }
+
+    protected int indexOfVertex(T vertex) {
+        return vertices.indexOf(vertex);
+    }   
 
     /**
      * Add a vertex to graph.
@@ -142,6 +146,7 @@ public class Graph<T> implements Serializable {
         adjMatrix = newAdjMatrix;
         // add to vertices
         vertices.add(vertex);
+        weights.add(0);
     }
 
     /**
@@ -162,8 +167,8 @@ public class Graph<T> implements Serializable {
      * @param v2 is the other end the edge.
      */
     public void addEdge(T v1, T v2) {
-        int i = vertices.indexOf(v1);
-        int j = vertices.indexOf(v2);
+        int i = indexOfVertex(v1);
+        int j = indexOfVertex(v2);
         adjMatrix[i][j] = true;
         adjMatrix[j][i] = true;
     }
@@ -202,8 +207,8 @@ public class Graph<T> implements Serializable {
      *         false, if not.
      */
     public boolean isAdjacent(T v1, T v2) {
-        int i = vertices.indexOf(v1);
-        int j = vertices.indexOf(v2);
+        int i = indexOfVertex(v1);
+        int j = indexOfVertex(v2);
         return adjMatrix[i][j];
     }
 
@@ -304,7 +309,7 @@ public class Graph<T> implements Serializable {
                 distances.put(vertex, Integer.MAX_VALUE);
             }
             else {
-                distances.put(vertex, weights.get(vertices.indexOf(start)));
+                distances.put(vertex, weights.get(indexOfVertex(start)));
             }
         }
 
@@ -318,19 +323,23 @@ public class Graph<T> implements Serializable {
             List<T> adjacents = getAdjacentsVertices(current);
             for (T adjacent : adjacents) {
                 if (!visited.contains(adjacent)) {
-                    int tentativeDistance = distances.get(current) + 
-                                            weights.get(vertices.indexOf(adjacent));
-                    distances.put(adjacent,     
-                                tentativeDistance < weights.get(vertices.indexOf(adjacent))
-                                ? tentativeDistance 
-                                : weights.get(vertices.indexOf(adjacent)));
-
+                    int tentativeDistance = distances.get(current) + findWeight(adjacent);
+                    distances.put(adjacent, Math.min(tentativeDistance, findWeight(adjacent)));
                 }
             }
             visited.add(current);
         }
 
-        return distances.get(vertices.indexOf(end));
+        return distances.get(indexOfVertex(end));
+    }
+
+    /**
+     * Find the weight of a vertex specified by a key.
+     * @param key is the vertex.
+     * @return weight of that vertex.
+     */
+    protected int findWeight(T key) {
+        return weights.get(indexOfVertex(key));
     }
 
     /**

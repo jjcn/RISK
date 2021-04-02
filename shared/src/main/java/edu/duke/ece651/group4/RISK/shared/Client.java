@@ -33,9 +33,9 @@ public class Client  {
     *  @param hostName is the server hostname
     *  @param port is the server port
     */
-    public Client(String hostName, String port) throws IOException {
+    public Client(String hostName, int port) throws IOException {
         InetAddress host = InetAddress.getByName(hostName);
-        this.socket = new Socket(host.getHostAddress(), Integer.parseInt(port));
+        this.socket = new Socket(host.getHostAddress(), port);
         setUpObjectStream();
     }
 
@@ -52,17 +52,29 @@ public class Client  {
     * This send an object to a connected remote socket
     * @param o is the object to send
     * */
-    public void sendObject(Object o) throws IOException {
-        out.writeObject(o);
-        out.flush();
+    public void sendObject(Object o) {
+
+        try {
+            out.writeObject(o);
+            out.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /*
     * This recv an object from a connected remote socket
     * @return is to receive an object sent by the remote connected socket
     * */
-    public Object recvObject() throws IOException, ClassNotFoundException {
-        return in.readObject();
+    public Object recvObject() {
+        try {
+             return in.readObject();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /*

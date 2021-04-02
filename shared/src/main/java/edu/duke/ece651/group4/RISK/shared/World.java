@@ -234,6 +234,10 @@ public class World implements Serializable {
         
         start.sendOutTroop(troop);
         end.sendInTroop(troop);
+
+        /**
+           end.sendInTroop(start.sendOutTroop(troop));
+         */
     }
 
     /**

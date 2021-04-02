@@ -10,8 +10,8 @@ import java.util.Set;
  */
 public class PlayerInfo {
 
-    private String playerName;
-    private int techLevel;
+    private String playerName; 
+    private int techLevel; // player's current tech level
     private final int maxTechLevel; // max tech level a player can reach
     private Set<Resource> resources;
 
