@@ -6,10 +6,12 @@ import edu.duke.ece651.group4.RISK.client.R;
 
 public class RoomActivity extends AppCompatActivity {
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room);
+
     }
 
 

@@ -11,25 +11,24 @@
             android:text="@string/CREROOM"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/button"
+            android:id="@+id/createButton"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintVertical_bias="0.9"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
-    <TableLayout
-            android:layout_width="409dp"
-            android:layout_height="613dp"
-            app:layout_constraintEnd_toEndOf="parent"
+    <androidx.recyclerview.widget.RecyclerView
+            app:layout_constraintBottom_toTopOf="@id/createButton"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/button">
-
-        <TableRow android:layout_width="match_parent" android:layout_height="match_parent"/>
-        <TableRow android:layout_width="match_parent" android:layout_height="match_parent"/>
-        <TableRow android:layout_width="match_parent" android:layout_height="match_parent"/>
-        <TableRow android:layout_width="match_parent" android:layout_height="match_parent"/>
-    </TableLayout>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_height="?layout"
+            android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/fragmentMargin"
+            android:layout_marginStart="@dimen/fragmentMargin"
+            android:layout_marginEnd="@dimen/fragmentMargin"
+            android:layout_marginLeft="@dimen/fragmentMargin"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
