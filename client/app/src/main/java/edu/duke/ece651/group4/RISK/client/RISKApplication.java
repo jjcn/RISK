@@ -21,6 +21,7 @@ public class RISKApplication extends Application {
         super.onCreate();
         try {
             this.playerClient=new Client(SOCKET_HOSTNAME, SOCKET_PORT);
+            System.out.print("Success");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -44,7 +45,7 @@ public class RISKApplication extends Application {
      * */
     public static String sendSignIn(String name,String pwd) {
         try {
-            return sendAccountInfo(name, pwd, LOG_IN);
+            return sendAccountInfo(name, pwd, LOG_SIGNIN);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
