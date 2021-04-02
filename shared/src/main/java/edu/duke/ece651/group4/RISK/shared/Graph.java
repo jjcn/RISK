@@ -1,8 +1,10 @@
 package edu.duke.ece651.group4.RISK.shared;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Random;
@@ -26,15 +28,25 @@ public class Graph<T> implements Serializable {
      * true: two vertices are adjacent.
      */
     protected boolean[][] adjMatrix;
+    /**
+     * Integer weights are assigned to all vertices.
+     */
+    protected List<Integer> weights; 
 
-    public Graph() {
-        this.vertices = new ArrayList<>();
-        this.adjMatrix = new boolean[0][0];
+    public Graph(List<T> vertices, boolean[][] adjMatrix, List<Integer> weights) {
+        this.vertices = vertices;
+        this.adjMatrix = adjMatrix;
+        this.weights = weights;
     }
 
     public Graph(List<T> vertices, boolean[][] adjMatrix) {
         this.vertices = vertices;
         this.adjMatrix = adjMatrix;
+        this.weights = new ArrayList<>(vertices.size());
+    }
+    
+    public Graph() {
+        this(new ArrayList<>(), new boolean[0][0], new ArrayList<>());
     }
 
     /**
@@ -108,6 +120,10 @@ public class Graph<T> implements Serializable {
             }
         }
         return ans;
+    }
+
+    public void setWeight(T vertex, int i) {
+        weights.set(vertices.indexOf(vertex), i);
     }
 
     /**
@@ -282,7 +298,57 @@ public class Graph<T> implements Serializable {
      * @return length of the shortest path .
      */
     public int calculateShortestPath(T start, T end) {
+        Map<T, Integer> distances = new HashMap<>();
+        for (T vertex : vertices) {
+            if (vertex != start) {
+                distances.put(vertex, Integer.MAX_VALUE);
+            }
+            else {
+                distances.put(vertex, weights.get(vertices.indexOf(start)));
+            }
+        }
 
+        Set<T> tovisit = new HashSet<>();
+        Set<T> visited = new HashSet<>();
+        tovisit.add(start);
+        visited.add(start);
+        while (tovisit.size() != 0) {
+            // set the node with smallest temp distance as the next vertex to visit
+            T current = getSmallestDistanceVertex(tovisit, distances); 
+            List<T> adjacents = getAdjacentsVertices(current);
+            for (T adjacent : adjacents) {
+                if (!visited.contains(adjacent)) {
+                    int tentativeDistance = distances.get(current) + 
+                                            weights.get(vertices.indexOf(adjacent));
+                    distances.put(adjacent,     
+                                tentativeDistance < weights.get(vertices.indexOf(adjacent))
+                                ? tentativeDistance 
+                                : weights.get(vertices.indexOf(adjacent)));
+
+                }
+            }
+            visited.add(current);
+        }
+
+        return distances.get(vertices.indexOf(end));
+    }
+
+    /**
+     * Find the smallest distance vertex.
+     * @param tovisit
+     * @return
+     */
+    protected T getSmallestDistanceVertex(Set<T> tovisit, Map<T, Integer> distances) {
+        T smallestDistanceVertex = null;
+        int lowestDistance = Integer.MAX_VALUE;
+        for (T vertex : tovisit) {
+            int dist = distances.get(vertex);
+            if (dist < lowestDistance) {
+                lowestDistance = dist;
+                smallestDistanceVertex = vertex;
+            }
+        }
+        return smallestDistanceVertex;
     }
 
     /*
@@ -311,6 +377,10 @@ public class Graph<T> implements Serializable {
 
     }
     */
+
+    private List<T> getAdjacentsVertices(T key) {
+        return null;
+    }
 
     @Override
     public boolean equals(Object other) {
