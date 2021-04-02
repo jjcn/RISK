@@ -275,6 +275,16 @@ public class Graph<T> implements Serializable {
         return false;
     }
 
+    /**
+     * Calculates the shortest path length between 2 vertices.
+     * @param start is the starting vertex.
+     * @param end is the ending vertex.
+     * @return length of the shortest path .
+     */
+    public int calculateShortestPath(T start, T end) {
+
+    }
+
     /*
     @Override
     public Iterator<T> iterator() {
