@@ -329,34 +329,54 @@ public class Graph<T> implements Serializable {
      * @return length of the shortest path .
      */
     public int calculateShortestPath(T start, T end) {
+    	String NOT_REACHABLE_MSG = "Cannot reach from start to end.";
+		/*
+		 * shortest distances from start to all vertices
+		 */
         Map<T, Integer> distances = new HashMap<>();
+        /*
+         *  initialize distances:
+         *  start: as its weight
+         *  others: infinity (substitute with Integer.MAX_VALUE)
+         */
         for (T vertex : vertices) {
-            if (vertex != start) {
-                distances.put(vertex, Integer.MAX_VALUE);
+            if (vertex.equals(start)) {
+            	distances.put(vertex, getWeight(start));
             }
             else {
-                distances.put(vertex, weights.get(indexOfVertex(start)));
+            	distances.put(vertex, Integer.MAX_VALUE);
             }
         }
-
-        Set<T> tovisit = new HashSet<>();
+        /*
+         * add the start vertex to unvisited.
+         */
+        Set<T> unvisited = new HashSet<>();
         Set<T> visited = new HashSet<>();
-        tovisit.add(start);
-        visited.add(start);
-        while (tovisit.size() != 0) {
-            // set the node with smallest temp distance as the next vertex to visit
-            T current = getSmallestDistanceVertex(tovisit, distances); 
-            List<T> adjacents = getAdjacentsVertices(current);
-            for (T adjacent : adjacents) {
+        unvisited.add(start);
+        /* While the unvisited is not empty:
+		 * 1. Choose an unvisited vertex, 
+		 *    which should be the one with the lowest distance from the start,
+		 *    and remove it from unvisited.
+		 * 2. Calculate new distances to direct neighbors by keeping the lowest distance at each evaluation.
+		 * 3. Add neighbors that are not yet visited to the unvisited set.
+         */
+        while (unvisited.size() != 0) {
+            T current = getSmallestDistanceVertex(unvisited, distances);
+            unvisited.remove(current);
+            for (T adjacent : getAdjacentVertices(current)) {
                 if (!visited.contains(adjacent)) {
-                    int tentativeDistance = distances.get(current) + getWeight(adjacent);
-                    distances.put(adjacent, Math.min(tentativeDistance, getWeight(adjacent)));
+                    distances.put(adjacent, Math.min(distances.get(current) + getWeight(adjacent), 
+                    		                         distances.get(adjacent)));
+                    unvisited.add(adjacent);
                 }
             }
             visited.add(current);
         }
 
-        return distances.get(indexOfVertex(end));
+        if (distances.get(end) == Integer.MAX_VALUE) {
+        	throw new IllegalArgumentException(NOT_REACHABLE_MSG);
+        }
+        return distances.get(end);
     }
 
     /**
@@ -375,37 +395,6 @@ public class Graph<T> implements Serializable {
             }
         }
         return smallestDistanceVertex;
-    }
-
-    /*
-    @Override
-    public Iterator<T> iterator() {
-        return new GraphIterator();
-    }
-
-    public class GraphIterator implements Iterator<T> {
-        private int position = 0;
-        @Override
-        public boolean hasNext() {
-            if (position < getVertices().size()) {
-                return true;
-            }
-            return false;
-        }
-
-        @Override
-        public T next() {
-            if(hasNext()) {
-                return getVertices().get(position++);
-            }
-            return null;
-        }
-
-    }
-    */
-
-    private List<T> getAdjacentsVertices(T key) {
-        return null;
     }
 
     @Override

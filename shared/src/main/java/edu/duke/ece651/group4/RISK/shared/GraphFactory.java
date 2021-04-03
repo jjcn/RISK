@@ -4,13 +4,24 @@ import java.util.Arrays;
 import java.util.List;
 
 public class GraphFactory {
-	
+
 	public GraphFactory() {}
 	
+	public Graph<String> createGraphUnconnected(String[] names) {
+		Graph<String> graph = new Graph<>();
+
+        List<String> nameList = Arrays.asList(names);
+        nameList.forEach(name -> graph.addVertex(name));
+        
+        return graph;
+	}
+	
 	/**
-     * Creates a test graph of String type. 
+     * Creates a graph of String type. 
      * 
      * Layout is the same as that on Evolution 1 requirements.
+     * 
+     * number of territories = 9
      * 
      * N-----M--O--G 
      * |   /  |/ \ | 
@@ -20,11 +31,10 @@ public class GraphFactory {
      * 
      */
     public Graph<String> createStringGraphFantasy() {
-        Graph<String> graph = new Graph<>();
-        
-        String[] names = "Narnia, Midkemia, Oz, Gondor, Mordor, Hogwarts, Scadrial, Elantris, Roshar".split(", ");
-        List<String> nameList = Arrays.asList(names);
-        nameList.forEach(name -> graph.addVertex(name));
+    	String[] fantasyNames = {"Narnia", "Midkemia", "Oz", "Gondor", "Mordor",
+ 				 "Hogwarts", "Scadrial", "Elantris", "Roshar"};
+
+        Graph<String> graph = createGraphUnconnected(fantasyNames);
 
         graph.addEdge("Narnia", "Midkemia");
         graph.addEdge("Narnia", "Elantris");
@@ -43,6 +53,28 @@ public class GraphFactory {
         graph.addEdge("Mordor", "Hogwarts");
 
         return graph;
+    }
+    
+    /**
+     * Creates a graph of String type.
+     * 
+     * It is separated into two parts. 
+     *  
+     * A--B--C
+     * 
+     * D--E
+     * 
+     */
+    public Graph<String> createStringGraphSeparated() {
+    	String[] simpleNames = {"A", "B", "C", "D", "E"};
+    	
+    	Graph<String> graph = createGraphUnconnected(simpleNames);
+    	
+    	graph.addEdge("A", "B");
+    	graph.addEdge("B", "C");
+    	graph.addEdge("D", "E");
+    	
+    	return graph;
     }
     
 }
