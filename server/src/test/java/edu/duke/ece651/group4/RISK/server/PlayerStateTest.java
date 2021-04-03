@@ -1,22 +1,27 @@
-//package edu.duke.ece651.group4.RISK.server;
-//
-//import org.junit.jupiter.api.Test;
-//
-//import static org.junit.jupiter.api.Assertions.*;
-//
-//class PlayerStateTest {
-//    @Test
-//    public void test_baiscFunction(){
-//        PlayerState p = new PlayerState("Ready");
-//        assertEquals("Ready", p.getState());
-//        p.changeStateTo("Lose");
-//        assertEquals("Lose", p.getState());
-//        assertEquals(p.isLose(), true);
-//        p.changeStateTo("EndOneTurn");
-//        assertEquals(p.isDoneOneTurn(), true);
-//        p.changeStateTo("Quit");
-//        assertEquals(p.isQuit(),true);
-//        assertEquals(p.isDoneOneTurn(), true);
-//    }
-//
-//}
+package edu.duke.ece651.group4.RISK.server;
+
+import org.junit.jupiter.api.Test;
+
+import static edu.duke.ece651.group4.RISK.server.ServerConstant.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+class PlayerStateTest {
+    @Test
+    public void test_baiscFunction(){
+        PlayerState p = new PlayerState("1");
+        assertEquals(p.isDoneOneTurn(), false);
+        assertEquals(PLAYER_STATE_ACTION_PHASE, p.getState());
+        p.updateStateTo(PLAYER_STATE_LOSE);
+        assertEquals(PLAYER_STATE_LOSE, p.getState());
+        assertEquals(p.isLose(), true);
+        assertEquals(p.isDoneOneTurn(), true);
+        p.updateStateTo(PLAYER_STATE_SWITCH_OUT);
+        assertEquals(p.isSwitchOut(), true);
+        assertEquals(p.isDoneOneTurn(), true);
+        p.updateStateTo(PLAYER_STATE_END_ONE_TURN);
+        assertEquals(p.isUpdating(), false);
+        p.updateStateTo(PLAYER_STATE_UPDATING);
+        assertEquals(p.isUpdating(), true);
+    }
+
+}

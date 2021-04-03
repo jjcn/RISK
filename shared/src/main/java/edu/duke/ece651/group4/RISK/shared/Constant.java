@@ -1,4 +1,8 @@
 package edu.duke.ece651.group4.RISK.shared;
+
+import java.util.Arrays;
+import java.util.List;
+
 /*
 * This class handles the constant across all the project
 * */
@@ -31,18 +35,14 @@ public class Constant {
     //Game:
     public static final String GAME_CREATE = "GameCreate";
     public static final String GAME_JOIN = "GameJoin";
+    public static final String GAME_REFRESH = "GameRefresh";
     public static final String GAME_EXIT = "GameExit";
 
-    //PlayerState
-    public static final String PLAYER_STATE_READY = "PLAYER_STATE_READY";
-    public static final String PLAYER_STATE_LOSE = "PLAYER_STATE_LOSE";
-    public static final String PLAYER_STATE_END_ONE_TURN = "PLAYER_STATE_END_ONE_TURN";
-    public static final String PLAYER_STATE_QUIT = "PLAYER_STATE_QUIT";
-    public static final String PLAYER_STATE_SWITCH_OUT ="PLAYER_STATE_SWITCH_OUT" ;
-    public static final String PLAYER_STATE_EXIT = "PLAYER_STATE_EXIT";
 
-    //GameState
-    public static final String GAME_STATE_WAIT_TO_UPDATE = "GAME_STATE_WAIT_TO_UPDATE";
-    public static final String GAME_STATE_DONE_UPDATE = "GAME_STATE_DONE_UPDATE";
+    //soldier information
+    public static  final List<String> UNIT_NAMES = Arrays.asList("Soldier LV0","Soldier LV1",
+            "Soldier LV2","Soldier LV3","Soldier LV4","Soldier LV5","Soldier LV6");
+    public static  final List<Integer> UNIT_COSTS = Arrays.asList(0,3,11,30,55,90,140);
+    public static final List<Integer> UNIT_BONUS= Arrays.asList(0,1,3,5,8,11,15);
 
 }
