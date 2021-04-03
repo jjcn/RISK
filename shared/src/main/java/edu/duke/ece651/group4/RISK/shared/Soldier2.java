@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-public class Soldier implements Unit, Serializable {
+public class Soldier2 implements Unit, Serializable {
 
     private String jobName;
     private int level;
@@ -26,7 +26,7 @@ public class Soldier implements Unit, Serializable {
     }
     
 
-    public Soldier() {
+    public Soldier2() {
         this.jobName = this.levelNames.get(0);
         this.level = 0;
         this.dice = new Random();
@@ -36,7 +36,7 @@ public class Soldier implements Unit, Serializable {
      * Construct a soldier with specific seed
      * @param rand is the random seed.
      */
-    public Soldier(Random rand) {
+    public Soldier2(Random rand) {
         this.jobName = this.levelNames.get(0);
         this.level = 0;
         this.dice = rand;
