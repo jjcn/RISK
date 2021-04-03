@@ -21,6 +21,10 @@ import java.io.Serializable;
  */
 public class World implements Serializable {
     /**
+     * Auto-generated serialVersionUID
+     */
+    private static final long serialVersionUID = 4696428798493622247L;
+    /**
      * Error messages
      */
     protected final String INDIVISIBLE_MSG = 
@@ -34,8 +38,13 @@ public class World implements Serializable {
      * All territories in the world. Implemented with a graph structure.
      */
     public Graph<Territory> territories;
-    
+    /**
+     * Order checker
+     */
     private final OrderChecker basicOrderChecker;
+    /**
+     * Random seed to use with random division of territories.
+     */
     private final Random rnd;
 
     /**
@@ -109,17 +118,19 @@ public class World implements Serializable {
     }
  
     /**
-     * Get a deep copy of a world object.
+     * Creates a deep copy of a world object.
      * @return a deep copy of the world object.
      */
-    public World clone() {
-        boolean[][] adjMatrixCopy = territories.cloneAdjMatrix();
-        ArrayList<Territory> old = (ArrayList<Territory>)territories.getVertices();
-        ArrayList<Territory> cpy=new ArrayList<>();
+    public World clone() {  
+        List<Territory> old = territories.getVertices();
+        List<Territory> cpy = new ArrayList<>();
         for (Territory item : old) {
             cpy.add(item.clone());
         }
-        return new World(new Graph<>(cpy,adjMatrixCopy), this.rnd);
+        List<Integer> weightsCopy = territories.cloneWeights();
+        boolean[][] adjMatrixCopy = territories.cloneAdjMatrix();
+
+        return new World(new Graph<>(cpy, weightsCopy, adjMatrixCopy), this.rnd);
     }
 
     /**
@@ -319,7 +330,7 @@ public class World implements Serializable {
     public void upgradeTroop(Territory terr, 
                             int before, int after, int nUnit, 
                             int nResource) { 
-        int remainderResource = terr.upgrade(before, after, nUnit, nResource);
+        int remainder = terr.upgrade(before, after, nUnit, nResource);
     }
 
     /**

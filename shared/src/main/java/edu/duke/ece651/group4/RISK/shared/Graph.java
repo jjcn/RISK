@@ -33,7 +33,6 @@ public class Graph<T> implements Serializable {
      */
     protected boolean[][] adjMatrix;
     
-
     public Graph(List<T> vertices, List<Integer> weights, boolean[][] adjMatrix) {
         this.vertices = vertices;
         this.weights = weights;
@@ -46,6 +45,12 @@ public class Graph<T> implements Serializable {
     
     public Graph() {
         this(new ArrayList<>(), new ArrayList<>(), new boolean[0][0]);
+    }
+
+    public List<Integer> cloneWeights() {
+        List<Integer> newList = new ArrayList<>();
+        weights.forEach(w -> newList.add(w));
+        return newList;
     }
 
     /**
