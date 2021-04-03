@@ -3,6 +3,8 @@ package edu.duke.ece651.group4.RISK.server;
 import edu.duke.ece651.group4.RISK.shared.Client;
 import edu.duke.ece651.group4.RISK.shared.message.GameMessage;
 import edu.duke.ece651.group4.RISK.shared.message.LogMessage;
+
+import java.io.IOException;
 import java.util.HashSet;
 
 import static edu.duke.ece651.group4.RISK.shared.Constant.*;
@@ -28,13 +30,15 @@ public class ClientThread extends Thread {
      *  2.SignIn
      *  3.ExitApp
      * */
-    public String trySetUpUser() {
+    public String trySetUpUser()  {
         System.out.print("Start setup user ");
         if (ownerUser != null) {
             return null;
         }
         while(true){
-            LogMessage logMessage = (LogMessage) this.theClient.recvObject(); //receive a LogMessage
+            LogMessage logMessage = null; //receive a LogMessage
+            logMessage = (LogMessage) this.theClient.recvObject();
+
             String action = logMessage.getAction();
             if(action.equals(LOG_SIGNIN) ){
                 System.out.print("User tries to log in  ");
@@ -92,7 +96,7 @@ public class ClientThread extends Thread {
      *    3. Refresh games
      *    4. LogOut
      */
-    protected void trySetUpGame() {
+    protected void trySetUpGame()  {
         if(gameOnGoing != null){
             return;
         }
@@ -100,7 +104,8 @@ public class ClientThread extends Thread {
 
         //2. select an option
         while(true){
-            GameMessage gameMessage = (GameMessage) this.theClient.recvObject();
+            GameMessage gameMessage = null;
+            gameMessage = (GameMessage) this.theClient.recvObject();
             String action = gameMessage.getAction();
             if(action.equals(GAME_CREATE) && tryCreateAGame(gameMessage)){
                 return;//if create successfully
@@ -155,13 +160,13 @@ public class ClientThread extends Thread {
         if(gameOnGoing == null){
             return;
         }
-        doActionPhase();
+        doActionPhaseOneTurn();
         while(!gameOnGoing.gameState.isDoneUpdateGame()){}
         waitBeforeEnterUpdatingState();
         checkResultOneTurn();
     }
 
-    protected void doActionPhase(){
+    protected void doActionPhaseOneTurn(){
         // if Done or SwitchOut
 
     }

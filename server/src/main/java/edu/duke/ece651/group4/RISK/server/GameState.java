@@ -14,17 +14,17 @@ import static edu.duke.ece651.group4.RISK.server.ServerConstant.*;
  * */
 
 public class GameState extends State{
-    HashSet<PlayerState> playersState;
+    HashSet<PlayerState> playerStates;
     private boolean isDonePlaceUnits;
 
     public GameState(){
         super(GAME_STATE_WAIT_TO_UPDATE);
-        playersState = new HashSet<PlayerState>();
+        playerStates = new HashSet<PlayerState>();
         isDonePlaceUnits = false;
     }
 
     public boolean changAPlayerStateTo(String username, String state){
-        for(PlayerState ps : playersState){
+        for(PlayerState ps : playerStates){
             if(ps.getUsername().equals(username)){
                 ps.updateStateTo(state);
             }
@@ -36,7 +36,7 @@ public class GameState extends State{
     * This set active Players (not SwitchOut) ' state to PLAYER_STATE_UPDATING
     * */
     public void setActivePlayersStateToUpdating(){
-        for (PlayerState ps : playersState) {
+        for (PlayerState ps : playerStates) {
             if(ps.isActive()){
                 ps.updateStateTo(PLAYER_STATE_UPDATING);
             }
@@ -44,14 +44,14 @@ public class GameState extends State{
     }
 
     public void addPlayerState(String username){
-        playersState.add(new PlayerState(username));
+        playerStates.add(new PlayerState(username));
     }
     /*
     * This checks if all players finish one turn
     * game will update the game after it
     * */
     public boolean isAllPlayersDoneOneTurn(){
-        for (PlayerState ps : playersState) {
+        for (PlayerState ps : playerStates) {
             if(!ps.isDoneOneTurn()){return false;}
         }
         return true;
@@ -62,7 +62,7 @@ public class GameState extends State{
      * game will enter GAME_STATE_WAIT_TO_UPDATE state to do action
      * */
     public boolean isAllPlayersDoneUpdatingState(){
-        for (PlayerState ps : playersState) {
+        for (PlayerState ps : playerStates) {
             if(ps.isUpdating()){return false;}
         }
         return true;

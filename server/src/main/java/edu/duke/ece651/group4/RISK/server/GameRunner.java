@@ -22,7 +22,6 @@ public class GameRunner extends Thread{
             while(!game.gameState.isAllPlayersDoneOneTurn()){} // wait until all players finish updating their turn
             //Update the game
             game.updateGameAfterOneTurn();
-
             game.gameState.updateStateTo(GAME_STATE_DONE_UPDATE);
             game.gameState.setActivePlayersStateToUpdating();
             game.notifyAll(); // notify all players to enter updating state

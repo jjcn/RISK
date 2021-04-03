@@ -1,23 +1,25 @@
-//package edu.duke.ece651.group4.RISK.shared;
-//
-//import org.junit.jupiter.api.BeforeAll;
-//import org.junit.jupiter.api.Test;
-//
-//import java.io.BufferedReader;
-//import java.io.IOException;
-//import java.io.InputStreamReader;
-//import java.net.ServerSocket;
-//import java.net.Socket;
-//import java.util.ArrayList;
-//import java.util.List;
-//import java.util.Random;
-//
-//import static org.junit.jupiter.api.Assertions.*;
-//
-//class ClientTest {
-//    private final static int PORT = 1107;
-//    static ServerSocket hostSocket;
-//
+package edu.duke.ece651.group4.RISK.shared;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+import static edu.duke.ece651.group4.RISK.shared.Constant.SOCKET_HOSTNAME;
+import static edu.duke.ece651.group4.RISK.shared.Constant.SOCKET_PORT;
+import static org.junit.jupiter.api.Assertions.*;
+
+class ClientTest {
+    private final static int PORT = 1107;
+    static ServerSocket hostSocket;
+
 //    @BeforeAll
 //    static void setUpAll() throws IOException {
 //        hostSocket = new ServerSocket(PORT);
@@ -131,7 +133,12 @@
 //        }
 //        clientSocket.close();
 //    }
-//
-//
-//
-//}
+
+    @Test
+    public void test_connection() throws IOException {
+
+        Client clientSocket = new Client(SOCKET_HOSTNAME,9999); //new Client("localhost",SOCKET_PORT);
+
+    }
+
+}

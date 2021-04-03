@@ -21,21 +21,14 @@ public class HostApp implements Runnable {
     ServerSocket hostSocket;
     HashSet<Game> games;
     HashSet<User> users;
-    static int port ;
 
     public HostApp(ServerSocket s){
         this.hostSocket = s;
         games = new HashSet<Game>();
         users = new HashSet<User>();
-        port = SOCKET_PORT;
     }
 
-    public static void main(String[] args) throws IOException {
-        ServerSocket hostSocket = new ServerSocket(port);
-        HostApp hostApp = new HostApp(hostSocket);
-        System.out.println("Server starts to run");
-        hostApp.run();
-    }
+
 
     /*
      * This setup connection between server and clients
@@ -47,22 +40,29 @@ public class HostApp implements Runnable {
      *  */
 
     public void acceptConnection(){
-        try {
             while(true) {
-                Socket s = hostSocket.accept();
-                Client theClient = new Client(s);
-                ClientThread theThread = new ClientThread(games, users,theClient);
-                System.out.println("Get one Client");
-                theThread.start();
+                try {
+                    System.out.println("Start to listen to clients");
+                    Socket s = hostSocket.accept();
+                    Client theClient = new Client(s);
+                    ClientThread theThread = new ClientThread(games, users,theClient);
+                    System.out.println("Get one Client");
+                    theThread.start();
+                }catch(IOException e){
+                    System.out.println("HostApp: Issue with acceptConnection.");
+                }
             }
-        }catch(IOException e){
-            System.out.println("HostApp: Issue with acceptConnection.");
-        }
+
     }
 
-    @Override
     public void run() {
         acceptConnection();
     }
 
+    public static void main(String[] args) throws IOException {
+        ServerSocket hostSocket = new ServerSocket(SOCKET_PORT);
+        HostApp hostApp = new HostApp(hostSocket);
+        System.out.println("Server starts to run");
+        hostApp.run();
+    }
 }

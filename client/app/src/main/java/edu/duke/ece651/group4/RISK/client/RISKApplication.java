@@ -22,12 +22,22 @@ public class RISKApplication extends Application {
         System.out.println("Successfully create");
         Log.i("s", "Success");
         super.onCreate();
-        try {
-            this.playerClient=new Client(SOCKET_HOSTNAME, SOCKET_PORT);
-            Log.i("s", "Success");
-        } catch (IOException e) {
-            e.printStackTrace();
+        new Thread( ()-> {
+            try{
+                playerClient = new Client("vcm-18527.vm.duke.edu",SOCKET_PORT);
+            } catch (IOException e) {
+                Log.e("s", "FAIL*******************");
+                e.printStackTrace();
+            }
         }
+        ).start();
+//        try {
+//            this.playerClient=new Client(SOCKET_HOSTNAME, SOCKET_PORT);
+//            Log.e("s", "Success");
+//        } catch (IOException e) {
+//            Log.e("s", "Connection fails");
+//            e.printStackTrace();
+//        }
         this.theWorld=null;
         this.totalPopulation = 15;
         this.rnd=new Random();
