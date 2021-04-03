@@ -408,6 +408,8 @@ public class World implements Serializable {
      * Add unit to all territories.
      * @param num is the number of units to add to every territory.
      */
+    // TODO: unit now has level.
+    // At the end of every turn, add a level 0 unit to every territory.
     public void addUnitToAll(int num) {
         if (num < 0) {
             throw new IllegalArgumentException(NOT_POSITIVE_MSG);
