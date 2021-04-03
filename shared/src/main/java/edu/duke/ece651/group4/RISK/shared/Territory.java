@@ -220,8 +220,10 @@ public class Territory implements Serializable {
         return this.ownerTroop.getDict();
     }
 
-    public int upDate(String from, int levelUp,int num,int resource){
-        return this.ownerTroop.updateUnit(from,levelUp,num,resource);
+    public int upgrade(int before, int after, int nUnit,
+                       int nResource) {
+        String jobName = String.format("Soldier LV%d", before); // TODO: this is hardcoded
+        return ownerTroop.updateUnit(jobName, after - before, nUnit, nResource);
     }
 
 
