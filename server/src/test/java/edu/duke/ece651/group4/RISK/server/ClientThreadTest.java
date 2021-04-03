@@ -1,27 +1,29 @@
-//package edu.duke.ece651.group4.RISK.server;
-//
-//import edu.duke.ece651.group4.RISK.shared.*;
-//import org.junit.jupiter.api.AfterAll;
-//import org.junit.jupiter.api.BeforeAll;
-//import org.junit.jupiter.api.Test;
-//import org.junit.jupiter.api.TestInstance;
-//
-//import java.io.IOException;
-//import java.net.ServerSocket;
-//import java.net.Socket;
-//import java.util.ArrayList;
-//import java.util.HashMap;
-//import java.util.List;
-//import java.util.concurrent.CyclicBarrier;
-//
-//import static org.junit.jupiter.api.Assertions.*;
-//@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-//class ClientThreadTest {
-//    private final static int TIME = 500;
-//    private final static int PORT = 7777;
-//    static ServerSocket hostSocket;
-//    Client theClient;
-//    World theWorld;
+package edu.duke.ece651.group4.RISK.server;
+
+import edu.duke.ece651.group4.RISK.shared.*;
+import edu.duke.ece651.group4.RISK.shared.message.LogMessage;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.CyclicBarrier;
+
+import static edu.duke.ece651.group4.RISK.shared.Constant.*;
+import static org.junit.jupiter.api.Assertions.*;
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+class ClientThreadTest {
+    private final static int TIME = 500;
+    private final static int PORT = 7777;
+    static ServerSocket hostSocket;
+    Client theClient;
+    World theWorld;
 //    @BeforeAll
 //    public void setUpAll() throws InterruptedException {
 //        new Thread(() -> {
@@ -120,5 +122,18 @@
 //        hostSocket.close();
 //        System.out.println("close server");
 //    }
+
+//    @Test
+//    public void test_connection() throws IOException {
 //
-//}
+//        Client clientSocket = new Client("vcm-18527.vm.duke.edu",SOCKET_PORT); //new Client("localhost",9999); //new Client("localhost",SOCKET_PORT);
+//        String name = "1";
+//        String pwd = "2";
+//        clientSocket.sendObject(new LogMessage(name,pwd,LOG_SIGNUP));
+//        String res = (String) clientSocket.recvObject();
+//        assertEquals(null,res);
+//        clientSocket.sendObject(new LogMessage(name,pwd,LOG_SIGNIN));
+//        while(true){}
+//    }
+
+}

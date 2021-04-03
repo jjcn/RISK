@@ -24,7 +24,7 @@ public class RISKApplication extends Application {
         super.onCreate();
         new Thread( ()-> {
             try{
-                playerClient = new Client(SOCKET_HOSTNAME,SOCKET_PORT);
+                playerClient = new Client("vcm-18527.vm.duke.edu",SOCKET_PORT);
             } catch (IOException e) {
                 Log.e("s", "FAIL*******************");
                 e.printStackTrace();

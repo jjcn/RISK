@@ -36,8 +36,8 @@ public class ClientThread extends Thread {
             return null;
         }
         while(true){
-            LogMessage logMessage = null; //receive a LogMessage
-            logMessage = (LogMessage) this.theClient.recvObject();
+//            LogMessage logMessage = null; //receive a LogMessage
+            LogMessage logMessage = (LogMessage) this.theClient.recvObject();
 
             String action = logMessage.getAction();
             if(action.equals(LOG_SIGNIN) ){
@@ -104,8 +104,8 @@ public class ClientThread extends Thread {
 
         //2. select an option
         while(true){
-            GameMessage gameMessage = null;
-            gameMessage = (GameMessage) this.theClient.recvObject();
+//            GameMessage gameMessage = null;
+            GameMessage gameMessage = (GameMessage) this.theClient.recvObject();
             String action = gameMessage.getAction();
             if(action.equals(GAME_CREATE) && tryCreateAGame(gameMessage)){
                 return;//if create successfully
