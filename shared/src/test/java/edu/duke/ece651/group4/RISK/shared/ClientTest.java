@@ -133,12 +133,12 @@ class ClientTest {
 //        }
 //        clientSocket.close();
 //    }
-
+//
 //    @Test
 //    public void test_connection() throws IOException {
 //
-//        Client clientSocket = new Client("vcm-18527.vm.duke.edu",9999); //new Client("localhost",SOCKET_PORT);
-//
+//        Client clientSocket = new Client("vcm-19654.vm.duke.edu",SOCKET_PORT); //new Client("localhost",9999); //new Client("localhost",SOCKET_PORT);
+//        while(true){}
 //    }
 
 }

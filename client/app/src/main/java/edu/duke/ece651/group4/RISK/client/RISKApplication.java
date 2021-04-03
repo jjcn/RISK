@@ -16,7 +16,7 @@ public class RISKApplication extends Application {
     private World theWorld;
     private int totalPopulation;
     private Random rnd;
-
+    static String response;
     @Override
     public void onCreate() {
         System.out.println("Successfully create");
@@ -24,29 +24,25 @@ public class RISKApplication extends Application {
         super.onCreate();
         new Thread( ()-> {
             try{
-                playerClient = new Client("vcm-19611.vm.duke.edu",SOCKET_PORT);
+                playerClient = new Client("vcm-18527.vm.duke.edu",SOCKET_PORT);
             } catch (IOException e) {
                 Log.e("s", "FAIL*******************");
                 e.printStackTrace();
             }
         }
         ).start();
-//        try {
-//            this.playerClient=new Client(SOCKET_HOSTNAME, SOCKET_PORT);
-//            Log.e("s", "Success");
-//        } catch (IOException e) {
-//            Log.e("s", "Connection fails");
-//            e.printStackTrace();
-//        }
         this.theWorld=null;
         this.totalPopulation = 15;
         this.rnd=new Random();
     }
 
-    protected static String sendAccountInfo(String name, String pwd, String actName) {
-        LogMessage m= new LogMessage(name,pwd,actName);
-        playerClient.sendObject(m);
-        String response = (String) playerClient.recvObject();
+    protected static String sendAccountInfo( String actName,String name, String pwd) {
+        response = null;
+        new Thread( ()-> {
+            LogMessage m = new LogMessage(actName, name, pwd);
+            playerClient.sendObject(m);
+            response = (String) playerClient.recvObject();
+        }).start();
         return response;
     }
 
@@ -57,7 +53,7 @@ public class RISKApplication extends Application {
      * @return null if succeed, a error message if false
      * */
     public static String sendSignIn(String name,String pwd) {
-        return sendAccountInfo(name, pwd, LOG_SIGNIN);
+        return sendAccountInfo(LOG_SIGNIN,name, pwd);
     }
 
     /*
@@ -67,7 +63,7 @@ public class RISKApplication extends Application {
     * @return null if succeed, a error message if false
     * */
     public static String sendSignUp(String name,String pwd) {
-        return sendAccountInfo(name, pwd, LOG_SIGNUP);
+        return sendAccountInfo(LOG_SIGNUP, name, pwd);
     }
 
 

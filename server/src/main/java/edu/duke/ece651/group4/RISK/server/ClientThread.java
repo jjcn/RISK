@@ -31,15 +31,15 @@ public class ClientThread extends Thread {
      *  3.ExitApp
      * */
     public String trySetUpUser()  {
-        System.out.print("Start setup user ");
+        System.out.println("Start setup user ");
         if (ownerUser != null) {
             return null;
         }
         while(true){
-            LogMessage logMessage = null; //receive a LogMessage
-            logMessage = (LogMessage) this.theClient.recvObject();
-
+//            LogMessage logMessage = null; //receive a LogMessage
+            LogMessage logMessage = (LogMessage) this.theClient.recvObject();
             String action = logMessage.getAction();
+            System.out.println("get Message: " + action);
             if(action.equals(LOG_SIGNIN) ){
                 System.out.print("User tries to log in  ");
                 String resIn = tryLogIn(logMessage.getUsername(), logMessage.getPassword());
@@ -104,11 +104,14 @@ public class ClientThread extends Thread {
 
         //2. select an option
         while(true){
-            GameMessage gameMessage = null;
-            gameMessage = (GameMessage) this.theClient.recvObject();
+//            GameMessage gameMessage = null;
+            GameMessage gameMessage = (GameMessage) this.theClient.recvObject();
             String action = gameMessage.getAction();
-            if(action.equals(GAME_CREATE) && tryCreateAGame(gameMessage)){
-                return;//if create successfully
+            if(action.equals(GAME_CREATE)){
+                if(tryCreateAGame(gameMessage)){
+                    return;//if create successfully
+                }
+
             }
             if(action.equals(GAME_JOIN) && tryJoinAGame(gameMessage)){
                 return; // if Join successfully
