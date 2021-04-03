@@ -17,6 +17,10 @@ public class User {
         this(new UserInfo(id, username,password));
     }
 
+    public String getUsername(){
+        return this.userInfo.getUsername();
+    }
+
     public boolean checkUsernamePassword(String username, String password){
         if(!checkUsername(username)){
             return false;

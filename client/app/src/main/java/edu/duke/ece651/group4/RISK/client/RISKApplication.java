@@ -2,6 +2,7 @@ package edu.duke.ece651.group4.RISK.client;
 
 import android.app.Application;
 import android.os.Message;
+import android.util.Log;
 import edu.duke.ece651.group4.RISK.shared.*;
 import edu.duke.ece651.group4.RISK.shared.message.LogMessage;
 
@@ -18,19 +19,31 @@ public class RISKApplication extends Application {
 
     @Override
     public void onCreate() {
+        System.out.println("Successfully create");
+        Log.i("s", "Success");
         super.onCreate();
-        try {
-            this.playerClient=new Client(SOCKET_HOSTNAME, SOCKET_PORT);
-            System.out.print("Success");
-        } catch (IOException e) {
-            e.printStackTrace();
+        new Thread( ()-> {
+            try{
+                playerClient = new Client("vcm-19611.vm.duke.edu",SOCKET_PORT);
+            } catch (IOException e) {
+                Log.e("s", "FAIL*******************");
+                e.printStackTrace();
+            }
         }
+        ).start();
+//        try {
+//            this.playerClient=new Client(SOCKET_HOSTNAME, SOCKET_PORT);
+//            Log.e("s", "Success");
+//        } catch (IOException e) {
+//            Log.e("s", "Connection fails");
+//            e.printStackTrace();
+//        }
         this.theWorld=null;
         this.totalPopulation = 15;
         this.rnd=new Random();
     }
 
-    protected static String sendAccountInfo(String name, String pwd, String actName) throws IOException, ClassNotFoundException {
+    protected static String sendAccountInfo(String name, String pwd, String actName) {
         LogMessage m= new LogMessage(name,pwd,actName);
         playerClient.sendObject(m);
         String response = (String) playerClient.recvObject();
@@ -44,14 +57,7 @@ public class RISKApplication extends Application {
      * @return null if succeed, a error message if false
      * */
     public static String sendSignIn(String name,String pwd) {
-        try {
-            return sendAccountInfo(name, pwd, LOG_SIGNIN);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return sendAccountInfo(name, pwd, LOG_SIGNIN);
     }
 
     /*
@@ -61,13 +67,8 @@ public class RISKApplication extends Application {
     * @return null if succeed, a error message if false
     * */
     public static String sendSignUp(String name,String pwd) {
-        try {
-            return sendAccountInfo(name, pwd, LOG_SIGNUP);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return sendAccountInfo(name, pwd, LOG_SIGNUP);
     }
+
+
 }
