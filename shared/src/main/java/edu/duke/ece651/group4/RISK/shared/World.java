@@ -234,7 +234,7 @@ public class World implements Serializable {
      * 
      * A. Each move order consumes "food" resources. 
      *    Specifically, the cost of each move is 
-     * (total size of territories moved through) * (number of units moved).
+     *    (total size of territories moved through) * (number of units moved).
      * 
      * B. The minimum total cost valid path is picked.
      * 
@@ -276,19 +276,6 @@ public class World implements Serializable {
     }
 
     /**
-     * Overload
-     * @param start is the territory the troop starts from.
-     * @param troop is the troop to move.
-     * @param end is the territory the troop ends in.
-     */
-    @Deprecated
-    public void moveTroop(Territory start, Troop troop, Territory end) {
-        BasicOrder order = new BasicOrder(start.getName(), end.getName(), 
-                                            troop, 'M');
-        moveTroop(order);
-    }
-
-    /**
      * Calculate the quantity of resources consumed by an attack order.
      * An attack order costs 1 "food" resource per unit attacking.
      * @param order is the attack order.
@@ -316,21 +303,8 @@ public class World implements Serializable {
         }
         
         int nConsumedResource = calculateAttackConsumption(order);
-        
-        end.sendInEnemyTroop(start.sendOutTroop(troop));
-    }
 
-    /**
-     * Overload
-     * @param start is the territory the troop starts from.
-     * @param troop is the troop to send.
-     * @param end is the territory the troop ends in.
-     */
-    @Deprecated
-    public void attackATerritory(Territory start, Troop troop, Territory end) {
-        BasicOrder order = new BasicOrder(start.getName(), end.getName(), 
-                                          troop, 'A');
-        attackATerritory(order);
+        end.sendInEnemyTroop(start.sendOutTroop(troop));
     }
 
     /**
