@@ -11,4 +11,5 @@
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
     <string name="BACK">Back</string>
+    <string name="CHOOSE_ROOM_INSTR">Please choose the room you want to add</string>
 </resources>
