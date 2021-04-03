@@ -5,10 +5,12 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import androidx.appcompat.app.AppCompatActivity;
 import edu.duke.ece651.group4.RISK.client.R;
+import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
 
 import java.util.Objects;
 
@@ -33,10 +35,19 @@ public class SignupActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         impUI();
+    }
+
+    // back button at toolbar
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void impUI() {
@@ -44,6 +55,9 @@ public class SignupActivity extends AppCompatActivity {
         impSignUpBt();
     }
 
+    /**
+     * Set up Check if input
+     */
     private void impAccountInput() {
         // read input
         nameET = findViewById(R.id.editTextTextAccount);
@@ -120,7 +134,7 @@ public class SignupActivity extends AppCompatActivity {
         });
     }
 
-//    @Override
+    //    @Override
 //    public boolean onKeyDown(int keyCode, KeyEvent event) {
 //        if (keyCode==KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
 //            Intent loginIntent = new Intent(this,LoginActivity.class);
@@ -129,4 +143,5 @@ public class SignupActivity extends AppCompatActivity {
 //        }
 //        return false;
 //    }
+
 }

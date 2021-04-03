@@ -7,7 +7,7 @@ import android.widget.EditText;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import edu.duke.ece651.group4.RISK.client.*;
-import edu.duke.ece651.group4.RISK.client.RISKApplication;
+import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
 
 import java.util.Objects;
 

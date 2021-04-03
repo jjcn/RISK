@@ -1,4 +1,4 @@
-package edu.duke.ece651.group4.RISK.client.activity;
+package edu.duke.ece651.group4.RISK.client.listener;
 
 /**
  * Receive return objects from remote server.
@@ -11,7 +11,7 @@ public interface onReceiveListener {
     void onSuccess(Object o);
 
     /**
-     * @param errMesg error message
+     * @param errMsg error message
      */
     void onFailure(String errMsg);
 }

@@ -2,8 +2,8 @@ package edu.duke.ece651.group4.RISK.client;
 
 import android.app.Application;
 import android.util.Log;
-import edu.duke.ece651.group4.RISK.client.activity.onReceiveListener;
-import edu.duke.ece651.group4.RISK.client.activity.onResultListener;
+import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
+import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
 import edu.duke.ece651.group4.RISK.shared.*;
 import edu.duke.ece651.group4.RISK.shared.message.LogMessage;
 
@@ -131,4 +131,27 @@ public class RISKApplication extends Application {
         sendAccountInfo(LOG_SIGNUP, name, pwd, listener);
     }
 
+//    public static void waitStart(onReceiveListener listener) {
+//        receive(new onReceiveListener() {
+//            @Override
+//            public void onFailure(String error) {
+//                listener.onFailure(error);
+//            }
+//
+//            @Override
+//            public void onSuccess(Object received) {
+//                if (received instanceof World) {
+//                    // players full
+//                    try {
+//                        listener.onSuccess(received);
+//                    } catch (Exception e) {
+//                        Log.e(TAG, "waitStart: " + e.toString());
+//                        listener.onFailure(e.toString());
+//                    }
+//                }else{
+//                    waitStart(listener);
+//                }
+//            }
+//        });
+//    }
 }

@@ -13,14 +13,14 @@
             android:id="@+id/roomIDTV"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Room ID:"
+            android:text="@string/ID_INSTRU"
     />
 
     <TextView
             android:id="@+id/playerTV"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Players:"
+            android:text="@string/ROOMINFO"
     />
 
 </LinearLayout>
