@@ -8,46 +8,34 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public class GraphTest {
-    String[] names = 
-        "Narnia, Midkemia, Oz, Gondor, Mordor, Hogwarts, Scadrial, Elantris, Roshar".split(", ");
-
-    /**
-     * Creates a test graph. Same as the one on Evolution 1 requirements.
-     */
-    public Graph<String> createGraphFantasy() {
-        Graph<String> graph = new Graph<>();
-        for (String name: names) {
-            graph.addVertex(name);
-        }
-        graph.addEdge("Narnia", "Midkemia");
-        graph.addEdge("Narnia", "Elantris");
-        graph.addEdge("Midkemia", "Elantris");
-        graph.addEdge("Midkemia", "Scadrial");
-        graph.addEdge("Midkemia", "Oz");
-        graph.addEdge("Oz", "Scadrial");
-        graph.addEdge("Oz", "Mordor");
-        graph.addEdge("Oz", "Gondor");
-        graph.addEdge("Gondor", "Mordor");
-        graph.addEdge("Elantris", "Scadrial");
-        graph.addEdge("Elantris", "Roshar");
-        graph.addEdge("Scadrial", "Roshar");
-        graph.addEdge("Scadrial", "Hogwarts");
-        graph.addEdge("Scadrial", "Mordor");
-        graph.addEdge("Mordor", "Hogwarts");
-
-        return graph;
-    }
+    GraphFactory gf = new GraphFactory();
+    
+    String[] names = {"Narnia", "Midkemia", "Oz", "Gondor", "Mordor",
+	                  "Hogwarts", "Scadrial", "Elantris", "Roshar"};
 
     @Test
     public void testCreation() {
+    	boolean[][] emptyAdjMatrix = new boolean[0][0];
+    	
         Graph<Integer> intGraph = new Graph<>();
+        assertEquals(intGraph.size(), 0);
+        assertEquals(intGraph.weights.size(), 0);
+        assertArrayEquals(intGraph.adjMatrix, emptyAdjMatrix);
+        
         Graph<Territory> terrGraph = new Graph<>();
-
+        assertEquals(terrGraph.size(), 0);
+        assertEquals(terrGraph.weights.size(), 0);
+        assertArrayEquals(terrGraph.adjMatrix, emptyAdjMatrix);
+        
         List<Character> vertices = new ArrayList<>(Arrays.asList('a', 'b', 'c'));
         boolean adjMatrix[][] = {{false, true, true}, {true, false, true}, {true, true, false}};
         Graph<Character> charGraph = new Graph<>(vertices, adjMatrix);
+        assertEquals(charGraph.size(), 3);
+        assertEquals(charGraph.weights.size(), 0);
+        assertArrayEquals(charGraph.adjMatrix, adjMatrix);
     }
 
     @Test
@@ -65,22 +53,27 @@ public class GraphTest {
         List<Integer> copy = new ArrayList<>(list);
         list.set(0, 5);
 
-        assertEquals(0, copy.get(0));
+        assertEquals(copy.get(0), new Integer(0));
     }
 
     /**
      * Helper function that prints out adjacent matrix as 0's and 1's.
      * @param matrix is a boolean adjacent matrix
      */
-    public void print2dArray(boolean[][] matrix) {
-        for (int i = 0; i < matrix[0].length; i++) {
-            for (int j = 0; j < matrix[0].length; j++) {
-                System.out.print((matrix[i][j] == true ? 1 : 0) + " ");
+    public void print2dArray(boolean[][] mat) {
+        for (int i = 0; i < mat[0].length; i++) {
+            for (int j = 0; j < mat[0].length; j++) {
+                System.out.print((mat[i][j] == true ? 1 : 0) + " ");
             }
             System.out.println();
         }
     }
 
+    /**
+     * Helper function that checks if a square matrix is symmetric along its diagnosis.
+     * @param mat
+     * @return
+     */
     public boolean isDiagonalSymmetric(boolean[][] mat) {
         for (int i = 0; i < mat.length; i++) {
             for (int j = 0; j < mat[0].length; j++) {
@@ -92,6 +85,11 @@ public class GraphTest {
         return true;
     }
 
+    /**
+     * Checks if all elements on the diagonsis is boolean true.
+     * @param mat
+     * @return
+     */
     public boolean isDiagonalTrue(boolean[][] mat) {
         for (int i = 0; i < mat.length; i++) {
             if (mat[i][i] == true) {
@@ -110,7 +108,7 @@ public class GraphTest {
             intGraph.addVertex(i);
         }
         intGraph.addRandomEdges(intGraph.size(), new Random(0));
-        print2dArray(intGraph.adjMatrix);
+        // print2dArray(intGraph.adjMatrix);
         assertTrue(isDiagonalSymmetric(intGraph.adjMatrix));
         assertFalse(isDiagonalTrue(intGraph.adjMatrix));
     }
@@ -119,25 +117,21 @@ public class GraphTest {
     public void testGetSize() {
         Graph<Integer> graph = new Graph<>();
         assertEquals(0, graph.size());
+        assertEquals(0, graph.weights.size());
         graph.addVertex(1);
         assertEquals(1, graph.size());
+        assertEquals(1, graph.weights.size());
         graph.addVertex(2);
         assertEquals(2, graph.size());
+        assertEquals(2, graph.weights.size());
         graph.addVertex(3);
         assertEquals(3, graph.size());
-        /*
-        graph.removeVertex(3);
-        assertEquals(2, graph.size());
-        graph.removeVertex(2);
-        assertEquals(1, graph.size());
-        graph.removeVertex(0);
-        assertEquals(1, graph.size());
-        */
+        assertEquals(3, graph.weights.size());
     }
 
     @Test
     public void testGetVertices() {
-        Graph<String> graph = createGraphFantasy();
+        Graph<String> graph = gf.createStringGraphFantasy();
         
         List<String> expected = new ArrayList<>();
         for (String name: names) {
@@ -149,7 +143,7 @@ public class GraphTest {
 
     @Test
     public void testGetAdjacentVertices() {
-        Graph<String> graph = createGraphFantasy();
+        Graph<String> graph = gf.createStringGraphFantasy();
 
         List<String> adjsScadrial = graph.getAdjacentVertices("Scadrial");
         List<String> expectedScadrial = new ArrayList<>();
@@ -169,6 +163,42 @@ public class GraphTest {
         assertTrue(adjsGondor.containsAll(expectedGondor));
     }
 
+    public void printVerticesAndWeights(Graph graph) {
+    	graph.vertices.forEach(v -> 
+    						System.out.println(v.toString()
+			    							   + " " 
+			    							   + graph.getWeight(v)));
+    }
+    
+    @Test
+    public void testSetWeight() {
+    	Graph<String> graph = gf.createStringGraphFantasy();
+    	graph.setWeight("Scadrial", 10);
+    	graph.setWeight("Mordor", 7);
+    	
+    	assertEquals(10, graph.getWeight("Scadrial"));
+    	assertEquals(7, graph.getWeight("Mordor"));
+    	assertEquals(0, graph.getWeight("Narnia"));
+    	
+    	//visual display of weights
+    	//printVerticesAndWeights(graph);
+    }
+    
+    @Test
+    public void testSetWeights() {
+    	Graph<String> graph = gf.createStringGraphFantasy();
+    	
+    	int[] weights = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+    	List<Integer> weightList = Arrays.stream(weights)
+						    			 .boxed()
+						    			 .collect(Collectors.toList());
+    	graph.setWeights(weightList);
+    	
+    	assertEquals(9, graph.getWeight("Roshar"));
+    	assertEquals(5, graph.getWeight("Mordor"));
+    	assertEquals(1, graph.getWeight("Narnia"));
+    }
+    
     @Test
     public void testAddVertex() {
         Graph<Integer> graph = new Graph<>();
@@ -183,11 +213,6 @@ public class GraphTest {
         assertTrue(graph.getVertices().containsAll(expected));
     }
     
-    @Test
-    public void testRemoveVertex() {
-        // TODO
-    }
-
     /**
      * Helper function that tests if adjacents of a vertex is as expected. 
      * @param graph is the graph
@@ -228,21 +253,14 @@ public class GraphTest {
     }
 
     @Test
-    public void testRemoveEdge() {
-        // TODO
+    public void testIsAdjacent() {
+    	Graph<String> graph = gf.createStringGraphFantasy();
+    	
+    	assertTrue(graph.isAdjacent("Narnia", "Midkemia"));
+    	assertTrue(graph.isAdjacent("Narnia", "Elantris"));
+    	assertFalse(graph.isAdjacent("Narnia", "Oz"));
     }
-
-    /*
-    @Test
-    public void testIterator() {
-        Graph<String> graph = createTestGraph1();
-        GraphIterator gi = graph.iterator();
-        while (gi.hasNext()) {
-            System.out.println(gi.next());
-        }
-    }
-    */
-
+    
     @Test
     public void testIsValid() {
         // empty graph
@@ -255,7 +273,7 @@ public class GraphTest {
         assertFalse(graphOneVertex.isValid());
 
         // fantasy 
-        Graph<String> graphFantasy = createGraphFantasy();
+        Graph<String> graphFantasy = gf.createStringGraphFantasy();
         assertTrue(graphFantasy.isValid());
 
         // random using addRandomEdges()
@@ -284,7 +302,7 @@ public class GraphTest {
         assertTrue(graphOneVertex.hasPath(1, 1));
 
         // fantasy 
-        Graph<String> graphFantasy = createGraphFantasy();
+        Graph<String> graphFantasy = gf.createStringGraphFantasy();
         assertTrue(graphFantasy.hasPath("Mordor", "Mordor"));
         assertTrue(graphFantasy.hasPath("Mordor", "Gondor"));
         assertTrue(graphFantasy.hasPath("Oz", "Scadrial"));
@@ -300,12 +318,43 @@ public class GraphTest {
         assertFalse(graphNotFullyConnected.hasPath(2, 4));
     }
 
+    // TODO: fix this method
+    @Test
+    public void testCalculateShortestPath() {
+    	Graph<String> graph = gf.createStringGraphFantasy();
+    	
+    	// use troop size on evol1 picture1 as territory size.
+    	int[] weights = {10, 12, 8, 13, 14, 3, 5, 6, 3};
+    	List<Integer> weightList = Arrays.stream(weights)
+						    			 .boxed()
+						    			 .collect(Collectors.toList());
+    	graph.setWeights(weightList);
+    	
+    	assertEquals(16, graph.calculateShortestPath("Narnia", "Elantris"));
+    	assertEquals(19, graph.calculateShortestPath("Narnia", "Roshar"));
+    	assertEquals(16, graph.calculateShortestPath("Oz", "Roshar"));
+    	
+    }
+    
+    public void testCalculateShortestPathNotReachable() {
+    	Graph<String> graph = gf.createStringGraphSeparated();
+    	
+    	int[] weights = {1, 2, 3, 4, 5};
+    	List<Integer> weightList = Arrays.stream(weights)
+						    			  .boxed()
+						    			  .collect(Collectors.toList());
+    	graph.setWeights(weightList);
+    	
+    	assertThrows(IllegalArgumentException.class,
+                     () -> graph.calculateShortestPath("A", "E"));
+    }
+    
     @Test
     public void testEquals() {
         assertEquals(new Graph<Integer>(), new Graph<Integer>());
         assertNotEquals(new Graph<String>(), null);
 
-        assertEquals(createGraphFantasy(), createGraphFantasy());
+        assertEquals(gf.createStringGraphFantasy(), gf.createStringGraphFantasy());
 
         List<Integer> list1 = new ArrayList<>(Arrays.asList(1, 2, 3));
         List<Integer> list2 = new ArrayList<>(Arrays.asList(5, 6, 7));
@@ -323,14 +372,14 @@ public class GraphTest {
 
     @Test
     public void testToString() {
-        Graph<String> graph1 = createGraphFantasy();
+        Graph<String> graph1 = gf.createStringGraphFantasy();
         Graph<String> graph2 = new Graph<>();
         assertNotEquals(graph1.toString(), graph2.toString());
     } 
 
     @Test
     public void testHashcode() {
-        Graph<String> graph1 = createGraphFantasy();
+        Graph<String> graph1 = gf.createStringGraphFantasy();
         Graph<String> graph2 = new Graph<>();
         assertNotEquals(graph1.hashCode(), graph2.hashCode());
     }

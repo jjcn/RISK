@@ -21,6 +21,10 @@ import java.io.Serializable;
  */
 public class World implements Serializable {
     /**
+     * Auto-generated serialVersionUID
+     */
+    private static final long serialVersionUID = 4696428798493622247L;
+    /**
      * Error messages
      */
     protected final String INDIVISIBLE_MSG = 
@@ -34,7 +38,13 @@ public class World implements Serializable {
      * All territories in the world. Implemented with a graph structure.
      */
     public Graph<Territory> territories;
+    /**
+     * Order checker
+     */
     private final OrderChecker basicOrderChecker;
+    /**
+     * Random seed to use with random division of territories.
+     */
     private final Random rnd;
 
     /**
@@ -108,17 +118,19 @@ public class World implements Serializable {
     }
  
     /**
-     * Get a deep copy of a world object.
+     * Creates a deep copy of a world object.
      * @return a deep copy of the world object.
      */
-    public World clone() {
-        boolean[][] adjMatrixCopy = territories.cloneAdjMatrix();
-        ArrayList<Territory> old = (ArrayList<Territory>)territories.getVertices();
-        ArrayList<Territory> cpy=new ArrayList<>();
+    public World clone() {  
+        List<Territory> old = territories.getVertices();
+        List<Territory> cpy = new ArrayList<>();
         for (Territory item : old) {
             cpy.add(item.clone());
         }
-        return new World(new Graph<>(cpy,adjMatrixCopy), this.rnd);
+        List<Integer> weightsCopy = territories.cloneWeights();
+        boolean[][] adjMatrixCopy = territories.cloneAdjMatrix();
+
+        return new World(new Graph<>(cpy, weightsCopy, adjMatrixCopy), this.rnd);
     }
 
     /**
@@ -191,6 +203,22 @@ public class World implements Serializable {
     public void addConnection(String name1, String name2) {
         addConnection(findTerritory(name1), findTerritory(name2));
     }
+    
+    /**
+     * Finds a territory by its name.
+     * If the territory exists, returns that territory of that name.
+     * If not, an exception will be thrown.
+     * @param terrName is the territory name to search.
+     * @return the specified territory.
+     */
+    public Territory findTerritory(String terrName) {
+        for (Territory terr : territories.getVertices()) {
+            if (terr.getName().equals(terrName)) {
+                return terr;
+            }
+        }
+        throw new NoSuchElementException(String.format(TERRITORY_NOT_FOUND_MSG, terrName));
+    }
 
     /**
      * Station troop to a territory.
@@ -212,14 +240,36 @@ public class World implements Serializable {
         terr.initializeTerritory(population, terr.getOwner());
     }
 
-    // TODO: moveTroop and attackTerritory shares similar arg list and behavior.
-    // May integrrate into a single function:
-    // public void executeOrder()
+     /**
+     * Calculate the quantity of resources consumed by a move order.
+     * 
+     * A. Each move order consumes "food" resources. 
+     *    Specifically, the cost of each move is 
+     *    (total size of territories moved through) * (number of units moved).
+     * 
+     * B. The minimum total cost valid path is picked.
+     * 
+     * @param order is the move order.
+     * @return quantity of consumed resources.  
+     */
+    protected int calculateMoveConsumption(BasicOrder order) {
+        Territory start = findTerritory(order.getSrcName());
+        Territory end = findTerritory(order.getDesName());
+        Troop troop = order.getActTroop();
+
+        int lengthShortestPath = territories.calculateShortestPath(start, end);
+        int nUnits = troop.size();
+        int nConsumedResource = lengthShortestPath * nUnits;
+
+        return nConsumedResource;
+    }
 
     /**
      * Moves a troop to a different a territory. Owner of the troop is not checked.
      * Also checks if the troop size is valid to send from the starting territory.
-     * @param order
+     * Consumes food resource.
+     * 
+     * @param order is a move order.
      */
     public void moveTroop(BasicOrder order) {
         Territory start = findTerritory(order.getSrcName());
@@ -231,28 +281,27 @@ public class World implements Serializable {
             throw new IllegalArgumentException(errorMsg);
         }
         
-        start.sendOutTroop(troop);
-        end.sendInTroop(troop);
+        int nConsumedResource = calculateMoveConsumption(order);
+
+        end.sendInTroop(start.sendOutTroop(troop));
     }
 
     /**
-     * Overload
-     * @param start is the territory the troop starts from.
-     * @param troop is the troop to move.
-     * @param end is the territory the troop ends in.
+     * Calculate the quantity of resources consumed by an attack order.
+     * An attack order costs 1 "food" resource per unit attacking.
+     * @param order is the attack order.
+     * @return quantity of consumed resources.
      */
-    @Deprecated
-    public void moveTroop(Territory start, Troop troop, Territory end) {
-        BasicOrder order = new BasicOrder(start.getName(), end.getName(), 
-                                            troop, 'M');
-        moveTroop(order);
+    protected int calculateAttackConsumption(BasicOrder order) {
+        return order.getActTroop().size();
     }
 
     /**
      * Sends a troop to a territory with different owner, 
      * in order to engage in battle on that territory.
      * Also checks if the troop size is valid to send from the starting territory.
-     * @param order is the attack order
+     * Consumes food resource.
+     * @param order is the attack order.
      */
     public void attackATerritory(BasicOrder order) {
         Territory start = findTerritory(order.getSrcName());
@@ -264,21 +313,24 @@ public class World implements Serializable {
             throw new IllegalArgumentException(errorMsg);
         }
         
-        start.sendOutTroop(troop);
-        end.sendInEnemyTroop(troop);
+        int nConsumedResource = calculateAttackConsumption(order);
+
+        end.sendInEnemyTroop(start.sendOutTroop(troop));
     }
 
     /**
-     * Overload
-     * @param start is the territory the troop starts from.
-     * @param troop is the troop to send.
-     * @param end is the territory the troop ends in.
+     * Upgrades troop on a territory.
+     * @param terr is the territory to upgrade its troop.
+     * @param before is the level of unit before upgrade.
+     * @param after is the level of unit after the upgrade.
+     * @param nUnit is the number of units to upgrade.
+     * @param nResource is the quantity of resource at hand.
+     * @return remaining resource after the upgrade.
      */
-    @Deprecated
-    public void attackATerritory(Territory start, Troop troop, Territory end) {
-        BasicOrder order = new BasicOrder(start.getName(), end.getName(), 
-                                          troop, 'A');
-        attackATerritory(order);
+    public void upgradeTroop(Territory terr, 
+                            int before, int after, int nUnit, 
+                            int nResource) { 
+        int remainder = terr.upgrade(before, after, nUnit, nResource);
     }
 
     /**
@@ -313,22 +365,6 @@ public class World implements Serializable {
      */
     public boolean checkIfAdjacent(String name1, String name2) {
         return checkIfAdjacent(findTerritory(name1), findTerritory(name2));
-    }
-
-    /**
-     * Finds a territory by its name.
-     * If the territory exists, returns that territory of that name.
-     * If not, an exception will be thrown.
-     * @param terrName is the territory name to search.
-     * @return the specified territory.
-     */
-    public Territory findTerritory(String terrName) {
-        for (Territory terr : territories.getVertices()) {
-            if (terr.getName().equals(terrName)) {
-                return terr;
-            }
-        }
-        throw new NoSuchElementException(String.format(TERRITORY_NOT_FOUND_MSG, terrName));
     }
 
     /**
@@ -384,6 +420,8 @@ public class World implements Serializable {
      * Add unit to all territories.
      * @param num is the number of units to add to every territory.
      */
+    // TODO: unit now has level.
+    // At the end of every turn, add a level 0 unit to every territory.
     public void addUnitToAll(int num) {
         if (num < 0) {
             throw new IllegalArgumentException(NOT_POSITIVE_MSG);
