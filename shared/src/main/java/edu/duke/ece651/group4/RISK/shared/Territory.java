@@ -170,6 +170,17 @@ public class Territory implements Serializable {
         return clone;
     }
 
+    /**
+     * @author Shengxi Jin
+     * @param from
+     * @param levelUp
+     * @param num
+     * @param resource
+     * @return
+     */
+    public int upgrade(String from, int levelUp,int num,int resource) {
+        return ownerTroop.updateUnit(from, levelUp, num, resource);
+    }
 }
 
 
