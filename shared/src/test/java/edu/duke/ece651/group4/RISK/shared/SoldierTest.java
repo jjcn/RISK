@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 public class SoldierTest {
     @Test
-    void test_fight() {
+    public void test_fight() {
         Random rnd = new Random(0);
         Soldier mySoldier = new Soldier(rnd);
         Soldier enemy = new Soldier(rnd);
@@ -19,14 +19,14 @@ public class SoldierTest {
     }
 
     @Test
-    void test_soldier() {
+    public void test_soldier() {
         Soldier mySoldier = new Soldier();
         Soldier clone = mySoldier.clone();
         assertEquals(mySoldier == clone, false);
     }
 
     @Test
-    void test_setupSoldier() {
+    public void test_setupSoldier() {
         Soldier mySoldier = new Soldier();
         assertEquals(mySoldier.getBonus(), 0);
         mySoldier.setLevel(4);
@@ -38,7 +38,7 @@ public class SoldierTest {
     }
 
     @Test
-    void test_upgradeSoldier() {
+    public void test_upgradeSoldier() {
         Soldier mySoldier = new Soldier();
         int remain = mySoldier.upGrade(1, 5);
         assertEquals(remain, 2);

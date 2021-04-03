@@ -318,7 +318,7 @@ public class World implements Serializable {
     public void upgradeTroop(Territory terr, PlayerInfo info, 
                             int nUnit, int before, int after) {
         // TODO
-        
+        terr.upgrade(from, levelUp, num, resource)
     }
 
     /**

@@ -12,7 +12,7 @@ public class Soldier implements Unit, Serializable {
     private int level;
     private final List<String> levelNames = Arrays.asList("Soldier LV0","Soldier LV1",
             "Soldier LV2","Soldier LV3","Soldier LV4","Soldier LV5","Soldier LV6");
-    private final List<Integer> levelCost = Arrays.asList(0,3,11,30,55,90,140);
+    private final List<Integer> levelCost = Arrays.asList(0,3,11,30,55,90,140); // cumulative cost from level 0
     private final List<Integer> levelBonus = Arrays.asList(0,1,3,5,8,11,15);
     private final Random dice;
 
@@ -87,12 +87,7 @@ public class Soldier implements Unit, Serializable {
         if (targetLevel >= this.levelNames.size()) {
             throw new IllegalArgumentException("Target level exceed max level");
         }
-        /*
-        while (targetLevel > this.level) {
-            cost += this.levelCost.get(targetLevel);
-            targetLevel--;
-        }
-        */
+
         int cost = this.levelCost.get(targetLevel) - this.levelCost.get(this.level);
         if (cost > resource) {
             throw new IllegalArgumentException("No enough resources");
