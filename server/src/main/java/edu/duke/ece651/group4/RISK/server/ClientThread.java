@@ -1,11 +1,14 @@
 package edu.duke.ece651.group4.RISK.server;
 
 import edu.duke.ece651.group4.RISK.shared.Client;
+import edu.duke.ece651.group4.RISK.shared.RoomInfo;
 import edu.duke.ece651.group4.RISK.shared.message.GameMessage;
 import edu.duke.ece651.group4.RISK.shared.message.LogMessage;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static edu.duke.ece651.group4.RISK.shared.Constant.*;
 
@@ -15,12 +18,14 @@ public class ClientThread extends Thread {
     Client theClient;
     User ownerUser;
     Game gameOnGoing;
+    AtomicInteger globalID;
 
-    public ClientThread(HashSet<Game> games, HashSet<User> users, Client theClient) {
+    public ClientThread(HashSet<Game> games, HashSet<User> users, Client theClient, AtomicInteger globalID) {
         this.games = games;
         this.users = users;
         this.theClient = theClient;
         this.ownerUser = null;
+        this.globalID = globalID;
     }
 
 
@@ -102,35 +107,43 @@ public class ClientThread extends Thread {
             return;
         }
         //1.send the gameInfo to Client
-
         //2. select an option
         while(true){
             GameMessage gameMessage = (GameMessage) this.theClient.recvObject();
             String action = gameMessage.getAction();
+            Object res = null;
             if(action.equals(GAME_CREATE)){
-                if(tryCreateAGame(gameMessage)){
-                    return;//if create successfully
-                }
-
+                res = tryCreateAGame(gameMessage);
             }
-            if(action.equals(GAME_JOIN) && tryJoinAGame(gameMessage)){
-                return; // if Join successfully
+            if(action.equals(GAME_JOIN)){
+                res = tryJoinAGame(gameMessage);
             }
             if(action.equals(GAME_REFRESH)){
-                // this should send all game Info to client
+                res = getAllGameInfo();
+            }
+            this.theClient.sendObject(res);
+            if(res == null){
+                return;
             }
         }
     }
+
 
     /*
      * Part2.1
      * creates a game
      * creates a game and a gameRunner to run the game
      * */
-    protected boolean tryCreateAGame(GameMessage gMess){
-
-        return true;
+    synchronized protected String tryCreateAGame(GameMessage gMess){
+        int maxNumPlayers = gMess.getNumPlayers();
+        if(maxNumPlayers <= 0 || maxNumPlayers > 5){
+            return "Invalid: the number of players should be between 2 and 5 inclusive.";
+        }
+        Game newGame = new Game(globalID.getAndIncrement(), maxNumPlayers);
+        games.add(newGame);
+        return null;
     }
+
     /*
      * Part2.2
      * Joins a game
@@ -138,9 +151,42 @@ public class ClientThread extends Thread {
      * 1. If game starts, just set gameOnGoing = game
      * 2. If game waits, just add users to game, and set gameOnGoing = game
      * */
-    protected boolean tryJoinAGame(GameMessage gMess){
-        return true;
+    synchronized protected String tryJoinAGame(GameMessage gMess){
+
+        int gameID = gMess.getGameID();
+        Game gameToJoin = findGame(gameID);
+        if(gameToJoin == null){ return "Invalid GameID";}
+        if(!gameToJoin.isUserInGame(ownerUser)){return "Invalid join: you are not in this game!";}
+        gameOnGoing = gameToJoin;
+        return null;
     }
+
+    protected Game findGame(int gameID){
+        if(gameID < 0){return null;}
+        for(Game g : games){
+            if(g.getGameID() == gameID){
+                return g;
+            }
+        }
+        return null;
+    }
+    /*
+     * Part2.3
+     * send all gameInfo to a client
+     * */
+    protected ArrayList<RoomInfo> getAllGameInfo(){
+        ArrayList<RoomInfo> roomsInfo = new ArrayList<RoomInfo>();
+        for(Game g : games){
+            roomsInfo.add(createARoomInfo(g));
+        }
+        return roomsInfo;
+    }
+    protected RoomInfo createARoomInfo(Game g){
+        return new RoomInfo(g.getGameID(), g.getUserNames(), g.getMaxNumUsers());
+    }
+
+
+
 
     /*
      * Part3

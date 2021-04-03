@@ -31,15 +31,15 @@ public class GameMessage extends BasicMessage implements Serializable {
         this(action, -1, -1);
     }
 
-    /*
-    * Part2
-    * This constructs gameMessage sent to Client from server
-    * */
-    //2.1
-    // send usernames after fresh button
-    public GameMessage(int gameID, HashSet<String> userNames){
-        this(SourceServer, MESS_GAME, null, gameID, userNames.size(), userNames);
-    }
+//    /*
+//    * Part2
+//    * This constructs gameMessage sent to Client from server
+//    * */
+//    //2.1
+//    // send usernames after fresh button
+//    public GameMessage(int gameID, HashSet<String> userNames){
+//        this(SourceServer, MESS_GAME, null, gameID, userNames.size(), userNames);
+//    }
 
     public int getGameID(){
         return gameID;
@@ -49,8 +49,8 @@ public class GameMessage extends BasicMessage implements Serializable {
         return numPlayers;
     }
 
-    public HashSet<String> getPlayerNames(){
-        return userNames;
-    }
+//    public HashSet<String> getPlayerNames(){
+//        return userNames;
+//    }
 
 }
