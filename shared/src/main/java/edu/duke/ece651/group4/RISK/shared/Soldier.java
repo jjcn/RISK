@@ -16,20 +16,8 @@ public class Soldier implements Unit, Serializable {
     private final List<Integer> levelBonus = Arrays.asList(0,1,3,5,8,11,15);
     private final Random dice;
 
-    protected class LevelInfo {
-        int n; // level number
-        String name; // level name
-        // Cost to promote a soldier from base level to this level.
-        // In evol2's case base level = 0 
-        int costFromBase; 
-        int bonus; //Bonus is applied in combats.
-    }
-    
-
     public Soldier() {
-        this.jobName = this.levelNames.get(0);
-        this.level = 0;
-        this.dice = new Random();
+        this(new Random());
     }
 
     /**
@@ -40,6 +28,39 @@ public class Soldier implements Unit, Serializable {
         this.jobName = this.levelNames.get(0);
         this.level = 0;
         this.dice = rand;
+    }
+
+    public Soldier clone(){
+        Soldier clone = new Soldier();
+        int lv = this.level;
+        clone.setLevel(lv);
+        return clone;
+    }
+
+    public String getJobName(){
+        return this.jobName;
+    }
+
+    public int getLevel(){
+        return this.level;
+    }
+
+    public ArrayList<String> getLevelNames(){
+        return (ArrayList<String>)this.levelNames;
+    }
+
+    public int getBonus(){
+        return this.levelBonus.get(this.level);
+    }
+
+    public void setLevel(int lv){
+        this.level = lv;
+        this.jobName = levelNames.get(lv);
+    }
+
+    public void setJob(String newJob){
+        this.jobName = newJob;
+        this.level = this.levelNames.indexOf(newJob);
     }
 
     /**
@@ -60,58 +81,29 @@ public class Soldier implements Unit, Serializable {
 
     @Override
     public int upGrade(int targetLevel, int resource) {
-        int cost = 0;
-        int aim = targetLevel;
         if (targetLevel < this.level) {
             throw new IllegalArgumentException("target level is lower than current level");
         }
-
         if (targetLevel >= this.levelNames.size()) {
             throw new IllegalArgumentException("Target level exceed max level");
         }
-
+        /*
         while (targetLevel > this.level) {
             cost += this.levelCost.get(targetLevel);
             targetLevel--;
         }
+        */
+        int cost = this.levelCost.get(targetLevel) - this.levelCost.get(this.level);
         if (cost > resource) {
             throw new IllegalArgumentException("No enough resources");
         }
-        this.setLevel(aim);
+        this.setLevel(targetLevel);
         return resource - cost;
     }
 
 
-
-
-    public int getBonus(){
-      return this.levelBonus.get(this.level);
-    }
-
-    public void setJob(String newJob){
-      this.jobName=newJob;
-      this.level=this.levelNames.indexOf(newJob);
-    }
-
     public int attackPoint(){
-      return this.randInt(0,20)+this.getBonus();
-    }
-
-    public void setLevel(int lv){
-      this.level=lv;
-      this.jobName=levelNames.get(lv);
-    }
-
-    public String getJobName(){
-      return this.jobName;
-    }
-
-    public int getLevel(){
-      return this.level;
-    }
-
-    public ArrayList<String> getLevelNames(){
-      return (ArrayList<String>)this.levelNames;
+        return this.randInt(0,20)+this.getBonus();
     }
 
 
@@ -119,16 +111,9 @@ public class Soldier implements Unit, Serializable {
      *return a random number
     */
     private int randInt(int min, int max) {
-      int randomNum = dice.nextInt((max - min) + 1) + min;
+        int randomNum = dice.nextInt((max - min) + 1) + min;
 
-      return randomNum;
-    }
-
-    public Soldier clone(){
-      Soldier clone= new Soldier();
-      int lv=this.level;
-      clone.setLevel(lv);
-      return clone;
+        return randomNum;
     }
 
 }
