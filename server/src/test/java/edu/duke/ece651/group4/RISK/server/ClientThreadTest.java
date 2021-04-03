@@ -123,23 +123,29 @@ class ClientThreadTest {
 //        System.out.println("close server");
 //    }
 
-//    @Test
-//    public void test_connection() throws IOException {
-//        Client clientSocket = new Client("vcm-18527.vm.duke.edu",SOCKET_PORT); // new Client("",9999); //new Client("localhost",SOCKET_PORT);
-//        String name = "1";
-//        String pwd = "2";
+    @Test
+    public void test_connection() throws IOException {
+        Client clientSocket = new Client("localhost",SOCKET_PORT); //vcm-18527.vm.duke.edu// new Client("",9999); //new Client("localhost",SOCKET_PORT);
+        String name = "wx";
+        String pwd = "123";
+        clientSocket.sendObject(new LogMessage(LOG_SIGNUP, name,pwd));
+        System.out.println("send signup");
+        String res = (String) clientSocket.recvObject();
+        System.out.println("rec feedback");
+        assertEquals(null,res);
+
 //        clientSocket.sendObject(new LogMessage(LOG_SIGNUP, name,pwd));
 //        System.out.println("send signup");
-//        String res = (String) clientSocket.recvObject();
-//        System.out.println("rec feedback");
-//        assertEquals(null,res);
-//
-//        clientSocket.sendObject(new LogMessage(LOG_SIGNIN, name,pwd));
-//        System.out.println("send login");
 //        res = (String) clientSocket.recvObject();
 //        System.out.println("rec feedback");
 //        assertEquals(null,res);
-//
-//    }
+
+        clientSocket.sendObject(new LogMessage(LOG_SIGNIN, name,pwd));
+        System.out.println("send login");
+        res = (String) clientSocket.recvObject();
+        System.out.println("rec feedback");
+        assertEquals(null,res);
+
+    }
 
 }

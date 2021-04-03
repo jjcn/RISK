@@ -32,6 +32,7 @@ public class ClientThread extends Thread {
      * */
     public String trySetUpUser()  {
         System.out.println("Start setup user ");
+        System.out.println("the number of user now: " + users.size());
         if (ownerUser != null) {
             return null;
         }
@@ -104,7 +105,6 @@ public class ClientThread extends Thread {
 
         //2. select an option
         while(true){
-//            GameMessage gameMessage = null;
             GameMessage gameMessage = (GameMessage) this.theClient.recvObject();
             String action = gameMessage.getAction();
             if(action.equals(GAME_CREATE)){

@@ -68,5 +68,4 @@ public class SoldierTest {
 //        assertEquals(56, remain);
 //    }
 
-
 }

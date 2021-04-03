@@ -25,14 +25,14 @@ public class User {
         if(!checkUsername(username)){
             return false;
         }
-        if(this.userInfo.getPassword() != password){
+        if(this.userInfo.getPassword().equals(password)){
             return false;
         }
         return true;
     }
 
     public boolean checkUsername(String username){
-        if(this.userInfo.getUsername() != username){
+        if(!this.userInfo.getUsername().equals(username)){
             return false;
         }
         return true;
