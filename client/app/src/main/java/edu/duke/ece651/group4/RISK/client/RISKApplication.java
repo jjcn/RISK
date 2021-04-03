@@ -36,8 +36,8 @@ public class RISKApplication extends Application {
         this.rnd=new Random();
     }
 
-    protected static String sendAccountInfo(String name, String pwd, String actName) {
-        LogMessage m= new LogMessage(name,pwd,actName);
+    protected static String sendAccountInfo( String actName,String name, String pwd) {
+        LogMessage m= new LogMessage(actName, name,pwd);
         playerClient.sendObject(m);
         String response = (String) playerClient.recvObject();
         return response;
@@ -50,7 +50,7 @@ public class RISKApplication extends Application {
      * @return null if succeed, a error message if false
      * */
     public static String sendSignIn(String name,String pwd) {
-        return sendAccountInfo(name, pwd, LOG_SIGNIN);
+        return sendAccountInfo(LOG_SIGNIN,name, pwd);
     }
 
     /*
@@ -60,7 +60,7 @@ public class RISKApplication extends Application {
     * @return null if succeed, a error message if false
     * */
     public static String sendSignUp(String name,String pwd) {
-        return sendAccountInfo(name, pwd, LOG_SIGNUP);
+        return sendAccountInfo(LOG_SIGNUP, name, pwd);
     }
 
 
