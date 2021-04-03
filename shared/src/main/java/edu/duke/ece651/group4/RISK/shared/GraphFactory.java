@@ -1,18 +1,19 @@
 package edu.duke.ece651.group4.RISK.shared;
 
 import java.util.Arrays;
-import java.util.List;
 
 public class GraphFactory {
 
 	public GraphFactory() {}
 	
+    /**
+     * Create a graph with no edges.
+     * @param names is a list of name Strings.
+     * @return a graph with no edges.
+     */
 	public Graph<String> createGraphUnconnected(String[] names) {
 		Graph<String> graph = new Graph<>();
-
-        List<String> nameList = Arrays.asList(names);
-        nameList.forEach(name -> graph.addVertex(name));
-        
+        Arrays.asList(names).forEach(name -> graph.addVertex(name));      
         return graph;
 	}
 	
@@ -21,7 +22,7 @@ public class GraphFactory {
      * 
      * Layout is the same as that on Evolution 1 requirements.
      * 
-     * number of territories = 9
+     * number of vertices = 9
      * 
      * N-----M--O--G 
      * |   /  |/ \ | 
@@ -54,12 +55,14 @@ public class GraphFactory {
 
         return graph;
     }
-    
+
     /**
      * Creates a graph of String type.
      * 
      * It is separated into two parts. 
-     *  
+     * 
+     * number of vertices = 5
+     * 
      * A--B--C
      * 
      * D--E

@@ -1,8 +1,10 @@
 package edu.duke.ece651.group4.RISK.shared;
 
+import java.util.Arrays;
+
 /**
  * This class create instances of pre-defined World templates.
- * Add new create*** methods as new templates.
+ * To add new instances, add new create methods.
  */
 public class WorldFactory {
 
@@ -12,22 +14,28 @@ public class WorldFactory {
         return new World(numTerrs);
     }
 
+    public World createWorldUnconnected(String[] names) {
+		World world = new World();
+        Arrays.asList(names).forEach(name -> world.addTerritory(new Territory(name))); 
+        return world;
+	}
+
     /**
      * Territory layout is the same as that on Evolution 1 requirements.
+     * 
      * N-----M--O--G
      * |   /  |/ \ | 
      * |  /   S ---M     
      * |/   / |  \ |
      * E------R----H
+     * 
      * @return a world object.
      */
     public World createFantasyWorld() {
-        World world = new World();
-        String names[] = 
-        "Narnia, Midkemia, Oz, Gondor, Mordor, Hogwarts, Scadrial, Elantris, Roshar".split(", ");
-        for (String name: names) {
-            world.addTerritory(new Territory(name));
-        }
+        String[] fantasyNames = {"Narnia", "Midkemia", "Oz", "Gondor", "Mordor",
+ 				           "Hogwarts", "Scadrial", "Elantris", "Roshar"};
+        World world = createWorldUnconnected(fantasyNames);
+
         world.addConnection("Narnia", "Midkemia");
         world.addConnection("Narnia", "Midkemia");
         world.addConnection("Narnia", "Elantris");
@@ -43,7 +51,8 @@ public class WorldFactory {
         world.addConnection("Scadrial", "Roshar");
         world.addConnection("Scadrial", "Hogwarts");
         world.addConnection("Scadrial", "Mordor");
-        world.addConnection("Mordor", "Hogwarts");        
+        world.addConnection("Mordor", "Hogwarts");  
+
         return world;
     }
 }
