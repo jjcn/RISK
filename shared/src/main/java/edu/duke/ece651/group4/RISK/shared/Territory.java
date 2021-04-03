@@ -10,8 +10,6 @@ public class Territory implements Serializable {
 
     private final String name;
 
-    private final int size;
-
     private Troop ownerTroop;
 
     private final HashMap<String, Troop> enemyOnTerritory;
@@ -26,77 +24,81 @@ public class Territory implements Serializable {
 
     public Territory(String name, Player owner, int population, Random rnd) {
         this.name = name;
-        this.size = 0;
         this.enemyOnTerritory = new HashMap<>();
         this.ownerTroop = new Troop(population, owner, rnd);
         this.rnd = rnd;
-        this.techSpeed=0;
-        this.foodSpeed=0;
-        this.area=0;
+        this.techSpeed = 0;
+        this.foodSpeed = 0;
+        this.area = 0;
 
     }
 
-    public Territory(String name, 
-                    Troop ownerTroop, 
-                    HashMap<String, Troop> enemyOnTerritory, 
-                    Random rnd) {
+    public Territory(String name, Troop ownerTroop, HashMap<String, Troop> enemyOnTerritory, Random rnd) {
         this.name = name;
-        this.size = 0;
         this.enemyOnTerritory = enemyOnTerritory;
         this.ownerTroop = ownerTroop;
         this.rnd = rnd;
-        this.techSpeed=0;
-        this.foodSpeed=0;
-        this.area=0;
+        this.techSpeed = 0;
+        this.foodSpeed = 0;
+        this.area = 0;
     }
 
     public Territory(String name) {
         this.name = name;
-        this.size = 0;
         this.enemyOnTerritory = new HashMap<>();
         this.ownerTroop = new Troop(0, new TextPlayer("")); // default Troop.owner == null, cannot call equals()
         this.rnd = new Random();
-        this.techSpeed=0;
-        this.foodSpeed=0;
-        this.area=0;
+        this.techSpeed = 0;
+        this.foodSpeed = 0;
+        this.area = 0;
     }
 
     public Territory(String name, Random rnd) {
         this.name = name;
-        this.size = 0;
         this.enemyOnTerritory = new HashMap<>();
         this.ownerTroop = new Troop(0, new TextPlayer(""), rnd); // default Troop.owner == null, cannot call equals()
         this.rnd = rnd;
-        this.techSpeed=0;
-        this.foodSpeed=0;
-        this.area=0;
-    }
-
-    public Territory(String name, int size) {
-        this.name = name;
-        this.size = size;
-        this.enemyOnTerritory = new HashMap<>();
-        this.ownerTroop = new Troop(0, new TextPlayer("")); // default Troop.owner == null, cannot call equals()
-        this.rnd = new Random();
+        this.techSpeed = 0;
+        this.foodSpeed = 0;
+        this.area = 0;
     }
 
     public String getName() {
         return this.name;
     }
 
-    public int getSize() {
-        return this.size;
-    }
-
     public Player getOwner() {
         return this.ownerTroop.getOwner();
+    }
+
+    public int getFoodSpeed() {
+        return this.foodSpeed;
+    }
+
+    public int getTechSpeed() {
+        return this.techSpeed;
+    }
+
+    public int getArea() {
+        return this.area;
+    }
+
+    public void setFoodSpeed(int num) {
+        this.foodSpeed = num;
+    }
+
+    public void setTechSpeed(int num) {
+        this.techSpeed = num;
+    }
+
+    public void setArea(int num) {
+        this.area = num;
     }
 
     public void setRandom(Random seed) {
         this.rnd = seed;
     }
 
-    
     /**
      * Added specific number of unit to territory
      * 
@@ -163,6 +165,7 @@ public class Territory implements Serializable {
 
     /**
      * Do all the battles with enemies the sequence is random
+     * 
      * @return A report of all battles happened
      */
     public String doBattles() {
@@ -207,52 +210,25 @@ public class Territory implements Serializable {
         }
     }
 
-
     public Territory clone() {
         HashMap<String, Troop> cpy = new HashMap<>();
         for (String s : this.enemyOnTerritory.keySet()) {
             cpy.put(new String(s), this.enemyOnTerritory.get(s).clone());
         }
-        Territory clone= new Territory(new String(this.name),ownerTroop.clone(),cpy,this.rnd);
+        Territory clone = new Territory(new String(this.name), ownerTroop.clone(), cpy, this.rnd);
         clone.setArea(this.area);
         clone.setFoodSpeed(this.foodSpeed);
         clone.setTechSpeed(this.techSpeed);
         return clone;
     }
 
-    public void setFoodSpeed(int num){
-        this.foodSpeed=num;
-    }
-
-    public void setTechSpeed(int num){
-        this.techSpeed=num;
-    }
-
-    public void setArea(int num){
-        this.area=num;
-    }
-
-    public int getFoodSpeed(){
-        return this.foodSpeed;
-    }
-
-    public int getTechSpeed(){
-        return this.techSpeed;
-    }
-
-    public int getArea(){
-        return this.area;
-    }
-
-    public HashMap<String,Integer> checkTroopInfo(){
+    public HashMap<String, Integer> checkTroopInfo() {
         return this.ownerTroop.getDict();
     }
 
-    public int upgrade(int before, int after, int nUnit,
-                       int nResource) {
+    public int upgrade(int before, int after, int nUnit, int nResource) {
         String jobName = String.format("Soldier LV%d", before); // TODO: this is hardcoded
         return ownerTroop.updateUnit(jobName, after - before, nUnit, nResource);
     }
-
 
 }
