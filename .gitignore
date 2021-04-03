@@ -4,3 +4,6 @@
 
 # Ignore Gradle build output directory
 build
+
+#ignore local.properties
+local.properties

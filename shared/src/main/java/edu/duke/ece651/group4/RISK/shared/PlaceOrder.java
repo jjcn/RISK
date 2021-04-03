@@ -1,8 +1,6 @@
 package edu.duke.ece651.group4.RISK.shared;
 
-import java.io.Serializable;
-
-public class PlaceOrder implements Order, Serializable {
+public class PlaceOrder implements Order {
     private Character actionName;
     private String des;
     private Troop troop;
@@ -25,4 +23,5 @@ public class PlaceOrder implements Order, Serializable {
     public Troop getActTroop() {
         return troop;
     }
+
 }
