@@ -22,6 +22,7 @@ public class HostApp implements Runnable {
     HashSet<Game> games;
     HashSet<User> users;
     static int port ;
+
     public HostApp(ServerSocket s){
         this.hostSocket = s;
         games = new HashSet<Game>();
@@ -29,12 +30,13 @@ public class HostApp implements Runnable {
         port = SOCKET_PORT;
     }
 
-
     public static void main(String[] args) throws IOException {
         ServerSocket hostSocket = new ServerSocket(port);
         HostApp hostApp = new HostApp(hostSocket);
+        System.out.println("Server starts to run");
         hostApp.run();
     }
+
     /*
      * This setup connection between server and clients
      * it will create a ClientThread to deal with all stuff
@@ -43,12 +45,14 @@ public class HostApp implements Runnable {
      * and will close if this PlayerApp close. THe main reason we adopt this
      * design pattern is to save the resource of threads.
      *  */
+
     public void acceptConnection(){
         try {
             while(true) {
                 Socket s = hostSocket.accept();
                 Client theClient = new Client(s);
                 ClientThread theThread = new ClientThread(games, users,theClient);
+                System.out.println("Get one Client");
                 theThread.start();
             }
         }catch(IOException e){
@@ -60,4 +64,5 @@ public class HostApp implements Runnable {
     public void run() {
         acceptConnection();
     }
+
 }

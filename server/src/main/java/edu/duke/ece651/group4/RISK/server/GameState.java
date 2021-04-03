@@ -1,8 +1,10 @@
 package edu.duke.ece651.group4.RISK.server;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 
-import static edu.duke.ece651.group4.RISK.shared.Constant.GAME_STATE_WAIT_TO_UPDATE;
+import static edu.duke.ece651.group4.RISK.server.ServerConstant.*;
 
 /*
  * This class handle the state of the game
@@ -11,42 +13,68 @@ import static edu.duke.ece651.group4.RISK.shared.Constant.GAME_STATE_WAIT_TO_UPD
  *            2. GAME_STATE_DONE_UPDATE
  * */
 
-public class GameState {
-    HashMap<String, PlayerState> playersState;
-    String gameState;
-    private boolean isOnActionPhase;
+public class GameState extends State{
+    HashSet<PlayerState> playersState;
     private boolean isDonePlaceUnits;
-    private boolean isALlUsersDone;
 
     public GameState(){
-        playersState = new HashMap<String, PlayerState>();
-        gameState = GAME_STATE_WAIT_TO_UPDATE;
-        isOnActionPhase = false;
+        super(GAME_STATE_WAIT_TO_UPDATE);
+        playersState = new HashSet<PlayerState>();
         isDonePlaceUnits = false;
-        isALlUsersDone = false;
     }
 
-    public void updateGameState(String s){
-        gameState = s;
+    public boolean changAPlayerStateTo(String username, String state){
+        for(PlayerState ps : playersState){
+            if(ps.getUsername().equals(username)){
+                ps.updateStateTo(state);
+            }
+        }
+        return false;
     }
 
     /*
-     * When a user switch in, he/she has to wait for joining
-     * until the game starts actionPhase
-     * */
-    synchronized public void startActionPhase(){ // used in client Thread
-        isDonePlaceUnits = true;
-        isOnActionPhase = true;
-    }
-    public void endActionPhase(){// used in game Runner
-        isOnActionPhase = false;
-    }
-    public boolean isOnActionPhase(){
-        return isOnActionPhase;
+    * This set active Players (not SwitchOut) ' state to PLAYER_STATE_UPDATING
+    * */
+    public void setActivePlayersStateToUpdating(){
+        for (PlayerState ps : playersState) {
+            if(ps.isActive()){
+                ps.updateStateTo(PLAYER_STATE_UPDATING);
+            }
+        }
     }
 
+    public void addPlayerState(String username){
+        playersState.add(new PlayerState(username));
+    }
+    /*
+    * This checks if all players finish one turn
+    * game will update the game after it
+    * */
+    public boolean isAllPlayersDoneOneTurn(){
+        for (PlayerState ps : playersState) {
+            if(!ps.isDoneOneTurn()){return false;}
+        }
+        return true;
+    }
+
+    /*
+     * This checks if all players finish updating their state
+     * game will enter GAME_STATE_WAIT_TO_UPDATE state to do action
+     * */
+    public boolean isAllPlayersDoneUpdatingState(){
+        for (PlayerState ps : playersState) {
+            if(ps.isUpdating()){return false;}
+        }
+        return true;
+    }
+
+    /*
+    *
+    * */
+    public boolean isDoneUpdateGame(){return getState().equals(GAME_STATE_DONE_UPDATE);}
+
     public boolean isDonePlaceUnits(){
-        return isDonePlaceUnits;
+        return this.isDonePlaceUnits;
     }
 
 }

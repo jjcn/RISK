@@ -2,6 +2,7 @@ package edu.duke.ece651.group4.RISK.client;
 
 import android.app.Application;
 import android.os.Message;
+import android.util.Log;
 import edu.duke.ece651.group4.RISK.shared.*;
 import edu.duke.ece651.group4.RISK.shared.message.LogMessage;
 
@@ -18,10 +19,12 @@ public class RISKApplication extends Application {
 
     @Override
     public void onCreate() {
+        System.out.println("Successfully create");
+        Log.i("s", "Success");
         super.onCreate();
         try {
             this.playerClient=new Client(SOCKET_HOSTNAME, SOCKET_PORT);
-            System.out.print("Success");
+            Log.i("s", "Success");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -70,4 +73,6 @@ public class RISKApplication extends Application {
         }
         return null;
     }
+
+
 }
