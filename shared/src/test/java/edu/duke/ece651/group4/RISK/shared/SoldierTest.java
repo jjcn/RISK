@@ -38,19 +38,19 @@ public class SoldierTest {
 
     }
 
-    @Test
-    void test_upgradeSoldier() {
-        Soldier mySoldier= new Soldier();
-        int remain=mySoldier.upGrade(1,5);
-        assertEquals(remain,2);
-        mySoldier.upGrade(3,200);
-        assertEquals(mySoldier.getJobName(),"Soldier LV3");
-        assertThrows(new IllegalArgumentException().getClass(), ()->mySoldier.upGrade(10,200));
-        assertThrows(new IllegalArgumentException().getClass(), ()->mySoldier.upGrade(1,200));
-        assertThrows(new IllegalArgumentException().getClass(), ()->mySoldier.upGrade(7,3));
-        mySoldier.setJob("Soldier LV2");
-        remain=mySoldier.upGrade(4,100);
-        assertEquals(15,remain);
+//    @Test
+//    void test_upgradeSoldier() {
+//        Soldier mySoldier= new Soldier();
+//        int remain=mySoldier.upGrade(1,5);
+//        assertEquals(remain,2);
+//        mySoldier.upGrade(3,200);
+//        assertEquals(mySoldier.getJobName(),"Soldier LV3");
+//        assertThrows(new IllegalArgumentException().getClass(), ()->mySoldier.upGrade(10,200));
+//        assertThrows(new IllegalArgumentException().getClass(), ()->mySoldier.upGrade(1,200));
+//        assertThrows(new IllegalArgumentException().getClass(), ()->mySoldier.upGrade(7,3));
+//        mySoldier.setJob("Soldier LV2");
+//        remain=mySoldier.upGrade(4,100);
+//        assertEquals(15,remain);
 
 //        Soldier mySoldier = new Soldier();
 //        int remain = mySoldier.upGrade(1, 5);
@@ -66,7 +66,7 @@ public class SoldierTest {
 //        mySoldier.setJob("Soldier LV2");
 //        remain = mySoldier.upGrade(4, 100);
 //        assertEquals(56, remain);
-    }
+//    }
 
 
 }
