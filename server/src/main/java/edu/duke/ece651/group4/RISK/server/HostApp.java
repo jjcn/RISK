@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashSet;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static edu.duke.ece651.group4.RISK.shared.Constant.SOCKET_PORT;
 
@@ -21,11 +22,12 @@ public class HostApp implements Runnable {
     ServerSocket hostSocket;
     HashSet<Game> games;
     HashSet<User> users;
-
+    AtomicInteger globalID;
     public HostApp(ServerSocket s){
         this.hostSocket = s;
         games = new HashSet<Game>();
         users = new HashSet<User>();
+
     }
 
 
@@ -45,7 +47,7 @@ public class HostApp implements Runnable {
                     System.out.println("Start to listen to clients");
                     Socket s = hostSocket.accept();
                     Client theClient = new Client(s);
-                    ClientThread theThread = new ClientThread(games, users,theClient);
+                    ClientThread theThread = new ClientThread(games, users,theClient,globalID);
                     System.out.println("Get one Client");
                     theThread.start();
                 }catch(IOException e){

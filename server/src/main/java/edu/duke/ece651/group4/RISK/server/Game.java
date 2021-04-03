@@ -3,6 +3,7 @@ package edu.duke.ece651.group4.RISK.server;
 import edu.duke.ece651.group4.RISK.shared.BasicOrder;
 import edu.duke.ece651.group4.RISK.shared.World;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
@@ -13,25 +14,39 @@ import static edu.duke.ece651.group4.RISK.server.ServerConstant.PLAYER_STATE_SWI
 
 public class Game {
     private final int gameID;
-    private int numUsers;
+    private int maxNumUsers;
     private int numUsersSwitchOut;
     private HashSet<User> usersOnGame;
     private World theWorld;
     private CyclicBarrier barrier;
     public GameState gameState;
-    public Game(int gameID, int numUsers) {
+    public Game(int gameID, int maxNumUsers) {
         this.gameID = gameID;
-        this.numUsers = numUsers;
+        this.maxNumUsers = maxNumUsers;
         this.usersOnGame = new HashSet<User>();
         this.theWorld = null; // This should use init function to get a world based on the number of players
-        this.barrier = new CyclicBarrier(numUsers);
+        this.barrier = new CyclicBarrier(maxNumUsers);
         this.gameState = new GameState();
         this.numUsersSwitchOut  = 0;
 
     }
+    public int getGameID(){
+        return this.gameID;
+    }
+    public int getMaxNumUsers(){
+        return maxNumUsers;
+    }
+
+    public ArrayList<String> getUserNames(){
+        ArrayList<String> userNames = new ArrayList<>();
+        for(User u: usersOnGame){
+            userNames.add(u.getUsername());
+        }
+        return userNames;
+    }
 
     public boolean isFull(){
-        return usersOnGame.size() == numUsers;
+        return usersOnGame.size() == maxNumUsers;
     }
     public boolean isEmpty(){
         return usersOnGame.size() == 0;
@@ -52,6 +67,7 @@ public class Game {
             return false;
         }
         usersOnGame.add(u);
+        gameState.addPlayerState(u.getUsername());
         return true;
     }
 
@@ -60,7 +76,7 @@ public class Game {
             return;
         }
         this.numUsersSwitchOut += 1;
-        this.barrier = new CyclicBarrier(numUsers - this.numUsersSwitchOut);
+        this.barrier = new CyclicBarrier(maxNumUsers - this.numUsersSwitchOut);
         gameState.changAPlayerStateTo(u.getUsername(), PLAYER_STATE_SWITCH_OUT);
         return;
     }
@@ -70,7 +86,7 @@ public class Game {
             return;
         }
         this.numUsersSwitchOut -= 1;
-        this.barrier = new CyclicBarrier(numUsers - this.numUsersSwitchOut);
+        this.barrier = new CyclicBarrier(maxNumUsers - this.numUsersSwitchOut);
         gameState.changAPlayerStateTo(u.getUsername(), PLAYER_STATE_ACTION_PHASE);
         return;
     }

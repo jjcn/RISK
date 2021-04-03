@@ -7,6 +7,10 @@ import java.util.List;
 * This class handles the constant across all the project
 * */
 public class Constant {
+    //Message
+    public final static String SourceServer = "Server";
+    public final static String SourceClient = "Client";
+
     //socket
     public static final String SOCKET_HOSTNAME = "localhost";
     public static final int SOCKET_PORT = 9999;

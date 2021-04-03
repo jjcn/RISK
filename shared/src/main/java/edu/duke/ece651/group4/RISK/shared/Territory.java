@@ -18,6 +18,7 @@ public class Territory implements Serializable {
 
     private Random rnd;
 
+<<<<<<< HEAD
     public Territory(String name, int size, 
                     Troop ownerTroop, 
                     HashMap<String, Troop> enemyOnTerritory, 
@@ -32,11 +33,24 @@ public class Territory implements Serializable {
     public Territory(String name, 
                     Player owner, int population, 
                     Random rnd) {
+=======
+    private int techSpeed;
+
+    private int foodSpeed;
+
+    private int area;
+
+    public Territory(String name, Player owner, int population, Random rnd) {
+>>>>>>> f84a62d4c6b5aa1f4b746f4fd65a3edd3699ae05
         this.name = name;
         this.size = 0;
         this.enemyOnTerritory = new HashMap<>();
         this.ownerTroop = new Troop(population, owner, rnd);
         this.rnd = rnd;
+        this.techSpeed=0;
+        this.foodSpeed=0;
+        this.area=0;
+
     }
 
     public Territory(String name, 
@@ -48,6 +62,9 @@ public class Territory implements Serializable {
         this.enemyOnTerritory = enemyOnTerritory;
         this.ownerTroop = ownerTroop;
         this.rnd = rnd;
+        this.techSpeed=0;
+        this.foodSpeed=0;
+        this.area=0;
     }
 
     public Territory(String name) {
@@ -56,6 +73,9 @@ public class Territory implements Serializable {
         this.enemyOnTerritory = new HashMap<>();
         this.ownerTroop = new Troop(0, new TextPlayer("")); // default Troop.owner == null, cannot call equals()
         this.rnd = new Random();
+        this.techSpeed=0;
+        this.foodSpeed=0;
+        this.area=0;
     }
 
     public Territory(String name, Random rnd) {
@@ -64,7 +84,20 @@ public class Territory implements Serializable {
         this.enemyOnTerritory = new HashMap<>();
         this.ownerTroop = new Troop(0, new TextPlayer(""), rnd); // default Troop.owner == null, cannot call equals()
         this.rnd = rnd;
+        this.techSpeed=0;
+        this.foodSpeed=0;
+        this.area=0;
     }
+<<<<<<< HEAD
+=======
+    /**
+     * Send out specific number of unit from territory
+     * @param subTroop shows the number of unit send out from territory
+     */
+    public Troop sendOutTroop(Troop subTroop) {
+        return this.ownerTroop.sendTroop(subTroop);
+    }
+>>>>>>> f84a62d4c6b5aa1f4b746f4fd65a3edd3699ae05
 
     public Territory(String name, int size) {
         this.name = name;
@@ -207,6 +240,7 @@ public class Territory implements Serializable {
         for (String s : this.enemyOnTerritory.keySet()) {
             cpy.put(new String(s), this.enemyOnTerritory.get(s).clone());
         }
+<<<<<<< HEAD
         Territory clone = new Territory(new String(this.name), ownerTroop.clone(), cpy, this.rnd);
         return clone;
     }
@@ -220,7 +254,48 @@ public class Territory implements Serializable {
      * @return remaining resource after the upgrade.
      */
     public int upgradeTroop(int before, int after, int nUnit, int nResource) {
+=======
+        Territory clone= new Territory(new String(this.name),ownerTroop.clone(),cpy,this.rnd);
+        clone.setArea(this.area);
+        clone.setFoodSpeed(this.foodSpeed);
+        clone.setTechSpeed(this.techSpeed);
+        return clone;
+    }
+
+    public void setFoodSpeed(int num){
+        this.foodSpeed=num;
+    }
+
+    public void setTechSpeed(int num){
+        this.techSpeed=num;
+    }
+
+    public void setArea(int num){
+        this.area=num;
+    }
+
+    public int getFoodSpeed(){
+        return this.foodSpeed;
+    }
+
+    public int getTechSpeed(){
+        return this.techSpeed;
+    }
+
+    public int getArea(){
+        return this.area;
+    }
+
+    public HashMap<String,Integer> checkTroopInfo(){
+        return this.ownerTroop.getDict();
+    }
+
+    public int upgrade(int before, int after, int nUnit,
+                       int nResource) {
+>>>>>>> f84a62d4c6b5aa1f4b746f4fd65a3edd3699ae05
         String jobName = String.format("Soldier LV%d", before); // TODO: this is hardcoded
         return ownerTroop.updateUnit(jobName, after - before, nUnit, nResource);
     }
+
+
 }
