@@ -42,7 +42,7 @@ public class SoldierTest {
         Soldier mySoldier = new Soldier();
 
         int remain = mySoldier.upGrade(1, 5);
-        assertEquals(remain, 10);
+        assertEquals(remain, 2);
 
         mySoldier.upGrade(3, 200);
         assertEquals(mySoldier.getJobName(), "Soldier LV3");
