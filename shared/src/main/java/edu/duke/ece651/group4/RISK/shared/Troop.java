@@ -65,6 +65,14 @@ public class Troop implements Serializable {
     }
 
     /**
+     * Get the number of units in a troop.
+     * @return size of a troop.
+     */
+    public int size() {
+        return population.size();
+    }
+
+    /**
      * Do battle between two troops
      * @param enemy shows the enemy troop attack in
      */
