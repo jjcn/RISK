@@ -134,11 +134,11 @@ class ClientTest {
 //        clientSocket.close();
 //    }
 
-    @Test
-    public void test_connection() throws IOException {
-
-        Client clientSocket = new Client(SOCKET_HOSTNAME,9999); //new Client("localhost",SOCKET_PORT);
-
-    }
+//    @Test
+//    public void test_connection() throws IOException {
+//
+//        Client clientSocket = new Client("vcm-18527.vm.duke.edu",9999); //new Client("localhost",SOCKET_PORT);
+//
+//    }
 
 }

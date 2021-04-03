@@ -24,7 +24,7 @@ public class RISKApplication extends Application {
         super.onCreate();
         new Thread( ()-> {
             try{
-                playerClient = new Client("vcm-18527.vm.duke.edu",SOCKET_PORT);
+                playerClient = new Client("vcm-19611.vm.duke.edu",SOCKET_PORT);
             } catch (IOException e) {
                 Log.e("s", "FAIL*******************");
                 e.printStackTrace();
@@ -43,7 +43,7 @@ public class RISKApplication extends Application {
         this.rnd=new Random();
     }
 
-    protected static String sendAccountInfo(String name, String pwd, String actName) throws IOException, ClassNotFoundException {
+    protected static String sendAccountInfo(String name, String pwd, String actName) {
         LogMessage m= new LogMessage(name,pwd,actName);
         playerClient.sendObject(m);
         String response = (String) playerClient.recvObject();
@@ -57,14 +57,7 @@ public class RISKApplication extends Application {
      * @return null if succeed, a error message if false
      * */
     public static String sendSignIn(String name,String pwd) {
-        try {
-            return sendAccountInfo(name, pwd, LOG_SIGNIN);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return sendAccountInfo(name, pwd, LOG_SIGNIN);
     }
 
     /*
@@ -74,14 +67,7 @@ public class RISKApplication extends Application {
     * @return null if succeed, a error message if false
     * */
     public static String sendSignUp(String name,String pwd) {
-        try {
-            return sendAccountInfo(name, pwd, LOG_SIGNUP);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return sendAccountInfo(name, pwd, LOG_SIGNUP);
     }
 
 
