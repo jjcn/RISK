@@ -1,13 +1,14 @@
 package edu.duke.ece651.group4.RISK.shared;
 
+/**
+ * An order that upgrades troop on a territory.
+ * @param srcName is the name of territory to upgrade its troop.
+ * @param levelBefore is the level of unit before upgrade.
+ * @param levelAfter is the level of unit after the upgrade.
+ * @param nUnit is the number of units to upgrade.
+ */
 public class UpgradeTroopOrder implements Order {
     private Character actionName;
-    /**
-     * @param srcName is the name of territory to upgrade its troop.
-     * @param levelBefore is the level of unit before upgrade.
-     * @param levelAfter is the level of unit after the upgrade.
-     * @param nUnit is the number of units to upgrade.
-     */
     private String srcName;
     private int levelBefore;
     private int levelAfter;

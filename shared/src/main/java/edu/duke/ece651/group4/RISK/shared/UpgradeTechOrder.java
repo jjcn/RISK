@@ -1,13 +1,11 @@
 package edu.duke.ece651.group4.RISK.shared;
 
 /**
- * An order that upgrade's a player's tech level.
+ * An order that upgrades a player's technology level.
+ * @param nLevel is the number to add to a player's technology level.
  */
 public class UpgradeTechOrder implements Order {
     private Character actionName;
-    /**
-     * The player's technology level is modified by n levels.
-     */
     private int nLevel;
     
     public UpgradeTechOrder(Character actionName,  int nLevel) {
