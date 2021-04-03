@@ -10,21 +10,43 @@ public class Territory implements Serializable {
 
     private final String name;
 
+    private final int size;
+
     private Troop ownerTroop;
 
     private final HashMap<String,Troop> enemyOnTerritory;
 
     private Random rnd;
 
-    public Territory(String name, Player owner, int population, Random rnd) {
+    public Territory(String name, int size, 
+                    Troop ownerTroop, 
+                    HashMap<String,Troop> enemyOnTerritory,
+                    Random rnd) {
+            this.name = name;
+            this.size = size;
+            this.enemyOnTerritory = enemyOnTerritory;
+            this.ownerTroop = ownerTroop;
+            this.rnd = rnd;
+        }
+    
+
+
+    public Territory(String name, 
+                    Player owner, int population,
+                    Random rnd) {
         this.name = name;
+        this.size = 0;
         this.enemyOnTerritory = new HashMap<>();
         this.ownerTroop = new Troop(population, owner, rnd);
         this.rnd = rnd;
     }
 
-    public Territory(String name, Troop ownerTroop,HashMap<String,Troop> enemyOnTerritory,Random rnd){
+    public Territory(String name, 
+                    Troop ownerTroop, 
+                    HashMap<String,Troop> enemyOnTerritory,
+                    Random rnd) {
         this.name = name;
+        this.size = 0;
         this.enemyOnTerritory = enemyOnTerritory;
         this.ownerTroop = ownerTroop;
         this.rnd = rnd;
@@ -32,17 +54,28 @@ public class Territory implements Serializable {
 
     public Territory(String name) {
         this.name = name;
+        this.size = 0;
         this.enemyOnTerritory = new HashMap<>();
         this.ownerTroop = new Troop(0, new TextPlayer("")); // default Troop.owner == null, cannot call equals()
         this.rnd = new Random();
     }
 
-    public Territory(String name,Random rnd) {
+    public Territory(String name, Random rnd) {
         this.name = name;
+        this.size = 0;
         this.enemyOnTerritory = new HashMap<>();
         this.ownerTroop = new Troop(0, new TextPlayer(""), rnd); // default Troop.owner == null, cannot call equals()
         this.rnd = rnd;
     }
+
+    public Territory(String name, int size) {
+        this.name = name;
+        this.size = size;
+        this.enemyOnTerritory = new HashMap<>();
+        this.ownerTroop = new Troop(0, new TextPlayer("")); // default Troop.owner == null, cannot call equals()
+        this.rnd = new Random();
+    }
+
     /**
      * Send out specific number of unit from territory
      * @param subTroop shows the number of unit send out from territory
@@ -85,6 +118,10 @@ public class Territory implements Serializable {
         return this.name;
     }
 
+    public int getSize() {
+        return this.size;
+    }
+    
     /**
      * Added specific number of unit to territory
      * @param num shows number added
