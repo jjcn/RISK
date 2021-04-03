@@ -1,5 +1,7 @@
 package edu.duke.ece651.group4.RISK.shared.message;
 
+import java.io.Serializable;
+
 /*
  * This is the basic message between client and server
  * source is the username who send this message
@@ -9,7 +11,7 @@ package edu.duke.ece651.group4.RISK.shared.message;
  *        ActionMessage's action: 1.ACTION_MOVE, 2. ACTION_MOVE,  3. ACTION_UPGRADE,  4.ACTION_DONE, 5.ACTION_EXIT
  *        GameMessage;s action: 1.GAME_CREATE 2.GAME_JOIN 3.GAME_EXIT
  *  */
-public class BasicMessage {
+public class BasicMessage implements Serializable {
     String source;
     String type;
     String action;

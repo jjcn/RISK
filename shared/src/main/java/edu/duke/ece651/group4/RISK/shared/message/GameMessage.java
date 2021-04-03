@@ -1,8 +1,10 @@
 package edu.duke.ece651.group4.RISK.shared.message;
 
+import java.io.Serializable;
+
 import static edu.duke.ece651.group4.RISK.shared.Constant.MESS_GAME;
 
-public class GameMessage extends BasicMessage{
+public class GameMessage extends BasicMessage implements Serializable {
     int gameID;
     int numPlayers;
 
