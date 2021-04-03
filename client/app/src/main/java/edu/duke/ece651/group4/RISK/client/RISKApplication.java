@@ -16,7 +16,7 @@ public class RISKApplication extends Application {
     private World theWorld;
     private int totalPopulation;
     private Random rnd;
-
+    static String response;
     @Override
     public void onCreate() {
         System.out.println("Successfully create");
@@ -37,9 +37,12 @@ public class RISKApplication extends Application {
     }
 
     protected static String sendAccountInfo( String actName,String name, String pwd) {
-        LogMessage m= new LogMessage(actName, name,pwd);
-        playerClient.sendObject(m);
-        String response = (String) playerClient.recvObject();
+        response = null;
+        new Thread( ()-> {
+            LogMessage m = new LogMessage(actName, name, pwd);
+            playerClient.sendObject(m);
+            response = (String) playerClient.recvObject();
+        }).start();
         return response;
     }
 
