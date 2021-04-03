@@ -17,7 +17,7 @@ public class Troop implements Serializable {
         this.population = new ArrayList<>();
         this.owner=new TextPlayer(owner.getName());
         this.dict=new HashMap<>();
-
+        dict.put("Soldier LV0",number);
         for (int i = 0; i < number; i++) {
             Soldier s=new Soldier(rand);
             population.add(s);
@@ -29,6 +29,7 @@ public class Troop implements Serializable {
         this.population = new ArrayList<>();
         this.owner=new TextPlayer(owner.getName());
         this.dict=new HashMap<>();
+        dict.put("Soldier LV0",number);
 
         for (int i = 0; i < number; i++) {
             Soldier s=new Soldier(new Random());
@@ -38,7 +39,7 @@ public class Troop implements Serializable {
 
     public Troop(ArrayList<Unit> subTroop, Player owner){
         this.population = subTroop;
-        this.owner = owner;
+        this.owner = new TextPlayer(owner.getName());
         this.dict=new HashMap<>();
 
         for(Unit u: subTroop){
@@ -53,7 +54,13 @@ public class Troop implements Serializable {
 
     public Troop(ArrayList<Unit> subTroop,HashMap<String,Integer> myDict, Player owner){
         this.population = subTroop;
-        this.owner = owner;
+        this.owner = new TextPlayer(owner.getName());
+        this.dict=myDict;
+    }
+
+    public Troop(HashMap<String,Integer> myDict, Player owner){
+        this.population = null;
+        this.owner = new TextPlayer(owner.getName());
         this.dict=myDict;
     }
 
@@ -124,7 +131,12 @@ public class Troop implements Serializable {
      */
     public void receiveUnit(Unit target) {
         String name= target.getJobName();
-        this.dict.put(name,this.dict.get(name)+1);
+        if(this.dict.get(name)==null){
+            this.dict.put(name,1);
+        }else{
+            this.dict.put(name,this.dict.get(name)+1);
+        }
+
         this.population.add(target);
     }
 
@@ -209,6 +221,33 @@ public class Troop implements Serializable {
         return this.dict.get(name);
     }
 
+    public int updateUnit(String from, int levelUp,int num,int resource){
+        if(this.checkUnitNum(from)<num){
+            throw new IllegalArgumentException("No enough Unit to upgrade");
+        }
+
+        try{
+            while(num>0){
+
+                Soldier target=(Soldier)this.getUnit(from);
+
+                resource=target.upGrade(target.getLevel()+levelUp,resource);
+
+                this.dict.put(from,this.dict.get(from)-1);
+
+                int newNum=this.dict.get(target.getJobName())==null?1:this.dict.get(target.getJobName())+1;
+                this.dict.put(target.getJobName(),newNum);
+                num--;
+            }
+
+        }catch(Exception e){
+
+            throw new IllegalArgumentException(e.getMessage()+"\n"+num+" units not upgraded");
+        }
+
+        return resource;
+    }
+
     public HashMap<String,Integer> getDict(){
         return this.dict;
     }
@@ -224,12 +263,16 @@ public class Troop implements Serializable {
     private Unit getStrongest(){
         int maxLevel=-1;
         Unit target=null;
-        ArrayList<String> nameList=new Soldier().getLevelNames();
+
+
         for(String s:this.dict.keySet()){
-            Unit check=this.getUnit(s);
-            if(maxLevel<nameList.indexOf(s)){
-                maxLevel=nameList.indexOf(s);
-                target=check;
+
+            if(dict.get(s)!=0){
+                Soldier check=(Soldier)this.getUnit(s);
+                if(maxLevel<check.getLevel()) {
+                    maxLevel = check.getLevel();
+                    target = check;
+                }
             }
         }
         return target;
@@ -238,13 +281,15 @@ public class Troop implements Serializable {
     private Unit getWeakest(){
 
         Unit target=null;
-        ArrayList<String> nameList=new Soldier().getLevelNames();
-        int minLevel=nameList.size();
+        int minLevel=Integer.MAX_VALUE;
         for(String s:this.dict.keySet()){
-            Unit check=this.getUnit(s);
-            if(minLevel>nameList.indexOf(s)){
-                minLevel=nameList.indexOf(s);
-                target=check;
+
+            if(dict.get(s)!=0){
+                Soldier check=(Soldier)this.getUnit(s);
+                if(minLevel>check.getLevel()) {
+                    minLevel= check.getLevel();
+                    target = check;
+                }
             }
         }
         return target;
