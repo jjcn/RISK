@@ -267,8 +267,7 @@ public class World implements Serializable {
     /**
      * Moves a troop to a different a territory. Owner of the troop is not checked.
      * Also checks if the troop size is valid to send from the starting territory.
-     * Consumes food resource.
-     * 
+     * Does NOT consume food resource.
      * @param order is a move order.
      */
     public void moveTroop(BasicOrder order) {
@@ -280,8 +279,6 @@ public class World implements Serializable {
         if (errorMsg != null) {
             throw new IllegalArgumentException(errorMsg);
         }
-        
-        int nConsumedResource = calculateMoveConsumption(order);
 
         end.sendInTroop(start.sendOutTroop(troop));
     }
@@ -300,7 +297,7 @@ public class World implements Serializable {
      * Sends a troop to a territory with different owner, 
      * in order to engage in battle on that territory.
      * Also checks if the troop size is valid to send from the starting territory.
-     * Consumes food resource.
+     * Does NOT consume food resource in this function.
      * @param order is the attack order.
      */
     public void attackATerritory(BasicOrder order) {
@@ -312,25 +309,23 @@ public class World implements Serializable {
         if (errorMsg != null) {
             throw new IllegalArgumentException(errorMsg);
         }
-        
-        int nConsumedResource = calculateAttackConsumption(order);
 
         end.sendInEnemyTroop(start.sendOutTroop(troop));
     }
 
     /**
-     * Upgrades troop on a territory.
-     * @param terr is the territory to upgrade its troop.
-     * @param before is the level of unit before upgrade.
-     * @param after is the level of unit after the upgrade.
-     * @param nUnit is the number of units to upgrade.
+     * Trys to upgrade troop on a territory.
+     * @param utOrder is an UpgradeTroopOrder.
      * @param nResource is the quantity of resource at hand.
-     * @return remaining resource after the upgrade.
+     * @return the remaining quantity of resource after the upgrade.
      */
-    public void upgradeTroop(Territory terr, 
-                            int before, int after, int nUnit, 
-                            int nResource) { 
-        int remainder = terr.upgrade(before, after, nUnit, nResource);
+    public int upgradeTroop(UpgradeTroopOrder utOrder, int nResource) {
+        Territory terr = findTerritory(utOrder.getSrcName()); 
+        int levelBefore = utOrder.getLevelBefore();
+        int levelAfter = utOrder.getLevelAfter();
+        int nUnit = utOrder.getNUnit();
+        int remainder = terr.upgradeTroop(levelBefore, levelAfter, nUnit, nResource);
+        return remainder;
     }
 
     /**

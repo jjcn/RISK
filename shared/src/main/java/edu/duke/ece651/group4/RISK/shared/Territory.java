@@ -74,6 +74,50 @@ public class Territory implements Serializable {
         this.rnd = new Random();
     }
 
+    public String getName() {
+        return this.name;
+    }
+
+    public int getSize() {
+        return this.size;
+    }
+
+    public Player getOwner() {
+        return this.ownerTroop.getOwner();
+    }
+
+    public void setRandom(Random seed) {
+        this.rnd = seed;
+    }
+
+    
+    /**
+     * Added specific number of unit to territory
+     * 
+     * @param num shows number added
+     */
+    public void addUnit(int num) {
+        Troop newTroop = new Troop(num, this.getOwner());
+        this.sendInTroop(newTroop);
+    }
+
+    /**
+     * Initialize population and owner of territory
+     * 
+     * @param num   shows number added
+     * @param owner shows owner of territory
+     */
+    public void initializeTerritory(int num, Player owner) {
+        this.ownerTroop = new Troop(num, owner);
+    }
+
+    /**
+     * Check population of territory
+     */
+    public int checkPopulation() {
+        return this.ownerTroop.checkTroopSize();
+    }
+
     /**
      * Send out specific number of unit from territory
      * 
@@ -111,47 +155,9 @@ public class Territory implements Serializable {
         this.ownerTroop = this.ownerTroop.checkWin() ? this.ownerTroop : enemyRemain;
     }
 
-    public Player getOwner() {
-        return this.ownerTroop.getOwner();
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public int getSize() {
-        return this.size;
-    }
-
-    /**
-     * Added specific number of unit to territory
-     * 
-     * @param num shows number added
-     */
-    public void addUnit(int num) {
-        Troop newTroop = new Troop(num, this.getOwner());
-        this.sendInTroop(newTroop);
-    }
-
-    /**
-     * Initialize population and owner of territory
-     * 
-     * @param num   shows number added
-     * @param owner shows owner of territory
-     */
-    public void initializeTerritory(int num, Player owner) {
-        this.ownerTroop = new Troop(num, owner);
-    }
-
-    /**
-     * Check population of territory
-     */
-    public int checkPopulation() {
-        return this.ownerTroop.checkTroopSize();
-    }
-
     /**
      * Do all the battles with enemies the sequence is random
+     * @return A report of all battles happened
      */
     public String doBattles() {
 
@@ -195,9 +201,6 @@ public class Territory implements Serializable {
         }
     }
 
-    public void setRandom(Random seed) {
-        this.rnd = seed;
-    }
 
     public Territory clone() {
         HashMap<String, Troop> cpy = new HashMap<>();
@@ -216,7 +219,7 @@ public class Territory implements Serializable {
      * @param nResource is the quantity of resource at hand.
      * @return remaining resource after the upgrade.
      */
-    public int upgrade(int before, int after, int nUnit, int nResource) {
+    public int upgradeTroop(int before, int after, int nUnit, int nResource) {
         String jobName = String.format("Soldier LV%d", before); // TODO: this is hardcoded
         return ownerTroop.updateUnit(jobName, after - before, nUnit, nResource);
     }
