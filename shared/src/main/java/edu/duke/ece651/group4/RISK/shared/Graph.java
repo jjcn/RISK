@@ -24,29 +24,28 @@ public class Graph<T> implements Serializable {
      */
     protected List<T> vertices;
     /**
+     * An integer weight is assigned to all vertices.
+     */
+    protected List<Integer> weights;
+    /**
      * boolean matrix that stores adjacency relationship between vertices.
      * true: two vertices are adjacent.
      */
     protected boolean[][] adjMatrix;
-    /**
-     * Integer weights are assigned to all vertices.
-     */
-    protected List<Integer> weights; 
+    
 
-    public Graph(List<T> vertices, boolean[][] adjMatrix, List<Integer> weights) {
+    public Graph(List<T> vertices, List<Integer> weights, boolean[][] adjMatrix) {
         this.vertices = vertices;
-        this.adjMatrix = adjMatrix;
         this.weights = weights;
+        this.adjMatrix = adjMatrix;
     }
 
     public Graph(List<T> vertices, boolean[][] adjMatrix) {
-        this.vertices = vertices;
-        this.adjMatrix = adjMatrix;
-        this.weights = new ArrayList<>(vertices.size());
+        this(vertices, new ArrayList<>(vertices.size()), adjMatrix);
     }
     
     public Graph() {
-        this(new ArrayList<>(), new boolean[0][0], new ArrayList<>());
+        this(new ArrayList<>(), new ArrayList<>(), new boolean[0][0]);
     }
 
     /**
@@ -122,10 +121,37 @@ public class Graph<T> implements Serializable {
         return ans;
     }
 
-    public void setWeight(T vertex, int i) {
-        weights.set(indexOfVertex(vertex), i);
+    /**
+     * Find the weight of a vertex specified by a key.
+     * @param vertex is the vertex.
+     * @return weight of that vertex.
+     */
+    public int getWeight(T vertex) {
+    	return weights.get(indexOfVertex(vertex));
+    }
+    
+    /**
+     * Assign an integer weight to a vertex.
+     * @param vertex is the vertex to set weight.
+     * @param weight is the weight assigned to the vertex.
+     */
+    public void setWeight(T vertex, int weight) {
+        weights.set(indexOfVertex(vertex), weight);
     }
 
+    /**
+     * Set the weights to all vertices using a list.
+     * @param weights is a list of integer weights.
+     */
+    public void setWeights(List<Integer> weights) {
+    	this.weights = weights;
+    }
+    
+    /**
+     * Find the index of a vertex in the list of vertices.
+     * @param vertex is the vertex to find index.
+     * @return the index of vertex in the list.
+     */
     protected int indexOfVertex(T vertex) {
         return vertices.indexOf(vertex);
     }   
@@ -323,23 +349,14 @@ public class Graph<T> implements Serializable {
             List<T> adjacents = getAdjacentsVertices(current);
             for (T adjacent : adjacents) {
                 if (!visited.contains(adjacent)) {
-                    int tentativeDistance = distances.get(current) + findWeight(adjacent);
-                    distances.put(adjacent, Math.min(tentativeDistance, findWeight(adjacent)));
+                    int tentativeDistance = distances.get(current) + getWeight(adjacent);
+                    distances.put(adjacent, Math.min(tentativeDistance, getWeight(adjacent)));
                 }
             }
             visited.add(current);
         }
 
         return distances.get(indexOfVertex(end));
-    }
-
-    /**
-     * Find the weight of a vertex specified by a key.
-     * @param key is the vertex.
-     * @return weight of that vertex.
-     */
-    protected int findWeight(T key) {
-        return weights.get(indexOfVertex(key));
     }
 
     /**
