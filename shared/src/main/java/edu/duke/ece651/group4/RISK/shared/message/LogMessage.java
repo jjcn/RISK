@@ -2,7 +2,7 @@ package edu.duke.ece651.group4.RISK.shared.message;
 
 import java.io.Serializable;
 
-import static edu.duke.ece651.group4.RISK.shared.Constant.MESS_LOG;
+import static edu.duke.ece651.group4.RISK.shared.Constant.*;
 
 /*
 * This handles message related to logIn and SignUp
@@ -18,7 +18,7 @@ public class LogMessage extends BasicMessage implements Serializable {
     }
 
     public LogMessage(String action, String username, String password){
-        this(null,MESS_LOG, action,username, password);
+        this(SourceClient,MESS_LOG, action,username, password);
     }
 
     public String getPassword(){
@@ -27,6 +27,5 @@ public class LogMessage extends BasicMessage implements Serializable {
     public String getUsername(){
         return username;
     }
-
 
 }
