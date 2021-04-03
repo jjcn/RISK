@@ -97,10 +97,12 @@ public class Soldier implements Unit, Serializable {
       throw new IllegalArgumentException("Target level exceed max level");
     }
 
-    while(targetLevel>this.level){
-      cost+=this.levelCost.get(targetLevel);
-      targetLevel--;
-    }
+//    while(targetLevel>this.level){
+//      cost+=this.levelCost.get(targetLevel);
+//      targetLevel--;
+//    }
+
+    cost = this.levelCost.get(targetLevel) - this.levelCost.get(this.level);
     if(cost>resource){
       throw new IllegalArgumentException("No enough resources");
     }
