@@ -37,13 +37,12 @@ public class SoldierTest {
 
     }
 
-    /*
     @Test
-    public void test_upgradeSoldier() {
+    public void test_upgradeSoldier() { 
         Soldier mySoldier = new Soldier();
 
         int remain = mySoldier.upGrade(1, 5);
-        assertEquals(2, remain);
+        assertEquals(2, remain); //TODO: what's wrong with this test case?
 
         mySoldier.upGrade(3, 200);
         assertEquals(mySoldier.getJobName(), "Soldier LV3");
@@ -56,5 +55,5 @@ public class SoldierTest {
         remain = mySoldier.upGrade(4, 100);
         assertEquals(56, remain);
     }
-    */
+
 }
