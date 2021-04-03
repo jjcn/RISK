@@ -49,28 +49,44 @@ public class Soldier implements Unit, Serializable {
   }
 
   @Override
-  public int upGrade(int targetLevel,int resource) {
-    int cost=0;
-    int aim=targetLevel;
-    if(targetLevel<this.level){
+//  public int upGrade(int targetLevel,int resource) {
+//    int cost=0;
+//    int aim=targetLevel;
+//    if(targetLevel<this.level){
+//      throw new IllegalArgumentException("target level is lower than current level");
+//    }
+//
+//    if(targetLevel>=this.levelNames.size()){
+//      throw new IllegalArgumentException("Target level exceed max level");
+//    }
+//
+//    while(targetLevel>this.level){
+//      cost+=this.levelCost.get(targetLevel);
+//      targetLevel--;
+//    }
+//    if(cost>resource){
+//      throw new IllegalArgumentException("No enough resources");
+//    }
+//    this.setLevel(aim);
+//    return resource-cost;
+//  }
+  public int upGrade(int targetLevel, int resource) {
+    int cost = 0;
+    int aim = targetLevel;
+    if (targetLevel < this.level) {
       throw new IllegalArgumentException("target level is lower than current level");
     }
-
-    if(targetLevel>=this.levelNames.size()){
+    if (targetLevel >= this.levelNames.size()) {
       throw new IllegalArgumentException("Target level exceed max level");
     }
 
-    while(targetLevel>this.level){
-      cost+=this.levelCost.get(targetLevel);
-      targetLevel--;
-    }
-    if(cost>resource){
+    cost = this.levelCost.get(targetLevel) - this.levelCost.get(this.level);
+    if (cost > resource) {
       throw new IllegalArgumentException("No enough resources");
     }
     this.setLevel(aim);
-    return resource-cost;
+    return resource - cost;
   }
-
 
 
 

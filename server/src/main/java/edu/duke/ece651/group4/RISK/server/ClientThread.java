@@ -41,7 +41,7 @@ public class ClientThread extends Thread {
             String action = logMessage.getAction();
             System.out.println("get Message: " + action);
             if(action.equals(LOG_SIGNIN) ){
-                System.out.print("User tries to log in  ");
+                System.out.println("User tries to log in  ");
                 String resIn = tryLogIn(logMessage.getUsername(), logMessage.getPassword());
                 this.theClient.sendObject(resIn);
                 if(resIn == null){
@@ -49,7 +49,7 @@ public class ClientThread extends Thread {
                 }
             }
             if(action.equals(LOG_SIGNUP) ){
-                System.out.print("User tries to sign up  ");
+                System.out.println("User tries to sign up  ");
                 String resUp = trySignUp(logMessage.getUsername(), logMessage.getPassword());
                 this.theClient.sendObject(resUp);
             }
