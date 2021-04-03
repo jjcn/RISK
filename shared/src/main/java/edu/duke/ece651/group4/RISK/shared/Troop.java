@@ -229,55 +229,54 @@ public class Troop implements Serializable {
         return this.dict.get(name);
     }
 
-    public int updateUnit(String from, int levelUp,int num,int resource){
-        if(this.checkUnitNum(from)<num){
+    public int updateUnit(String from, int levelUp, int num, int resource){
+        if (this.checkUnitNum(from) < num){
             throw new IllegalArgumentException("No enough Unit to upgrade");
         }
 
-        try{
-            while(num>0){
+        try {
+            while(num > 0) {
 
-                Soldier target=(Soldier)this.getUnit(from);
+                Soldier target = (Soldier)this.getUnit(from);
 
-                resource=target.upGrade(target.getLevel()+levelUp,resource);
+                resource = target.upGrade(target.getLevel() + levelUp, resource);
 
-                this.dict.put(from,this.dict.get(from)-1);
+                this.dict.put(from, this.dict.get(from) - 1);
 
-                int newNum=this.dict.get(target.getJobName())==null?1:this.dict.get(target.getJobName())+1;
+                int newNum = this.dict.get(target.getJobName()) == null?1:this.dict.get(target.getJobName())+1;
                 this.dict.put(target.getJobName(),newNum);
                 num--;
             }
 
-        }catch(Exception e){
-
-            throw new IllegalArgumentException(e.getMessage()+"\n"+num+" units not upgraded");
+        } catch(Exception e){
+            throw new IllegalArgumentException(e.getMessage() + "\n" + num + " units not upgraded");
         }
 
         return resource;
     }
 
-    public HashMap<String,Integer> getDict(){
+    public HashMap<String, Integer> getDict(){
         return this.dict;
     }
 
     public boolean checkSend(Troop target){
-        HashMap<String,Integer> check=target.getDict();
-        for( String s:check.keySet() ){
-            if(this.dict.get(s)==null||this.dict.get(s)<check.get(s)) return false;
+        HashMap<String,Integer> check = target.getDict();
+        for(String s:check.keySet() ){
+            if(this.dict.get(s) == null || this.dict.get(s)<check.get(s)) return false;
         }
         return true;
     }
 
     private Unit getStrongest(){
-        int maxLevel=-1;
-        Unit target=null;
+        int maxLevel = -1;
+        Unit target = null;
 
 
-        for(String s:this.dict.keySet()){
+        for (String s : this.dict.keySet()){
 
-            if(dict.get(s)!=0){
-                Soldier check=(Soldier)this.getUnit(s);
-                if(maxLevel<check.getLevel()) {
+            if (dict.get(s) != 0){
+                Soldier check = (Soldier)this.getUnit(s);
+                if (maxLevel < check.getLevel()) {
                     maxLevel = check.getLevel();
                     target = check;
                 }

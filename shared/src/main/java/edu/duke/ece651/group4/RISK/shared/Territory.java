@@ -170,16 +170,19 @@ public class Territory implements Serializable {
         return clone;
     }
 
+
     /**
      * @author Shengxi Jin
-     * @param from
-     * @param levelUp
-     * @param num
-     * @param resource
-     * @return
+     * @param before is the level of unit before upgrade.
+     * @param after is the level of unit after the upgrade.
+     * @param nUnit is the number of units to upgrade.
+     * @param nResource is the quantity of resource at hand.
+     * @return remaining resource after the upgrade.
      */
-    public int upgrade(String from, int levelUp,int num,int resource) {
-        return ownerTroop.updateUnit(from, levelUp, num, resource);
+    public int upgrade(int before, int after, int nUnit, 
+                       int nResource) {
+        String jobName = String.format("Soldier LV%d", before); // TODO: this is hardcoded
+        return ownerTroop.updateUnit(jobName, after - before, nUnit, nResource);
     }
 }
 

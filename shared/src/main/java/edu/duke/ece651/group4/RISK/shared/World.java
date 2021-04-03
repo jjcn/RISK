@@ -309,16 +309,17 @@ public class World implements Serializable {
 
     /**
      * Upgrades troop on a territory.
-     * @param terr is the territory from which units are selected to upgrade.
-     * @param info is player data.
+     * @param terr is the territory to upgrade its troop.
+     * @param before is the level of unit before upgrade.
+     * @param after is the level of unit after the upgrade.
      * @param nUnit is the number of units to upgrade.
-     * @param from is the units' level before upgrade.
-     * @param to is the units' level after upgrade.
+     * @param nResource is the quantity of resource at hand.
+     * @return remaining resource after the upgrade.
      */
-    public void upgradeTroop(Territory terr, PlayerInfo info, 
-                            int nUnit, int before, int after) {
-        // TODO
-        terr.upgrade(from, levelUp, num, resource)
+    public void upgradeTroop(Territory terr, 
+                            int before, int after, int nUnit, 
+                            int nResource) { 
+        int remainderResource = terr.upgrade(before, after, nUnit, nResource);
     }
 
     /**
