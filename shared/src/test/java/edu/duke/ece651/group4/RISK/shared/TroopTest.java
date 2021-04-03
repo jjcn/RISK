@@ -42,7 +42,7 @@ public class TroopTest {
         assertEquals(test.checkTroopSize(),10);
 
         assertThrows(new IllegalArgumentException().getClass(),()->test.updateUnit("Soldier LV2",2,4,170));
-        assertEquals(test.checkUnitNum("Soldier LV4"),2);
+        assertEquals(test.checkUnitNum("Soldier LV4"),3);
     }
 
 
@@ -84,13 +84,13 @@ public class TroopTest {
 
 
 
-//    @Test
-//    void Test_clone(){
-//        Random rnd = new Random(0);
-//        Troop test=new Troop(4,new TextPlayer("test"),rnd);
-//        Troop clone=test.clone();
-//        assertEquals(test.checkTroopSize(),clone.checkTroopSize());
-//    }
+    @Test
+    void Test_clone(){
+        Random rnd = new Random(0);
+        Troop test=new Troop(4,new TextPlayer("test"),rnd);
+        Troop clone=test.clone();
+        assertEquals(test.checkTroopSize(),clone.checkTroopSize());
+    }
 
 
 }

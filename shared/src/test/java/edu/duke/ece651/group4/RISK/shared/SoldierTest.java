@@ -50,7 +50,7 @@ public class SoldierTest {
         assertThrows(new IllegalArgumentException().getClass(), ()->mySoldier.upGrade(7,3));
         mySoldier.setJob("Soldier LV2");
         remain=mySoldier.upGrade(4,100);
-        assertEquals(15,remain);
+        assertEquals(remain,56);
     }
 
 
