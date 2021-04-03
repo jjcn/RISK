@@ -1,4 +1,8 @@
 package edu.duke.ece651.group4.RISK.shared;
+
+import java.util.Arrays;
+import java.util.List;
+
 /*
 * This class handles the constant across all the project
 * */
@@ -34,5 +38,11 @@ public class Constant {
     public static final String GAME_REFRESH = "GameRefresh";
     public static final String GAME_EXIT = "GameExit";
 
+
+    //soldier information
+    public static  final List<String> UNIT_NAMES = Arrays.asList("Soldier LV0","Soldier LV1",
+            "Soldier LV2","Soldier LV3","Soldier LV4","Soldier LV5","Soldier LV6");
+    public static  final List<Integer> UNIT_COSTS = Arrays.asList(0,3,11,30,55,90,140);
+    public static final List<Integer> UNIT_BONUS= Arrays.asList(0,1,3,5,8,11,15);
 
 }

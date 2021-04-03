@@ -43,7 +43,7 @@ public class Soldier implements Unit, Serializable {
     while (myRoll == enemyRoll) {
       myRoll = this.attackPoint();
       enemyRoll = enemy.attackPoint();
-  }
+    }
 
     return myRoll > enemyRoll;
   }
@@ -51,11 +51,12 @@ public class Soldier implements Unit, Serializable {
   @Override
   public int upGrade(int targetLevel,int resource) {
     int cost=0;
+    int aim=targetLevel;
     if(targetLevel<this.level){
       throw new IllegalArgumentException("target level is lower than current level");
     }
 
-    if(targetLevel>this.levelNames.size()){
+    if(targetLevel>=this.levelNames.size()){
       throw new IllegalArgumentException("Target level exceed max level");
     }
 
@@ -66,9 +67,12 @@ public class Soldier implements Unit, Serializable {
     if(cost>resource){
       throw new IllegalArgumentException("No enough resources");
     }
-    this.setLevel(targetLevel);
+    this.setLevel(aim);
     return resource-cost;
   }
+
+
+
 
   public int getBonus(){
     return this.levelBonus.get(this.level);
