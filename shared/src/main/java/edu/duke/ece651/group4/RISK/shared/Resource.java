@@ -35,7 +35,15 @@ public class Resource {
      *          Can be positive, 0, or negative.
      */
     public void modifyQuantity(int i) {
-        quantity += i;
+        final String RESOURCE_INVALID_MODIFY_MSG = 
+            "Modifying resource quantity by %s is not supported.";
+        if (0 < quantity + i) {
+            quantity += i;
+        }
+        else {
+            throw new IllegalArgumentException(
+                String.format(RESOURCE_INVALID_MODIFY_MSG, i));
+        }
     }
 
     /**
