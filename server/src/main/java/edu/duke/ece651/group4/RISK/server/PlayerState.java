@@ -1,33 +1,30 @@
 package edu.duke.ece651.group4.RISK.server;
 
-import static edu.duke.ece651.group4.RISK.shared.Constant.*;
+import static edu.duke.ece651.group4.RISK.server.ServerConstant.*;
 
 /*
  * This class handles the state of players
  * Player State:
- * 1. PLAYERSTATE_READY: ready to receive the message from the client
- * 2. PLAYERSTATE_LOSE: lose the game, this time, host will only send the world to each player but will not do any actions
+ * 1. PLAYER_STATE_ACTION_PHASE: ready to receive the message from the client
+ * 2. PLAYER_STATE_LOSE: lose the game, this time, host will only send the world to each player but will not do any actions
  *    from them
- * 3. PLAYERSTATE_ENDONETURN : Finish one turn of the game, will wait for host to update the world
- * 4. PLAYERSTATE_QUIT: quit the game. If we find the winner, each thread will send winner message to each client and close the thread
- * 5. PLAYERSTATE_SWITCHOUT: user switch out from this game
+ * 3. PLAYER_STATE_END_ONE_TURN : Finish one turn of the game, will wait for host to update the world
+ * 4. PLAYER_STATE_SWITCH_OUT: user switch out from this game
+ * 5. PLAYER_STATE_UPDATING: after the world updates the world, do final check on state
  * */
-public class PlayerState{
-    String username;
-    String state;
+public class PlayerState extends State{
+    final String username;
     /*
-     * This contruct a PlayerState
+     * This construct a PlayerState
      * @param startState is the start state
      * */
-    public PlayerState(String startState){
-        state = PLAYER_STATE_READY;
+    public PlayerState(String username){
+        super(PLAYER_STATE_ACTION_PHASE);
+        this.username = username;
     }
 
-    /*
-     * this returns a state
-     * */
-    public String getState() {
-        return state ;
+    public String getUsername(){
+        return username;
     }
     /*
      * this check if the player loses
@@ -37,32 +34,25 @@ public class PlayerState{
         return getState().equals(PLAYER_STATE_LOSE) ;
     }
     /*
-     * this check if the player quits
+     * this check if the player switch out a game.
      * @return true, if it is. otherwise false
      * */
-    public boolean isQuit(){
-        return getState().equals(PLAYER_STATE_QUIT);
+    public boolean isSwitchOut(){
+        return getState().equals(PLAYER_STATE_SWITCH_OUT);
     }
     /*
      * this check if the player done one turn
      * @return true, if it is. otherwise false
      * */
     public boolean isDoneOneTurn(){
-        return getState().equals( PLAYER_STATE_END_ONE_TURN) | isLose() | isQuit() | isExit();
+        return getState().equals( PLAYER_STATE_END_ONE_TURN) | isLose() | isSwitchOut();
     }
     /*
-     * This change a player state
-     * @param s is the new state for player
-     * */
-    public void changeStateTo(String s){
-        this.state = s;
-    }
+    * This is updating state where the players update's its own state.
+    * */
+    public boolean isUpdating(){return getState().equals(PLAYER_STATE_UPDATING);}
 
-    /*
-     * this check if the client exit
-     * @return true, if it is. otherwise false
-     * */
-    public boolean isExit(){
-        return getState().equals( PLAYER_STATE_EXIT);
+    public boolean isActive(){
+        return !isSwitchOut();
     }
 }

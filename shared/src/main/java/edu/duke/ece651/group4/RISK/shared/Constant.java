@@ -31,18 +31,8 @@ public class Constant {
     //Game:
     public static final String GAME_CREATE = "GameCreate";
     public static final String GAME_JOIN = "GameJoin";
+    public static final String GAME_REFRESH = "GameRefresh";
     public static final String GAME_EXIT = "GameExit";
 
-    //PlayerState
-    public static final String PLAYER_STATE_READY = "PLAYER_STATE_READY";
-    public static final String PLAYER_STATE_LOSE = "PLAYER_STATE_LOSE";
-    public static final String PLAYER_STATE_END_ONE_TURN = "PLAYER_STATE_END_ONE_TURN";
-    public static final String PLAYER_STATE_QUIT = "PLAYER_STATE_QUIT";
-    public static final String PLAYER_STATE_SWITCH_OUT ="PLAYER_STATE_SWITCH_OUT" ;
-    public static final String PLAYER_STATE_EXIT = "PLAYER_STATE_EXIT";
-
-    //GameState
-    public static final String GAME_STATE_WAIT_TO_UPDATE = "GAME_STATE_WAIT_TO_UPDATE";
-    public static final String GAME_STATE_DONE_UPDATE = "GAME_STATE_DONE_UPDATE";
 
 }
