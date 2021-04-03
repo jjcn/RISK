@@ -6,16 +6,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import edu.duke.ece651.group4.RISK.client.R;
+import edu.duke.ece651.group4.RISK.client.*;
 import edu.duke.ece651.group4.RISK.client.RISKApplication;
 
 import java.util.Objects;
 
+import static edu.duke.ece651.group4.RISK.client.Constant.DEBUG_MODE;
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.*;
 import static edu.duke.ece651.group4.RISK.client.utility.Instruction.showByToast;
 
 public class LoginActivity extends AppCompatActivity {
-    private static final String TAG = LoginActivity.class.getSimpleName();
+    private final String TAG = LoginActivity.class.getSimpleName();
     private EditText nameET;
     private EditText passwordET;
     private Button logInButton;
@@ -36,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
         impSignUpBt();
     }
 
-    private void impLoginBt(){
+    private void impLoginBt() {
         nameET = findViewById(R.id.editTextTextAccount);
         passwordET = findViewById(R.id.editTextTextPassword);
         logInButton = findViewById(R.id.buttonLogin);
@@ -46,21 +47,30 @@ public class LoginActivity extends AppCompatActivity {
             name = Objects.requireNonNull(nameET.getText()).toString();
             password = Objects.requireNonNull(passwordET.getText()).toString();
 
-            String result = sendSignIn(name,password);// checkNamePwdMatch
-            if(name.equals("A") && password.equals("123")){
-                result = null;
-            }
+            sendLogIn(name, password, new onReceiveListener() {
+                @Override
+                public void onSuccess(Object o) {
+                    String result = (String) o;
+                    if (DEBUG_MODE) {
+                        result = null;
+                    }
+                    runOnUiThread(() -> {
+                        if (result == null) { //match
+                            Intent roomIntent = new Intent(LoginActivity.this, RoomActivity.class);
+                            startActivity(roomIntent);
+                        } else {
+                            showByToast(LoginActivity.this, result);// show account err message
+                            logInButton.setClickable(true);
+                            return;
+                        }
+                    });
+                }
 
-            if( result == null) { //match
-                Intent roomIntent = new Intent(LoginActivity.this, RoomActivity.class);
-                startActivity(roomIntent);
-                finish();
-            }
-            else{
-                showByToast(this,result);// show account err message
-                logInButton.setClickable(true);
-                return;
-            }
+                @Override
+                public void onFailure(String errMsg) {
+                    Log.e(TAG, "login: " + errMsg);
+                }
+            });
         });
     }
 

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +19,7 @@ import static edu.duke.ece651.group4.RISK.client.utility.Instruction.showByToast
 
 
 public class SignupActivity extends AppCompatActivity {
+    private final String TAG = SignupActivity.class.getSimpleName();
     private EditText nameET;
     private EditText passwordET;
     private EditText pwdCheckET;
@@ -88,22 +90,33 @@ public class SignupActivity extends AppCompatActivity {
             name = Objects.requireNonNull(nameET.getText()).toString().trim();
             password = Objects.requireNonNull(pwdCheckET.getText()).toString().trim();
             if (name.isEmpty() || password.isEmpty()) {
-                showByToast(this,EMPTY_INPUT);
+                showByToast(SignupActivity.this, EMPTY_INPUT);
                 signupButton.setClickable(true);
                 return;
             }
 
-            String result = sendSignUp(name,password);
-            if (result == null) {
-                Intent loginIntent = new Intent(SignupActivity.this, LoginActivity.class);
-                showByToast(this, SUCCESS_SIGNUP);
-                startActivity(loginIntent);
-                finish();
-            } else {
-                showByToast(this, result);// show account err message
-                signupButton.setClickable(true);
-                return;
-            }
+            sendSignUp(name, password, new onReceiveListener() {
+                @Override
+                public void onSuccess(Object o) {
+                    String result = (String) o;
+                    if (result == null) {
+                        Intent loginIntent = new Intent(SignupActivity.this, LoginActivity.class);
+                        showByToast(SignupActivity.this, SUCCESS_SIGNUP);
+                        startActivity(loginIntent);
+                        finish();
+                    } else {
+                        showByToast(SignupActivity.this, result);// show account err message
+                        signupButton.setClickable(true);
+                        return;
+                    }
+                }
+
+                @Override
+                public void onFailure(String errMsg) {
+                    Log.e(TAG, "sign up: " + errMsg.toString());
+                }
+            });
+
         });
     }
 

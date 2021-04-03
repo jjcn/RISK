@@ -1,8 +1,10 @@
 package edu.duke.ece651.group4.RISK.shared;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Random;
@@ -22,19 +24,33 @@ public class Graph<T> implements Serializable {
      */
     protected List<T> vertices;
     /**
+     * An integer weight is assigned to all vertices.
+     */
+    protected List<Integer> weights;
+    /**
      * boolean matrix that stores adjacency relationship between vertices.
      * true: two vertices are adjacent.
      */
     protected boolean[][] adjMatrix;
-
-    public Graph() {
-        this.vertices = new ArrayList<>();
-        this.adjMatrix = new boolean[0][0];
+    
+    public Graph(List<T> vertices, List<Integer> weights, boolean[][] adjMatrix) {
+        this.vertices = vertices;
+        this.weights = weights;
+        this.adjMatrix = adjMatrix;
     }
 
     public Graph(List<T> vertices, boolean[][] adjMatrix) {
-        this.vertices = vertices;
-        this.adjMatrix = adjMatrix;
+        this(vertices, new ArrayList<>(vertices.size()), adjMatrix);
+    }
+    
+    public Graph() {
+        this(new ArrayList<>(), new ArrayList<>(), new boolean[0][0]);
+    }
+
+    public List<Integer> cloneWeights() {
+        List<Integer> newList = new ArrayList<>();
+        weights.forEach(w -> newList.add(w));
+        return newList;
     }
 
     /**
@@ -101,7 +117,7 @@ public class Graph<T> implements Serializable {
      */
     public List<T> getAdjacentVertices(T key) {
         List<T> ans = new ArrayList<>();
-        int i = vertices.indexOf(key);
+        int i = indexOfVertex(key);
         for (int j = 0; j < adjMatrix[i].length; j++) {
             if (adjMatrix[i][j] == true) {
                 ans.add(vertices.get(j));
@@ -109,6 +125,41 @@ public class Graph<T> implements Serializable {
         }
         return ans;
     }
+
+    /**
+     * Find the weight of a vertex specified by a key.
+     * @param vertex is the vertex.
+     * @return weight of that vertex.
+     */
+    public int getWeight(T vertex) {
+    	return weights.get(indexOfVertex(vertex));
+    }
+    
+    /**
+     * Assign an integer weight to a vertex.
+     * @param vertex is the vertex to set weight.
+     * @param weight is the weight assigned to the vertex.
+     */
+    public void setWeight(T vertex, int weight) {
+        weights.set(indexOfVertex(vertex), weight);
+    }
+
+    /**
+     * Set the weights to all vertices using a list.
+     * @param weights is a list of integer weights.
+     */
+    public void setWeights(List<Integer> weights) {
+    	this.weights = weights;
+    }
+    
+    /**
+     * Find the index of a vertex in the list of vertices.
+     * @param vertex is the vertex to find index.
+     * @return the index of vertex in the list.
+     */
+    protected int indexOfVertex(T vertex) {
+        return vertices.indexOf(vertex);
+    }   
 
     /**
      * Add a vertex to graph.
@@ -126,6 +177,7 @@ public class Graph<T> implements Serializable {
         adjMatrix = newAdjMatrix;
         // add to vertices
         vertices.add(vertex);
+        weights.add(0);
     }
 
     /**
@@ -146,8 +198,8 @@ public class Graph<T> implements Serializable {
      * @param v2 is the other end the edge.
      */
     public void addEdge(T v1, T v2) {
-        int i = vertices.indexOf(v1);
-        int j = vertices.indexOf(v2);
+        int i = indexOfVertex(v1);
+        int j = indexOfVertex(v2);
         adjMatrix[i][j] = true;
         adjMatrix[j][i] = true;
     }
@@ -186,8 +238,8 @@ public class Graph<T> implements Serializable {
      *         false, if not.
      */
     public boolean isAdjacent(T v1, T v2) {
-        int i = vertices.indexOf(v1);
-        int j = vertices.indexOf(v2);
+        int i = indexOfVertex(v1);
+        int j = indexOfVertex(v2);
         return adjMatrix[i][j];
     }
 
@@ -275,32 +327,80 @@ public class Graph<T> implements Serializable {
         return false;
     }
 
-    /*
-    @Override
-    public Iterator<T> iterator() {
-        return new GraphIterator();
-    }
-
-    public class GraphIterator implements Iterator<T> {
-        private int position = 0;
-        @Override
-        public boolean hasNext() {
-            if (position < getVertices().size()) {
-                return true;
+    /**
+     * Calculates the shortest path length between 2 vertices.
+     * @param start is the starting vertex.
+     * @param end is the ending vertex.
+     * @return length of the shortest path .
+     */
+    public int calculateShortestPath(T start, T end) {
+    	String NOT_REACHABLE_MSG = "Cannot reach from start to end.";
+		/*
+		 * shortest distances from start to all vertices
+		 */
+        Map<T, Integer> distances = new HashMap<>();
+        /*
+         *  initialize distances:
+         *  start: as its weight
+         *  others: infinity (substitute with Integer.MAX_VALUE)
+         */
+        for (T vertex : vertices) {
+            if (vertex.equals(start)) {
+            	distances.put(vertex, getWeight(start));
             }
-            return false;
+            else {
+            	distances.put(vertex, Integer.MAX_VALUE);
+            }
+        }
+        /*
+         * add the start vertex to unvisited.
+         */
+        Set<T> unvisited = new HashSet<>();
+        Set<T> visited = new HashSet<>();
+        unvisited.add(start);
+        /* While the unvisited is not empty:
+		 * 1. Choose an unvisited vertex, 
+		 *    which should be the one with the lowest distance from the start,
+		 *    and remove it from unvisited.
+		 * 2. Calculate new distances to direct neighbors by keeping the lowest distance at each evaluation.
+		 * 3. Add neighbors that are not yet visited to the unvisited set.
+         */
+        while (unvisited.size() != 0) {
+            T current = getSmallestDistanceVertex(unvisited, distances);
+            unvisited.remove(current);
+            for (T adjacent : getAdjacentVertices(current)) {
+                if (!visited.contains(adjacent)) {
+                    distances.put(adjacent, Math.min(distances.get(current) + getWeight(adjacent), 
+                    		                         distances.get(adjacent)));
+                    unvisited.add(adjacent);
+                }
+            }
+            visited.add(current);
         }
 
-        @Override
-        public T next() {
-            if(hasNext()) {
-                return getVertices().get(position++);
-            }
-            return null;
+        if (distances.get(end) == Integer.MAX_VALUE) {
+        	throw new IllegalArgumentException(NOT_REACHABLE_MSG);
         }
-
+        return distances.get(end);
     }
-    */
+
+    /**
+     * Find the smallest distance vertex.
+     * @param tovisit
+     * @return
+     */
+    protected T getSmallestDistanceVertex(Set<T> tovisit, Map<T, Integer> distances) {
+        T smallestDistanceVertex = null;
+        int lowestDistance = Integer.MAX_VALUE;
+        for (T vertex : tovisit) {
+            int dist = distances.get(vertex);
+            if (dist < lowestDistance) {
+                lowestDistance = dist;
+                smallestDistanceVertex = vertex;
+            }
+        }
+        return smallestDistanceVertex;
+    }
 
     @Override
     public boolean equals(Object other) {

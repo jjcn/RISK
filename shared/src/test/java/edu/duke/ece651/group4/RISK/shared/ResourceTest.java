@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 public class ResourceTest {
-    /*
+    
     @Test
     public void testGetName() {
         Resource food = new Resource("food", 1);
@@ -41,9 +41,10 @@ public class ResourceTest {
         Resource food = new Resource("food", 1);
         Resource tech = new Resource("tech", 1);
         food.modifyQuantity(99);
-        tech.modifyQuantity(-1);
+        assertThrows(IllegalArgumentException.class,
+                    () -> tech.modifyQuantity(-1));
         assertEquals(food.getQuantity(), 100);
-        assertEquals(tech.getQuantity(), 0);
+        assertEquals(tech.getQuantity(), 1);
     }
 
     @Test
@@ -73,5 +74,5 @@ public class ResourceTest {
         assertFalse(food1.equals(tech2));
         assertFalse(tech1.equals(tech2));
     }
-    */
+    
 }

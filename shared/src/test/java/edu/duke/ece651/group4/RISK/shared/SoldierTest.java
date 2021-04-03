@@ -8,64 +8,48 @@ import org.junit.jupiter.api.Test;
 
 public class SoldierTest {
     @Test
-    void test_fight() {
+    public void test_fight() {
         Random rnd = new Random(0);
-        Soldier mySoldier= new Soldier(rnd);
-        Soldier enemy= new Soldier(rnd);
+        Soldier mySoldier = new Soldier(rnd);
+        Soldier enemy = new Soldier(rnd);
 
-        assertEquals(mySoldier.fight(enemy),false);
-        assertEquals(mySoldier.fight(enemy),true);
-
+        assertEquals(mySoldier.fight(enemy), false);
+        assertEquals(mySoldier.fight(enemy), true);
 
     }
 
     @Test
-    void test_soldier(){
-        Soldier mySoldier= new Soldier();
-        Soldier clone =mySoldier.clone();
-        assertEquals(mySoldier==clone,false);
+    public void test_soldier() {
+        Soldier mySoldier = new Soldier();
+        Soldier clone = mySoldier.clone();
+        assertEquals(mySoldier == clone, false);
     }
 
     @Test
-    void test_setupSoldier() {
-        Soldier mySoldier= new Soldier();
-        assertEquals(mySoldier.getBonus(),0);
+    public void test_setupSoldier() {
+        Soldier mySoldier = new Soldier();
+        assertEquals(mySoldier.getBonus(), 0);
         mySoldier.setLevel(4);
-        assertEquals(mySoldier.getBonus(),8);
-        assertEquals(mySoldier.getJobName(),"Soldier LV4");
+        assertEquals(mySoldier.getBonus(), 8);
+        assertEquals(mySoldier.getJobName(), "Soldier LV4");
         mySoldier.setJob("Soldier LV3");
-        assertEquals(mySoldier.getLevel(),3);
+        assertEquals(mySoldier.getLevel(), 3);
 
     }
 
-//    @Test
-//    void test_upgradeSoldier() {
-//        Soldier mySoldier= new Soldier();
-//        int remain=mySoldier.upGrade(1,5);
-//        assertEquals(remain,2);
-//        mySoldier.upGrade(3,200);
-//        assertEquals(mySoldier.getJobName(),"Soldier LV3");
-//        assertThrows(new IllegalArgumentException().getClass(), ()->mySoldier.upGrade(10,200));
-//        assertThrows(new IllegalArgumentException().getClass(), ()->mySoldier.upGrade(1,200));
-//        assertThrows(new IllegalArgumentException().getClass(), ()->mySoldier.upGrade(7,3));
-//        mySoldier.setJob("Soldier LV2");
-//        remain=mySoldier.upGrade(4,100);
-//        assertEquals(15,remain);
-
-//        Soldier mySoldier = new Soldier();
-//        int remain = mySoldier.upGrade(1, 5);
-//        assertEquals(2, remain); //TODO: what's wrong with this test case?
-//
-//        mySoldier.upGrade(3, 200);
-//        assertEquals(mySoldier.getJobName(), "Soldier LV3");
-//
-//        assertThrows(new IllegalArgumentException().getClass(), () -> mySoldier.upGrade(10, 200));
-//        assertThrows(new IllegalArgumentException().getClass(), () -> mySoldier.upGrade(1, 200));
-//        assertThrows(new IllegalArgumentException().getClass(), () -> mySoldier.upGrade(7, 3));
-//
-//        mySoldier.setJob("Soldier LV2");
-//        remain = mySoldier.upGrade(4, 100);
-//        assertEquals(56, remain);
-//    }
+    @Test
+    public void test_upgradeSoldier() { 
+        Soldier mySoldier= new Soldier();
+        int remain=mySoldier.upGrade(1,5);
+        assertEquals(remain,2);
+        mySoldier.upGrade(3,200);
+        assertEquals(mySoldier.getJobName(),"Soldier LV3");
+        assertThrows(new IllegalArgumentException().getClass(), ()->mySoldier.upGrade(10,200));
+        assertThrows(new IllegalArgumentException().getClass(), ()->mySoldier.upGrade(1,200));
+        assertThrows(new IllegalArgumentException().getClass(), ()->mySoldier.upGrade(7,3));
+        mySoldier.setJob("Soldier LV2");
+        remain=mySoldier.upGrade(4,100);
+        assertEquals(remain,56);
+    }
 
 }

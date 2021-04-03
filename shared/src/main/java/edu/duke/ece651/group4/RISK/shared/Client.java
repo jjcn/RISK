@@ -42,7 +42,7 @@ public class Client  {
     /*
     * This sets up the ObjectOutputStream and ObjectInputStream
     * */
-    private void setUpObjectStream()throws IOException {
+    private void setUpObjectStream() throws IOException {
         out = new ObjectOutputStream(this.socket.getOutputStream());
         in = new ObjectInputStream(this.socket.getInputStream());
     }
