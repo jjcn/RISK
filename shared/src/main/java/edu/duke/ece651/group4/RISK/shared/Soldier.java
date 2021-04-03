@@ -81,6 +81,8 @@ public class Soldier implements Unit, Serializable {
 
     @Override
     public int upGrade(int targetLevel, int resource) {
+        int cost = 0;
+        int aim = targetLevel;
         if (targetLevel < this.level) {
             throw new IllegalArgumentException("target level is lower than current level");
         }
@@ -88,11 +90,11 @@ public class Soldier implements Unit, Serializable {
             throw new IllegalArgumentException("Target level exceed max level");
         }
 
-        int cost = this.levelCost.get(targetLevel) - this.levelCost.get(this.level);
+        cost = this.levelCost.get(targetLevel) - this.levelCost.get(this.level);
         if (cost > resource) {
             throw new IllegalArgumentException("No enough resources");
         }
-        this.setLevel(targetLevel);
+        this.setLevel(aim);
         return resource - cost;
     }
 
