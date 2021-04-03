@@ -25,7 +25,7 @@ public class User {
         if(!checkUsername(username)){
             return false;
         }
-        if(this.userInfo.getPassword().equals(password)){
+        if(!this.userInfo.getPassword().equals(password)){
             return false;
         }
         return true;
