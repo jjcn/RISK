@@ -79,23 +79,34 @@ public class Soldier implements Unit, Serializable {
         return myRoll > enemyRoll;
     }
 
+    /**
+     * Try upgrade a soldier to target Level.
+     * @param targetLevel is the desired level to upgrade to. 
+     * @param resource is the resource quantity at hand.
+     * @return remaining resource quantity after the upgrade attempt.
+     */
     @Override
     public int upGrade(int targetLevel, int resource) {
-        int cost = 0;
-        int aim = targetLevel;
-        if (targetLevel < this.level) {
-            throw new IllegalArgumentException("target level is lower than current level");
-        }
-        if (targetLevel >= this.levelNames.size()) {
-            throw new IllegalArgumentException("Target level exceed max level");
-        }
+        int cost=0;
+    int aim=targetLevel;
+    if(targetLevel<this.level){
+      throw new IllegalArgumentException("target level is lower than current level");
+    }
 
-        cost = this.levelCost.get(targetLevel) - this.levelCost.get(this.level);
-        if (cost > resource) {
-            throw new IllegalArgumentException("No enough resources");
-        }
-        this.setLevel(aim);
-        return resource - cost;
+    if(targetLevel>=this.levelNames.size()){
+      throw new IllegalArgumentException("Target level exceed max level");
+    }
+
+    while(targetLevel>this.level){
+      cost+=this.levelCost.get(targetLevel);
+      targetLevel--;
+    }
+    if(cost>resource){
+      throw new IllegalArgumentException("No enough resources");
+    }
+    this.setLevel(aim);
+    return resource-cost;
+
     }
 
 

@@ -39,21 +39,17 @@ public class SoldierTest {
 
     @Test
     public void test_upgradeSoldier() { 
-        Soldier mySoldier = new Soldier();
-
-        int remain = mySoldier.upGrade(1, 5);
-        assertEquals(2, remain); //TODO: what's wrong with this test case?
-
-        mySoldier.upGrade(3, 200);
-        assertEquals(mySoldier.getJobName(), "Soldier LV3");
-
-        assertThrows(new IllegalArgumentException().getClass(), () -> mySoldier.upGrade(10, 200));
-        assertThrows(new IllegalArgumentException().getClass(), () -> mySoldier.upGrade(1, 200));
-        assertThrows(new IllegalArgumentException().getClass(), () -> mySoldier.upGrade(7, 3));
-
+        Soldier mySoldier= new Soldier();
+        int remain=mySoldier.upGrade(1,5);
+        assertEquals(remain,2);
+        mySoldier.upGrade(3,200);
+        assertEquals(mySoldier.getJobName(),"Soldier LV3");
+        assertThrows(new IllegalArgumentException().getClass(), ()->mySoldier.upGrade(10,200));
+        assertThrows(new IllegalArgumentException().getClass(), ()->mySoldier.upGrade(1,200));
+        assertThrows(new IllegalArgumentException().getClass(), ()->mySoldier.upGrade(7,3));
         mySoldier.setJob("Soldier LV2");
-        remain = mySoldier.upGrade(4, 100);
-        assertEquals(56, remain);
+        remain=mySoldier.upGrade(4,100);
+        assertEquals(15,remain);
     }
 
 }
