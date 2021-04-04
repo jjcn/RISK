@@ -46,8 +46,8 @@ public class TroopTest {
         // promote 4 lv2 units by 2 levels
         // need 4 * 44 = 176 > 170, only upgrade 3.
         assertThrows(new IllegalArgumentException().getClass(), () -> test.updateUnit(2, 2, 4, 170)); 
-        assertEquals(test.checkUnitNum("Soldier LV4"), 1);
-        assertEquals(test.checkUnitNum("Soldier LV2"), 3);
+        assertEquals(test.checkUnitNum("Soldier LV4"), 3);
+        assertEquals(test.checkUnitNum("Soldier LV2"), 1);
     }
 
     @Test
