@@ -138,6 +138,14 @@ public class WorldTest {
     }
 
     @Test
+    public void testSize() {
+        World world1 = createWorldSimple();
+        assertEquals(2, world1.size());
+        world1.addTerritory(new Territory("3"));
+        assertEquals(3, world1.size());
+    }
+
+    @Test
     public void testSetRandom() {
         World world = createWorldSimple();
         Random seed = new Random(0);
@@ -331,6 +339,17 @@ public class WorldTest {
                         () -> world.attackATerritory(atk2, redInfo),
                         NOT_ADJACENT_MSG);
     }
+
+    @Test
+    public void testUpgradeTroop() {
+        World world = createWorld(troopsSeparated);
+        world.registerPlayerInfo(redInfo);
+        world.registerPlayerInfo(blueInfo);
+        world.registerPlayerInfo(greenInfo);
+        UpgradeTroopOrder utOrder1 = new UpgradeTroopOrder("Narnia", 0, 1, 1);
+        world.upgradeTroop(utOrder1, redInfo);
+        assertEquals(97, redInfo.getTechQuantity());
+    } 
 
     @Test
     public void testCheckBasicOrder() {
