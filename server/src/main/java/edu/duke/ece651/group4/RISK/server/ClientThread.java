@@ -1,6 +1,7 @@
 package edu.duke.ece651.group4.RISK.server;
 
 import edu.duke.ece651.group4.RISK.shared.Client;
+import edu.duke.ece651.group4.RISK.shared.PlaceOrder;
 import edu.duke.ece651.group4.RISK.shared.RoomInfo;
 import edu.duke.ece651.group4.RISK.shared.message.GameMessage;
 import edu.duke.ece651.group4.RISK.shared.message.LogMessage;
@@ -8,6 +9,7 @@ import edu.duke.ece651.group4.RISK.shared.message.LogMessage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static edu.duke.ece651.group4.RISK.server.ServerConstant.*;
@@ -130,6 +132,7 @@ public class ClientThread extends Thread {
                     res = "Invalid Action";
             }
             this.theClient.sendObject(res);
+
             if(res == null){
                 return;
             }
@@ -142,13 +145,13 @@ public class ClientThread extends Thread {
      * creates a game
      * creates a game and a gameRunner to run the game
      * */
-     protected String tryCreateAGame(GameMessage gMess){
+    synchronized protected String tryCreateAGame(GameMessage gMess){
         int maxNumPlayers = gMess.getNumPlayers();
         if(maxNumPlayers < 2 || maxNumPlayers > 5){
             return INVALID_CREATE;
         }
         Game newGame = new Game(globalID.getAndIncrement(), maxNumPlayers);
-        games.add(newGame); // this is synchronized function
+        games.add(newGame);
         return null;
     }
 
@@ -156,21 +159,33 @@ public class ClientThread extends Thread {
      * Part2.2
      * Joins a game
      * If game is valid, let it join, else return error message
-     * 1. If game starts, just set gameOnGoing = game
-     * 2. If game waits, just add users to game, and set gameOnGoing = game
+     * 1. If new game , just add users to game
+     * 2. If old game , switchIn this user
+     * 3. set gameOngoing = gameToJoin
      * */
      protected String tryJoinAGame(GameMessage gMess){
         int gameID = gMess.getGameID();
         Game gameToJoin = findGame(gameID);
+        String res = checkJoinGame(gameToJoin);
+        if(res != null){return res;}
+        if(!gameToJoin.isFull()){
+            gameToJoin.addUser(ownerUser); // this is synchronized function
+        }
+        else{
+            gameToJoin.switchInUser(ownerUser); // this is synchronized function
+        }
+        gameOnGoing = gameToJoin;
+        return null;
+    }
+
+    protected String checkJoinGame (Game gameToJoin){
         if(gameToJoin == null){ return INVALID_JOIN;}
         if(gameToJoin.isFull() && !gameToJoin.isUserInGame(ownerUser)){return INVALID_JOIN;}
         if(!gameToJoin.isFull()){
             if(gameToJoin.isUserInGame(ownerUser)){
-               return  INVALID_JOIN;
+                return  INVALID_JOIN;
             }
-            gameToJoin.addUser(ownerUser); // this is synchronized function
         }
-        gameOnGoing = gameToJoin;
         return null;
     }
 
@@ -212,9 +227,12 @@ public class ClientThread extends Thread {
         if(gameOnGoing.gameState.isDonePlaceUnits()){
             return;
         }
+        this.theClient.sendObject(gameOnGoing.getTheWorld());
         // start to place Units
-
-
+        List<PlaceOrder> placeOrders = (List<PlaceOrder> )this.theClient.recvObject();
+        for(PlaceOrder p: placeOrders){
+            gameOnGoing.placeUnitsOnWorld(p);
+        }
         // wait all players to finish placeUnits
         gameOnGoing.barrierWait();
         gameOnGoing.gameState.setDonePlaceUnits();
@@ -236,7 +254,12 @@ public class ClientThread extends Thread {
     }
 
     protected void doActionPhaseOneTurn(){
+        this.theClient.sendObject(gameOnGoing.getTheWorld());
         // if Done or SwitchOut
+
+
+
+
 
     }
 
