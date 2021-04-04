@@ -69,8 +69,11 @@ public class WorldTest {
     PrintStream out = null;
     Reader inputReader = null;
     Player green = new TextPlayer(out, inputReader, "green");
+    PlayerInfo greenInfo = new PlayerInfo(green, 100, 100);
     Player red = new TextPlayer(out, inputReader, "red");
+    PlayerInfo redInfo = new PlayerInfo(red, 100, 100);
     Player blue = new TextPlayer(out, inputReader, "blue");
+    PlayerInfo blueInfo = new PlayerInfo(blue, 100, 100);
 
     String names[] =
             "Narnia, Midkemia, Oz, Gondor, Mordor, Hogwarts, Scadrial, Elantris, Roshar".split(", ");
@@ -219,10 +222,7 @@ public class WorldTest {
         World world = createWorld(troopsSeparated);
         // Valid
         BasicOrder move1 = new BasicOrder("Gondor", "Mordor", new Troop(13, red), 'm');
-        //assertDoesNotThrow(() -> world.moveTroop(move1));
-        //assertDoesNotThrow(() -> world.moveTroop(world.findTerritory("Elantris"),
-        //                                        new Troop(6, blue),
-        //                                        world.findTerritory("Scadrial")));
+        assertDoesNotThrow(() -> world.moveTroop(move1, redInfo));
     }
 
     @Test
@@ -230,9 +230,9 @@ public class WorldTest {
         World world = createWorld(troopsSeparated);
         // Troop size
         BasicOrder move3 = new BasicOrder("Elantris", "Scadrial", new Troop(8, blue), 'M');
-        //assertThrows(IllegalArgumentException.class,
-        //                () -> world.moveTroop(move3),
-        //                NOT_ENOUGH_TROOP_MSG);
+        assertThrows(IllegalArgumentException.class,
+                        () -> world.moveTroop(move3, blueInfo),
+                        NOT_ENOUGH_TROOP_MSG);
     }
 
     @Test
@@ -241,12 +241,12 @@ public class WorldTest {
         // Territory name does not exist
         BasicOrder move4 = new BasicOrder("No", "Scadrial", new Troop(3, blue), 'M');
         BasicOrder move5 = new BasicOrder("Elantris", "No", new Troop(3, blue), 'M');
-        /*assertThrows(NoSuchElementException.class,
-                        () -> world.moveTroop(move4),
+        assertThrows(NoSuchElementException.class,
+                        () -> world.moveTroop(move4, redInfo),
                         TERRITORY_NOT_FOUND_MSG);
         assertThrows(NoSuchElementException.class,
-                        () -> world.moveTroop(move5),
-                        TERRITORY_NOT_FOUND_MSG);*/
+                        () -> world.moveTroop(move5, blueInfo),
+                        TERRITORY_NOT_FOUND_MSG);
     }
 
     @Test
@@ -255,12 +255,12 @@ public class WorldTest {
         // Not same owner
         BasicOrder move6 = new BasicOrder("Elantris", "Gondor", new Troop(3, blue), 'M');
         BasicOrder move7 = new BasicOrder("Gondor", "Oz", new Troop(3, blue), 'M');
-        /*assertThrows(IllegalArgumentException.class,
-                        () -> world.moveTroop(move6),
+        assertThrows(IllegalArgumentException.class,
+                        () -> world.moveTroop(move6, blueInfo),
                         NOT_SAME_OWNER_MSG);
         assertThrows(IllegalArgumentException.class,
-                        () -> world.moveTroop(move7),
-                        NOT_SAME_OWNER_MSG);*/
+                        () -> world.moveTroop(move7, redInfo),
+                        NOT_SAME_OWNER_MSG);
     }
 
     @Test
@@ -269,22 +269,19 @@ public class WorldTest {
         // Not reachable
         BasicOrder move1 = new BasicOrder("Narnia", "Oz", new Troop(3, blue), 'M');
         BasicOrder move2 = new BasicOrder("Oz", "Hogwarts", new Troop(3, blue), 'M');
-        /*assertThrows(IllegalArgumentException.class,
-                        () -> world.moveTroop(move1),
+        assertThrows(IllegalArgumentException.class,
+                        () -> world.moveTroop(move1, greenInfo),
                         NOT_REACHABLE_MSG);
         assertThrows(IllegalArgumentException.class,
-                        () -> world.moveTroop(move2),
-                        NOT_REACHABLE_MSG);*/
+                        () -> world.moveTroop(move2, greenInfo),
+                        NOT_REACHABLE_MSG);
     }
 
     @Test
     public void testAttackValid() {
         World world = createWorld(troopsSeparated);
         BasicOrder atk1 = new BasicOrder("Gondor", "Oz", new Troop(13, red), 'a');
-        /*assertDoesNotThrow(() -> world.attackATerritory(atk1));
-        assertDoesNotThrow(() -> world.attackATerritory(world.findTerritory("Narnia"),
-                                                        new Troop(6, green),
-                                                        world.findTerritory("Elantris")));*/
+        assertDoesNotThrow(() -> world.attackATerritory(atk1, redInfo));
     }
 
     @Test
@@ -292,12 +289,12 @@ public class WorldTest {
         World world = createWorld(troopsSeparated);
         BasicOrder atk1 = new BasicOrder("Gondor", "No", new Troop(13, red), 'A');
         BasicOrder atk2 = new BasicOrder("No", "Elantris", new Troop(6, green), 'A');
-        /*assertThrows(NoSuchElementException.class,
-                        () -> world.attackATerritory(atk1),
+        assertThrows(NoSuchElementException.class,
+                        () -> world.attackATerritory(atk1, redInfo),
                         TERRITORY_NOT_FOUND_MSG);
         assertThrows(NoSuchElementException.class,
-                        () -> world.attackATerritory(atk2),
-                        TERRITORY_NOT_FOUND_MSG);*/
+                        () -> world.attackATerritory(atk2, redInfo),
+                        TERRITORY_NOT_FOUND_MSG);
     }
 
     @Test
@@ -305,12 +302,12 @@ public class WorldTest {
         World world = createWorld(troopsSeparated);
         BasicOrder atk1 = new BasicOrder("Elantris", "Scadrial", new Troop(1, blue), 'A');
         BasicOrder atk2 = new BasicOrder("Gondor", "Mordor", new Troop(6, red), 'A');
-        /*assertThrows(IllegalArgumentException.class,
-                        () -> world.attackATerritory(atk1),
+        assertThrows(IllegalArgumentException.class,
+                        () -> world.attackATerritory(atk1, blueInfo),
                         SAME_OWNER_MSG);
         assertThrows(IllegalArgumentException.class,
-                        () -> world.attackATerritory(atk2),
-                        SAME_OWNER_MSG);*/
+                        () -> world.attackATerritory(atk2, redInfo),
+                        SAME_OWNER_MSG);
     }
 
     @Test
@@ -318,12 +315,12 @@ public class WorldTest {
         World world = createWorld(troopsSeparated);
         BasicOrder atk1 = new BasicOrder("Elantris", "Oz", new Troop(1, blue), 'A');
         BasicOrder atk2 = new BasicOrder("Gondor", "Roshar", new Troop(6, red), 'A');
-        /*assertThrows(IllegalArgumentException.class,
+        assertThrows(IllegalArgumentException.class,
                         () -> world.attackATerritory(atk1),
                         NOT_ADJACENT_MSG);
         assertThrows(IllegalArgumentException.class,
                         () -> world.attackATerritory(atk2),
-                        NOT_ADJACENT_MSG);*/
+                        NOT_ADJACENT_MSG);
     }
 
     @Test
@@ -376,6 +373,17 @@ public class WorldTest {
         assertEquals(world.findTerritory("Narnia"), new Territory("Narnia"));
         /*assertThrows(NoSuchElementException.class, () -> world.findTerritory("Remnants"));
         assertThrows(NoSuchElementException.class, () -> world.findTerritory(""));*/
+    }
+
+    @Test
+    public void testGetTerritoriesOfPlayer() {
+    	World world = createWorld(troopsConnected);
+    	
+    	List<Territory> redList = new ArrayList<>();
+    	redList.add(new Territory("Gondor"));
+    	redList.add(new Territory("Mordor"));
+    	redList.add(new Territory("Hogwarts"));
+    	assertEquals(redList, world.getTerritoriesOfPlayer(red));
     }
 
     @Test

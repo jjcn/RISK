@@ -38,6 +38,18 @@ public class PlayerInfo {
             new TechResource());
     }
 
+    public PlayerInfo(String playerName, int nFood, int nTech) {
+        this(playerName, 1, 6, 
+            new FoodResource(nFood), 
+            new TechResource(nTech));
+    }
+
+    public PlayerInfo(Player player, int nFood, int nTech) {
+        this(player.getName(), 1, 6, 
+        new FoodResource(nFood), 
+        new TechResource(nTech));
+    }
+
     public String getName() {
         return playerName;
     }

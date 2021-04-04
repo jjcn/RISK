@@ -263,8 +263,8 @@ public class World implements Serializable {
     }
 
     /**
-     * Get a list of all territories ownedd by a player.
-     * @return all territories ownedd by a player.
+     * Get a list of all territories owned by a player.
+     * @return all territories owned by a player.
      */
     public List<Territory> getTerritoriesOfPlayer(Player player) {
         List<Territory> ans = new ArrayList<>();
