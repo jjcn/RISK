@@ -1,6 +1,7 @@
 package edu.duke.ece651.group4.RISK.server;
 
 import edu.duke.ece651.group4.RISK.shared.*;
+import edu.duke.ece651.group4.RISK.shared.message.GameMessage;
 import edu.duke.ece651.group4.RISK.shared.message.LogMessage;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -12,8 +13,10 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static edu.duke.ece651.group4.RISK.shared.Constant.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -148,4 +151,95 @@ class ClientThreadTest {
 //
 //    }
 
+    private HashSet<User> createUsers(int num){
+        HashSet<User> users = new HashSet<User>();
+        for(int i = 0; i < num; i++){
+            users.add(new User(i,"user"+i,"123" ));
+        }
+        return users;
+    }
+    private HashSet<Game> createGames(int num, int maxNumUsers){
+        HashSet<Game> games = new HashSet<Game>();
+        for(int i = 0; i< num; i++){
+            games.add(new Game(i,maxNumUsers));
+        }
+        return games;
+    }
+    private ClientThread createAClientThread(int numUser, int numGames){
+        HashSet<User> users =  createUsers(numUser);
+        HashSet<Game> games = createGames(numGames, 2);
+        return new ClientThread(games, users,null, new AtomicInteger(0));
+    }
+    @Test
+    public void test_userLogIn(){
+        ClientThread ct = createAClientThread(2, 1);
+        assertEquals( null, ct.tryLogIn("user1", "123"));
+        assertEquals( INVALID_LOGIN, ct.tryLogIn("user1", "1234"));
+        assertEquals( INVALID_LOGIN, ct.tryLogIn("u2er1", "123"));
+        assertEquals( INVALID_LOGIN, ct.tryLogIn(null, "123"));
+        assertEquals( INVALID_LOGIN, ct.tryLogIn("user1", null));
+        assertEquals( INVALID_LOGIN, ct.tryLogIn(null, null));
+    }
+    @Test
+    public void test_SignUp(){
+        ClientThread ct = createAClientThread(2, 1);
+        assertEquals( INVALID_SIGNUP, ct.trySignUp("user1", "123"));
+        assertEquals( INVALID_SIGNUP, ct.trySignUp("user1", "1234"));
+        assertEquals( null, ct.trySignUp("u2er1", "123"));
+        assertEquals( INVALID_SIGNUP, ct.trySignUp(null, "123"));
+        assertEquals( INVALID_SIGNUP, ct.trySignUp("user1", null));
+        assertEquals( INVALID_SIGNUP, ct.trySignUp(null, null));
+    }
+
+
+    @Test
+    public void test_tryCreateAGame(){
+        ClientThread ct = createAClientThread(1, 0);
+        assertEquals( null, ct.tryCreateAGame(new GameMessage(GAME_CREATE, -1, 4)));
+        assertEquals(1, ct.games.size());
+        Game g = ct.findGame(0);
+        assertEquals(4,g.getMaxNumUsers());
+        assertEquals( INVALID_CREATE, ct.tryCreateAGame(new GameMessage(GAME_CREATE, -1, 6)));
+        assertEquals( INVALID_CREATE, ct.tryCreateAGame(new GameMessage(GAME_CREATE, -1, 1)));
+        assertEquals( null, ct.tryCreateAGame(new GameMessage(GAME_CREATE, -1, 5)));
+        g = ct.findGame(1);
+        assertEquals(5,g.getMaxNumUsers());
+    }
+
+
+    @Test
+    public void test_tryJoinAGame(){
+        ClientThread ct = createAClientThread(1, 2);
+        assertEquals( null, ct.tryLogIn("user0","123"));
+        assertEquals(INVALID_JOIN, ct.tryJoinAGame(new GameMessage(GAME_JOIN, -1, -1)));
+        assertEquals(INVALID_JOIN, ct.tryJoinAGame(new GameMessage(GAME_JOIN, 2, -1)));
+        assertEquals(null, ct.tryJoinAGame(new GameMessage(GAME_JOIN, 1, -1)));
+        assertEquals(INVALID_JOIN, ct.tryJoinAGame(new GameMessage(GAME_JOIN, 1, -1)));
+        Game g = ct.findGame(1);
+        g.addUser(new User(1,"user1", "123"));
+        Game g0 = ct.findGame(0);
+        g0.addUser(new User(1,"user1", "123"));
+        g0.addUser(new User(3,"user3", "123"));
+        assertEquals(INVALID_JOIN, ct.tryJoinAGame(new GameMessage(GAME_JOIN, 0, -1)));
+        assertEquals(null, ct.tryJoinAGame(new GameMessage(GAME_JOIN, 1, -1)));
+    }
+
+    @Test
+    public void test_getRoomInfo(){
+        ClientThread ct = createAClientThread(1, 3);
+        ArrayList<RoomInfo> roomsInfo = ct.getAllGameInfo();
+        assertEquals(3, roomsInfo.size());
+        ct = createAClientThread(1, 2);
+        roomsInfo = ct.getAllGameInfo();
+        assertEquals(2, roomsInfo.size());
+    }
+
+    @Test
+    public void test_findGame(){
+        ClientThread ct = createAClientThread(1, 3);
+        assertEquals(null, ct.findGame(-1));
+        Game g = new Game(0,2);
+        assertEquals(g.getGameID(), ct.findGame(0).getGameID());
+        assertEquals(g.getMaxNumUsers(), ct.findGame(0).getMaxNumUsers());
+    }
 }

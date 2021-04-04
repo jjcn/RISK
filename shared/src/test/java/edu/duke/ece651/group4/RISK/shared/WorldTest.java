@@ -316,10 +316,10 @@ public class WorldTest {
         BasicOrder atk1 = new BasicOrder("Elantris", "Oz", new Troop(1, blue), 'A');
         BasicOrder atk2 = new BasicOrder("Gondor", "Roshar", new Troop(6, red), 'A');
         assertThrows(IllegalArgumentException.class,
-                        () -> world.attackATerritory(atk1),
+                        () -> world.attackATerritory(atk1, blueInfo),
                         NOT_ADJACENT_MSG);
         assertThrows(IllegalArgumentException.class,
-                        () -> world.attackATerritory(atk2),
+                        () -> world.attackATerritory(atk2, redInfo),
                         NOT_ADJACENT_MSG);
     }
 

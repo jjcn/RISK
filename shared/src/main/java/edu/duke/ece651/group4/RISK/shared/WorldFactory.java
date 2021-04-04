@@ -198,8 +198,7 @@ public class WorldFactory {
         world.addConnection("Scadrial", "Roshar");
         world.addConnection("Scadrial", "Hogwarts");
         world.addConnection("Scadrial", "Mordor");
-        world.addConnection("Mordor", "Hogwarts");  
-
+        world.addConnection("Mordor", "Hogwarts");
         return world;
     }
 

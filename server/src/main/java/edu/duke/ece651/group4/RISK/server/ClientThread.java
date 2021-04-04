@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static edu.duke.ece651.group4.RISK.server.ServerConstant.*;
 import static edu.duke.ece651.group4.RISK.shared.Constant.*;
 
 public class ClientThread extends Thread {
@@ -42,7 +43,6 @@ public class ClientThread extends Thread {
             return null;
         }
         while(true){
-//            LogMessage logMessage = null; //receive a LogMessage
             LogMessage logMessage = (LogMessage) this.theClient.recvObject();
             String action = logMessage.getAction();
             System.out.println("get Message: " + action);
@@ -59,7 +59,6 @@ public class ClientThread extends Thread {
                 String resUp = trySignUp(logMessage.getUsername(), logMessage.getPassword());
                 this.theClient.sendObject(resUp);
             }
-
         }
 
     }
@@ -69,7 +68,8 @@ public class ClientThread extends Thread {
      * This tries to sign up a user.
      * @return null if succeed, a error message if fail
      * */
-    protected String trySignUp(String username, String password) {
+    synchronized protected String trySignUp(String username, String password) {
+        if(username == null){return INVALID_SIGNUP;}
         for (User u : users) {
             if (u.checkUsername(username)) {
                 return INVALID_SIGNUP;
@@ -84,7 +84,7 @@ public class ClientThread extends Thread {
      * This tries to let a user log in.
      * @return null if succeed, a error message if fail
      * */
-    protected String tryLogIn(String username, String password) {
+    synchronized protected String tryLogIn(String username, String password) {
         for (User u : users) {
             if (u.checkUsernamePassword(username, password)) {
                 this.ownerUser = u;
@@ -107,19 +107,27 @@ public class ClientThread extends Thread {
             return;
         }
         //1.send the gameInfo to Client
+        this.theClient.sendObject(getAllGameInfo());
         //2. select an option
         while(true){
             GameMessage gameMessage = (GameMessage) this.theClient.recvObject();
             String action = gameMessage.getAction();
             Object res = null;
-            if(action.equals(GAME_CREATE)){
-                res = tryCreateAGame(gameMessage);
-            }
-            if(action.equals(GAME_JOIN)){
-                res = tryJoinAGame(gameMessage);
-            }
-            if(action.equals(GAME_REFRESH)){
-                res = getAllGameInfo();
+            switch(action) {
+                case GAME_CREATE:
+                    res = tryCreateAGame(gameMessage);
+                    break;
+                case GAME_JOIN:
+                    res = tryJoinAGame(gameMessage);
+                    break;
+                case GAME_REFRESH:
+                    res = getAllGameInfo();
+                    break;
+                case GAME_EXIT:
+                    ownerUser = null; // user log out
+                    break;
+                default:
+                    res = "Invalid Action";
             }
             this.theClient.sendObject(res);
             if(res == null){
@@ -134,13 +142,13 @@ public class ClientThread extends Thread {
      * creates a game
      * creates a game and a gameRunner to run the game
      * */
-    synchronized protected String tryCreateAGame(GameMessage gMess){
+     protected String tryCreateAGame(GameMessage gMess){
         int maxNumPlayers = gMess.getNumPlayers();
-        if(maxNumPlayers <= 0 || maxNumPlayers > 5){
-            return "Invalid: the number of players should be between 2 and 5 inclusive.";
+        if(maxNumPlayers < 2 || maxNumPlayers > 5){
+            return INVALID_CREATE;
         }
         Game newGame = new Game(globalID.getAndIncrement(), maxNumPlayers);
-        games.add(newGame);
+        games.add(newGame); // this is synchronized function
         return null;
     }
 
@@ -151,12 +159,17 @@ public class ClientThread extends Thread {
      * 1. If game starts, just set gameOnGoing = game
      * 2. If game waits, just add users to game, and set gameOnGoing = game
      * */
-    synchronized protected String tryJoinAGame(GameMessage gMess){
-
+     protected String tryJoinAGame(GameMessage gMess){
         int gameID = gMess.getGameID();
         Game gameToJoin = findGame(gameID);
-        if(gameToJoin == null){ return "Invalid GameID";}
-        if(!gameToJoin.isUserInGame(ownerUser)){return "Invalid join: you are not in this game!";}
+        if(gameToJoin == null){ return INVALID_JOIN;}
+        if(gameToJoin.isFull() && !gameToJoin.isUserInGame(ownerUser)){return INVALID_JOIN;}
+        if(!gameToJoin.isFull()){
+            if(gameToJoin.isUserInGame(ownerUser)){
+               return  INVALID_JOIN;
+            }
+            gameToJoin.addUser(ownerUser); // this is synchronized function
+        }
         gameOnGoing = gameToJoin;
         return null;
     }
@@ -170,6 +183,7 @@ public class ClientThread extends Thread {
         }
         return null;
     }
+
     /*
      * Part2.3
      * send all gameInfo to a client
@@ -177,7 +191,9 @@ public class ClientThread extends Thread {
     protected ArrayList<RoomInfo> getAllGameInfo(){
         ArrayList<RoomInfo> roomsInfo = new ArrayList<RoomInfo>();
         for(Game g : games){
-            roomsInfo.add(createARoomInfo(g));
+            if(g.gameState.isAlive()){
+                roomsInfo.add(createARoomInfo(g));
+            }
         }
         return roomsInfo;
     }
@@ -192,12 +208,16 @@ public class ClientThread extends Thread {
      * Part3
      * place units for a new game
      * */
-    protected  void tryPlaceUnits(){
+    protected void tryPlaceUnits(){
         if(gameOnGoing.gameState.isDonePlaceUnits()){
             return;
         }
         // start to place Units
 
+
+        // wait all players to finish placeUnits
+        gameOnGoing.barrierWait();
+        gameOnGoing.gameState.setDonePlaceUnits();
     }
 
     /*
@@ -211,7 +231,7 @@ public class ClientThread extends Thread {
         }
         doActionPhaseOneTurn();
         while(!gameOnGoing.gameState.isDoneUpdateGame()){}
-        waitBeforeEnterUpdatingState();
+        waitNotifyFromRunner();
         checkResultOneTurn();
     }
 
@@ -220,13 +240,26 @@ public class ClientThread extends Thread {
 
     }
 
+    /*
+    * This mainly update the player state after one turn
+    * If switchOut, change state to PLAYER_STATE_SWITCH_OUT and set gameOnGoing = null;
+    * else if lose, change state to PLAYER_STATE_LOSE
+    * else, change state to PLAYER_STATE_ACTION_PHASE
+    * */
     protected void checkResultOneTurn(){
-        //if switchOut, change state to PLAYER_STATE_SWITCH_OUT and set gameOnGoing = null;
-        //else if lose, change state to PLAYER_STATE_LOSE
-        //else, change state to PLAYER_STATE_ACTION_PHASE
+        //Go back to Games Page (Part2)
+        if(gameOnGoing.gameState.getAPlayerState(ownerUser).equals(PLAYER_STATE_SWITCH_OUT)){
+            gameOnGoing = null;
+        }
+        else if(gameOnGoing.isUserLose(ownerUser)){
+            gameOnGoing.gameState.changAPlayerStateTo(ownerUser, PLAYER_STATE_LOSE);
+        }
+        else{
+            gameOnGoing.gameState.changAPlayerStateTo(ownerUser, PLAYER_STATE_ACTION_PHASE);
+        }
     }
 
-    public void waitBeforeEnterUpdatingState(){
+    public void waitNotifyFromRunner(){
         try {
             gameOnGoing.wait();
         } catch (InterruptedException e) {
@@ -242,14 +275,14 @@ public class ClientThread extends Thread {
         //   1.3 Exit the App
         //      send feedback every time
 
-        // Part2. init games:
+        // Part2. init rooms:
         //    send all game info
         //    2.1 create a game
         //          start a gameRunner
         //    2.2 join a game
         //          if the game is new, add game.addUser
         //          if the game is old, loadGame()
-        //    2.3 "fresh"
+        //    2.3 "refresh"
         //         send all game info
         //    2.4 LogOut
 
@@ -260,19 +293,16 @@ public class ClientThread extends Thread {
         //      recv assigned units
         //      send World again
 
-
         // Part4 ActionsPhase:
         //        4.1  do actions for Each Turn
-        //             Game will deal with Actions: Move, Attack, Upgrade, Done, Exit, SwitchOut
-        //             After each Done or Exit, this thread will wait for gameRunner to update the results
+        //             Game will deal with Actions: Move, Attack, Upgrade, Done, SwitchOut
+        //             After each turn, this thread will wait for gameRunner to update the results
         //        4.2
         //             4.21 If player lose:
-        //                    no exits: keep sending results
-        //                    exits: change the barrier in game runner.
+        //                    keep sending results
         //             4.22 If player SwitchOut:
         //                    go back to 2.
-        //                    after delete the gameRunner, make sure store the game. (Everyone should wait until the user is back)
-
+        //                    set gameOneGoing = null
 
         while (true) {
             trySetUpUser(); //part1 above

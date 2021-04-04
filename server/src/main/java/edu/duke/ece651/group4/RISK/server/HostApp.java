@@ -27,7 +27,7 @@ public class HostApp implements Runnable {
         this.hostSocket = s;
         games = new HashSet<Game>();
         users = new HashSet<User>();
-
+        this.globalID = new AtomicInteger(0);
     }
 
 
