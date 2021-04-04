@@ -246,8 +246,15 @@ public class WorldFactory {
 
         Map<String, List<Territory>> ans = new HashMap<>();
         for (int i = 0; i < nGroup; i++) {
-            ans.put(playerNames.get(i), groups.get(i));
+            String playerName = playerNames.get(i);
+            List<Territory> territories = groups.get(i);
+            // TODO: use TextPlayer for now. Change to other subclass of Player later.
+            territories.forEach(terr -> terr.initializeTerritory(0, new TextPlayer(playerName)));
+            ans.put(playerName, territories);
         }
+        // players start with 0 resource
+        playerNames.forEach(name -> world.registerPlayerInfo(new PlayerInfo(name)));
+
         return ans;
     }
 
