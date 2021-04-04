@@ -271,7 +271,7 @@ public class V2Player implements Player, Serializable {
      */
     public void upgradeTech(int n) {
         // TODO
-        this.info.modifyTechLevel(n);
+        this.info.upgradeTechLevelBy1();
     }
 
     /**
