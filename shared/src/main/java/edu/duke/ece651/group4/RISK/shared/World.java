@@ -263,6 +263,20 @@ public class World implements Serializable {
     }
 
     /**
+     * Get a list of all territories ownedd by a player.
+     * @return all territories ownedd by a player.
+     */
+    public List<Territory> getTerritoriesOfPlayer(Player player) {
+        List<Territory> ans = new ArrayList<>();
+        for (Territory terr : getAllTerritories()) {
+            if (terr.getOwner().equals(player)) {
+                ans.add(terr);
+            }
+        }
+        return ans;
+    }
+
+    /**
      * Station troop to a territory.
      * 
      * @param terrName is the territory name.

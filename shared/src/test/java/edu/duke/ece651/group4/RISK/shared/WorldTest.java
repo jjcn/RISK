@@ -384,7 +384,7 @@ public class WorldTest {
 
         World world = createWorld(); // evolution 1 example world, has 9 territories
 
-        /*assertThrows(IllegalArgumentException.class,
+        assertThrows(IllegalArgumentException.class,
                     () -> world.divideTerritories(-1),
                     NOT_POSITIVE_MSG);
         assertThrows(IllegalArgumentException.class,
@@ -397,7 +397,7 @@ public class WorldTest {
         assertDoesNotThrow(() -> world.divideTerritories(3));
         assertThrows(IllegalArgumentException.class,
                     () -> world.divideTerritories(18),
-                    INDIVISIBLE_MSG);*/
+                    INDIVISIBLE_MSG);
 
         Map<Integer, List<Territory>> groups = world.divideTerritories(3);
         // test number of groups
@@ -433,11 +433,10 @@ public class WorldTest {
         assertEquals(13, world2.findTerritory("Narnia").checkPopulation());
         assertEquals(6, world2.findTerritory("Roshar").checkPopulation());
 
-        /*
         assertThrows(IllegalArgumentException.class,
                     () -> world2.addUnitToAll(-1),
                     NOT_POSITIVE_MSG);
-                    */
+                    
     }
 
     @Test
