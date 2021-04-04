@@ -1,5 +1,6 @@
 package edu.duke.ece651.group4.RISK.shared;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -20,7 +21,7 @@ import java.util.Random;
  *    Make sure each group have the same total number 
  *    of each attribute.
  */
-public class WorldFactory {
+public class WorldFactory implements Serializable {
 
     protected class AttributeBundle {
         int area;

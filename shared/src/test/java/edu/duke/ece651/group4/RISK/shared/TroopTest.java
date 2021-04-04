@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 public class TroopTest {
+    /*
     @Test
     void Test_checkTroopSize() {
         Troop test = new Troop(5, new TextPlayer("test"));
@@ -88,5 +89,5 @@ public class TroopTest {
         Troop clone = test.clone();
         assertEquals(test.checkTroopSize(), clone.checkTroopSize());
     }
-
+    */
 }
