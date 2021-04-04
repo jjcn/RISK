@@ -30,7 +30,14 @@ public class PlayerInfoTest {
 	public void testTechLevel() {
 		PlayerInfo pInfo = new PlayerInfo("player");
 		assertEquals(pInfo.techLevel, 1);
-		pInfo.modifyTechLevel(-1);
-		
+		// try modify to -1
+		assertThrows(IllegalArgumentException.class,
+					() -> pInfo.modifyTechLevelBy(-2));
+		// try modify to 7
+		assertThrows(IllegalArgumentException.class,
+					() -> pInfo.modifyTechLevelBy(6));
+		// upgrade tech level
+		pInfo.upgradeTechLevelBy1();
+		assertEquals(pInfo.techLevel, 2);
 	}
 }

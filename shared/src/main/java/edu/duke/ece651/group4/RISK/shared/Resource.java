@@ -3,14 +3,28 @@ package edu.duke.ece651.group4.RISK.shared;
 import java.io.Serializable;
 
 /**
- * Template of a generic resource.
+ * A resource, can be gained or consumed.
  */
 public class Resource implements Serializable {
-    final String NEG_MSG = 
-        "Error: The quantity of %s resource will be negative after this action.";
-
+    /**
+     * Name of the resource.
+     */
     private String name;
+    /**
+     * Integer quantity of the resource.
+     * Should be non-negative.
+     */
     private int quantity;
+
+    /**
+     * Error mesages
+     */
+    final String NEG_MSG = String.format(
+        "Error: %s resource's gain and consume input value shall be non-negative.",
+        name);
+    final String NEG_AFTER_CONSUME_MSG = String.format(
+        "Error: %s resource's quantity will be negative after this consumption.",
+        name);
 
     public Resource(String name) {
         this(name, 0);
@@ -30,23 +44,30 @@ public class Resource implements Serializable {
         return quantity;
     }
 
-    public void setQuantity(int i) {
-        checkNonNegative(i);
-        quantity = i;
-    }
-
     /**
-     * change the quantity of a resource.
-     * @param i is the number to add to resource quantity. 
-     *          Can be positive, 0, or negative.
+     * A resource is gained by a number N.
+     * @param gain is the number added to resource.
+     *              should be a non-negative number.
      */
-    public void modifyQuantity(int i) {      
-        checkNonNegative(quantity + i);
-        quantity += i;
+    public void gain(int gain) {
+        checkNonNegative(gain);
+        quantity += gain;
     }
 
     /**
-     * Check the non-negativity of resource quantity.
+     * A resource is consumed by a number N.
+     * @param consumption is the quantity of resource consumed.
+     */
+    public void consume(int consumption) {
+        checkNonNegative(consumption);
+        if (quantity - consumption < 0) {
+            throw new IllegalArgumentException(NEG_AFTER_CONSUME_MSG);
+        } 
+        quantity -= consumption;
+    }
+
+    /**
+     * Check non-negativity of the resource's quantity.
      * @param i is the resource quantity to check.
      */
     protected void checkNonNegative(int i) {
@@ -56,7 +77,7 @@ public class Resource implements Serializable {
     }
   
     /**
-     * Check if the resources are of the same type.
+     * Check if two resources are of the same type.
      * @return true, if the resources have the same name;
      *         false, if not.
      */

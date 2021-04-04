@@ -28,39 +28,44 @@ public class ResourceTest {
         Resource food = new Resource("food", 1);
         Resource tech = new Resource("tech", 0);
         Resource empty = new Resource("", 0);
-        assertEquals(food.getName(), "food");
-        assertEquals(tech.getName(), "tech");
-        assertEquals(empty.getName(), "");
+        assertEquals("food", food.getName());
+        assertEquals("tech", tech.getName());
+        assertEquals("", empty.getName());
     }
 
     @Test
     public void testGetQuantity() {
         Resource food = new Resource("food", 1);
         Resource tech = new Resource("tech", 0);   
-        assertEquals(food.getQuantity(), 1);
-        assertEquals(tech.getQuantity(), 0);
+        assertEquals(1, food.getQuantity());
+        assertEquals(0, tech.getQuantity());
     }
 
     @Test
-    public void testSetQuantity() {
+    public void testGain() {
         Resource food = new Resource("food", 1);
-        food.setQuantity(99);
-        assertEquals(food.getQuantity(), 99);
+        food.gain(99);
+        assertEquals(100, food.getQuantity());
 
-        Resource tech = new Resource("tech", 0);
-        assertThrows(IllegalArgumentException.class, () -> tech.setQuantity(-1));
-        assertEquals(tech.getQuantity(), 0);
+        // try gain -1
+        assertThrows(IllegalArgumentException.class, () -> food.consume(-1));
+        assertEquals(100, food.getQuantity());
     }
 
     @Test
-    public void testModifyQuantity() {
-        Resource food = new Resource("food", 1);
-        food.modifyQuantity(99);
-        assertEquals(food.getQuantity(), 100);
-
+    public void testConsume() {
         Resource tech = new Resource("tech", 1);
-        assertThrows(IllegalArgumentException.class, () -> tech.modifyQuantity(-1));
-        assertEquals(tech.getQuantity(), 1);
+        // try consume -1
+        assertThrows(IllegalArgumentException.class, () -> tech.consume(-1));
+        assertEquals(1, tech.getQuantity());
+
+        //consume 1, now 0
+        tech.consume(1);
+        assertEquals(0, tech.getQuantity());
+
+        // now tech's quantity = 0, then try consume 1 
+        assertThrows(IllegalArgumentException.class, () -> tech.consume(1));
+        assertEquals(0, tech.getQuantity()); 
     }
 
     @Test

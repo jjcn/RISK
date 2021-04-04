@@ -3,21 +3,45 @@ package edu.duke.ece651.group4.RISK.shared;
 import java.io.Serializable;
 
 /**
- * This class records information that is player-specific. Allows reading of all
- * info, and modifying of tech level & resource quantities.
+ * This class records information that is player-specific. 
+ * Allows modifying of tech level & resource quantities.
  */
 public class PlayerInfo implements Serializable {
-
-    final String TECHLEVEL_INVALID_MODIFY_MSG = "Modifying tech level by %s is not suppported.";
-
+    /**
+     * Player's name
+     */
     protected String playerName;
-
+    /**
+     * Player's current tech level
+     */
     protected int techLevel; // player's current tech level
+    /**
+     * Tech level constraints
+     */
     protected final int minTechLevel; // minimum tech level
     protected final int maxTechLevel; // max tech level a player can reach
+    /**
+     * Cumulative costs of upgrading from tech level 1 to N.
+     * Two 0's are put at the start for easy indexing by techLevel.
+     */
+    protected final int[] cumTechLevelUpgradeCosts = 
+    {0, 0, 50, 125, 250, 450, 750}; // TODO: this is hardcoded for now, may put in a file?
 
+    /**
+     * Player's food and tech resources.
+     */
     protected FoodResource foodResource;
     protected TechResource techResource;
+
+    /**
+     * Error messages
+     */
+    final String TECHLEVEL_INVALID_MODIFY_MSG = 
+    "Error: cannot modify the tech level of %s by %d.%n" +
+    "The tech level after this modification will be %d,%n";
+    final String FAILURE_TECH_LEVEL_UPGRADE_MSG = String.format(
+    "Fails to upgrade player %s tech level.",
+    playerName);
 
     protected PlayerInfo(String playerName, int techLevel, int minTechLevel, int maxTechLevel,
             FoodResource foodResource, TechResource techResource) {
@@ -72,36 +96,81 @@ public class PlayerInfo implements Serializable {
         return techResource.getQuantity();
     }
 
-    public void setFoodQuantity(int i) {
-        foodResource.setQuantity(i);
+    /**
+     * A player gains food resource.
+     * @param gain is the gain of food resource.
+     */
+    public void gainFood(int gain) {
+        foodResource.gain(gain);
     }
 
-    public void setTechQuantity(int i) {
-        techResource.setQuantity(i);
+    /**
+     * A player gains tech resource.
+     * @param gain is the gain of tech resource.
+     */
+    public void gainTech(int gain) {
+        techResource.gain(gain);
+    }
+
+    /**
+     * A player consumes food resource.
+     * @param consumption is the consumption of food resource.
+     */
+    public void consumeFood(int consumption) {
+        foodResource.consume(consumption);
+    }
+
+    /**
+     * A player consumes tech resource.
+     * @param consumption is the consumption of tech resource.
+     */
+    public void consumeTech(int consumption) {
+        techResource.consume(consumption);
     }
     
     /**
-     * Modify a player's tech level by i.
+     * Upgrades player's tech level by 1.
+     */
+    public void upgradeTechLevelBy1() {
+        modifyTechLevelBy(1);
+    }
+
+    /**
+     * Modify player's tech level by a number i.
      * 
      * @param i is the number to add to tech level. 
      *          Can be positive, 0, or negative.
      */
-    public void modifyTechLevel(int i) {
+    protected void modifyTechLevelBy(int i) {
         int techLevelAfterMod = techLevel + i;
-        if (minTechLevel < techLevelAfterMod 
-            && techLevelAfterMod < maxTechLevel) {
-            techLevel += i;
+        String explanation_msg = String.format(TECHLEVEL_INVALID_MODIFY_MSG, 
+                                            playerName, i, techLevelAfterMod); 
+        if (techLevelAfterMod < minTechLevel) {
+            String underflow_msg = "which is below the minimum tech level a player can have.";
+            throw new IllegalArgumentException(explanation_msg + underflow_msg);
+        }
+        else if(techLevelAfterMod > maxTechLevel) {
+            String overflow_msg = "which is beyond the maximum tech level a player can have.";
+            throw new IllegalArgumentException(explanation_msg + overflow_msg);
         } else {
-            throw new IllegalArgumentException(String.format(TECHLEVEL_INVALID_MODIFY_MSG, i));
+            try {
+                consumeTech(calcUpgradeTechLevelConsumption(techLevel, techLevelAfterMod));
+                techLevel += i;
+            } catch (IllegalArgumentException iae) {
+                String err_msg = iae.getMessage() + "%n" + FAILURE_TECH_LEVEL_UPGRADE_MSG;
+                throw new IllegalArgumentException(err_msg);
+            }
         }
     }
 
-    public void modifyFoodQuantity(int i) {
-        foodResource.setQuantity(foodResource.getQuantity() + i);
-    }
-
-    public void modifyTechQuantity(int i) {
-        techResource.setQuantity(techResource.getQuantity() + i);
+    /**
+     * Calculate the tech resource consumption by an upgrade.
+     * @param before is the tech level before an upgrade.
+     * @param after is the tech level after an upgrade.
+     * @return quantity of tech resource consumed by this upgrade.
+     */
+    protected int calcUpgradeTechLevelConsumption(int before, int after) {
+        return cumTechLevelUpgradeCosts[after] - cumTechLevelUpgradeCosts[before];
     }
 
     @Override
