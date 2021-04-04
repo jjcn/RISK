@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.NoSuchElementException;
 
 import java.util.Random;
-
+import java.util.stream.IntStream;
 import java.io.Serializable;
 
 /**
@@ -134,6 +134,14 @@ public class World implements Serializable {
     }
 
     /**
+     * Get the total number of territories in the world.
+     * @return size of the world.
+     */
+    public int size() {
+        return territories.size();
+    }
+
+    /**
      * Get all the territories in the world.
      * @return a list of all territories in the world.
      */
@@ -197,11 +205,11 @@ public class World implements Serializable {
 
     /**
      * Add connection between two adjacent territories by the name of these territories.
-     * @param name1 is the name of a territory.
-     * @param name2 is the name of the other territory.
+     * @param terrName1 is the name of a territory.
+     * @param terrName2 is the name of the other territory.
      */
-    public void addConnection(String name1, String name2) {
-        addConnection(findTerritory(name1), findTerritory(name2));
+    public void addConnection(String terrName1, String terrName2) {
+        addConnection(findTerritory(terrName1), findTerritory(terrName2));
     }
     
     /**
@@ -369,7 +377,7 @@ public class World implements Serializable {
      * NOTE: group number starts from 0.
      */
     public Map<Integer, List<Territory>> divideTerritories(int nGroup) {
-        // check if nGroup is an integer > 0
+        // check if nGroup is an integer is greater than 0
         if (nGroup <= 0) {
             throw new IllegalArgumentException(NOT_POSITIVE_MSG);
         }
@@ -379,10 +387,7 @@ public class World implements Serializable {
         }
         // init an index array
         int nTerritories = territories.size();
-        int randomInds[] = new int[nTerritories];
-        for (int i = 0; i < nTerritories; i++) {
-            randomInds[i] = i;
-        }
+        int randomInds[] = IntStream.rangeClosed(0, nTerritories).toArray();
         // shuffle indices to create random groups
         Shuffler shuffler = new Shuffler(this.rnd);
         shuffler.shuffle(randomInds);
@@ -424,6 +429,21 @@ public class World implements Serializable {
         for (Territory terr : getAllTerritories()) {
             terr.addUnit(num);
         }
+    }
+
+    /**
+     * Add level 0 unit to a territory.
+     * @param num is the number of level 0 units added to this territory.
+     */
+    public void addUnitToATerritory(String playerName, String terrName, int num) {
+        if (num < 0) {
+            throw new IllegalArgumentException(NOT_POSITIVE_MSG);
+        }
+        Territory terr = findTerritory(terrName);
+        if (!playerName.equals(terr.getOwner().getName())) {
+            throw new IllegalArgumentException("Not your territory.");
+        }
+        terr.addUnit(num);
     }
 
     /**
