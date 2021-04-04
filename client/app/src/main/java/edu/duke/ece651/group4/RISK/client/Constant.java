@@ -16,7 +16,7 @@ public class Constant {
     public static final String ROOMS ="roomInfo";
     public static final String NAME="name";
     public static final String MESSAGE="message";
-    public static final String JOIN="join";
+    public static final String WRG_MESSAGE="fail to create world";
 
     public static final int MAXLEVEL=6;
 

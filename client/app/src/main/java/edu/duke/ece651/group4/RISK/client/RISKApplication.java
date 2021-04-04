@@ -174,21 +174,29 @@ public class RISKApplication extends Application {
 
     public static void sendReceiveGameStart(Object toSendO, onReceiveListener listenerString,onReceiveListener listenerWorld) {
         new Thread(() -> {
+            Object receivedString=null;
             try {
                 playerClient.sendObject(toSendO);
-                Object receivedString = playerClient.recvObject();
+                receivedString = playerClient.recvObject();
                 listenerString.onSuccess(receivedString);
             } catch (Exception e) {
                 Log.e(TAG, e.toString());
                 listenerString.onFailure(e.toString());
             }
+            if(receivedString==null) {
 
-            try {
-                Object receivedWorld = playerClient.recvObject();
-                listenerWorld.onSuccess(receivedWorld);
-            } catch (Exception e) {
-                Log.e(TAG, e.toString());
-                listenerWorld.onFailure(e.toString());
+                try {
+                    Object receivedWorld = playerClient.recvObject();
+                    if (receivedWorld != null) {
+
+                    }
+                    listenerWorld.onSuccess(receivedWorld);
+                } catch (Exception e) {
+                    Log.e(TAG, e.toString());
+                    listenerWorld.onFailure(e.toString());
+                }
+            }else{
+                listenerWorld.onSuccess(null);
             }
         }).start();
     }
