@@ -6,6 +6,9 @@ import java.io.Serializable;
  * Template of a generic resource.
  */
 public class Resource implements Serializable {
+    final String NEG_MSG = 
+        "Error: The quantity of %s resource will be negative after this action.";
+
     private String name;
     private int quantity;
 
@@ -14,6 +17,7 @@ public class Resource implements Serializable {
     }
 
     public Resource(String name, int quantity) {
+        checkNonNegative(quantity);
         this.name = name;
         this.quantity = quantity;
     }
@@ -27,6 +31,7 @@ public class Resource implements Serializable {
     }
 
     public void setQuantity(int i) {
+        checkNonNegative(i);
         quantity = i;
     }
 
@@ -35,16 +40,9 @@ public class Resource implements Serializable {
      * @param i is the number to add to resource quantity. 
      *          Can be positive, 0, or negative.
      */
-    public void modifyQuantity(int i) {
-        final String RESOURCE_INVALID_MODIFY_MSG = 
-            "Modifying resource quantity by %s is not supported.";
-        if (0 < quantity + i) {
-            quantity += i;
-        }
-        else {
-            throw new IllegalArgumentException(
-                String.format(RESOURCE_INVALID_MODIFY_MSG, i));
-        }
+    public void modifyQuantity(int i) {      
+        checkNonNegative(quantity + i);
+        quantity += i;
     }
 
     /**
@@ -54,6 +52,12 @@ public class Resource implements Serializable {
      */
     public boolean isSameType(Resource otherResource) {
         return otherResource.getName().equals(name);
+    }
+  
+    protected void checkNonNegative(int i) {
+        if (i < 0) {
+            throw new IllegalArgumentException(String.format(NEG_MSG, name));
+        }
     }
 
     @Override

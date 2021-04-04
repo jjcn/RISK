@@ -19,7 +19,7 @@ public class PlayerInfo implements Serializable {
     private FoodResource foodResource;
     private TechResource techResource;
 
-    public PlayerInfo(String playerName, 
+    protected PlayerInfo(String playerName, 
                     int techLevel, int maxTechLevel,
                     FoodResource foodResource,
                     TechResource techResource) {
@@ -88,31 +88,19 @@ public class PlayerInfo implements Serializable {
     }
 
     public void setFoodQuantity(int i) {
-        checkNonNegative(i);
         foodResource.setQuantity(i);
     }
 
     public void setTechQuantity(int i) {
-        checkNonNegative(i);
         techResource.setQuantity(i);
     }
 
     public void modifyFoodQuantity(int i) {
-        checkNonNegative(foodResource.getQuantity() + i);
         foodResource.setQuantity(foodResource.getQuantity() + i);
     }
 
     public void modifyTechQuantity(int i) {
-        checkNonNegative(techResource.getQuantity() + i);
         techResource.setQuantity(techResource.getQuantity() + i);
-    }
-   
-    protected void checkNonNegative(int i) {
-        final String NEG_MSG = 
-        "Error: Resource quantity will be negative after this action.";
-        if (i < 0) {
-            throw new IllegalArgumentException(NEG_MSG);
-        }
     }
 
     @Override
