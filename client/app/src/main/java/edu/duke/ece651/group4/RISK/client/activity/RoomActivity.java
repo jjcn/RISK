@@ -34,6 +34,7 @@ public class RoomActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         impUI();
+        refreshGameInfo();
     }
 
     // back button return to login page kill current one

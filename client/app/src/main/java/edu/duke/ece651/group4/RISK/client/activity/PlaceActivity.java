@@ -34,6 +34,7 @@ public class PlaceActivity extends AppCompatActivity {
      * set up UI for placing the territory list with number of players to choose.
      */
     private void impPlaceList() {
+
     }
 
 

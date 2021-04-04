@@ -163,6 +163,7 @@ public class RISKApplication extends Application {
                     userName=(String) receivedO;
                 }
 
+                Log.e(TAG,LOG_FUNC_RUN+"listener success");
                 listener.onSuccess(receivedO);
             } catch (Exception e) {
                 Log.e(TAG, e.toString());

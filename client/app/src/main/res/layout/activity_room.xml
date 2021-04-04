@@ -17,20 +17,20 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/swipeFresh"
-            app:layout_constraintBottom_toTopOf="@id/createButton"
-            app:layout_constraintTop_toBottomOf="@+id/chooseInstr"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_height="0dp"
-            android:layout_width="match_parent"
-            android:background="@drawable/border"
-            android:layout_marginTop="@dimen/fragmentMargin"
-            android:layout_marginStart="@dimen/fragmentMargin"
-            android:layout_marginEnd="@dimen/fragmentMargin"
-            android:layout_marginLeft="@dimen/fragmentMargin"
-    >
+<!--    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout-->
+<!--            android:id="@+id/swipeFresh"-->
+<!--            app:layout_constraintBottom_toTopOf="@id/createButton"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/chooseInstr"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            android:layout_height="0dp"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:background="@drawable/border"-->
+<!--            android:layout_marginTop="@dimen/fragmentMargin"-->
+<!--            android:layout_marginStart="@dimen/fragmentMargin"-->
+<!--            android:layout_marginEnd="@dimen/fragmentMargin"-->
+<!--            android:layout_marginLeft="@dimen/fragmentMargin"-->
+<!--    >-->
 
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/roomList"
@@ -46,7 +46,7 @@
                 android:layout_marginLeft="@dimen/fragmentMargin"
         />
 
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+<!--    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>-->
 
 
     <Button
