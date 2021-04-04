@@ -114,4 +114,18 @@ public class PlayerInfo implements Serializable {
             throw new IllegalArgumentException(NEG_MSG);
         }
     }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other != null && other.getClass().equals(getClass())) {
+            PlayerInfo otherPlayerInfo = (PlayerInfo) other;
+            return otherPlayerInfo.getName().equals(playerName)
+                    && otherPlayerInfo.getTechLevel() == getTechLevel()
+                    && otherPlayerInfo.getFoodQuantity() == getFoodQuantity()
+                    && otherPlayerInfo.getTechQuantity() == getTechQuantity();
+        }
+        else {
+            return false;
+        }
+    }
 }
