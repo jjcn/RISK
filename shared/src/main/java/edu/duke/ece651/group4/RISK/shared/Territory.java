@@ -53,6 +53,16 @@ public class Territory implements Serializable {
         this.area = 0;
     }
 
+    public Territory(String name, int area) {
+        this.name = name;
+        this.enemyOnTerritory = new HashMap<>();
+        this.ownerTroop = new Troop(0, new TextPlayer("")); // default Troop.owner == null, cannot call equals()
+        this.rnd = new Random();
+        this.techSpeed = 0;
+        this.foodSpeed = 0;
+        this.area = area;
+    }
+
     public Territory(String name, Random rnd) {
         this.name = name;
         this.enemyOnTerritory = new HashMap<>();
