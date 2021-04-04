@@ -8,13 +8,31 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import edu.duke.ece651.group4.RISK.client.R;
 import edu.duke.ece651.group4.RISK.shared.RoomInfo;
-import edu.duke.ece651.group4.RISK.shared.message.GameMessage;
+import edu.duke.ece651.group4.RISK.client.listener.onItemClickListener;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
 
 public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.ViewHolder> {
     private List<RoomInfo> rooms;
+    private onItemClickListener itemListener = null;
+
+    public RoomAdapter() {
+        rooms = new ArrayList<>();
+    }
+
+    public void setRooms(List<RoomInfo> rooms) {
+        this.rooms = rooms;
+        notifyDataSetChanged();
+    }
+
+//    public List<RoomInfo> getRooms(){
+//        return rooms;
+//    };
+
+    public void setItemClickListener(onItemClickListener itemListener) {
+        this.itemListener = itemListener;
+    }
 
     // create new views invoked by layout manager
     @NonNull
@@ -34,12 +52,17 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.ViewHolder> {
 
         String usersInfo = "";
         String sep = "";
-        for(String userName: room.getUserNames()){
+        for (String userName : room.getUserNames()) {
             usersInfo.concat(sep + userName);
             sep = ", ";
         }
         holder.usersView.append(usersInfo);
-        holder.usersView.append("(need "+totalUserNum+"in total)");
+        holder.usersView.append("(need " + totalUserNum + "in total)");
+        if (itemListener != null) {
+            holder.itemView.setOnClickListener(v -> {
+                itemListener.onItemClick(position);
+            });
+        }
     }
 
     @Override

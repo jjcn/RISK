@@ -228,8 +228,6 @@ public class RISKApplication extends Application {
     protected static void refreshGameInfo(onReceiveListener listener){
         GameMessage m = new GameMessage(GAME_REFRESH,-1,-1);
         sendReceiveHelper(m,listener,ROOMS);
-
-
     }
 
     /*

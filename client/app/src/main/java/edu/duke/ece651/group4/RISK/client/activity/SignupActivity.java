@@ -56,7 +56,8 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     /**
-     * Set up Check if input
+     * Set up input name and two password.
+     * Check if input two password are the same. Sign up button been activated if true.
      */
     private void impAccountInput() {
         // read input
@@ -97,6 +98,11 @@ public class SignupActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * send name and password to remote server and receive message if signed up a new account.
+     * back to login activity if new account created.
+     *remain in this activity
+     */
     private void impSignUpBt() {
         signupButton = findViewById(R.id.buttonSignUp);
         signupButton.setOnClickListener(v -> {
@@ -113,16 +119,18 @@ public class SignupActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(Object o) {
                     String result = (String) o;
-                    if (result == null) {
-                        Intent loginIntent = new Intent(SignupActivity.this, LoginActivity.class);
-                        showByToast(SignupActivity.this, SUCCESS_SIGNUP);
-                        startActivity(loginIntent);
-                        finish();
-                    } else {
-                        showByToast(SignupActivity.this, result);// show account err message
-                        signupButton.setClickable(true);
-                        return;
-                    }
+                    runOnUiThread(() -> {
+                        if (result == null) {
+                            Intent loginIntent = new Intent(SignupActivity.this, LoginActivity.class);
+                            showByToast(SignupActivity.this, SUCCESS_SIGNUP);
+                            startActivity(loginIntent);
+                            finish();
+                        } else {
+                            showByToast(SignupActivity.this, result);// show account err message
+                            signupButton.setClickable(true);
+                            return;
+                        }
+                    });
                 }
 
                 @Override
