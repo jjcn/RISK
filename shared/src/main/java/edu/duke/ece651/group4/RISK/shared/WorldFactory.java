@@ -1,5 +1,6 @@
 package edu.duke.ece651.group4.RISK.shared;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -7,7 +8,7 @@ import java.util.Arrays;
  * This class create instances of pre-defined World templates.
  * To add new instances, add new create methods.
  */
-public class WorldFactory {
+public class WorldFactory implements Serializable {
 
     public WorldFactory() {}
 
@@ -54,14 +55,6 @@ public class WorldFactory {
         world.addConnection("Scadrial", "Mordor");
         world.addConnection("Mordor", "Hogwarts");
         return world;
-    }
-
-    public World createFixedWorld(ArrayList<String> playerNames){
-
-
-
-
-        return null;
     }
 
 }

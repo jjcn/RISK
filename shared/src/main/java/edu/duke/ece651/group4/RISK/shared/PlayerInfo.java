@@ -1,5 +1,6 @@
 package edu.duke.ece651.group4.RISK.shared;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -8,7 +9,7 @@ import java.util.Set;
  * Allows reading of all info, 
  * and modifying of tech level & resource quantities.
  */
-public class PlayerInfo {
+public class PlayerInfo implements Serializable {
 
     private String playerName; 
     private int techLevel; // player's current tech level

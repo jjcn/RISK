@@ -132,7 +132,6 @@ public class ClientThread extends Thread {
                     res = "Invalid Action";
             }
             this.theClient.sendObject(res);
-
             if(res == null){
                 return;
             }
@@ -152,6 +151,8 @@ public class ClientThread extends Thread {
         }
         Game newGame = new Game(globalID.getAndIncrement(), maxNumPlayers);
         games.add(newGame);
+        GameRunner gameRunner = new GameRunner(newGame);
+        gameRunner.start();
         return null;
     }
 
@@ -227,6 +228,9 @@ public class ClientThread extends Thread {
         if(gameOnGoing.gameState.isDonePlaceUnits()){
             return;
         }
+        // wait all players to join and runner to set up the game
+        waitNotifyFromRunner();
+        // send the world info
         this.theClient.sendObject(gameOnGoing.getTheWorld());
         // start to place Units
         List<PlaceOrder> placeOrders = (List<PlaceOrder> )this.theClient.recvObject();
@@ -238,10 +242,10 @@ public class ClientThread extends Thread {
         gameOnGoing.gameState.setDonePlaceUnits();
     }
 
+
     /*
-    * Part4
+    * PART4
     * Run Game for one turn
-    *
     * */
     protected void tryRunGameOneTurn() {
         if(gameOnGoing == null){
@@ -256,8 +260,6 @@ public class ClientThread extends Thread {
     protected void doActionPhaseOneTurn(){
         this.theClient.sendObject(gameOnGoing.getTheWorld());
         // if Done or SwitchOut
-
-
 
 
 
@@ -282,6 +284,9 @@ public class ClientThread extends Thread {
         }
     }
 
+    /*
+    * This waits for notify from runner
+    * */
     public void waitNotifyFromRunner(){
         try {
             gameOnGoing.wait();
@@ -312,11 +317,11 @@ public class ClientThread extends Thread {
         // Part3. game init
         //  Initialization info including:
         //      send init World
-        //      send territories
-        //      recv assigned units
-        //      send World again
+        //      recv PlaceOrders
+
 
         // Part4 ActionsPhase:
+        //        4.0  send World
         //        4.1  do actions for Each Turn
         //             Game will deal with Actions: Move, Attack, Upgrade, Done, SwitchOut
         //             After each turn, this thread will wait for gameRunner to update the results
