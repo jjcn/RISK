@@ -7,8 +7,8 @@ public class Resource {
     private String name;
     private int quantity;
 
-    public Resource() {
-        this(null, 0);
+    public Resource(String name) {
+        this(name, 0);
     }
 
     public Resource(String name, int quantity) {
@@ -28,9 +28,8 @@ public class Resource {
         quantity = i;
     }
 
-    /*
-     * Change the quantity of a resource.
-     * @param resource is the enum type of the resource.
+    /**
+     * change the quantity of a resource.
      * @param i is the number to add to resource quantity. 
      *          Can be positive, 0, or negative.
      */
@@ -51,7 +50,7 @@ public class Resource {
      * @return true, if the resources have the same name;
      *         false, if not.
      */
-    public boolean equalsName(Resource otherResource) {
+    public boolean isSameType(Resource otherResource) {
         return otherResource.getName().equals(name);
     }
 
@@ -69,7 +68,7 @@ public class Resource {
 
     @Override
     public String toString() {
-        return name + quantity;
+        return name + ": " + quantity;
     }
 
     @Override

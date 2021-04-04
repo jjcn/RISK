@@ -68,7 +68,7 @@ public class Graph<T> implements Serializable {
     }
 
     /**
-     * Creates a spanning tree, then add several random connections to it (may with existing ones)
+     * Creates a spanning tree, then add several random connections to it (may be existing ones)
      * @param numNewEdges is the number of new connections introduced to the spanning tree.
      * @param rand is the Random object.
      */
@@ -212,21 +212,6 @@ public class Graph<T> implements Serializable {
     /*
     public void removeEdge(T key1,T key2) {
         // TODO: Not required in evol1
-    }
-    */
-
-    /**
-     * Extract the data in a collection of vertices.
-     * @param vertices is the vertex to extract data from.
-     * @return a list of data.
-     */
-    /*
-    public List<T> toData(List<Vertex> vertices) {
-        List<T> ans = new ArrayList<>();
-        for (Vertex v : vertices) {
-            ans.add(v.getData());
-        }
-        return ans;
     }
     */
 
