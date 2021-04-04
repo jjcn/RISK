@@ -13,6 +13,7 @@ public class User {
         this.activeGames = new HashSet<Game>();
     }
 
+
     public User(int id, String username, String password){
         this(new UserInfo(id, username,password));
     }
@@ -32,6 +33,7 @@ public class User {
     }
 
     public boolean checkUsername(String username){
+        if(username == null) {return false;}
         if(!this.userInfo.getUsername().equals(username)){
             return false;
         }
