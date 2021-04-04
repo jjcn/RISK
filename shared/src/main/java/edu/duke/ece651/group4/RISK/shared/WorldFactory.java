@@ -1,5 +1,6 @@
 package edu.duke.ece651.group4.RISK.shared;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -51,8 +52,16 @@ public class WorldFactory {
         world.addConnection("Scadrial", "Roshar");
         world.addConnection("Scadrial", "Hogwarts");
         world.addConnection("Scadrial", "Mordor");
-        world.addConnection("Mordor", "Hogwarts");  
-
+        world.addConnection("Mordor", "Hogwarts");
         return world;
     }
+
+    public World createFixedWorld(ArrayList<String> playerNames){
+
+
+
+
+        return null;
+    }
+
 }
