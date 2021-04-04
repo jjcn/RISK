@@ -221,8 +221,17 @@ public class WorldTest {
     public void testMoveTroopValid() {
         World world = createWorld(troopsSeparated);
         // Valid
-        BasicOrder move1 = new BasicOrder("Gondor", "Mordor", new Troop(13, red), 'm');
+        BasicOrder move1 = new BasicOrder("Gondor", "Mordor", new Troop(1, red), 'm');
         assertDoesNotThrow(() -> world.moveTroop(move1, redInfo));
+    }
+
+    @Test
+    public void testMoveTroopNotEnoughFood() {
+        World world = createWorld(troopsSeparated);
+        // Valid
+        BasicOrder move1 = new BasicOrder("Gondor", "Mordor", new Troop(13, red), 'm');
+        assertThrows(IllegalArgumentException.class, 
+                    () -> world.moveTroop(move1, redInfo));
     }
 
     @Test
