@@ -232,7 +232,13 @@ public class Troop implements Serializable {
         return this.dict.get(name);
     }
 
+    public int updateUnit(int levelBefore, int levelUp, int num, int resource) {
+    	String from = String.format("Soldier LV%d", levelBefore); // TODO: this is hardcoded
+    	return updateUnit(from, levelUp, num, resource);
+    }
+
     public int updateUnit(String from, int levelUp, int num, int resource) {
+
         if (this.checkUnitNum(from) < num) {
             throw new IllegalArgumentException("No enough Unit to upgrade");
         }
@@ -246,8 +252,12 @@ public class Troop implements Serializable {
 
                 this.dict.put(from, this.dict.get(from) - 1);
 
-                int newNum = this.dict.get(target.getJobName()) == null ? 1 : this.dict.get(target.getJobName()) + 1;
+                int newNum = this.dict.get(target.getJobName()) == null 
+                            ? 1 
+                            : this.dict.get(target.getJobName()) + 1;
+
                 this.dict.put(target.getJobName(), newNum);
+
                 num--;
             }
 
