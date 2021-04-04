@@ -1,6 +1,7 @@
 package edu.duke.ece651.group4.RISK.server;
 
 import edu.duke.ece651.group4.RISK.shared.BasicOrder;
+import edu.duke.ece651.group4.RISK.shared.PlaceOrder;
 import edu.duke.ece651.group4.RISK.shared.World;
 
 import java.util.ArrayList;
@@ -33,7 +34,9 @@ public class Game {
     public int getMaxNumUsers(){
         return maxNumUsers;
     }
-
+    public World getTheWorld(){
+        return theWorld.clone();
+    }
     public ArrayList<String> getUserNames(){
         ArrayList<String> userNames = new ArrayList<>();
         for(User u: usersOnGame){
@@ -74,6 +77,7 @@ public class Game {
         if(!isUserInGame(u)){
             return;
         }
+        while(!gameState.isWaitToUpdate()){}
         gameState.changAPlayerStateTo(u, PLAYER_STATE_ACTION_PHASE);
     }
 
@@ -122,8 +126,8 @@ public class Game {
      * This function has to be locked. This is because all players are sharing the
      * same world
      * */
-    synchronized protected void placeUnitsOnWorld(){
-
+    synchronized protected void placeUnitsOnWorld(PlaceOrder p){
+        this.theWorld.stationTroop(p.getDesName(),p.getActTroop());
     }
     /*
      * This is to upgrade for each player.
@@ -139,18 +143,6 @@ public class Game {
     public void updateGameAfterOneTurn(){
 
     }
-
-
-//    synchronized public boolean removeUser(User u){
-//        if(isEmpty()){
-//            return false;
-//        }
-//        usersOnGame.remove(u);
-//        numUsers -= 1;
-//        this.barrier = new CyclicBarrier(numUsers);
-//        return true;
-//    }
-
 
 
     /*

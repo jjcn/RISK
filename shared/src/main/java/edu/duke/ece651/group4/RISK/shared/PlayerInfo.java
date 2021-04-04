@@ -1,11 +1,15 @@
 package edu.duke.ece651.group4.RISK.shared;
 
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * This class records information that is player-specific.
  * Allows reading of all info, 
  * and modifying of tech level & resource quantities.
  */
-public class PlayerInfo {
+public class PlayerInfo implements Serializable {
 
     private String playerName; 
 

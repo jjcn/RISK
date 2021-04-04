@@ -1,6 +1,7 @@
 package edu.duke.ece651.group4.RISK.server;
 
 import edu.duke.ece651.group4.RISK.shared.Client;
+import edu.duke.ece651.group4.RISK.shared.PlaceOrder;
 import edu.duke.ece651.group4.RISK.shared.RoomInfo;
 import edu.duke.ece651.group4.RISK.shared.message.GameMessage;
 import edu.duke.ece651.group4.RISK.shared.message.LogMessage;
@@ -8,6 +9,7 @@ import edu.duke.ece651.group4.RISK.shared.message.LogMessage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static edu.duke.ece651.group4.RISK.server.ServerConstant.*;
@@ -142,13 +144,15 @@ public class ClientThread extends Thread {
      * creates a game
      * creates a game and a gameRunner to run the game
      * */
-     protected String tryCreateAGame(GameMessage gMess){
+    synchronized protected String tryCreateAGame(GameMessage gMess){
         int maxNumPlayers = gMess.getNumPlayers();
         if(maxNumPlayers < 2 || maxNumPlayers > 5){
             return INVALID_CREATE;
         }
         Game newGame = new Game(globalID.getAndIncrement(), maxNumPlayers);
-        games.add(newGame); // this is synchronized function
+        games.add(newGame);
+        GameRunner gameRunner = new GameRunner(newGame);
+        gameRunner.start();
         return null;
     }
 
@@ -156,21 +160,33 @@ public class ClientThread extends Thread {
      * Part2.2
      * Joins a game
      * If game is valid, let it join, else return error message
-     * 1. If game starts, just set gameOnGoing = game
-     * 2. If game waits, just add users to game, and set gameOnGoing = game
+     * 1. If new game , just add users to game
+     * 2. If old game , switchIn this user
+     * 3. set gameOngoing = gameToJoin
      * */
      protected String tryJoinAGame(GameMessage gMess){
         int gameID = gMess.getGameID();
         Game gameToJoin = findGame(gameID);
+        String res = checkJoinGame(gameToJoin);
+        if(res != null){return res;}
+        if(!gameToJoin.isFull()){
+            gameToJoin.addUser(ownerUser); // this is synchronized function
+        }
+        else{
+            gameToJoin.switchInUser(ownerUser); // this is synchronized function
+        }
+        gameOnGoing = gameToJoin;
+        return null;
+    }
+
+    protected String checkJoinGame (Game gameToJoin){
         if(gameToJoin == null){ return INVALID_JOIN;}
         if(gameToJoin.isFull() && !gameToJoin.isUserInGame(ownerUser)){return INVALID_JOIN;}
         if(!gameToJoin.isFull()){
             if(gameToJoin.isUserInGame(ownerUser)){
-               return  INVALID_JOIN;
+                return  INVALID_JOIN;
             }
-            gameToJoin.addUser(ownerUser); // this is synchronized function
         }
-        gameOnGoing = gameToJoin;
         return null;
     }
 
@@ -212,18 +228,24 @@ public class ClientThread extends Thread {
         if(gameOnGoing.gameState.isDonePlaceUnits()){
             return;
         }
+        // wait all players to join and runner to set up the game
+        waitNotifyFromRunner();
+        // send the world info
+        this.theClient.sendObject(gameOnGoing.getTheWorld());
         // start to place Units
-
-
+        List<PlaceOrder> placeOrders = (List<PlaceOrder> )this.theClient.recvObject();
+        for(PlaceOrder p: placeOrders){
+            gameOnGoing.placeUnitsOnWorld(p);
+        }
         // wait all players to finish placeUnits
         gameOnGoing.barrierWait();
         gameOnGoing.gameState.setDonePlaceUnits();
     }
 
+
     /*
-    * Part4
+    * PART4
     * Run Game for one turn
-    *
     * */
     protected void tryRunGameOneTurn() {
         if(gameOnGoing == null){
@@ -236,7 +258,10 @@ public class ClientThread extends Thread {
     }
 
     protected void doActionPhaseOneTurn(){
+        this.theClient.sendObject(gameOnGoing.getTheWorld());
         // if Done or SwitchOut
+
+
 
     }
 
@@ -259,6 +284,9 @@ public class ClientThread extends Thread {
         }
     }
 
+    /*
+    * This waits for notify from runner
+    * */
     public void waitNotifyFromRunner(){
         try {
             gameOnGoing.wait();
@@ -289,11 +317,11 @@ public class ClientThread extends Thread {
         // Part3. game init
         //  Initialization info including:
         //      send init World
-        //      send territories
-        //      recv assigned units
-        //      send World again
+        //      recv PlaceOrders
+
 
         // Part4 ActionsPhase:
+        //        4.0  send World
         //        4.1  do actions for Each Turn
         //             Game will deal with Actions: Move, Attack, Upgrade, Done, SwitchOut
         //             After each turn, this thread will wait for gameRunner to update the results

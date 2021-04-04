@@ -31,10 +31,9 @@ public class GameRunner extends Thread{
 
         while(!game.isFull()){} // wait all users to join to start the game
 
+        game.setUpGame();
         //Initialization
         game.notifyAll(); // notify all players to start send world and do placement
-        game.setUpGame();
-        game.notifyAll();
 
         //ActionPhase
         while(true){
