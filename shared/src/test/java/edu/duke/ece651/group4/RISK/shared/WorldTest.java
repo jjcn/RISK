@@ -228,7 +228,7 @@ public class WorldTest {
     @Test
     public void testMoveTroopNotEnoughFood() {
         World world = createWorld(troopsSeparated);
-        // Valid
+        // Not enough food : 13 * (13 + 14) > 100
         BasicOrder move1 = new BasicOrder("Gondor", "Mordor", new Troop(13, red), 'm');
         assertThrows(IllegalArgumentException.class, 
                     () -> world.moveTroop(move1, redInfo));
