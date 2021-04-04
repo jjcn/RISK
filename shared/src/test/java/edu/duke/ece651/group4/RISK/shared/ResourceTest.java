@@ -7,6 +7,23 @@ import org.junit.jupiter.api.Test;
 public class ResourceTest {
     
     @Test
+    public void testConstructors() {
+        Resource wood1 = new Resource("wood");
+        Resource wood2 = new Resource("wood", 0);
+        assertEquals(wood1, wood2);
+
+        Resource food1 = new FoodResource();
+        Resource food2 = new FoodResource(0);
+        assertEquals(food1, food2);
+
+        Resource tech1 = new TechResource();
+        Resource tech2 = new TechResource(0);
+        assertEquals(tech1, tech2);
+
+        assertThrows(IllegalArgumentException.class, () -> new Resource("neg", -1));
+    }
+    
+    @Test
     public void testGetName() {
         Resource food = new Resource("food", 1);
         Resource tech = new Resource("tech", 0);
@@ -19,31 +36,30 @@ public class ResourceTest {
     @Test
     public void testGetQuantity() {
         Resource food = new Resource("food", 1);
-        Resource tech = new Resource("tech", 0);
-        Resource neg = new Resource("neg", -1);
+        Resource tech = new Resource("tech", 0);   
         assertEquals(food.getQuantity(), 1);
         assertEquals(tech.getQuantity(), 0);
-        assertEquals(neg.getQuantity(), -1);
     }
 
     @Test
     public void testSetQuantity() {
         Resource food = new Resource("food", 1);
-        Resource tech = new Resource("tech", 0);
         food.setQuantity(99);
-        tech.setQuantity(-1);
         assertEquals(food.getQuantity(), 99);
-        assertEquals(tech.getQuantity(), -1);
+
+        Resource tech = new Resource("tech", 0);
+        assertThrows(IllegalArgumentException.class, () -> tech.setQuantity(-1));
+        assertEquals(tech.getQuantity(), 0);
     }
 
     @Test
     public void testModifyQuantity() {
         Resource food = new Resource("food", 1);
-        Resource tech = new Resource("tech", 1);
         food.modifyQuantity(99);
-        assertThrows(IllegalArgumentException.class,
-                       () -> tech.modifyQuantity(-1));
         assertEquals(food.getQuantity(), 100);
+
+        Resource tech = new Resource("tech", 1);
+        assertThrows(IllegalArgumentException.class, () -> tech.modifyQuantity(-1));
         assertEquals(tech.getQuantity(), 1);
     }
 

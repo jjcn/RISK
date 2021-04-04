@@ -46,6 +46,16 @@ public class Resource implements Serializable {
     }
 
     /**
+     * Check the non-negativity of resource quantity.
+     * @param i is the resource quantity to check.
+     */
+    protected void checkNonNegative(int i) {
+        if (i < 0) {
+            throw new IllegalArgumentException(String.format(NEG_MSG, name));
+        }
+    }
+  
+    /**
      * Check if the resources are of the same type.
      * @return true, if the resources have the same name;
      *         false, if not.
@@ -54,12 +64,6 @@ public class Resource implements Serializable {
         return otherResource.getName().equals(name);
     }
   
-    protected void checkNonNegative(int i) {
-        if (i < 0) {
-            throw new IllegalArgumentException(String.format(NEG_MSG, name));
-        }
-    }
-
     @Override
     public boolean equals(Object other) {
         if (other != null && other.getClass().equals(getClass())) {
