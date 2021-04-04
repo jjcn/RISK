@@ -48,17 +48,17 @@ public class ResourceTest {
     }
 
     @Test
-    public void testEqualsName() {
+    public void testIsSameType() {
         Resource food1 = new Resource("food", 1);
         Resource food2 = new Resource("food", 0);
         Resource food3 = new Resource("food", 0);
         Resource tech1 = new Resource("tech", 1);
         Resource tech2 = new Resource("tech", 0);
-        assertTrue(food1.equalsName(food2));
-        assertTrue(food2.equalsName(food3));
-        assertFalse(food1.equalsName(tech1));
-        assertFalse(food1.equalsName(tech2));
-        assertTrue(tech1.equalsName(tech2));
+        assertTrue(food1.isSameType(food2));
+        assertTrue(food2.isSameType(food3));
+        assertFalse(food1.isSameType(tech1));
+        assertFalse(food1.isSameType(tech2));
+        assertTrue(tech1.isSameType(tech2));
     }
 
     @Test
