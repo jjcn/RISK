@@ -98,4 +98,6 @@ public class GameState extends State{
         return this.isDonePlaceUnits;
     }
 
+    public boolean isWaitToUpdate(){return getState().equals(GAME_STATE_WAIT_TO_UPDATE);}
+
 }

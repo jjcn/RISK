@@ -1,9 +1,11 @@
 package edu.duke.ece651.group4.RISK.shared;
 
+import java.io.Serializable;
+
 /**
  * Template of a generic resource.
  */
-public class Resource {
+public class Resource implements Serializable {
     private String name;
     private int quantity;
 
