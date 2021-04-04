@@ -70,6 +70,7 @@ public class ClientThread extends Thread {
      * @return null if succeed, a error message if fail
      * */
     protected String trySignUp(String username, String password) {
+        if(username == null){return INVALID_SIGNUP;}
         for (User u : users) {
             if (u.checkUsername(username)) {
                 return INVALID_SIGNUP;
@@ -107,6 +108,7 @@ public class ClientThread extends Thread {
             return;
         }
         //1.send the gameInfo to Client
+        this.theClient.sendObject(getAllGameInfo());
         //2. select an option
         while(true){
             GameMessage gameMessage = (GameMessage) this.theClient.recvObject();
@@ -120,6 +122,9 @@ public class ClientThread extends Thread {
             }
             if(action.equals(GAME_REFRESH)){
                 res = getAllGameInfo();
+            }
+            if(action.equals(GAME_EXIT)){
+                gameOnGoing = null;
             }
             this.theClient.sendObject(res);
             if(res == null){
@@ -136,8 +141,8 @@ public class ClientThread extends Thread {
      * */
     synchronized protected String tryCreateAGame(GameMessage gMess){
         int maxNumPlayers = gMess.getNumPlayers();
-        if(maxNumPlayers <= 0 || maxNumPlayers > 5){
-            return "Invalid: the number of players should be between 2 and 5 inclusive.";
+        if(maxNumPlayers < 2 || maxNumPlayers > 5){
+            return INVALID_CREATE;
         }
         Game newGame = new Game(globalID.getAndIncrement(), maxNumPlayers);
         games.add(newGame);
@@ -152,11 +157,16 @@ public class ClientThread extends Thread {
      * 2. If game waits, just add users to game, and set gameOnGoing = game
      * */
     synchronized protected String tryJoinAGame(GameMessage gMess){
-
         int gameID = gMess.getGameID();
         Game gameToJoin = findGame(gameID);
-        if(gameToJoin == null){ return "Invalid GameID";}
-        if(!gameToJoin.isUserInGame(ownerUser)){return "Invalid join: you are not in this game!";}
+        if(gameToJoin == null){ return INVALID_JOIN;}
+        if(gameToJoin.isFull() && !gameToJoin.isUserInGame(ownerUser)){return INVALID_JOIN;}
+        if(!gameToJoin.isFull()){
+            if(gameToJoin.isUserInGame(ownerUser)){
+               return  INVALID_JOIN;
+            }
+            gameToJoin.addUser(ownerUser);
+        }
         gameOnGoing = gameToJoin;
         return null;
     }
@@ -170,6 +180,7 @@ public class ClientThread extends Thread {
         }
         return null;
     }
+
     /*
      * Part2.3
      * send all gameInfo to a client
@@ -242,7 +253,7 @@ public class ClientThread extends Thread {
         //   1.3 Exit the App
         //      send feedback every time
 
-        // Part2. init games:
+        // Part2. init rooms:
         //    send all game info
         //    2.1 create a game
         //          start a gameRunner
@@ -260,7 +271,6 @@ public class ClientThread extends Thread {
         //      recv assigned units
         //      send World again
 
-
         // Part4 ActionsPhase:
         //        4.1  do actions for Each Turn
         //             Game will deal with Actions: Move, Attack, Upgrade, Done, Exit, SwitchOut
@@ -272,7 +282,6 @@ public class ClientThread extends Thread {
         //             4.22 If player SwitchOut:
         //                    go back to 2.
         //                    after delete the gameRunner, make sure store the game. (Everyone should wait until the user is back)
-
 
         while (true) {
             trySetUpUser(); //part1 above

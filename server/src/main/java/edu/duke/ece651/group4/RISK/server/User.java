@@ -32,6 +32,7 @@ public class User {
     }
 
     public boolean checkUsername(String username){
+        if(username == null) {return false;}
         if(!this.userInfo.getUsername().equals(username)){
             return false;
         }

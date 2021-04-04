@@ -28,7 +28,7 @@ public class Resource {
         quantity = i;
     }
 
-    /**
+    /*
      * Change the quantity of a resource.
      * @param resource is the enum type of the resource.
      * @param i is the number to add to resource quantity. 
