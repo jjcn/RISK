@@ -237,7 +237,8 @@ public class Territory implements Serializable {
     }
 
     public int upgradeTroop(int levelBefore, int levelAfter, int nUnit, int nResource) {
-        return ownerTroop.updateUnit(levelBefore, levelAfter - levelBefore, nUnit, nResource);
+        int levelUp = levelAfter - levelBefore;
+        return ownerTroop.updateUnit(levelBefore, levelUp, nUnit, nResource);
     }
 
 }

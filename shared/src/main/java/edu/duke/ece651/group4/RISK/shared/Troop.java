@@ -152,7 +152,7 @@ public class Troop implements Serializable {
 
     public Unit getUnit(String name) {
         for (Unit u : this.population) {
-            if (u.getJobName() == name) {
+            if (u.getJobName().equals(name)) {
                 return u;
             }
         }
