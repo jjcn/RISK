@@ -13,6 +13,7 @@ public class User {
         this.activeGames = new HashSet<Game>();
     }
 
+
     public User(int id, String username, String password){
         this(new UserInfo(id, username,password));
     }
