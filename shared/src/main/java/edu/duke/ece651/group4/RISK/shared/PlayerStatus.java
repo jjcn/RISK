@@ -64,7 +64,7 @@ public class PlayerStatus {
      */
     public void modifyResource(Resource resource, int i) {
         for (Resource r : resources) {
-            if (r.equalsName(resource)) {
+            if (r.isSameType(resource)) {
                 resource.modifyQuantity(i);
             }
         }
