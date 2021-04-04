@@ -233,4 +233,13 @@ class ClientThreadTest {
         roomsInfo = ct.getAllGameInfo();
         assertEquals(2, roomsInfo.size());
     }
+
+    @Test
+    public void test_findGame(){
+        ClientThread ct = createAClientThread(1, 3);
+        assertEquals(null, ct.findGame(-1));
+        Game g = new Game(0,2);
+        assertEquals(g.getGameID(), ct.findGame(0).getGameID());
+        assertEquals(g.getMaxNumUsers(), ct.findGame(0).getMaxNumUsers());
+    }
 }

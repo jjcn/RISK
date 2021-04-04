@@ -42,7 +42,6 @@ public class ClientThread extends Thread {
             return null;
         }
         while(true){
-//            LogMessage logMessage = null; //receive a LogMessage
             LogMessage logMessage = (LogMessage) this.theClient.recvObject();
             String action = logMessage.getAction();
             System.out.println("get Message: " + action);
@@ -59,7 +58,6 @@ public class ClientThread extends Thread {
                 String resUp = trySignUp(logMessage.getUsername(), logMessage.getPassword());
                 this.theClient.sendObject(resUp);
             }
-
         }
 
     }
@@ -69,7 +67,7 @@ public class ClientThread extends Thread {
      * This tries to sign up a user.
      * @return null if succeed, a error message if fail
      * */
-    protected String trySignUp(String username, String password) {
+    synchronized protected String trySignUp(String username, String password) {
         if(username == null){return INVALID_SIGNUP;}
         for (User u : users) {
             if (u.checkUsername(username)) {
@@ -85,7 +83,7 @@ public class ClientThread extends Thread {
      * This tries to let a user log in.
      * @return null if succeed, a error message if fail
      * */
-    protected String tryLogIn(String username, String password) {
+    synchronized protected String tryLogIn(String username, String password) {
         for (User u : users) {
             if (u.checkUsernamePassword(username, password)) {
                 this.ownerUser = u;
@@ -114,17 +112,21 @@ public class ClientThread extends Thread {
             GameMessage gameMessage = (GameMessage) this.theClient.recvObject();
             String action = gameMessage.getAction();
             Object res = null;
-            if(action.equals(GAME_CREATE)){
-                res = tryCreateAGame(gameMessage);
-            }
-            if(action.equals(GAME_JOIN)){
-                res = tryJoinAGame(gameMessage);
-            }
-            if(action.equals(GAME_REFRESH)){
-                res = getAllGameInfo();
-            }
-            if(action.equals(GAME_EXIT)){
-                gameOnGoing = null;
+            switch(action) {
+                case GAME_CREATE:
+                    res = tryCreateAGame(gameMessage);
+                    break;
+                case GAME_JOIN:
+                    res = tryJoinAGame(gameMessage);
+                    break;
+                case GAME_REFRESH:
+                    res = getAllGameInfo();
+                    break;
+                case GAME_EXIT:
+                    ownerUser = null; // user log out
+                    break;
+                default:
+                    res = "Invalid Action";
             }
             this.theClient.sendObject(res);
             if(res == null){

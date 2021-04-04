@@ -9,7 +9,6 @@ import static edu.duke.ece651.group4.RISK.server.ServerConstant.GAME_STATE_WAIT_
 * */
 public class GameRunner extends Thread{
     Game game;
-
     public GameRunner(Game g){
         this.game = g;
     }
