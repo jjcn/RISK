@@ -55,7 +55,7 @@ public class WorldFactory {
         return ans;
     }
 
-    protected List<AttributeBundle> generateBundlesWithAverage (
+    protected List<AttributeBundle> generateBundlesWithTotal (
                                 int nInGroup,
                                 int totalArea,
                                 int totalFoodSpeed,
@@ -238,9 +238,9 @@ public class WorldFactory {
         Map<Integer, List<Territory>> groups = world.divideTerritories(nGroup);
 
         List<AttributeBundle> bundles = 
-        generateBundlesWithAverage(nInGroup, 
-                                    20, 40, 100, // size, food, tech, all total
-                                    new Random(0)); // this is now hardcoded
+        generateBundlesWithTotal(nInGroup, 
+                                20, 40, 100, // size, food, tech, all total
+                                new Random(0)); // this is now hardcoded
 
         setAttributesSame(groups, bundles);
 

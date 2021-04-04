@@ -42,7 +42,7 @@ public class ResourceTest {
         Resource tech = new Resource("tech", 1);
         food.modifyQuantity(99);
         assertThrows(IllegalArgumentException.class,
-                    () -> tech.modifyQuantity(-1));
+                       () -> tech.modifyQuantity(-1));
         assertEquals(food.getQuantity(), 100);
         assertEquals(tech.getQuantity(), 1);
     }
@@ -75,4 +75,25 @@ public class ResourceTest {
         assertFalse(tech1.equals(tech2));
     }
     
+    @Test
+    public void testToString() {
+    	Resource food0 = new FoodResource();
+    	assertEquals("food: 0", food0.toString());
+    	
+    	Resource tech0 = new TechResource();
+    	assertEquals("tech: 0", tech0.toString());
+    	
+    	Resource wood = new Resource("wood");
+    	assertEquals("wood: 0", wood.toString());
+    }
+    
+    @Test
+    public void testHashCode() {
+    	int hash1 = new Resource("wood").hashCode();
+    	int hash2 = new Resource("wood", 1).hashCode();
+    	int hash3 = new Resource("wool").hashCode();
+    	
+    	assertNotEquals(hash1, hash2);
+    	assertNotEquals(hash1, hash3);
+    }
 }
