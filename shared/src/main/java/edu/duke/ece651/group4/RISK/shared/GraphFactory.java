@@ -1,8 +1,9 @@
 package edu.duke.ece651.group4.RISK.shared;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
-public class GraphFactory {
+public class GraphFactory implements Serializable {
 
 	public GraphFactory() {}
 	

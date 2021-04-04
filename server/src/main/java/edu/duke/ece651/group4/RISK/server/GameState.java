@@ -16,22 +16,43 @@ import static edu.duke.ece651.group4.RISK.server.ServerConstant.*;
 public class GameState extends State{
     HashSet<PlayerState> playerStates;
     private boolean isDonePlaceUnits;
-
+    private boolean isAlive;
     public GameState(){
         super(GAME_STATE_WAIT_TO_UPDATE);
         playerStates = new HashSet<PlayerState>();
         isDonePlaceUnits = false;
+        isAlive = true;
     }
 
-    public boolean changAPlayerStateTo(String username, String state){
+    public void setGameDead(){
+        this.isAlive = false;
+    }
+    synchronized void setDonePlaceUnits(){isDonePlaceUnits = true;}
+    public boolean isAlive(){
+        return isAlive;
+    }
+
+    synchronized public boolean changAPlayerStateTo(User u, String state){
+        String username = u.getUsername();
         for(PlayerState ps : playerStates){
             if(ps.getUsername().equals(username)){
                 ps.updateStateTo(state);
+                return true;
             }
         }
         return false;
     }
 
+    public String getAPlayerState(User u){
+        String username = u.getUsername();
+        String state = null;
+        for(PlayerState ps: playerStates){
+            if(ps.getUsername().equals(username)){
+                state = ps.getState();
+            }
+        }
+        return state;
+    }
     /*
     * This set active Players (not SwitchOut) ' state to PLAYER_STATE_UPDATING
     * */
@@ -43,8 +64,8 @@ public class GameState extends State{
         }
     }
 
-    public void addPlayerState(String username){
-        playerStates.add(new PlayerState(username));
+    synchronized public void addPlayerState(User u){
+        playerStates.add(new PlayerState(u.getUsername()));
     }
     /*
     * This checks if all players finish one turn
@@ -76,5 +97,7 @@ public class GameState extends State{
     public boolean isDonePlaceUnits(){
         return this.isDonePlaceUnits;
     }
+
+    public boolean isWaitToUpdate(){return getState().equals(GAME_STATE_WAIT_TO_UPDATE);}
 
 }

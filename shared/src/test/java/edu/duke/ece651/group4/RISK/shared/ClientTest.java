@@ -1,5 +1,6 @@
 package edu.duke.ece651.group4.RISK.shared;
 
+import org.checkerframework.checker.units.qual.C;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -9,8 +10,11 @@ import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CyclicBarrier;
 
 import static edu.duke.ece651.group4.RISK.shared.Constant.SOCKET_HOSTNAME;
 import static edu.duke.ece651.group4.RISK.shared.Constant.SOCKET_PORT;
@@ -19,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ClientTest {
     private final static int PORT = 1107;
     static ServerSocket hostSocket;
-
+    static HashSet<String> testSet;
 //    @BeforeAll
 //    static void setUpAll() throws IOException {
 //        hostSocket = new ServerSocket(PORT);
@@ -139,6 +143,31 @@ class ClientTest {
 //
 //        Client clientSocket = new Client("vcm-19654.vm.duke.edu",SOCKET_PORT); //new Client("localhost",9999); //new Client("localhost",SOCKET_PORT);
 //        while(true){}
+//    }
+
+
+//
+//    @Test
+//    public void test_thread(){
+//        testSet = new HashSet<>();
+//        CountDownLatch latch = new CountDownLatch(2);
+//        new Thread( ()-> {
+//            testSet.add("1");
+//            latch.countDown();
+//        }
+//        ).start();
+//        new Thread( ()-> {
+//            testSet.add("2");
+//            latch.countDown();
+//        }
+//        ).start();
+//
+//        try {
+//            latch.await();
+//            assertEquals(2, this.testSet.size());
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
 //    }
 
 }
