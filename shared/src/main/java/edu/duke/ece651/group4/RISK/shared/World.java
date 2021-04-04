@@ -72,6 +72,7 @@ public class World implements Serializable {
      */
     public World(Graph<Territory> terrs, Random random) {
         territories = terrs;
+        this.playerInfos = new ArrayList<PlayerInfo>();
         basicOrderChecker = new OrderChecker();
         rnd = random;
     }
@@ -225,6 +226,14 @@ public class World implements Serializable {
      */
     public void addConnection(String terrName1, String terrName2) {
         addConnection(findTerritory(terrName1), findTerritory(terrName2));
+    }
+
+    /**
+     * Register a player's info in the world.
+     * @param pInfo is the player info to register.
+     */
+    public void registerPlayerInfo(PlayerInfo pInfo) {
+        playerInfos.add(pInfo);
     }
 
     /**
@@ -406,8 +415,9 @@ public class World implements Serializable {
      * The function does NOT consume food resource.
      * 
      * @param order is a move order.
+     * @param playerName is the player's name who commited this order.
      */
-    public void moveTroop(BasicOrder order, PlayerInfo pInfo) {
+    public void moveTroop(BasicOrder order, String playerName) {
         Territory start = findTerritory(order.getSrcName());
         Territory end = findTerritory(order.getDesName());
         Troop troop = order.getActTroop();
@@ -418,6 +428,8 @@ public class World implements Serializable {
         }
 
         end.sendInTroop(start.sendOutTroop(troop));
+
+        PlayerInfo pInfo = findPlayerInfo(playerName);
 
         int consumption = calculateMoveConsumption(order);
         pInfo.modifyFoodQuantity(-consumption);
@@ -441,8 +453,9 @@ public class World implements Serializable {
      * function.
      * 
      * @param order is the attack order.
+     * @param playerName is the player's name who commited this order.
      */
-    public void attackATerritory(BasicOrder order, PlayerInfo pInfo) {
+    public void attackATerritory(BasicOrder order, String playerName) {
         Territory start = findTerritory(order.getSrcName());
         Territory end = findTerritory(order.getDesName());
         Troop troop = order.getActTroop();
@@ -454,23 +467,25 @@ public class World implements Serializable {
 
         end.sendInEnemyTroop(start.sendOutTroop(troop));
 
+        PlayerInfo pInfo = findPlayerInfo(playerName);
+
         int consumption = calculateAttackConsumption(order);
         pInfo.modifyFoodQuantity(-consumption);
     }
 
     /**
-     * Trys to upgrade troop on a territory. If successful, tech resource will be
-     * consumed.
-     * 
-     * @param utOrder   is an UpgradeTroopOrder.
-     * @param nResource is the quantity of resource at hand.
-     * @return the remaining quantity of resource after the upgrade.
+     * Trys to upgrade troop on a territory. 
+     * If successful, tech resource will be consumed.
+     * @param utOrder is an UpgradeTroopOrder.
+     * @param playerName is the player's name who commited this order.
      */
-    public void upgradeTroop(UpgradeTroopOrder utOrder, PlayerInfo pInfo) {
+    public void upgradeTroop(UpgradeTroopOrder utOrder, String playerName) {
         Territory terr = findTerritory(utOrder.getSrcName());
         int levelBefore = utOrder.getLevelBefore();
         int levelAfter = utOrder.getLevelAfter();
         int nUnit = utOrder.getNUnit();
+        
+        PlayerInfo pInfo = findPlayerInfo(playerName);
         int remainder = terr.upgradeTroop(levelBefore, levelAfter, nUnit, pInfo.getTechQuantity());
         pInfo.setTechQuantity(remainder);
     }
