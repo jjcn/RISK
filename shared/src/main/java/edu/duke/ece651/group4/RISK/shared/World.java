@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.NoSuchElementException;
 
 import java.util.Random;
+import java.util.stream.Collector;
 import java.util.stream.IntStream;
 import java.io.Serializable;
 
@@ -33,7 +34,8 @@ public class World implements Serializable {
         "Number should be positive.";
     protected final String TERRITORY_NOT_FOUND_MSG = 
         "The territory specified by the name '%s' is not found.";
-    
+     protected final String NO_PLAYERINFO_MSG = 
+        "Player info of %s is not found.";
     /**
      * All territories in the world. Implemented with a graph structure.
      */
@@ -217,6 +219,21 @@ public class World implements Serializable {
     }
     
     /**
+     * Find the info of a player by his name.
+     * @param playerName is the name of the player.
+     * @return that player's playerInfo.
+     */
+    public PlayerInfo findPlayerInfo(String playerName) {
+        for (PlayerInfo pInfo : playerInfos) {
+            if (pInfo.getName().equals(playerName)) {
+                return pInfo;
+            }        
+        }
+        throw new IllegalArgumentException(
+            String.format(NO_PLAYERINFO_MSG, playerName));
+    }
+
+    /**
      * Finds a territory by its name.
      * If the territory exists, returns that territory of that name.
      * If not, an exception will be thrown.
@@ -229,7 +246,8 @@ public class World implements Serializable {
                 return terr;
             }
         }
-        throw new NoSuchElementException(String.format(TERRITORY_NOT_FOUND_MSG, terrName));
+        throw new NoSuchElementException(
+            String.format(TERRITORY_NOT_FOUND_MSG, terrName));
     }
 
     /**
@@ -282,7 +300,7 @@ public class World implements Serializable {
      * The function does NOT consume food resource.
      * @param order is a move order.
      */
-    public void moveTroop(BasicOrder order) {
+    public void moveTroop(BasicOrder order, PlayerInfo pInfo) {
         Territory start = findTerritory(order.getSrcName());
         Territory end = findTerritory(order.getDesName());
         Troop troop = order.getActTroop();
@@ -293,6 +311,9 @@ public class World implements Serializable {
         }
 
         end.sendInTroop(start.sendOutTroop(troop));
+
+        int consumption = calculateMoveConsumption(order);
+        pInfo.modifyFoodQuantity(-consumption);
     }
 
     /**
@@ -312,7 +333,7 @@ public class World implements Serializable {
      * The function does NOT consume food resource in this function.
      * @param order is the attack order.
      */
-    public void attackATerritory(BasicOrder order) {
+    public void attackATerritory(BasicOrder order, PlayerInfo pInfo) {
         Territory start = findTerritory(order.getSrcName());
         Territory end = findTerritory(order.getDesName());
         Troop troop = order.getActTroop();
@@ -323,21 +344,26 @@ public class World implements Serializable {
         }
 
         end.sendInEnemyTroop(start.sendOutTroop(troop));
+
+        int consumption = calculateAttackConsumption(order);
+        pInfo.modifyFoodQuantity(-consumption);
     }
 
     /**
      * Trys to upgrade troop on a territory.
+     * If successful, tech resource will be consumed.
      * @param utOrder is an UpgradeTroopOrder.
      * @param nResource is the quantity of resource at hand.
      * @return the remaining quantity of resource after the upgrade.
      */
-    public int upgradeTroop(UpgradeTroopOrder utOrder, PlayerInfo pInfo) {
+    public void upgradeTroop(UpgradeTroopOrder utOrder, PlayerInfo pInfo) {
         Territory terr = findTerritory(utOrder.getSrcName()); 
         int levelBefore = utOrder.getLevelBefore();
         int levelAfter = utOrder.getLevelAfter();
         int nUnit = utOrder.getNUnit();
-        int remainder = terr.upgradeTroop(levelBefore, levelAfter, nUnit, );
-        return remainder;
+        int remainder = terr.upgradeTroop(levelBefore, levelAfter, nUnit, 
+                                            pInfo.getTechQuantity());
+        pInfo.setTechQuantity(remainder);
     }
 
     /**
