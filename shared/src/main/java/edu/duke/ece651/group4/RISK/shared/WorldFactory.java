@@ -225,10 +225,11 @@ public class WorldFactory {
     }
 
     /**
-     * assign a group of territoies to every player.
-     * @param world
-     * @param playerNames
-     * @return
+     * assign a group of territories to every player.
+     * @param world is the world to split into groups of territories.
+     *        Should be a World object only with territories and connections.
+     * @param playerNames is a list of player names.
+     * @return a mapping, from a player's name to a group of territories.
      */
     public Map<String, List<Territory>> assignTerritories(
             World world, List<String> playerNames) {
@@ -251,7 +252,4 @@ public class WorldFactory {
         return ans;
     }
 
-    /**
-     * 
-     */
 }

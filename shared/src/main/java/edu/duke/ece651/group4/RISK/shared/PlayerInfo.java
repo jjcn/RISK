@@ -61,6 +61,10 @@ public class PlayerInfo {
         return resources;
     }
 
+    public Resource getResource(String resourceName) {
+        resources.
+    }
+
     /**
      * Changes the player's tech level.
      * @param i is the number to add to tech level. 
@@ -85,11 +89,27 @@ public class PlayerInfo {
      *          Can be positive, 0, or negative.
      */
     public void modifyResource(Resource resource, int i) {
-        // TODO: use lambdas?
+        final String NO_SUCH_RESOURCE_MSG = "Resource %s does not exist.";
+        boolean found = false;
         for (Resource r : resources) {
-            if (r.equalsName(resource)) {
+            if (r.isSameType(resource)) {
                 resource.modifyQuantity(i);
+                found = true;
             }
         }
+        if (!found) {
+            throw new IllegalArgumentException(
+                String.format(NO_SUCH_RESOURCE_MSG, resource.getName()));
+        }
+    }
+
+    /**
+     * Change the quantity of a resource.
+     * @param resource is a particular resource to modify quantity.
+     * @param i is the number to add to resource quantity. 
+     *          Can be positive, 0, or negative.
+     */
+    public void modifyResource(String resourceName, int i) {
+        modifyResource(new Resource(resourceName), i);
     }
 }

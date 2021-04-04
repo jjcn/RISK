@@ -39,6 +39,10 @@ public class World implements Serializable {
      */
     public Graph<Territory> territories;
     /**
+     * A list of infos of all players.
+     */
+    private List<PlayerInfo> playerInfos;
+    /**
      * Order checker
      */
     private final OrderChecker basicOrderChecker;
@@ -275,7 +279,7 @@ public class World implements Serializable {
     /**
      * Moves a troop to a different a territory. Owner of the troop is not checked.
      * Also checks if the troop size is valid to send from the starting territory.
-     * Does NOT consume food resource.
+     * The function does NOT consume food resource.
      * @param order is a move order.
      */
     public void moveTroop(BasicOrder order) {
@@ -305,7 +309,7 @@ public class World implements Serializable {
      * Sends a troop to a territory with different owner, 
      * in order to engage in battle on that territory.
      * Also checks if the troop size is valid to send from the starting territory.
-     * Does NOT consume food resource in this function.
+     * The function does NOT consume food resource in this function.
      * @param order is the attack order.
      */
     public void attackATerritory(BasicOrder order) {
@@ -327,12 +331,12 @@ public class World implements Serializable {
      * @param nResource is the quantity of resource at hand.
      * @return the remaining quantity of resource after the upgrade.
      */
-    public int upgradeTroop(UpgradeTroopOrder utOrder, int nResource) {
+    public int upgradeTroop(UpgradeTroopOrder utOrder, PlayerInfo pInfo) {
         Territory terr = findTerritory(utOrder.getSrcName()); 
         int levelBefore = utOrder.getLevelBefore();
         int levelAfter = utOrder.getLevelAfter();
         int nUnit = utOrder.getNUnit();
-        int remainder = terr.upgradeTroop(levelBefore, levelAfter, nUnit, nResource);
+        int remainder = terr.upgradeTroop(levelBefore, levelAfter, nUnit, );
         return remainder;
     }
 
