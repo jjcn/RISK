@@ -10,6 +10,7 @@ import java.io.Serializable;
  *    the troop size should not be larger than that on A. 
  */
 public class OrderChecker implements Serializable {
+    protected static final long serialVersionUID = 7L;
     /**
      * Error Messages
      */

@@ -3,6 +3,7 @@ package edu.duke.ece651.group4.RISK.shared;
 import java.io.Serializable;
 
 public class PlaceOrder implements Order, Serializable {
+    protected static final long serialVersionUID = 8L;
     private Character actionName;
     private String des;
     private Troop troop;

@@ -6,6 +6,7 @@ import java.io.Serializable;
  * A resource, can be gained or consumed.
  */
 public class Resource implements Serializable {
+    protected static final long serialVersionUID = 10L;
     /**
      * Name of the resource.
      */

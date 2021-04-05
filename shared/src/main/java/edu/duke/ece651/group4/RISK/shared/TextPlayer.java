@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.*;
 
 public class TextPlayer implements Player, Serializable {
+    protected static final long serialVersionUID = 16L;
     private String playerName;
     final private PrintStream out;
     final private BufferedReader inputReader;

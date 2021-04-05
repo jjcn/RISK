@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Random;
 
 public class Soldier implements Unit, Serializable {
+    protected static final long serialVersionUID = 13L;
 
     private String jobName;
     private int level;

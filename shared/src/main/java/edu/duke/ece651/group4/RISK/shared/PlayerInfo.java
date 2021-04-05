@@ -7,6 +7,7 @@ import java.io.Serializable;
  * Allows modifying of tech level & resource quantities.
  */
 public class PlayerInfo implements Serializable {
+    protected static final long serialVersionUID = 9L;
     /**
      * Player's name
      */
