@@ -737,7 +737,16 @@ public class World implements Serializable {
 
     @Override
     public String toString() {
-        return territories.toString() + orderChecker.toString() + rnd.toString();
+        StringBuilder ans = new StringBuilder();
+        for (Territory terr : getAllTerritories()) {
+            ans.append(terr.toString());
+            ans.append("\n");
+        }
+        for (PlayerInfo pInfo : playerInfos.values()) {
+            ans.append(pInfo.toString());
+            ans.append("\n");
+        }
+        return ans.toString();
     }
 
     @Override

@@ -83,6 +83,19 @@ public class WorldFactory implements Serializable {
      * If you want to generate a world with random connections, use World(int: nTerrs)
      */
 
+    public World create4TerritoryWorld() {
+        String[] names = {"A", "B", "C", "D"};
+        World world = createTerritories(Arrays.asList(names));
+
+        world.addConnection("A", "B");
+        world.addConnection("B", "D");
+        world.addConnection("C", "D");
+        world.addConnection("A", "C");
+        world.addConnection("A", "D");
+
+        return world;
+    }
+
     public World create6TerritoryWorld() {
         String[] names = {"A", "B", "C", "D", "E", "F"};
         World world = createTerritories(Arrays.asList(names));
