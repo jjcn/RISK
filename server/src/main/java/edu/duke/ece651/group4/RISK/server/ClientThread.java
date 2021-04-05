@@ -7,6 +7,7 @@ import edu.duke.ece651.group4.RISK.shared.message.GameMessage;
 import edu.duke.ece651.group4.RISK.shared.message.LogMessage;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -22,6 +23,7 @@ public class ClientThread extends Thread {
     User ownerUser;
     Game gameOnGoing;
     AtomicInteger globalID;
+    PrintStream out;
 
     public ClientThread(HashSet<Game> games, HashSet<User> users, Client theClient, AtomicInteger globalID) {
         this.games = games;
@@ -29,6 +31,7 @@ public class ClientThread extends Thread {
         this.theClient = theClient;
         this.ownerUser = null;
         this.globalID = globalID;
+        this.out = System.out;
     }
 
 
@@ -39,17 +42,16 @@ public class ClientThread extends Thread {
      *  3.ExitApp
      * */
     public String trySetUpUser()  {
-        System.out.println("Start setup user ");
-        System.out.println("the number of user now: " + users.size());
+        out.println("Start setup a new user");
         if (ownerUser != null) {
             return null;
         }
         while(true){
             LogMessage logMessage = (LogMessage) this.theClient.recvObject();
             String action = logMessage.getAction();
-            System.out.println("get Message: " + action);
+
             if(action.equals(LOG_SIGNIN) ){
-                System.out.println("User tries to log in  ");
+
                 String resIn = tryLogIn(logMessage.getUsername(), logMessage.getPassword());
                 this.theClient.sendObject(resIn);
                 if(resIn == null){
@@ -57,7 +59,6 @@ public class ClientThread extends Thread {
                 }
             }
             if(action.equals(LOG_SIGNUP) ){
-                System.out.println("User tries to sign up  ");
                 String resUp = trySignUp(logMessage.getUsername(), logMessage.getPassword());
                 this.theClient.sendObject(resUp);
             }
@@ -79,6 +80,7 @@ public class ClientThread extends Thread {
         }
         User newUser = new User(users.size(), username, password);
         users.add(newUser);
+        out.println("This user signs up successfully");
         return null;
     }
     /*
@@ -89,6 +91,7 @@ public class ClientThread extends Thread {
     synchronized protected String tryLogIn(String username, String password) {
         for (User u : users) {
             if (u.checkUsernamePassword(username, password)) {
+                out.println("This user logs in successfully");
                 this.ownerUser = u;
                 return null;
             }
@@ -105,6 +108,7 @@ public class ClientThread extends Thread {
      *    4. LogOut
      */
     protected void trySetUpGame()  {
+        out.println(ownerUser.getUsername() + " tries to set up a game");
         if(gameOnGoing != null){
             return;
         }
@@ -151,9 +155,10 @@ public class ClientThread extends Thread {
         }
         this.gameOnGoing = new Game(globalID.getAndIncrement(), maxNumPlayers);
         games.add(gameOnGoing);
-        GameRunner gameRunner = new GameRunner(gameOnGoing);
+        GameRunner gameRunner = new GameRunner(gameOnGoing,out);
         gameOnGoing.addUser(ownerUser);
         gameRunner.start();
+        out.println(ownerUser.getUsername() + " creates a game successfully");
         return null;
     }
 
@@ -172,9 +177,11 @@ public class ClientThread extends Thread {
         if(res != null){return res;}
         if(!gameToJoin.isFull()){
             gameToJoin.addUser(ownerUser); // this is synchronized function
+            out.println(ownerUser.getUsername() + " joins a new game " + gameToJoin.getGameID());
         }
         else{
             gameToJoin.switchInUser(ownerUser); // this is synchronized function
+            out.println(ownerUser.getUsername() + " switches in  game " + gameToJoin.getGameID() + " AGAIN");
         }
         gameOnGoing = gameToJoin;
         return null;
@@ -229,6 +236,7 @@ public class ClientThread extends Thread {
         if(gameOnGoing.gameState.isDonePlaceUnits()){
             return;
         }
+        out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " wait to place units");
         // wait all players to join and runner to set up the game
         waitNotifyFromRunner();
         // send the world info
@@ -238,6 +246,7 @@ public class ClientThread extends Thread {
         for(PlaceOrder p: placeOrders){
             gameOnGoing.placeUnitsOnWorld(p);
         }
+        out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " finishes placing units and wait for others");
         // wait all players to finish placeUnits
         gameOnGoing.barrierWait();
         gameOnGoing.gameState.setDonePlaceUnits();
@@ -261,7 +270,6 @@ public class ClientThread extends Thread {
     protected void doActionPhaseOneTurn(){
         this.theClient.sendObject(gameOnGoing.getTheWorld());
         // if Done or SwitchOut
-
 
 
     }
