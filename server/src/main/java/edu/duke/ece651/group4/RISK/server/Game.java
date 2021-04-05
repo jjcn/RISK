@@ -3,6 +3,7 @@ package edu.duke.ece651.group4.RISK.server;
 import edu.duke.ece651.group4.RISK.shared.BasicOrder;
 import edu.duke.ece651.group4.RISK.shared.PlaceOrder;
 import edu.duke.ece651.group4.RISK.shared.World;
+import edu.duke.ece651.group4.RISK.shared.WorldFactory;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -135,6 +136,7 @@ public class Game {
      * same world
      * */
     synchronized protected void UpgradeUnitsOnWorld(){
+
     }
 
     /*
@@ -152,8 +154,22 @@ public class Game {
     *       1.1 create a world based on the userNames
     * */
     public void setUpGame(){
-
-
+        WorldFactory factory = new WorldFactory();
+        switch(this.maxNumUsers){
+            case 2:
+            case 3:
+                this.theWorld = factory.create6TerritoryWorld();
+                break;
+            case 4:
+                this.theWorld = factory.create8TerritoryWorld();
+                break;
+            case 5:
+                this.theWorld = factory.create10TerritoryWorld();
+                break;
+            default:
+                break;
+        }
+        factory.assignTerritories(this.theWorld, getUserNames());
     }
 
 }
