@@ -334,6 +334,16 @@ public class World implements Serializable {
      * 
      * @param playerName is a player's name.
      */
+    public void upgradePlayerTechLevelBy1(String playerName) {
+        playerInfos.get(playerName).upgradeTechLevelBy1();
+    }
+
+    /**
+     * Try upgrade a player's tech level using an upgrade tech order.
+     * 
+     * @param upgradeTechOrder is an upgrade tech order
+     * @param playerName is a player's name.
+     */
     public void upgradePlayerTechLevelBy(UpgradeTechOrder upgradeTechOrder, String playerName) {
         playerInfos.get(playerName).upgradeTechLevelBy(upgradeTechOrder.getNLevel());
     }
