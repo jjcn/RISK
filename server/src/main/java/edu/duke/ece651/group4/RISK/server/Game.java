@@ -1,9 +1,6 @@
 package edu.duke.ece651.group4.RISK.server;
 
-import edu.duke.ece651.group4.RISK.shared.BasicOrder;
-import edu.duke.ece651.group4.RISK.shared.PlaceOrder;
-import edu.duke.ece651.group4.RISK.shared.World;
-import edu.duke.ece651.group4.RISK.shared.WorldFactory;
+import edu.duke.ece651.group4.RISK.shared.*;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -12,8 +9,8 @@ import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 
-import static edu.duke.ece651.group4.RISK.server.ServerConstant.PLAYER_STATE_ACTION_PHASE;
-import static edu.duke.ece651.group4.RISK.server.ServerConstant.PLAYER_STATE_SWITCH_OUT;
+import static edu.duke.ece651.group4.RISK.server.ServerConstant.*;
+import static edu.duke.ece651.group4.RISK.shared.Constant.*;
 
 public class Game {
     private final int gameID;
@@ -151,15 +148,12 @@ public class Game {
     }
 
 
-    /*
-     * This function is used to update world with any action received from the Client
-     * This function has to be locked. This is because all players are sharing the
-     * same world
-     * */
-    synchronized protected void updateActionOnWorld(){
 
-
+    synchronized protected void doDoneActionFor(User u){
+        this.gameState.changAPlayerStateTo(u, PLAYER_STATE_END_ONE_TURN);
     }
+
+
     /*
      * This is to select territory for each player.
      * This function has to be locked. This is because all players are sharing the
@@ -173,10 +167,33 @@ public class Game {
      * This function has to be locked. This is because all players are sharing the
      * same world
      * */
-    synchronized protected void UpgradeUnitsOnWorld(){
+    synchronized protected void upgradeTroopOnWorld(Order order, String userName){
+        UpgradeTroopOrder upgradeOrder = (UpgradeTroopOrder) order;
+        theWorld.upgradeTroop(upgradeOrder, userName);
 
     }
 
+    synchronized protected void upgradeTechOnWorld(String userName){
+        theWorld.upgradePlayerTechLevelBy1(userName);
+    }
+    /*
+     * This is to do move for each player.
+     * This function has to be locked. This is because all players are sharing the
+     * same world
+     * */
+    synchronized protected void doMoveOnWorld(Order order, String userName){
+        MoveOrder moveOrder = (MoveOrder) order;
+        this.theWorld.moveTroop(moveOrder, userName);
+    }
+    /*
+     * This is to do attack for each player.
+     * This function has to be locked. This is because all players are sharing the
+     * same world
+     * */
+    synchronized protected void doAttackOnWorld(Order order, String userName){
+        AttackOrder attackOrder = (AttackOrder) order;
+        this.theWorld.attackATerritory(attackOrder, userName);
+    }
     /*
     * This is the final update for the whole world after one turn
     * */
