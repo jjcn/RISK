@@ -177,7 +177,7 @@ public class RoomActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(Object o) {
                                 if (o instanceof World) {
-                                    showByToast(RoomActivity.this, SUCCESS_CREATE);
+                                    showByToast(RoomActivity.this, SUCCESS_JOIN);
                                     Intent placeIntent = new Intent(RoomActivity.this, PlaceActivity.class);
                                     startActivity(placeIntent);
                                     finish();

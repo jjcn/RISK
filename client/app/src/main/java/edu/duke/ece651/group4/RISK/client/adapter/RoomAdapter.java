@@ -55,8 +55,8 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
 //            sep = ", ";
 //        }
 
-        holder.roomIDView.append(idNum); //append();
-        holder.usersView.append(usersInfo); //append();
+        holder.roomIDView.setText(idNum); //append();
+        holder.usersView.setText(usersInfo); //append();
         // holder.usersView.append("(need " + totalUserNum + "in total)");
         if (itemListener != null) {
             holder.itemView.setOnClickListener(v -> {
