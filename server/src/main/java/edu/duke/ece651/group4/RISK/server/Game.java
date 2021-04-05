@@ -5,6 +5,7 @@ import edu.duke.ece651.group4.RISK.shared.PlaceOrder;
 import edu.duke.ece651.group4.RISK.shared.World;
 import edu.duke.ece651.group4.RISK.shared.WorldFactory;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.concurrent.BrokenBarrierException;
@@ -170,6 +171,7 @@ public class Game {
             default:
                 break;
         }
+
         factory.assignTerritories(this.theWorld, getUserNames());
     }
 
