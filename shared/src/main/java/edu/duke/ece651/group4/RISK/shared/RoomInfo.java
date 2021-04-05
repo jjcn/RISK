@@ -2,15 +2,16 @@ package edu.duke.ece651.group4.RISK.shared;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 public class RoomInfo implements Serializable {
     protected static final long serialVersionUID = 11L;
     int roomID;
-    ArrayList<String> userNames;
+    List<String> userNames;
     final int maxNumPlayers;
 
 
-    public RoomInfo(int roomID, ArrayList<String> userNames,int maxNumPlayers ){
+    public RoomInfo(int roomID, List<String> userNames, int maxNumPlayers ){
         this.roomID = roomID;
         this.userNames  = userNames;
         this.maxNumPlayers = maxNumPlayers;
@@ -18,7 +19,7 @@ public class RoomInfo implements Serializable {
 
     public int getRoomID(){return roomID;}
     public int getMaxNumPlayers(){return maxNumPlayers;}
-    public  ArrayList<String> getUserNames(){
+    public  List<String> getUserNames(){
         return userNames;
     }
 
