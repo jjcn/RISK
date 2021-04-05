@@ -297,7 +297,7 @@ public class RISKApplication extends Application {
 //        return theWorld.
 //    }
 
-    public static String doOneMove(BasicOrder order,onResultListener listener){
+    public static String doOneMove(MoveOrder order,onResultListener listener){
         try {
 
             theWorld.moveTroop(order,userName);
@@ -311,7 +311,7 @@ public class RISKApplication extends Application {
         return null;
     }
 
-    public static String doOneAttack(BasicOrder order,onResultListener listener){
+    public static String doOneAttack(AttackOrder order,onResultListener listener){
         try {
 
             theWorld.attackATerritory(order,userName);
