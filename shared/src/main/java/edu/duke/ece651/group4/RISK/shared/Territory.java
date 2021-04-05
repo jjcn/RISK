@@ -160,7 +160,15 @@ public class Territory implements Serializable {
      * @param enemy shows the enemy troop attack in
      */
     public void sendInEnemyTroop(Troop enemy) {
-        this.enemyOnTerritory.put(enemy.getOwner().getName(), enemy);
+        String enemyName=enemy.getOwner().getName();
+        if(this.enemyOnTerritory.get(enemyName)==null){
+            this.enemyOnTerritory.put(enemyName, enemy);
+        }else{
+            Troop origin=this.enemyOnTerritory.get(enemyName);
+            origin.receiveTroop(enemy);
+            this.enemyOnTerritory.put(enemyName,origin);
+        }
+
     }
 
     /**

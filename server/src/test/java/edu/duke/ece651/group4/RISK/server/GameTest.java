@@ -40,4 +40,13 @@ class GameTest {
         Game g = createAGame(1,3);
         g.setUpGame();
     }
+
+
+//    @Test
+//    public void test_getWorld(){
+//        Game g = createAGame(1,3);
+//        g.setUpGame();
+//        g.getTheWorld();
+//
+//    }
 }
