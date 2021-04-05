@@ -32,6 +32,7 @@ public class ClientThread extends Thread {
         this.ownerUser = null;
         this.globalID = globalID;
         this.out = System.out;
+        this.gameOnGoing = null;
     }
 
     public ClientThread(HashSet<Game> games, HashSet<User> users, Client theClient, AtomicInteger globalID,PrintStream out) {
@@ -41,6 +42,7 @@ public class ClientThread extends Thread {
         this.ownerUser = null;
         this.globalID = globalID;
         this.out = out;
+        this.gameOnGoing = null;
     }
 
     /*
