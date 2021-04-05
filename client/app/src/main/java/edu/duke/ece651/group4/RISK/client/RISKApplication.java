@@ -295,11 +295,11 @@ public class RISKApplication extends Application {
 
     public static String doOneMove(BasicOrder order,onResultListener listener){
         try {
-<<<<<<< HEAD
+
             theWorld.moveTroop(order,userName);
-=======
+
 //            theWorld.moveTroop(order);
->>>>>>> 818f4b2867113a90c81e6ce1e06bb04f3ec2daa3
+
             send(order,listener);
         }catch(Exception e){
             return e.getMessage();
@@ -309,11 +309,11 @@ public class RISKApplication extends Application {
 
     public static String doOneAttack(BasicOrder order,onResultListener listener){
         try {
-<<<<<<< HEAD
+
             theWorld.attackATerritory(order,userName);
-=======
+
 //            theWorld.attackATerritory(order);
->>>>>>> 818f4b2867113a90c81e6ce1e06bb04f3ec2daa3
+
             send(order,listener);
         }catch(Exception e){
             return e.getMessage();

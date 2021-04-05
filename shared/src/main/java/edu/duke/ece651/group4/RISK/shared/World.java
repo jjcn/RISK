@@ -47,6 +47,7 @@ public class World implements Serializable {
      * Random seed to use with random division of territories.
      */
     private final Random rnd;
+    public String report;
 
     /**
      * Construct a default world with an empty graph.
@@ -75,6 +76,7 @@ public class World implements Serializable {
         this.playerInfos = new ArrayList<PlayerInfo>();
         basicOrderChecker = new OrderChecker();
         rnd = random;
+        report=null;
     }
 
     /**
@@ -136,8 +138,9 @@ public class World implements Serializable {
         }
         List<Integer> weightsCopy = territories.cloneWeights();
         boolean[][] adjMatrixCopy = territories.cloneAdjMatrix();
-
-        return new World(new Graph<>(cpy, weightsCopy, adjMatrixCopy), this.rnd);
+        World cpyWorld=new World(new Graph<>(cpy, weightsCopy, adjMatrixCopy), this.rnd);
+        cpyWorld.report=new String(this.report);
+        return cpyWorld;
     }
 
     /**
@@ -501,6 +504,7 @@ public class World implements Serializable {
         for (Territory terr : territories.getVertices()) {
             ans.append(terr.doBattles());
         }
+        this.report=ans.toString();
         return ans.toString();
     }
 
