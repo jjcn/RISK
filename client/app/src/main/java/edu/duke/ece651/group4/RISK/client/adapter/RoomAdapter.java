@@ -55,8 +55,8 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
 //            sep = ", ";
 //        }
 
-        holder.roomIDView.setText(idNum); //append();
-        holder.usersView.setText(usersInfo); //append();
+        holder.roomIDView.append(idNum); //append();
+        holder.usersView.append(usersInfo); //append();
         // holder.usersView.append("(need " + totalUserNum + "in total)");
         if (itemListener != null) {
             holder.itemView.setOnClickListener(v -> {
@@ -86,7 +86,8 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
 
     //TODO: check pointer assign or copy
     public void setRooms(List<RoomInfo> rooms) {
-        this.rooms = rooms;
+        this.rooms.clear();
+        this.rooms.addAll(rooms);
         notifyDataSetChanged();
     }
 

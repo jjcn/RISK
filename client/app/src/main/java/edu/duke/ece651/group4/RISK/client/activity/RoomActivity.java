@@ -27,6 +27,7 @@ public class RoomActivity extends AppCompatActivity {
 
     private Button createBT;
     private RoomAdapter roomsAdapt;
+    private SwipeRefreshLayout refreshGS;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +36,6 @@ public class RoomActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         impUI();
-        refreshGameInfo();
     }
 
     // back button return to login page kill current one
@@ -50,49 +50,43 @@ public class RoomActivity extends AppCompatActivity {
 
     private void impUI() {
         impCreateBT();
-        impSwipeFresh();
         impRoomList();
+        impSwipeFresh();
     }
 
     private void impSwipeFresh() {
-        SwipeRefreshLayout l = findViewById(R.id.refresh);
-        l.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refreshGameInfo();
-                l.setRefreshing(false);
-            }
-        });
-        new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                // TODO:imp refresh function ? protected ?
-
-//                refreshGameInfo(new onReceiveListener() {
-//                    @Override
-//                    public void onSuccess(Object o) {
-//                        if(o instanceof List){
-//                            List<RoomInfo> rooms = (List<RoomInfo>) o;
-//                            roomsAdapt.setRooms(rooms);
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onFailure(String errMsg) {
-//
-//                    }
-//                });
-            }
-        };
+        refreshGS = findViewById(R.id.refresh);
+        refreshGS.setOnRefreshListener(this::refreshRoom);
     }
 
-    private void refreshGameInfo() {
-        RoomInfo t1 = new RoomInfo(1, null, 2);
+    private void refreshRoom() {
+        refreshGameInfo(new onReceiveListener() {
+            @Override
+            public void onSuccess(Object o) {
+                if (o instanceof List) {
+                    List<RoomInfo> rooms = (List) o;
+                    roomsAdapt.setRooms(rooms);
+                }
+            }
+
+            @Override
+            public void onFailure(String errMsg) {
+            }
+        });
+        refreshGS.setRefreshing(false);
+    }
+
+    // for debugging
+    private void pseudoRefreshGameInfo() {
+        ArrayList<String> l = new ArrayList<>();
+        l.add("123");
+        RoomInfo t1 = new RoomInfo(1,l , 2);
         List<RoomInfo> rooms = new ArrayList<>();
         rooms.add(t1);
+
         roomsAdapt.setRooms(rooms);
         Log.i(TAG, LOG_FUNC_RUN + rooms.size());
-        System.out.println(LOG_FUNC_RUN + rooms.size());
+        refreshGS.setRefreshing(false);
     }
 
     private void impRoomList() {
