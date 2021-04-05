@@ -213,6 +213,8 @@ public class ClientThread extends Thread {
      * send all gameInfo to a client
      * */
     protected ArrayList<RoomInfo> getAllGameInfo(){
+        out.println(ownerUser.getUsername() + " push refresh button and the number of games now: " + games.size());
+
         ArrayList<RoomInfo> roomsInfo = new ArrayList<RoomInfo>();
         for(Game g : games){
             if(g.gameState.isAlive()){
