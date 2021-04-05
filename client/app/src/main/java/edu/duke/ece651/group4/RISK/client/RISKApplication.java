@@ -10,6 +10,7 @@ import edu.duke.ece651.group4.RISK.shared.message.LogMessage;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -42,6 +43,7 @@ public class RISKApplication extends Application {
         this.totalPopulation = 15;
         this.rnd = new Random();
         this.roomInfo = new ArrayList<>();
+        this.userName=null;
         Log.i(TAG, LOG_CREATE_SUCCESS);
     }
 
@@ -132,6 +134,7 @@ public class RISKApplication extends Application {
      * @param pwd  is the password
      */
     public static void sendLogIn(String name, String pwd, onReceiveListener listener) {
+        userName=name;
         sendAccountInfo(LOG_SIGNIN, name, pwd, listener);
     }
 
@@ -175,9 +178,10 @@ public class RISKApplication extends Application {
                     theWorld = (World) receivedO;
                 } else if (type == ROOMS) {
                     roomInfo = (ArrayList<RoomInfo>) receivedO;
-                } else if (type == NAME) {
-                    userName = (String) receivedO;
                 }
+//                else if (type == NAME) {
+//                    userName = (String) receivedO;
+//                }
                 listener.onSuccess(receivedO);
             } catch (Exception e) {
                 Log.e(TAG, e.toString());
@@ -285,16 +289,28 @@ public class RISKApplication extends Application {
         sendReceiveHelper(order, listener, WORLD);
     }
 
-//    public static String doTechUpgrade(UpgradeTroopOrder order,onResultListener listener){
-//        try {
-//
-//
+
+    public static String doSoliderUpgrade(UpgradeTroopOrder order, onResultListener listener){
+        try {
+
+            theWorld.upgradeTroop(order,userName);
+            send(order, listener);
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+        return null;
+    }
+
+    public static String doTechUpgrade(onResultListener listener){
+        try {
+            theWorld.upgradePlayerTechLevelBy1(userName);
+//            UpgradeTroopOrder order
 //            send(order,listener);
-//        }catch(Exception e){
-//            return e.getMessage();
-//        }
-//        return null;
-//    }
+        }catch(Exception e){
+            return e.getMessage();
+        }
+        return null;
+    }
 
     public static void doPlacement(List<PlaceOrder> placements, onReceiveListener listener) {
         sendReceiveHelper(placements, listener, WORLD);
@@ -302,19 +318,37 @@ public class RISKApplication extends Application {
     }
 
 
-//    public static MoveOrder buildMoveOrder(String src,String des,int num, String job ){
-//        HashMap<String,Integer> dict=new HashMap<>();
-//        dict.put(job,num);
-//        Troop target=new Troop(dict,new TextPlayer(userName));
-//        return new MoveOrder(src,des,target,MOVE_ACTION);
-//    }
-//
-//    public static AttackOrder buildAttackOrder(String src,String des,int num, String job ){
-//        HashMap<String,Integer> dict=new HashMap<>();
-//        dict.put(job,num);
-//        Troop target=new Troop(dict,new TextPlayer(userName));
-//        return new AttackOrder (src,des,target,ATTACK_ACTION);
-//    }
+    public static MoveOrder buildMoveOrder(String src,String des,int num, String job ){
+        HashMap<String,Integer> dict=new HashMap<>();
+        dict.put(job,num);
+        Troop target=new Troop(dict,new TextPlayer(userName));
+        return new MoveOrder(src,des,target,MOVE_ACTION);
+    }
+
+    public static AttackOrder buildAttackOrder(String src,String des,int num, String job ){
+        HashMap<String,Integer> dict=new HashMap<>();
+        dict.put(job,num);
+        Troop target=new Troop(dict,new TextPlayer(userName));
+        return new AttackOrder (src,des,target,ATTACK_ACTION);
+    }
+
+    public static UpgradeTroopOrder buildUpOrder(String srcName,
+                                                 int levelBefore, int levelAfter,
+                                                 int nUnit){
+
+
+        return new UpgradeTroopOrder (srcName,levelBefore,levelAfter,nUnit);
+    }
+
+    public static List<String> getInfo(){
+        List<Territory> terrs=theWorld.getAllTerritories();
+        List<String> info=new ArrayList<>();
+
+        for(Territory t: terrs){
+            info.add(t.getInfo());
+        }
+        return info;
+    }
 
 
 }

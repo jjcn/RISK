@@ -1,10 +1,10 @@
 package edu.duke.ece651.group4.RISK.shared;
 
+
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Random;
+import java.util.*;
+
+import static edu.duke.ece651.group4.RISK.shared.Constant.UNIT_NAMES;
 
 public class Territory implements Serializable {
     protected static final long serialVersionUID = 15L;
@@ -254,6 +254,25 @@ public class Territory implements Serializable {
     public int upgradeTroop(int levelBefore, int levelAfter, int nUnit, int nResource) {
         int levelUp = levelAfter - levelBefore;
         return ownerTroop.updateUnit(levelBefore, levelUp, nUnit, nResource);
+    }
+
+    public String getInfo(){
+        StringBuilder report = new StringBuilder();
+        report.append("Owner : "+this.getOwner().getName()+"\n");
+        report.append("Terr Name : "+this.name+"\n");
+        report.append("Size : "+this.area+"\n");
+        report.append("Food production : "+this.foodSpeed+"\n");
+        report.append("Tech production : "+this.techSpeed+"\n");
+        List<String> list=UNIT_NAMES;
+        HashMap<String,Integer> dict=this.ownerTroop.getDict();
+        for(String s:list){
+            if(dict.get(s)==null){
+                report.append(s+" : 0"+"\n");
+            }else{
+                report.append(s+" : "+dict.get(s)+"\n");
+            }
+        }
+        return report.toString();
     }
 
 }
