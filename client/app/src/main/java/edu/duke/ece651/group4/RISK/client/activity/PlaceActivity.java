@@ -22,9 +22,9 @@ import static edu.duke.ece651.group4.RISK.client.utility.Notice.showByToast;
 public class PlaceActivity extends AppCompatActivity {
     public final String TAG = this.getClass().getSimpleName();
 
-    int numTerrA;
-    int numTerrB;
-    int numTerrC;
+    int numTerrA = -1;
+    int numTerrB = -1;
+    int numTerrC = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +33,7 @@ public class PlaceActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         impUI();
+        Log.i(TAG,LOG_CREATE_SUCCESS);
     }
 
     private void impUI() {
@@ -41,13 +42,14 @@ public class PlaceActivity extends AppCompatActivity {
         EditText terrCETInput = findViewById(R.id.terrC).findViewById(R.id.inputNum);
         Button commitBT = findViewById(R.id.buttonCommitPlace);
 
-        List<Territory> myTerr = Objects.requireNonNull(getMyTerritory());
-        terrAETInput.append(myTerr.get(0).getName());
-        terrBETInput.append(myTerr.get(1).getName());
-        terrCETInput.append(myTerr.get(2).getName());
-
         commitBT.setOnClickListener(v -> {
             commitBT.setClickable(false);
+
+            List<Territory> myTerr = getMyTerritory();
+            terrAETInput.append(myTerr.get(0).getName());
+            terrBETInput.append(myTerr.get(1).getName());
+            terrCETInput.append(myTerr.get(2).getName());
+            // check total number
             numTerrA = Integer.parseInt(String.valueOf(terrAETInput.getText()));
             numTerrB = Integer.parseInt(String.valueOf(terrBETInput.getText()));
             numTerrC = Integer.parseInt(String.valueOf(terrCETInput.getText()));
