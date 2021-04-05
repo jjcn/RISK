@@ -4,15 +4,17 @@ public class Constant {
     public static final String SUCCESS_SIGNUP = "Sign up a new account successfully";
     public static final String SUCCESS_JOIN = "Join a room successfully";
     public static final String SUCCESS_CREATE = "Create a new room successfully";
+    public static final String SUCCESS_START = "All users joined. Start game now";
     public static final String EMPTY_INPUT = "Input cannot be empty";
     public static final String PLACEMENT_MORE = "You have placed more soldiers than provided";
     public static final String PLACEMENT_LESS = "You have placed less soldiers";
+    public static final String PLACEMENT_DONE = "All players have done their placements";
 
     //**************CONSTANTS FOR LOG***************//
-    public static final String LOG_CREATE_FAIL = "*********** Fail onCreate *********";
+    public static final String LOG_CREATE_FAIL = "///////////// Fail onCreate /////////////";
     public static final String LOG_CREATE_SUCCESS = "////////////Success onCreate/////////////";
-    public static final String LOG_FUNC_FAIL = "*********** Function Exception *********";
-    public static final String LOG_FUNC_RUN = "////////////// Function Checking //////////////";
+    public static final String LOG_FUNC_FAIL = "////////////// Function Exception /////////////";
+    public static final String LOG_FUNC_RUN = "////////////// Function running //////////////";
 
     //*************CONSTANTS FOR DEBUG************//
     public static final boolean DEBUG_MODE = true;

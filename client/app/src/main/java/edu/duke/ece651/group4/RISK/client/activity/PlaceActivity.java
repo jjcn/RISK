@@ -9,20 +9,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import edu.duke.ece651.group4.RISK.client.R;
 import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
-import edu.duke.ece651.group4.RISK.shared.PlaceOrder;
-import edu.duke.ece651.group4.RISK.shared.Territory;
-import edu.duke.ece651.group4.RISK.shared.TextPlayer;
-import edu.duke.ece651.group4.RISK.shared.Troop;
+import edu.duke.ece651.group4.RISK.shared.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import static edu.duke.ece651.group4.RISK.client.Constant.*;
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.*;
 import static edu.duke.ece651.group4.RISK.client.utility.Notice.showByToast;
 
 public class PlaceActivity extends AppCompatActivity {
+    public final String TAG = this.getClass().getSimpleName();
+
     int numTerrA;
     int numTerrB;
     int numTerrC;
@@ -63,42 +61,32 @@ public class PlaceActivity extends AppCompatActivity {
                 doPlacement(placements, new onReceiveListener() {
                     @Override
                     public void onSuccess(Object o) {
-
+                        Log.i(TAG,LOG_FUNC_RUN+"try to receive World");
+                        if (o instanceof World) {
+                            Log.i(TAG,LOG_FUNC_RUN+"receive a World");
+                            runOnUiThread(() -> {
+                                showByToast(PlaceActivity.this, PLACEMENT_DONE);
+                                Intent intent = new Intent(PlaceActivity.this, TurnActivity.class);
+                                startActivity(intent);
+                                finish();
+                            });
+                        }else{
+                            Log.i(TAG,LOG_FUNC_FAIL+"receive not World");
+                        }
                     }
 
                     @Override
                     public void onFailure(String errMsg) {
-
+                        Log.e(TAG, "create room:receive world: " + errMsg);
                     }
                 });
             }else if (total > PLACE_TOTAL){
                 showByToast(PlaceActivity.this,PLACEMENT_MORE);
-                commitBT.setClickable(false);
+                commitBT.setClickable(true);
             }else {
                 showByToast(PlaceActivity.this,PLACEMENT_LESS);
-                commitBT.setClickable(false);
+                commitBT.setClickable(true);
             }
-//            sendLogIn(name, password, new onReceiveListener() {
-//                @Override
-//                public void onSuccess(Object o) {
-//                    String result = (String) o;
-//                    runOnUiThread(() -> {
-//                        if (result == null) { //match
-//                            Intent roomIntent = new Intent(LoginActivity.this, RoomActivity.class);
-//                            startActivity(roomIntent);
-//                        } else {
-//                            showByToast(LoginActivity.this, result);// show account err message
-//                            logInButton.setClickable(true);
-//                            return;
-//                        }
-//                    });
-//                }
-//
-//                @Override
-//                public void onFailure(String errMsg) {
-//                    Log.e(TAG, "login: " + errMsg);
-//                }
-//            });
         });
     }
 
