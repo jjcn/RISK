@@ -49,7 +49,7 @@ public class HostApp implements Runnable {
                 try {
                     Socket s = hostSocket.accept();
                     Client theClient = new Client(s);
-                    ClientThread theThread = new ClientThread(games, users,theClient,globalID);
+                    ClientThread theThread = new ClientThread(games, users,theClient,globalID,out);
                     out.println("A client joined.");
                     theThread.start();
                 }catch(IOException e){

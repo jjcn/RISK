@@ -34,6 +34,14 @@ public class ClientThread extends Thread {
         this.out = System.out;
     }
 
+    public ClientThread(HashSet<Game> games, HashSet<User> users, Client theClient, AtomicInteger globalID,PrintStream out) {
+        this.games = games;
+        this.users = users;
+        this.theClient = theClient;
+        this.ownerUser = null;
+        this.globalID = globalID;
+        this.out = out;
+    }
 
     /*
      * Part1 user
