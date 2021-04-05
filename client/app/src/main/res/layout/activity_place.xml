@@ -5,38 +5,54 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/fragmentMargin"
+        android:layout_marginEnd="@dimen/fragmentMargin"
         tools:context=".activity.PlaceActivity"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:gravity="center">
 
     <fragment
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:name="edu.duke.ece651.group4.RISK.client.fragment.WorldFragment"
-            android:id="@+id/fragment"
+            android:id="@+id/worldFG"
+    />
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+              android:text="@string/INITPLACE"
+              android:layout_marginTop="@dimen/fragmentMargin"
+              android:layout_marginBottom="@dimen/fragmentMargin"
     />
 
-    <TextView
-            android:id="@+id/chooseInstru"
-            android:layout_width="match_parent"
+    <include layout="@layout/item_input_num"
+             android:id="@+id/terrA"/>
+
+    <include layout="@layout/item_input_num"
+             android:id="@+id/terrB"/>
+
+    <include layout="@layout/item_input_num"
+             android:id="@+id/terrC"/>
+
+    <Button
+            android:id="@+id/buttonCommitPlace"
+            android:text="@string/COMMIT"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/terrList"
-            app:layout_constraintStart_toStartOf="parent"
-            android:text="@string/INITPLACE"
+            android:layout_gravity="center"
     />
 
-    <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/terrList"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/chooseInstr"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_height="500dp"
-            android:layout_width="match_parent"
-            android:layout_marginTop="@dimen/fragmentMargin"
-            android:layout_marginStart="@dimen/fragmentMargin"
-            android:layout_marginEnd="@dimen/fragmentMargin"
-            android:layout_marginLeft="@dimen/fragmentMargin"
-    />
+    <!--    <androidx.recyclerview.widget.RecyclerView-->
+    <!--            android:id="@+id/terrList"-->
+    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--            app:layout_constraintTop_toBottomOf="@+id/chooseInstr"-->
+    <!--            app:layout_constraintStart_toStartOf="parent"-->
+    <!--            app:layout_constraintEnd_toEndOf="parent"-->
+    <!--            android:layout_height="500dp"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_marginTop="@dimen/fragmentMargin"-->
+    <!--            android:layout_marginStart="@dimen/fragmentMargin"-->
+    <!--            android:layout_marginEnd="@dimen/fragmentMargin"-->
+    <!--            android:layout_marginLeft="@dimen/fragmentMargin"-->
+    <!--    />-->
+
 
 </LinearLayout>
