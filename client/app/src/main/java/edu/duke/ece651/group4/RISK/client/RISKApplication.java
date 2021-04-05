@@ -340,7 +340,7 @@ public class RISKApplication extends Application {
         return new UpgradeTroopOrder (srcName,levelBefore,levelAfter,nUnit);
     }
 
-    public static List<String> getInfo(){
+    public static List<String> getWorldInfo(){
         List<Territory> terrs=theWorld.getAllTerritories();
         List<String> info=new ArrayList<>();
 
@@ -348,6 +348,22 @@ public class RISKApplication extends Application {
             info.add(t.getInfo());
         }
         return info;
+    }
+
+    public static String getPlayerInfo(){
+        PlayerInfo info=theWorld.getPlayerInfoByName(userName);
+       StringBuilder result=new StringBuilder();
+        result.append("Player name:  "+userName+"\n");
+        result.append("Food Resource: "+info.getFoodQuantity()+"\n");
+        result.append("Tech Resource: "+info.getTechQuantity()+"\n");
+        result.append("Tech Level: "+info.getTechLevel()+"\n");
+        result.append("My Territories: ");
+        List<Territory> terrs=theWorld.getTerritoriesOfPlayer(userName);
+        for(Territory t: terrs){
+            result.append(t.getName()+"  ");
+        }
+        result.append("\n");
+        return result.toString();
     }
 
 
