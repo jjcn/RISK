@@ -146,9 +146,9 @@ public class World implements Serializable {
         }
         List<Integer> weightsCopy = territories.cloneWeights();
         boolean[][] adjMatrixCopy = territories.cloneAdjMatrix();
-
         World cpyWorld = new World(new Graph<>(cpy, weightsCopy, adjMatrixCopy), 
-            cloneAllPlayerInfos(), this.rnd, new String(this.report));
+                    cloneAllPlayerInfos(), this.rnd, new String(this.report));        
+
         return cpyWorld;
     }
 
