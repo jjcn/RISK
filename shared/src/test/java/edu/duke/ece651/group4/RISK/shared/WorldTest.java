@@ -128,9 +128,10 @@ public class WorldTest {
     @Test
     public void testClone() {
         World world = createWorldSimple();
+        world.setReport("test");
         World worldClone = world.clone();
 
-        assertEquals(world, worldClone);
+        assertEquals(world.report, worldClone.report);
         assertEquals(worldClone.getAllTerritories(),
             new ArrayList<Territory>(Arrays.asList(new Territory("1"), new Territory("2"))));
         assertEquals(worldClone.getAdjacents("1"),

@@ -139,8 +139,12 @@ public class World implements Serializable {
         List<Integer> weightsCopy = territories.cloneWeights();
         boolean[][] adjMatrixCopy = territories.cloneAdjMatrix();
         World cpyWorld=new World(new Graph<>(cpy, weightsCopy, adjMatrixCopy), this.rnd);
-        cpyWorld.report=new String(this.report);
+        cpyWorld.setReport(new String(this.report));
         return cpyWorld;
+    }
+
+    public void setReport(String reprot){
+        this.report=reprot;
     }
 
     /**
