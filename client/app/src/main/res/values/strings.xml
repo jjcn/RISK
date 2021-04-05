@@ -12,4 +12,9 @@
     <string name="add_widget">Add widget</string>
     <string name="BACK">Back</string>
     <string name="CHOOSE_ROOM_INSTR">Please choose the room you want to add</string>
+    <string name="ID_INSTRU">"Room ID: "</string>
+    <string name="ROOMINFO">Players in this room:</string>
+    <string name="FRESHROOM">fresh</string>
+    <string name="WAIT">waiting for other players</string>
+    <string name="INITPLACE">"Please choose soldiers you want to place in each territory: "</string>
 </resources>

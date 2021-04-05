@@ -1,26 +1,21 @@
 package edu.duke.ece651.group4.RISK.client.activity;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import androidx.appcompat.app.AppCompatActivity;
-import android.os.Bundle;
-import edu.duke.ece651.group4.RISK.client.*;
-import edu.duke.ece651.group4.RISK.client.RISKApplication;
+import edu.duke.ece651.group4.RISK.client.R;
+import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
 
 import java.util.Objects;
 
-import static edu.duke.ece651.group4.RISK.client.Constant.DEBUG_MODE;
-import static edu.duke.ece651.group4.RISK.client.RISKApplication.*;
-import static edu.duke.ece651.group4.RISK.client.utility.Instruction.showByToast;
+import static edu.duke.ece651.group4.RISK.client.RISKApplication.sendLogIn;
+import static edu.duke.ece651.group4.RISK.client.utility.Notice.showByToast;
 
 public class LoginActivity extends AppCompatActivity {
     private final String TAG = LoginActivity.class.getSimpleName();
-    private EditText nameET;
-    private EditText passwordET;
-    private Button logInButton;
-    private Button signupButton;
 
     String name = "";
     String password = "";
@@ -38,9 +33,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void impLoginBt() {
-        nameET = findViewById(R.id.editTextTextAccount);
-        passwordET = findViewById(R.id.editTextTextPassword);
-        logInButton = findViewById(R.id.buttonLogin);
+        EditText nameET = findViewById(R.id.editTextTextAccount);
+        EditText passwordET = findViewById(R.id.editTextTextPassword);
+        Button logInButton = findViewById(R.id.buttonLogin);
 
         logInButton.setOnClickListener(v -> {
             logInButton.setClickable(false);
@@ -51,9 +46,6 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(Object o) {
                     String result = (String) o;
-                    if (DEBUG_MODE) {
-                        result = null;
-                    }
                     runOnUiThread(() -> {
                         if (result == null) { //match
                             Intent roomIntent = new Intent(LoginActivity.this, RoomActivity.class);
@@ -75,7 +67,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void impSignUpBt() {
-        signupButton = findViewById(R.id.buttonSignUp);
+        Button signupButton = findViewById(R.id.buttonSignUp);
         signupButton.setOnClickListener(v -> {
             Intent signupIntent = new Intent(LoginActivity.this, SignupActivity.class);
             startActivity(signupIntent);

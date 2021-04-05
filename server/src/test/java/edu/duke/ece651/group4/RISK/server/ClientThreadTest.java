@@ -195,8 +195,11 @@ class ClientThreadTest {
     @Test
     public void test_tryCreateAGame(){
         ClientThread ct = createAClientThread(1, 0);
+        ct.trySignUp("s","1");
+        ct.tryLogIn("s","1");
         assertEquals( null, ct.tryCreateAGame(new GameMessage(GAME_CREATE, -1, 4)));
         assertEquals(1, ct.games.size());
+        assertEquals(true,ct.gameOnGoing!=null);
         Game g = ct.findGame(0);
         assertEquals(4,g.getMaxNumUsers());
         assertEquals( INVALID_CREATE, ct.tryCreateAGame(new GameMessage(GAME_CREATE, -1, 6)));

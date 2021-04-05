@@ -109,7 +109,7 @@ public class ClientThread extends Thread {
             return;
         }
         //1.send the gameInfo to Client
-        this.theClient.sendObject(getAllGameInfo());
+//        this.theClient.sendObject(getAllGameInfo());
         //2. select an option
         while(true){
             GameMessage gameMessage = (GameMessage) this.theClient.recvObject();
@@ -149,9 +149,10 @@ public class ClientThread extends Thread {
         if(maxNumPlayers < 2 || maxNumPlayers > 5){
             return INVALID_CREATE;
         }
-        Game newGame = new Game(globalID.getAndIncrement(), maxNumPlayers);
-        games.add(newGame);
-        GameRunner gameRunner = new GameRunner(newGame);
+        this.gameOnGoing = new Game(globalID.getAndIncrement(), maxNumPlayers);
+        games.add(gameOnGoing);
+        GameRunner gameRunner = new GameRunner(gameOnGoing);
+        gameOnGoing.addUser(ownerUser);
         gameRunner.start();
         return null;
     }
@@ -289,7 +290,9 @@ public class ClientThread extends Thread {
     * */
     public void waitNotifyFromRunner(){
         try {
-            gameOnGoing.wait();
+            synchronized (gameOnGoing){
+                gameOnGoing.wait();
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
