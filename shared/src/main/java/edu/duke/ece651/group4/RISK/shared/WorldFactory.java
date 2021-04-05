@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.stream.IntStream;
 
 /**
  * This class create instances of pre-defined World templates.
@@ -23,60 +24,47 @@ import java.util.Random;
  */
 public class WorldFactory implements Serializable {
 
-    protected class AttributeBundle {
-        int area;
-        int foodSpeed;
-        int techSpeed;
-
-        public AttributeBundle(int area, int foodSpeed, int techSpeed) {
-            this.area = area;
-            this.foodSpeed = foodSpeed;
-            this.techSpeed = techSpeed;
-        }
-
-        /**
-         * Apply attributes to a territory.
-         * @param terr is the territory to set attributes.
-         */
-        public void applyTo(Territory terr) {
-            terr.setArea(area);
-            terr.setFoodSpeed(foodSpeed);
-            terr.setTechSpeed(techSpeed);
-        }
-    }
-
     public WorldFactory() {}
 
-    protected List<Integer> generateRandomFixedSumList(int n, int sum, Random seed) {
-        List<Integer> ans = new ArrayList<>(n);
-        for (int i = 0; i < n; i++) {
-            int randIndex = seed.nextInt(n);
+    /**
+     * Generate a random integer list with fixed sum.
+     * @param length is the length of list
+     * @param sum is the sum of all elements in list
+     * @param seed is the random seed
+     * @return random integer list with fixed sum
+     */
+    protected List<Integer> generateRandomFixedSumList(int length, int sum, Random seed) {
+    	//initialize
+        List<Integer> ans = new ArrayList<>();
+        IntStream.range(0, length).forEach(i -> ans.add(0));
+        //randomly add 1 to elements
+        for (int i = 0; i < sum; i++) {
+            int randIndex = seed.nextInt(length);
             ans.set(randIndex, ans.get(randIndex) + 1);
         }
         return ans;
     }
 
-    protected List<AttributeBundle> generateBundlesWithTotal (
-                                int nInGroup,
-                                int totalArea,
-                                int totalFoodSpeed,
-                                int totalTechSpeed,
-                                Random seed) {
-        List<Integer> areas = generateRandomFixedSumList(nInGroup, totalArea, seed);
-        List<Integer> foodSpeeds = generateRandomFixedSumList(nInGroup, totalFoodSpeed, seed);
-        List<Integer> techSpeeds = generateRandomFixedSumList(nInGroup, totalTechSpeed, seed);
-
-        List<AttributeBundle> ans = new ArrayList<>();
-        for (int i = 0; i < nInGroup; i++) {
-            ans.add(new AttributeBundle(areas.get(i), 
-                                        foodSpeeds.get(i), 
-                                        techSpeeds.get(i)));
-        }
-        return ans;
+    protected void assignRandomAttributes (
+    		Map<Integer, List<Territory>> groups,
+    		int totalArea, int totalFoodSpeed, int totalTechSpeed,
+			Random seed) {
+    	int nTerrs = groups.get(0).size();
+    	for (List<Territory> terrs : groups.values()) {
+    		List<Integer> areas = generateRandomFixedSumList(nTerrs, totalArea, seed);
+	        List<Integer> foodSpeeds = generateRandomFixedSumList(nTerrs, totalFoodSpeed, seed);
+	        List<Integer> techSpeeds = generateRandomFixedSumList(nTerrs, totalTechSpeed, seed);
+	        for (int i = 0; i < nTerrs; i++) {
+	        	terrs.get(i).setArea(areas.get(i));
+	        	terrs.get(i).setFoodSpeed(foodSpeeds.get(i));
+	        	terrs.get(i).setTechSpeed(techSpeeds.get(i));
+	        }
+    	}
     }
 
     /**
      * Step 1: Create unconnected territories.
+     * 
      * @param names is a list of territory names.
      * @return a world with unconnected territories.
      */
@@ -87,43 +75,8 @@ public class WorldFactory implements Serializable {
 	}
 
     /**
-     * Step 2 : Done in create functions
-     * 
-     * Step 3 : use World.divideTerritories
+     * Step 2 : Add connections. Done in create functions.
      */
-
-    /**
-     * Step 4 : 
-     * Set attributes to each group of territories.
-     */
-
-    /** 
-     * The same bundle of attributes will be applied
-     * across different groups.
-     * 
-     * For example, in terms of area:
-     * group1: A=2 B=8;
-     * group2: C=2 D=8.
-     *
-     * @param groups is groups of territories.
-     * @param bundles is a list of attribute bundles to apply to a territory. 
-     *        It is the same size as the number of territories in a group.
-     * 
-     * NOTE: three lists should have the same length.
-     */
-    protected void setAttributesSame(Map<Integer, List<Territory>> groups,
-                                    List<AttributeBundle> bundles) {
-        int nGroup = groups.size();
-        int nInGroup = groups.get(0).size();
- 
-        for (int i = 0; i < nGroup; i++) {
-            for (Territory terr : groups.get(i)) {
-                for (int j = 0; j < nInGroup; j++) {
-                    bundles.get(i).applyTo(terr);
-                }
-            }
-        }
-    }
 
     /**
      * Below are fixed world templates.
@@ -225,6 +178,12 @@ public class WorldFactory implements Serializable {
     }
 
     /**
+     * Step 3 : use World.divideTerritories
+     * 
+     * Step 4 : Set owner & attributes to each group of territories.
+     */
+
+    /**
      * assign a group of territories to every player.
      * @param world is the world to split into groups of territories.
      *        Should be a World object only with territories and connections.
@@ -235,21 +194,17 @@ public class WorldFactory implements Serializable {
             World world, List<String> playerNames) {
 
         int nGroup = playerNames.size();
-        int nInGroup = world.size() / playerNames.size();
         Map<Integer, List<Territory>> groups = world.divideTerritories(nGroup);
 
         // set total size & total food speed & total tech speed here
         // TODO: this is now hardcoded.
         int worldSize = world.size();
-        List<AttributeBundle> bundles = 
-        generateBundlesWithTotal(nInGroup, 
-                                10 * worldSize, // size
-                                50 * worldSize, // food
-                                100 * worldSize, // tech
-                                new Random(0));
-
-        setAttributesSame(groups, bundles);
-
+        assignRandomAttributes (groups,
+        		10 * worldSize, // size
+                50 * worldSize, // food
+                100 * worldSize, // tech
+                new Random(0));
+        
         Map<String, List<Territory>> ans = new HashMap<>();
         for (int i = 0; i < nGroup; i++) {
             String playerName = playerNames.get(i);

@@ -2,15 +2,17 @@ package edu.duke.ece651.group4.RISK.shared;
 
 import java.io.Serializable;
 
-public class PlaceOrder implements Order, Serializable {
+public class AttackOrder implements Order, Serializable {
     private Character actionName;
+    private String src;
     private String des;
     private Troop troop;
-
-    public PlaceOrder(String des, Troop troop) {
-        this.actionName = 'P';
+    
+    public AttackOrder(String src, String des, Troop troop, Character name) {
+        this.src = src;
         this.des = des;
         this.troop = troop;
+        this.actionName = name;
     }
 
     @Override
@@ -20,8 +22,7 @@ public class PlaceOrder implements Order, Serializable {
 
     @Override
     public String getSrcName() {
-        // TODO Auto-generated method stub
-        return null;
+        return src;
     }
 
     @Override
@@ -34,6 +35,7 @@ public class PlaceOrder implements Order, Serializable {
         return troop;
     }
 
-   
-
 }
+
+
+

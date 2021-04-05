@@ -219,11 +219,22 @@ public class Troop implements Serializable {
 
     public Troop clone() {
         ArrayList<Unit> cloneList = new ArrayList<Unit>(population.size());
-        for (Unit item : population)
+        for (Unit item : population) {
             cloneList.add(item.clone());
-        Troop clone = new Troop(cloneList, new TextPlayer(new String(this.owner.getName())));
+        }
 
-        return clone;
+        if(this.owner.getName()==null){
+            return new Troop(cloneList, new TextPlayer(null));
+        }else{
+            return new Troop(cloneList, new TextPlayer(new String(this.owner.getName())));
+        }
+
+
+
+
+
+
+
     }
 
     public int checkUnitNum(String name) {

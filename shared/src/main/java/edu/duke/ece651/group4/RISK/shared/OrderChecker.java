@@ -35,11 +35,11 @@ public class OrderChecker implements Serializable {
     /**
      * Checks if an order is legal.
      * @param order is the order given
-     * @param world is the world onject
+     * @param world is the world object
      * @return null, if the order is legal;
      *         a String indicating the problem, if not.
      */
-    public String checkOrder(BasicOrder order, World world) { 
+    public String checkOrder(Order order, World world) { 
         Territory start = world.findTerritory(order.getSrcName());
         // territory does not belong to the order sender
         if (!start.getOwner().equals(order.getActTroop().getOwner())) {

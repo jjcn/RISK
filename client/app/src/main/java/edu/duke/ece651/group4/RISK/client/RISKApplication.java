@@ -10,6 +10,7 @@ import edu.duke.ece651.group4.RISK.shared.message.LogMessage;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -154,19 +155,12 @@ public class RISKApplication extends Application {
         new Thread(() -> {
             Log.e(TAG,"sendReceiveAndUpdate called");
             try {
-                if(toSendO instanceof GameMessage){
-                    GameMessage g = (GameMessage) toSendO;
-                    Log.e(TAG,LOG_FUNC_RUN+"send o:"+g.getAction());
-                }
+
                 playerClient.sendObject(toSendO);
 
-                Log.e(TAG,LOG_FUNC_RUN+"room receive start");
+
                 Object receivedO = playerClient.recvObject();
-                if(receivedO != null) {
-                    Log.e(TAG, LOG_FUNC_RUN + "object receive success" + receivedO.getClass().getSimpleName());
-                }else{
-                    Log.e(TAG, LOG_FUNC_RUN + "object receive success: null");
-                }
+
 
                 if(type==WORLD){
                     theWorld=(World) receivedO;
@@ -342,6 +336,10 @@ public class RISKApplication extends Application {
         return null;
     }
 
+    public static void doDone(BasicOrder order,onReceiveListener listener){
+        sendReceiveHelper(order,listener,WORLD);
+    }
+
 //    public static String doTechUpgrade(UpgradeTroopOrder order,onResultListener listener){
 //        try {
 //
@@ -358,5 +356,22 @@ public class RISKApplication extends Application {
           sendReceiveHelper(placements,listener,WORLD);
           // return world. world: getMyTerr
     }
+
+
+    public static MoveOrder buildMoveOrder(String src,String des,int num, String job ){
+        HashMap<String,Integer> dict=new HashMap<>();
+        dict.put(job,num);
+        Troop target=new Troop(dict,new TextPlayer(userName));
+        return new MoveOrder(src,des,target,MOVE_ACTION);
+    }
+
+    public static AttackOrder buildAttackOrder(String src,String des,int num, String job ){
+        HashMap<String,Integer> dict=new HashMap<>();
+        dict.put(job,num);
+        Troop target=new Troop(dict,new TextPlayer(userName));
+        return new AttackOrder (src,des,target,ATTACK_ACTION);
+    }
+
+
 
 }

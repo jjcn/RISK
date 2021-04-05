@@ -7,20 +7,26 @@ import java.util.HashMap;
 import java.util.Random;
 
 public class Territory implements Serializable {
-
+    /**
+     * Territory's name
+     */
     private final String name;
+    /**
+     * Food resource yield each turn
+     */
+    private int foodSpeed;
+    /**
+     * Tech resource yield each turn
+     */
+    private int techSpeed;
+
+    private int area;
 
     private Troop ownerTroop;
 
     private final HashMap<String, Troop> enemyOnTerritory;
 
     private Random rnd;
-
-    private int techSpeed;
-
-    private int foodSpeed;
-
-    private int area;
 
     public Territory(String name, Player owner, int population, Random rnd) {
         this.name = name;
@@ -160,7 +166,15 @@ public class Territory implements Serializable {
      * @param enemy shows the enemy troop attack in
      */
     public void sendInEnemyTroop(Troop enemy) {
-        this.enemyOnTerritory.put(enemy.getOwner().getName(), enemy);
+        String enemyName=enemy.getOwner().getName();
+        if(this.enemyOnTerritory.get(enemyName)==null){
+            this.enemyOnTerritory.put(enemyName, enemy);
+        }else{
+            Troop origin=this.enemyOnTerritory.get(enemyName);
+            origin.receiveTroop(enemy);
+            this.enemyOnTerritory.put(enemyName,origin);
+        }
+
     }
 
     /**
