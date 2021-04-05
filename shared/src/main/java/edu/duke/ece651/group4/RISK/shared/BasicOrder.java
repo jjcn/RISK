@@ -21,18 +21,20 @@ public class BasicOrder implements Order, Serializable {
         return actionName;
     }
 
+    @Override
     public String getSrcName() {
         return src;
     }
 
+    @Override
     public String getDesName() {
         return des;
     }
 
+    @Override
     public Troop getActTroop() {
         return troop;
     }
-
  
 }
 
