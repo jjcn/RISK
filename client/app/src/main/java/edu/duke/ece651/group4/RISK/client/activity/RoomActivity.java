@@ -119,6 +119,7 @@ public class RoomActivity extends AppCompatActivity {
                                 new onReceiveListener() {
                                     @Override
                                     public void onSuccess(Object o) {
+                                        Log.i(TAG,LOG_FUNC_RUN+"try to receive world");
                                         if (o instanceof World) {
                                             runOnUiThread(() -> {
                                                 Intent gameIntent = new Intent(RoomActivity.this, PlaceActivity.class);
@@ -128,6 +129,7 @@ public class RoomActivity extends AppCompatActivity {
                                             });
                                         } else {
                                             // showByToast(RoomActivity.this, result);
+                                            Log.e(TAG,LOG_FUNC_RUN+"not World type");
                                             createBT.setClickable(false);
                                             return;
                                         }
@@ -142,7 +144,6 @@ public class RoomActivity extends AppCompatActivity {
             );
         });
         roomsRC.setLayoutManager(new LinearLayoutManager(this));
-        // roomsRC.setHasFixedSize(true);
         roomsRC.setAdapter(roomsAdapt);
     }
 
@@ -151,7 +152,7 @@ public class RoomActivity extends AppCompatActivity {
         createBT.setOnClickListener(v -> {
             createBT.setClickable(false);
             // TODO: choose number diag
-            int numUser = 2;
+            int numUser = TEST_NUM_USER;
                 createGame(numUser,
                         new onReceiveListener() {
                             @Override
@@ -179,6 +180,7 @@ public class RoomActivity extends AppCompatActivity {
                         new onReceiveListener() { // receive a World if successfully join created game otherwise null
                             @Override
                             public void onSuccess(Object o) {
+                                Log.i(TAG,LOG_FUNC_RUN+"try to receive World");
                                 if (o instanceof World) {
                                     runOnUiThread(() -> {
                                         showByToast(RoomActivity.this, SUCCESS_JOIN);

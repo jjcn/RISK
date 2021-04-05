@@ -83,7 +83,6 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         }
     }
 
-    //TODO: check pointer assign or copy
     public void setRooms(List<RoomInfo> rooms) {
         this.rooms.clear();
         this.rooms.addAll(rooms);

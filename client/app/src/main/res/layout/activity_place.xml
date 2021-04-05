@@ -15,28 +15,30 @@
             android:id="@+id/fragment"
     />
 
-    <TextView
-            android:id="@+id/chooseInstru"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/terrList"
-            app:layout_constraintStart_toStartOf="parent"
-            android:text="@string/INITPLACE"
-    />
+<!--    <TextView-->
+<!--            android:id="@+id/chooseInstru"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintBottom_toTopOf="@id/terrList"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            android:text="@string/INITPLACE"-->
+<!--    />-->
 
-    <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/terrList"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/chooseInstr"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_height="500dp"
-            android:layout_width="match_parent"
-            android:layout_marginTop="@dimen/fragmentMargin"
-            android:layout_marginStart="@dimen/fragmentMargin"
-            android:layout_marginEnd="@dimen/fragmentMargin"
-            android:layout_marginLeft="@dimen/fragmentMargin"
-    />
+<!--    <androidx.recyclerview.widget.RecyclerView-->
+<!--            android:id="@+id/terrList"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/chooseInstr"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            android:layout_height="500dp"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_marginTop="@dimen/fragmentMargin"-->
+<!--            android:layout_marginStart="@dimen/fragmentMargin"-->
+<!--            android:layout_marginEnd="@dimen/fragmentMargin"-->
+<!--            android:layout_marginLeft="@dimen/fragmentMargin"-->
+<!--    />-->
+
+
 
 </LinearLayout>

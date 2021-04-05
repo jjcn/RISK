@@ -1,7 +1,6 @@
 package edu.duke.ece651.group4.RISK.client;
 
 public class Constant {
-    public static final boolean DEBUG_MODE = true;
     public static final String SUCCESS_SIGNUP = "Sign up a new account successfully";
     public static final String SUCCESS_JOIN = "Join a room successfully";
     public static final String SUCCESS_CREATE = "Create a new room successfully";
@@ -13,6 +12,10 @@ public class Constant {
     public static final String LOG_FUNC_FAIL = "*********** Function Exception *********";
     public static final String LOG_FUNC_RUN = "////////////// Function Checking //////////////";
 
+    //*************CONSTANTS FOR DEBUG************//
+    public static final boolean DEBUG_MODE = true;
+    public static final int TEST_NUM_USER = 1;
+
     //**************check receive type***************//
     public static final String WORLD = "world";
     public static final String ROOMS = "roomInfo";
@@ -21,8 +24,6 @@ public class Constant {
     public static final String WRG_MESSAGE = "fail to create world";
 
 
-    public static final int MAXLEVEL=6; //max soldier level
-    public static final int maxPlace=15;//initial soldier allowed
-
-
+    public static final int MAXLEVEL = 6; //max soldier level
+    public static final int maxPlace = 15;//initial soldier allowed
 }

@@ -294,7 +294,7 @@ public class RISKApplication extends Application {
      *
      * @return list of all my territory
      */
-    public static List<Territory> myTerritory(){
+    public static List<Territory> getMyTerritory(){
         return theWorld.getTerritoriesOfPlayer(new TextPlayer(userName));
     }
 
@@ -356,6 +356,7 @@ public class RISKApplication extends Application {
     public static void doPlacement(List<PlaceOrder> placements,onReceiveListener listener){
 
           sendReceiveHelper(placements,listener,WORLD);
+          // return world. world: getMyTerr
     }
 
 }
