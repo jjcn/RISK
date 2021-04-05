@@ -28,10 +28,12 @@ public class PlayerInfoTest {
 	
 	@Test
 	public void testTechLevel() {
-		PlayerInfo emptyNameInfo = new PlayerInfo("");
-		assertEquals(emptyNameInfo.playerName, "");
-		PlayerInfo pInfo = new PlayerInfo("!");
-		assertEquals(pInfo.playerName, "!");
+		PlayerInfo pInfo = new PlayerInfo("");
+		assertEquals(1, pInfo.getTechLevel());
+		
+		PlayerInfo rich = new PlayerInfo("rich", 999, 999);
+		rich.upgradeTechLevelBy1();
+		assertEquals(2, rich.getTechLevel());
 	}
 
 	@Test
@@ -72,7 +74,7 @@ public class PlayerInfoTest {
 
 	@Test
 	public void testUpgradeTechLevel() {
-		PlayerInfo pInfo = new PlayerInfo("player", 100, 100);
+		PlayerInfo pInfo = new PlayerInfo("player", 0, 999);
 		assertEquals(pInfo.techLevel, 1);
 		// try modify to -1
 		assertThrows(IllegalArgumentException.class,
@@ -80,9 +82,12 @@ public class PlayerInfoTest {
 		// try modify to 7
 		assertThrows(IllegalArgumentException.class,
 					() -> pInfo.modifyTechLevelBy(6));
-		// upgrade tech level
+		// upgrade tech level by 1
 		pInfo.upgradeTechLevelBy1();
-		assertEquals(pInfo.techLevel, 2);
+		assertEquals(2, pInfo.techLevel);
+		// upgrade tech level by 2
+		pInfo.upgradeTechLevelBy(2);
+		assertEquals(4, pInfo.techLevel);
 	}
 
 	@Test
@@ -105,4 +110,26 @@ public class PlayerInfoTest {
 					() -> PlayerInfo.calcUpgradeTechLevelConsumption(-1, 0));
 	}
 	
+	@Test
+	public void testClone() {
+		PlayerInfo pInfo = new PlayerInfo("");
+		PlayerInfo clonePInfo = pInfo.clone();
+
+		assertFalse(pInfo == clonePInfo);
+		assertEquals(pInfo, clonePInfo);
+		assertEquals(pInfo.playerName, clonePInfo.playerName);
+		assertEquals(pInfo.minTechLevel, pInfo.minTechLevel);
+	}
+
+	@Test
+	public void testEquals() {
+		PlayerInfo empty1 = new PlayerInfo("");
+		PlayerInfo empty2 = new PlayerInfo("");
+		PlayerInfo empty3 = new PlayerInfo("", 0, 0);
+		PlayerInfo nonempty = new PlayerInfo("", 0, 1);
+
+		assertEquals(empty1, empty2);
+		assertEquals(empty1, empty3);
+		assertNotEquals(empty1, nonempty);
+	}
 }
