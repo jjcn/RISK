@@ -47,6 +47,10 @@ public class World implements Serializable {
      * Random seed to use with random division of territories.
      */
     private final Random rnd;
+    /**
+     * A report of battle results.
+     */
+    private String battleReport;
 
     /**
      * Construct a default world with an empty graph.
@@ -505,7 +509,12 @@ public class World implements Serializable {
         for (Territory terr : territories.getVertices()) {
             ans.append(terr.doBattles());
         }
-        return ans.toString();
+        battleReport = ans.toString();
+        return battleReport;
+    }
+
+    public String getBattleReport() {
+        return battleReport;
     }
 
     /**
