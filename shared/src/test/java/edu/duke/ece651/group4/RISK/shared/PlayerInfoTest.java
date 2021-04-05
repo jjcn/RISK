@@ -99,9 +99,9 @@ public class PlayerInfoTest {
 		assertEquals(125, PlayerInfo.calcUpgradeTechLevelConsumption(3, 4));
 		assertEquals(50, PlayerInfo.calcUpgradeTechLevelConsumption(1, 2));
 		assertEquals(300, PlayerInfo.calcUpgradeTechLevelConsumption(5, 6));
-		assertThrows(IllegalAccessException.class,
+		assertThrows(IllegalArgumentException.class,
 					() -> PlayerInfo.calcUpgradeTechLevelConsumption(6, 7));
-		assertThrows(IllegalAccessException.class,
+		assertThrows(IllegalArgumentException.class,
 					() -> PlayerInfo.calcUpgradeTechLevelConsumption(-1, 0));
 	}
 	
