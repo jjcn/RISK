@@ -6,8 +6,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Random;
 
+
 public class Territory implements Serializable {
     protected static final long serialVersionUID = 15L;
+
     /**
      * Territory's name
      */
