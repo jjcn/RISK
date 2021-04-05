@@ -8,6 +8,13 @@
         tools:context=".activity.PlaceActivity"
         android:orientation="vertical">
 
+    <fragment
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:name="edu.duke.ece651.group4.RISK.client.fragment.WorldFragment"
+            android:id="@+id/fragment"
+    />
+
     <TextView
             android:id="@+id/chooseInstru"
             android:layout_width="match_parent"

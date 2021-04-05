@@ -20,4 +20,4 @@
         android:text="Commit"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>s
+</androidx.constraintlayout.widget.ConstraintLayout>

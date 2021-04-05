@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import edu.duke.ece651.group4.RISK.client.R;
@@ -54,11 +55,19 @@ public class RoomActivity extends AppCompatActivity {
     }
 
     private void impSwipeFresh() {
+        SwipeRefreshLayout l = findViewById(R.id.refresh);
+        l.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshGameInfo();
+                l.setRefreshing(false);
+            }
+        });
         new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 // TODO:imp refresh function ? protected ?
-                refreshGameInfo();
+
 //                refreshGameInfo(new onReceiveListener() {
 //                    @Override
 //                    public void onSuccess(Object o) {
@@ -78,12 +87,12 @@ public class RoomActivity extends AppCompatActivity {
     }
 
     private void refreshGameInfo() {
-        RoomInfo t1 = new RoomInfo(1,null,2);
+        RoomInfo t1 = new RoomInfo(1, null, 2);
         List<RoomInfo> rooms = new ArrayList<>();
         rooms.add(t1);
         roomsAdapt.setRooms(rooms);
-        Log.i(TAG,LOG_FUNC_RUN+rooms.size());
-        System.out.println(LOG_FUNC_RUN+rooms.size());
+        Log.i(TAG, LOG_FUNC_RUN + rooms.size());
+        System.out.println(LOG_FUNC_RUN + rooms.size());
     }
 
     private void impRoomList() {
@@ -134,6 +143,8 @@ public class RoomActivity extends AppCompatActivity {
                     }
             );
         });
+        roomsRC.setLayoutManager(new LinearLayoutManager(this));
+        // roomsRC.setHasFixedSize(true);
         roomsRC.setAdapter(roomsAdapt);
     }
 
@@ -155,8 +166,10 @@ public class RoomActivity extends AppCompatActivity {
                                     return;
                                 } else {
                                     showByToast(RoomActivity.this, SUCCESS_CREATE);
-                                    WaitDialog waitDG = new WaitDialog(RoomActivity.this);
-                                    waitDG.show();
+                                    runOnUiThread(() -> {
+                                        WaitDialog waitDG = new WaitDialog(RoomActivity.this);
+                                        waitDG.show();
+                                    });
                                 }
                             }
 

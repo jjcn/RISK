@@ -12,11 +12,12 @@ import edu.duke.ece651.group4.RISK.client.listener.onItemClickListener;
 import edu.duke.ece651.group4.RISK.shared.RoomInfo;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static edu.duke.ece651.group4.RISK.client.Constant.*;
 
-public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.ViewHolder> {
+public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder> {
     private final String TAG = this.getClass().getSimpleName();
     private List<RoomInfo> rooms;
     private onItemClickListener itemListener = null;
@@ -24,7 +25,9 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.ViewHolder> {
     public RoomAdapter() {
         rooms = new ArrayList<>();
         if(DEBUG_MODE) {
-            RoomInfo t1 = new RoomInfo(0, null, 2);
+            ArrayList<String> l = new ArrayList<>();
+            l.add("123");
+            RoomInfo t1 = new RoomInfo(0,l , 2);
             rooms.add(t1);
         }
         Log.i(TAG,LOG_CREATE_SUCCESS+rooms.size());
@@ -34,27 +37,27 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.ViewHolder> {
     // create new views invoked by layout manager
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup roomGroup, int viewType) {
+    public RoomViewHolder onCreateViewHolder(@NonNull ViewGroup roomGroup, int viewType) {
         View view = LayoutInflater.from(roomGroup.getContext()).inflate(R.layout.item_room, roomGroup, false);
-        return new ViewHolder(view);
+        return new RoomViewHolder(view);
     }
 
     // replace the contents of a view
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RoomViewHolder holder, int position) {
         RoomInfo room = rooms.get(position);
         String idNum = Integer.toString(room.getRoomID());
         String totalUserNum = Integer.toString(room.getMaxNumPlayers());
         String usersInfo = "";
         String sep = "";
-        for (String userName : room.getUserNames()) {
-            usersInfo.concat(sep + userName);
-            sep = ", ";
-        }
+//        for (String userName : room.getUserNames()) {
+//            usersInfo.concat(sep + userName);
+//            sep = ", ";
+//        }
 
-        holder.roomIDView.append(idNum);
-        holder.usersView.append(usersInfo);
-        holder.usersView.append("(need " + totalUserNum + "in total)");
+        holder.roomIDView.setText(idNum); //append();
+        holder.usersView.setText(usersInfo); //append();
+        // holder.usersView.append("(need " + totalUserNum + "in total)");
         if (itemListener != null) {
             holder.itemView.setOnClickListener(v -> {
                 itemListener.onItemClick(position);
@@ -68,12 +71,12 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.ViewHolder> {
     }
 
     // refer to the type of views used
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class RoomViewHolder extends RecyclerView.ViewHolder {
         TextView roomIDView;
         TextView usersView;
         View itemView;
 
-        ViewHolder(@NonNull View itemView) {
+        RoomViewHolder(@NonNull View itemView) {
             super(itemView);
             this.roomIDView = itemView.findViewById(R.id.roomIDTV);
             this.usersView = itemView.findViewById(R.id.playerTV);

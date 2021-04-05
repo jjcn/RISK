@@ -10,7 +10,7 @@ import edu.duke.ece651.group4.RISK.client.R;
 import java.util.List;
 
 // TODO: have not implement
-public abstract class ChoiceAdapter<T> extends RecyclerView.Adapter{
+public abstract class ChoiceAdapter<T> extends RecyclerView.Adapter {
     private List<T> choices;
 
     @NonNull
