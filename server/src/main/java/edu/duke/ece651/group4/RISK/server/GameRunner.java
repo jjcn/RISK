@@ -6,9 +6,9 @@ import static edu.duke.ece651.group4.RISK.server.ServerConstant.GAME_STATE_DONE_
 import static edu.duke.ece651.group4.RISK.server.ServerConstant.GAME_STATE_WAIT_TO_UPDATE;
 
 /*
-* This class is the runner for game.
-* It will  update the final results after each turn
-* */
+ * This class is the runner for game.
+ * It will  update the final results after each turn
+ * */
 public class GameRunner extends Thread{
     Game game;
     PrintStream out;
@@ -21,17 +21,17 @@ public class GameRunner extends Thread{
         out = System.out;
     }
     /*
-    * Run the game
-    *   1.1 wait for all users join
-    *   1.2 setUpGame based on the userNames
-    *       notify All users to placeUnits and set up, etc.
-    *   1.3 Join the while loop
-    *       1.31 wait users to finish their one turn:  WaitingState
-    *       1.32 update the worldMap and enter: DoneState
-    *       1.33 Set users state as updatingState
-    *       1.34 wait for all users to finish updating
-    *       1.35 game end  check and go back to the while loop
-    * */
+     * Run the game
+     *   1.1 wait for all users join
+     *   1.2 setUpGame based on the userNames
+     *       notify All users to placeUnits and set up, etc.
+     *   1.3 Join the while loop
+     *       1.31 wait users to finish their one turn:  WaitingState
+     *       1.32 update the worldMap and enter: DoneState
+     *       1.33 Set users state as updatingState
+     *       1.34 wait for all users to finish updating
+     *       1.35 game end  check and go back to the while loop
+     * */
 
     @Override
     public void run(){
