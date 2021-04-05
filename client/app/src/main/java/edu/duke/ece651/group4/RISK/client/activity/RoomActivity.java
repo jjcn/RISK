@@ -63,8 +63,9 @@ public class RoomActivity extends AppCompatActivity {
         refreshGameInfo(new onReceiveListener() {
             @Override
             public void onSuccess(Object o) {
+                Log.i(TAG,LOG_FUNC_RUN+"refresh success");
                 if (o instanceof List) {
-                    List<RoomInfo> rooms = (List) o;
+                    List<RoomInfo> rooms = (List<RoomInfo>) o;
                     roomsAdapt.setRooms(rooms);
                 }
             }
@@ -73,13 +74,14 @@ public class RoomActivity extends AppCompatActivity {
             public void onFailure(String errMsg) {
             }
         });
+        Log.i(TAG,LOG_FUNC_RUN+"after refresh");
         refreshGS.setRefreshing(false);
     }
 
     // for debugging
     private void pseudoRefreshGameInfo() {
         ArrayList<String> l = new ArrayList<>();
-        l.add("123");
+        l.add("refresh test");
         RoomInfo t1 = new RoomInfo(1,l , 2);
         List<RoomInfo> rooms = new ArrayList<>();
         rooms.add(t1);
@@ -118,10 +120,12 @@ public class RoomActivity extends AppCompatActivity {
                                     @Override
                                     public void onSuccess(Object o) {
                                         if (o instanceof World) {
-                                            Intent gameIntent = new Intent(RoomActivity.this, PlaceActivity.class);
-                                            showByToast(RoomActivity.this, SUCCESS_JOIN);
-                                            startActivity(gameIntent);
-                                            finish();
+                                            runOnUiThread(() -> {
+                                                Intent gameIntent = new Intent(RoomActivity.this, PlaceActivity.class);
+                                                showByToast(RoomActivity.this, SUCCESS_JOIN);
+                                                startActivity(gameIntent);
+                                                finish();
+                                            });
                                         } else {
                                             // showByToast(RoomActivity.this, result);
                                             createBT.setClickable(false);
@@ -147,8 +151,12 @@ public class RoomActivity extends AppCompatActivity {
         createBT.setOnClickListener(v -> {
             createBT.setClickable(false);
             // TODO: choose number diag
+<<<<<<< HEAD
             int numUser = 1;
             runOnUiThread(() -> {
+=======
+            int numUser = 2;
+>>>>>>> e16df52883a4cb64508dca2c5cf4b30241b5df0c
                 createGame(numUser,
                         new onReceiveListener() {
                             @Override
@@ -177,10 +185,12 @@ public class RoomActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(Object o) {
                                 if (o instanceof World) {
-                                    showByToast(RoomActivity.this, SUCCESS_CREATE);
-                                    Intent placeIntent = new Intent(RoomActivity.this, PlaceActivity.class);
-                                    startActivity(placeIntent);
-                                    finish();
+                                    runOnUiThread(() -> {
+                                        showByToast(RoomActivity.this, SUCCESS_JOIN);
+                                        Intent placeIntent = new Intent(RoomActivity.this, PlaceActivity.class);
+                                        startActivity(placeIntent);
+                                        finish();
+                                    });
                                 }
                             }
 
@@ -190,6 +200,5 @@ public class RoomActivity extends AppCompatActivity {
                             }
                         });
             });
-        });
     }
 }

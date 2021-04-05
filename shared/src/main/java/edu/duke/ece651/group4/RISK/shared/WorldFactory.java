@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.stream.IntStream;
 
 /**
  * This class create instances of pre-defined World templates.
@@ -47,15 +48,43 @@ public class WorldFactory implements Serializable {
 
     public WorldFactory() {}
 
-    protected List<Integer> generateRandomFixedSumList(int n, int sum, Random seed) {
-        List<Integer> ans = new ArrayList<>(n);
-        for (int i = 0; i < n; i++) {
-            int randIndex = seed.nextInt(n);
+    /**
+     * Generate a random integer list with fixed sum.
+     * @param length is the length of list
+     * @param sum is the sum of all elements in list
+     * @param seed is the random seed
+     * @return random integer list with fixed sum
+     */
+    protected List<Integer> generateRandomFixedSumList(int length, int sum, Random seed) {
+    	//initialize
+        List<Integer> ans = new ArrayList<>();
+        IntStream.range(0, length).forEach(i -> ans.add(0));
+        //randomly add 1 to elements
+        for (int i = 0; i < sum; i++) {
+            int randIndex = seed.nextInt(length);
             ans.set(randIndex, ans.get(randIndex) + 1);
         }
         return ans;
     }
 
+    protected void assignRandomAttributes (
+    		Map<Integer, List<Territory>> groups,
+    		int totalArea, int totalFoodSpeed, int totalTechSpeed,
+			Random seed) {
+    	int nTerrs = groups.get(0).size();
+    	for (List<Territory> terrs : groups.values()) {
+    		List<Integer> areas = generateRandomFixedSumList(nTerrs, totalArea, seed);
+	        List<Integer> foodSpeeds = generateRandomFixedSumList(nTerrs, totalFoodSpeed, seed);
+	        List<Integer> techSpeeds = generateRandomFixedSumList(nTerrs, totalTechSpeed, seed);
+	        for (int i = 0; i < nTerrs; i++) {
+	        	terrs.get(i).setArea(areas.get(i));
+	        	terrs.get(i).setFoodSpeed(foodSpeeds.get(i));
+	        	terrs.get(i).setTechSpeed(techSpeeds.get(i));
+	        }
+    	}
+    }
+								            
+    
     protected List<AttributeBundle> generateBundlesWithTotal (
                                 int nInGroup,
                                 int totalArea,
@@ -241,15 +270,12 @@ public class WorldFactory implements Serializable {
         // set total size & total food speed & total tech speed here
         // TODO: this is now hardcoded.
         int worldSize = world.size();
-        List<AttributeBundle> bundles = 
-        generateBundlesWithTotal(nInGroup, 
-                                10 * worldSize, // size
-                                50 * worldSize, // food
-                                100 * worldSize, // tech
-                                new Random(0));
-
-        setAttributesSame(groups, bundles);
-
+        assignRandomAttributes (groups,
+        		10 * worldSize, // size
+                50 * worldSize, // food
+                100 * worldSize, // tech
+                new Random(0));
+        
         Map<String, List<Territory>> ans = new HashMap<>();
         for (int i = 0; i < nGroup; i++) {
             String playerName = playerNames.get(i);
