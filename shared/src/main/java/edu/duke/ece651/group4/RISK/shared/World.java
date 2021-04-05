@@ -75,7 +75,7 @@ public class World implements Serializable {
      * @param random is the random seed.
      */
     public World(Graph<Territory> terrs, Random random) {
-        this(terrs, new HashMap<String, PlayerInfo>(), random, null);
+        this(terrs, new HashMap<String, PlayerInfo>(), random, "");
     }
 
     protected World(Graph<Territory> terrs, 
@@ -148,7 +148,7 @@ public class World implements Serializable {
         boolean[][] adjMatrixCopy = territories.cloneAdjMatrix();
         World cpyWorld = new World(new Graph<>(cpy, weightsCopy, adjMatrixCopy), 
                     cloneAllPlayerInfos(), this.rnd, 
-                    new String(this.report == null ? null : this.report));        
+                    new String(this.report));        
 
         return cpyWorld;
     }
