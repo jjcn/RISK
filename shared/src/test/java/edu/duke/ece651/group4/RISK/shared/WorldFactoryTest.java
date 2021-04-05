@@ -56,4 +56,29 @@ public class WorldFactoryTest {
         
         
     }
+
+    @Test
+    public void test_setupGame(){
+        int maxNumUsers = 2;
+        World theWorld = null;
+        WorldFactory factory = new WorldFactory();
+        switch(maxNumUsers){
+            case 2:
+            case 3:
+                theWorld = factory.create6TerritoryWorld();
+                break;
+            case 4:
+                theWorld = factory.create8TerritoryWorld();
+                break;
+            case 5:
+                theWorld = factory.create10TerritoryWorld();
+                break;
+            default:
+                break;
+        }
+        ArrayList<String> usernames = new ArrayList<String>();
+        usernames.add("1");
+        usernames.add("2");
+        factory.assignTerritories(theWorld, usernames);
+    }
 }

@@ -8,6 +8,7 @@ import java.util.Random;
  * Takes a Random object to construct a shuffler.
  */
 public class Shuffler implements Serializable {
+    protected static final long serialVersionUID = 12L;
     Random rand;
 
     public Shuffler() {

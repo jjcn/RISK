@@ -11,6 +11,7 @@ import java.util.*;
  * This should integrate with Android Activities.
  */
 public class V2Player implements Player, Serializable {
+
     private String playerName;
     private PlayerInfo info;
     final private Map<Character, String> actionTypes;

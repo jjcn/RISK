@@ -7,6 +7,7 @@ import java.io.Serializable;
  * Allows modifying of tech level & resource quantities.
  */
 public class PlayerInfo implements Serializable {
+    protected static final long serialVersionUID = 9L;
     /**
      * Player's name
      */
@@ -79,6 +80,13 @@ public class PlayerInfo implements Serializable {
      */
     public PlayerInfo(String playerName, int nFood, int nTech) {
         this(playerName, 1, 0, 6, new FoodResource(nFood), new TechResource(nTech));
+    }
+
+    public PlayerInfo clone() {
+        return new PlayerInfo(playerName, techLevel, 
+                            minTechLevel, maxTechLevel, 
+                            new FoodResource(foodResource.getQuantity()), 
+                            new TechResource(techResource.getQuantity()));
     }
 
     public String getName() {
