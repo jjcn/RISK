@@ -122,7 +122,9 @@ public class WorldTest {
     @Test
     public void testCreation() {
         World randomWorldWithSeed = new World(9, new Random(0));
+        assertEquals(9, randomWorldWithSeed.size());
         World randomWorld = new World(9);
+        assertEquals(9, randomWorld.size());
     }
 
     @Test
@@ -360,21 +362,6 @@ public class WorldTest {
         world.upgradeTroop(utOrder2, "red");
         assertEquals(100 - 3 * 6, redInfo.getTechQuantity());
     } 
-
-    /*
-    @Test
-    public void testCheckOrder() {
-        World world = createWorld(troopsSeparated);
-        AttackOrder move = new AttackOrder("Elantris", "Scadrial", new Troop(8, blue), 'M');
-        assertEquals(String.format(NOT_ENOUGH_TROOP_MSG,
-                        world.findTerritory("Elantris").checkPopulation(),
-                        "Elantris", 8),
-                     world.checkOrder(move));
-
-        BasicOrder atk = new BasicOrder("Gondor", "Mordor", new Troop(6, red), 'A');
-        assertEquals(String.format(SAME_OWNER_MSG, "Mordor"), world.checkOrder(atk));
-    }
-    */
 
     @Test
     public void testDoAllBattles() {

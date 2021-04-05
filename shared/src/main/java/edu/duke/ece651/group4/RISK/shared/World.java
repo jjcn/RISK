@@ -75,11 +75,18 @@ public class World implements Serializable {
      * @param random is the random seed.
      */
     public World(Graph<Territory> terrs, Random random) {
-        territories = terrs;
-        this.playerInfos = new HashMap<String, PlayerInfo>();
-        orderChecker = new OrderChecker();
-        rnd = random;
-        report = null;
+        this(terrs, new HashMap<String, PlayerInfo>(), random, null);
+    }
+
+    protected World(Graph<Territory> terrs, 
+                    Map<String, PlayerInfo> playerInfos,
+                    Random random,
+                    String report) {
+        this.territories = terrs;
+        this.playerInfos = playerInfos;
+        this.orderChecker = new OrderChecker();
+        this.rnd = random;
+        this.report = report;
     }
 
     /**
@@ -130,8 +137,6 @@ public class World implements Serializable {
 
     /**
      * Creates a deep copy of a world object.
-     * 
-     * @return a deep copy of the world object.
      */
     public World clone() {
         List<Territory> old = territories.getVertices();
@@ -141,9 +146,21 @@ public class World implements Serializable {
         }
         List<Integer> weightsCopy = territories.cloneWeights();
         boolean[][] adjMatrixCopy = territories.cloneAdjMatrix();
-        World cpyWorld = new World(new Graph<>(cpy, weightsCopy, adjMatrixCopy), this.rnd);
-        cpyWorld.setReport(new String(this.report));
+
+        World cpyWorld = new World(new Graph<>(cpy, weightsCopy, adjMatrixCopy), 
+            cloneAllPlayerInfos(), this.rnd, new String(this.report));
         return cpyWorld;
+    }
+
+    /**
+     * Creates a deep copy of playerInfos.
+     */
+    public Map<String, PlayerInfo> cloneAllPlayerInfos() {
+        Map<String, PlayerInfo> newMap = new HashMap<>();
+        for (String playerName : playerInfos.keySet()) {
+            newMap.put(playerName, playerInfos.get(playerName).clone());
+        }
+        return newMap;
     }
 
     /**

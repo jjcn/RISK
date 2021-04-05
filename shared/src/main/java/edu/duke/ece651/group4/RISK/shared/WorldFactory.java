@@ -24,28 +24,6 @@ import java.util.stream.IntStream;
  */
 public class WorldFactory implements Serializable {
 
-    protected class AttributeBundle {
-        int area;
-        int foodSpeed;
-        int techSpeed;
-
-        public AttributeBundle(int area, int foodSpeed, int techSpeed) {
-            this.area = area;
-            this.foodSpeed = foodSpeed;
-            this.techSpeed = techSpeed;
-        }
-
-        /**
-         * Apply attributes to a territory.
-         * @param terr is the territory to set attributes.
-         */
-        public void applyTo(Territory terr) {
-            terr.setArea(area);
-            terr.setFoodSpeed(foodSpeed);
-            terr.setTechSpeed(techSpeed);
-        }
-    }
-
     public WorldFactory() {}
 
     /**
@@ -83,29 +61,10 @@ public class WorldFactory implements Serializable {
 	        }
     	}
     }
-								            
-    
-    protected List<AttributeBundle> generateBundlesWithTotal (
-                                int nInGroup,
-                                int totalArea,
-                                int totalFoodSpeed,
-                                int totalTechSpeed,
-                                Random seed) {
-        List<Integer> areas = generateRandomFixedSumList(nInGroup, totalArea, seed);
-        List<Integer> foodSpeeds = generateRandomFixedSumList(nInGroup, totalFoodSpeed, seed);
-        List<Integer> techSpeeds = generateRandomFixedSumList(nInGroup, totalTechSpeed, seed);
-
-        List<AttributeBundle> ans = new ArrayList<>();
-        for (int i = 0; i < nInGroup; i++) {
-            ans.add(new AttributeBundle(areas.get(i), 
-                                        foodSpeeds.get(i), 
-                                        techSpeeds.get(i)));
-        }
-        return ans;
-    }
 
     /**
      * Step 1: Create unconnected territories.
+     * 
      * @param names is a list of territory names.
      * @return a world with unconnected territories.
      */
@@ -116,43 +75,8 @@ public class WorldFactory implements Serializable {
 	}
 
     /**
-     * Step 2 : Done in create functions
-     * 
-     * Step 3 : use World.divideTerritories
+     * Step 2 : Add connections. Done in create functions.
      */
-
-    /**
-     * Step 4 : 
-     * Set attributes to each group of territories.
-     */
-
-    /** 
-     * The same bundle of attributes will be applied
-     * across different groups.
-     * 
-     * For example, in terms of area:
-     * group1: A=2 B=8;
-     * group2: C=2 D=8.
-     *
-     * @param groups is groups of territories.
-     * @param bundles is a list of attribute bundles to apply to a territory. 
-     *        It is the same size as the number of territories in a group.
-     * 
-     * NOTE: three lists should have the same length.
-     */
-    protected void setAttributesSame(Map<Integer, List<Territory>> groups,
-                                    List<AttributeBundle> bundles) {
-        int nGroup = groups.size();
-        int nInGroup = groups.get(0).size();
- 
-        for (int i = 0; i < nGroup; i++) {
-            for (Territory terr : groups.get(i)) {
-                for (int j = 0; j < nInGroup; j++) {
-                    bundles.get(i).applyTo(terr);
-                }
-            }
-        }
-    }
 
     /**
      * Below are fixed world templates.
@@ -254,6 +178,12 @@ public class WorldFactory implements Serializable {
     }
 
     /**
+     * Step 3 : use World.divideTerritories
+     * 
+     * Step 4 : Set owner & attributes to each group of territories.
+     */
+
+    /**
      * assign a group of territories to every player.
      * @param world is the world to split into groups of territories.
      *        Should be a World object only with territories and connections.
@@ -264,7 +194,6 @@ public class WorldFactory implements Serializable {
             World world, List<String> playerNames) {
 
         int nGroup = playerNames.size();
-        int nInGroup = world.size() / playerNames.size();
         Map<Integer, List<Territory>> groups = world.divideTerritories(nGroup);
 
         // set total size & total food speed & total tech speed here
