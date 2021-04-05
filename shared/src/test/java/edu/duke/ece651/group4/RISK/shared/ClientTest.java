@@ -127,7 +127,7 @@ class ClientTest {
 //        }
 //        ).start();
 //
-//        Client clientSocket = new Client("127.0.0.1", String.valueOf(PORT));
+//        Client clientSocket = new Client("127.0.0.1", PORT);
 //        World worldRecv = (World) clientSocket.recvObject();
 //        List<Territory> groups = worldRecv.getAllTerritories();
 //        System.out.println(new WorldTextView(worldRecv).displayWorld(worldRecv));
