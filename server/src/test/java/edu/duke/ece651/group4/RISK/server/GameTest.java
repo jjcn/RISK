@@ -37,6 +37,7 @@ class GameTest {
     }
 
     @Test
+
     public void test_setUpGame(){
         Game g = createAGame(1,3);
         g.setUpGame();
@@ -44,13 +45,12 @@ class GameTest {
 
 
     @Test
-    public void test_getWorld(){
+    public void test_getWorld() {
 
-        Game g = createAGame(1,1);
+        Game g = createAGame(1, 1);
 //        System.out.println(g.getUserNames().get(0));
         g.setUpGame();
         g.getTheWorld();
-
 
     }
 }
