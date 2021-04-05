@@ -30,15 +30,32 @@ public class Game {
         this.barrier = new CyclicBarrier(maxNumUsers);
         this.gameState = new GameState();
     }
+    /*
+    * This gets the gameID
+    * @return gameID
+    * */
     public int getGameID(){
         return this.gameID;
     }
+    /*
+    * get the max number of users
+    * @return maxNumUsers
+    * */
     public int getMaxNumUsers(){
         return maxNumUsers;
     }
+    /*
+    * get the clone of a world to send to user
+    * @return a clone of the world
+    * */
     public World getTheWorld(){
         return theWorld.clone();
     }
+
+    /*
+    * This is to get all usernames in this game.
+    * @return a list of usernames in the game
+    * */
     public ArrayList<String> getUserNames(){
         ArrayList<String> userNames = new ArrayList<>();
         for(User u: usersOnGame){
@@ -48,7 +65,10 @@ public class Game {
     }
 
 
-
+    /*
+     * This is to check if a user in this game
+     * @return true if he is in, false if not
+     * */
     public boolean isUserInGame(User u){
         if(usersOnGame.contains(u)){
             return true;
@@ -57,7 +77,9 @@ public class Game {
     }
 
     /*
-    *  operations to User
+    *  try to add a User to this game
+    *  @param u is the user
+    *  @ return true if add successfully, false otherwise
     * */
     synchronized public boolean addUser(User u){
         if(isFull()){
@@ -67,14 +89,21 @@ public class Game {
         gameState.addPlayerState(u);
         return true;
     }
-
+    /*
+     *  try to switch Out a User: change player state as switchout
+     *  @param u is the user
+     * */
     synchronized public void switchOutUser(User u){
         if(!isUserInGame(u)){
             return;
         }
         gameState.changAPlayerStateTo(u, PLAYER_STATE_SWITCH_OUT);
     }
-
+    /*
+     *  try to switch in a User: change player state as PLAYER_STATE_ACTION_PHASE
+     *  It will wait until the gameState is in wait to update
+     *  @param u is the user
+     * */
     synchronized public void switchInUser(User u){
         if(!isUserInGame(u)){
             return;
@@ -84,7 +113,8 @@ public class Game {
     }
 
     /*
-    * Communication between threads
+    * This this barrier wait for all clientThread in this game
+    * This will only be used in place Units Phase
     * */
     public void barrierWait(){
         try {
@@ -99,15 +129,22 @@ public class Game {
 
     /*
     * This checks a user if lose
+    * @return true if lose, false otherwise
     * */
     public boolean isUserLose(User u){
         return this.theWorld.checkLost(u.getUsername());
     }
+    /*
+     * This checks if the game is full
+     * @return true if full, false otherwise
+     * */
     public boolean isFull(){
         return usersOnGame.size() == maxNumUsers;
     }
+
     /*
     * This class check if the game is ended.
+    * @return true if ended, false otherwise
     * */
     public boolean isEndGame(){
         return this.theWorld.isGameEnd();
@@ -144,7 +181,7 @@ public class Game {
     * This is the final update for the whole world after one turn
     * */
     public void updateGameAfterOneTurn(){
-
+        this.theWorld.doAllBattles();
     }
 
 

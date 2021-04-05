@@ -62,7 +62,7 @@ public class WorldFactory implements Serializable {
     	}
     }
 
-    /**
+    /*
      * Step 1: Create unconnected territories.
      * 
      * @param names is a list of territory names.

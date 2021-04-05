@@ -198,6 +198,7 @@ public class ClientThread extends Thread {
             out.println(ownerUser.getUsername() + " switches in  game " + gameToJoin.getGameID() + " AGAIN");
         }
         gameOnGoing = gameToJoin;
+//        this.theClient.sendObject(gameOnGoing.getTheWorld()); // send world to user
         out.println(gameOnGoing.getGameID() + " has " + gameOnGoing.getUserNames().size() );
         out.println(gameOnGoing.getGameID()  + "is full? :" + gameOnGoing.isFull());
         return null;
@@ -284,15 +285,22 @@ public class ClientThread extends Thread {
             return;
         }
         doActionPhaseOneTurn();
+        out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " wait for runner update the world");
         while(!gameOnGoing.gameState.isDoneUpdateGame()){}
+        out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " wait for runner set updating state");
         waitNotifyFromRunner();
         checkResultOneTurn();
     }
 
     protected void doActionPhaseOneTurn(){
         this.theClient.sendObject(gameOnGoing.getTheWorld());
+        out.println("Game" + gameOnGoing.getGameID() + ": Action Phase :  " + ownerUser.getUsername() + " get the world to do action phase");
         // if Done or SwitchOut
+        {
+            // if Done or SwitchOut
 
+
+        }
 
     }
 
@@ -303,14 +311,18 @@ public class ClientThread extends Thread {
      * else, change state to PLAYER_STATE_ACTION_PHASE
      * */
     protected void checkResultOneTurn(){
+        this.theClient.sendObject(gameOnGoing.getTheWorld()); // send world to client after runner finishes one turn
         //Go back to Games Page (Part2)
         if(gameOnGoing.gameState.getAPlayerState(ownerUser).equals(PLAYER_STATE_SWITCH_OUT)){
+            out.println("Game" + gameOnGoing.getGameID() + ": Checking Phase :  " + ownerUser.getUsername() + " Switches Out");
             gameOnGoing = null;
         }
         else if(gameOnGoing.isUserLose(ownerUser)){
+            out.println("Game" + gameOnGoing.getGameID() + ": Checking Phase :  " + ownerUser.getUsername() + " loses");
             gameOnGoing.gameState.changAPlayerStateTo(ownerUser, PLAYER_STATE_LOSE);
         }
         else{
+            out.println("Game" + gameOnGoing.getGameID() + ": Checking Phase :  " + ownerUser.getUsername() + " go back to do action");
             gameOnGoing.gameState.changAPlayerStateTo(ownerUser, PLAYER_STATE_ACTION_PHASE);
         }
     }
@@ -342,7 +354,7 @@ public class ClientThread extends Thread {
         //          start a gameRunner
         //    2.2 join a game
         //          if the game is new, add game.addUser
-        //          if the game is old, loadGame()
+        //          if the game is old, SwitchInUser()
         //    2.3 "refresh"
         //         send all game info
         //    2.4 LogOut

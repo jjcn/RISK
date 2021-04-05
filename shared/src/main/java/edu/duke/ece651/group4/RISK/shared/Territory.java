@@ -6,8 +6,10 @@ import java.util.*;
 
 import static edu.duke.ece651.group4.RISK.shared.Constant.UNIT_NAMES;
 
+
 public class Territory implements Serializable {
     protected static final long serialVersionUID = 15L;
+
     /**
      * Territory's name
      */
