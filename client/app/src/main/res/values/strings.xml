@@ -15,7 +15,7 @@
     <string name="ID_INSTRU">"Room ID: "</string>
     <string name="ROOMINFO">Players in this room:</string>
     <string name="FRESHROOM">fresh</string>
-    <string name="WAIT">waiting for other players</string>
+    <string name="WAIT">Waiting for other players</string>
     <string name="INITPLACE">"Please input number of soldiers you want to place in each territory: "</string>
     <string name="PLACE_INSTRU">You want to place in</string>
     <string name="CHOOSE_INSTRU">"Please input the number you want: "</string>

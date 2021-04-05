@@ -146,6 +146,13 @@ public class PlayerInfo implements Serializable {
     }
 
     /**
+     * Upgrades player's tech level by a certain number.
+     */
+    public void upgradeTechLevelBy(int n) {
+        modifyTechLevelBy(n);
+    }
+
+    /**
      * Modify player's tech level by a number i.
      * 
      * @param i is the number to add to tech level. 

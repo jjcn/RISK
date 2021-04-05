@@ -12,9 +12,18 @@ public class WaitDialog extends Dialog {
 
     public WaitDialog(@NonNull Context context) {
         super(context, R.style.Theme_AppCompat_Dialog);
+        waitText = findViewById(R.id.waitTV);
         setCanceledOnTouchOutside(false);
         getWindow().setGravity(Gravity.CENTER);
         setContentView(R.layout.dialog_wait);
+    }
+
+    public WaitDialog(@NonNull Context context,String text) {
+        super(context, R.style.Theme_AppCompat_Dialog);
         waitText = findViewById(R.id.waitTV);
+        waitText.setText(text);
+        setCanceledOnTouchOutside(false);
+        getWindow().setGravity(Gravity.CENTER);
+        setContentView(R.layout.dialog_wait);
     }
 }

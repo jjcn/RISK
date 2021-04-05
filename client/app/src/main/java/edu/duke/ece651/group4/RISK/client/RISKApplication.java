@@ -18,7 +18,7 @@ import static edu.duke.ece651.group4.RISK.client.Constant.*;
 import static edu.duke.ece651.group4.RISK.shared.Constant.*;
 
 public class RISKApplication extends Application {
-    private static String TAG = RISKApplication.class.getSimpleName();
+    private static final String TAG = RISKApplication.class.getSimpleName();
     private static Client playerClient;
     private static World theWorld;
     private int totalPopulation;
@@ -43,6 +43,7 @@ public class RISKApplication extends Application {
         this.totalPopulation = 15;
         this.rnd = new Random();
         this.roomInfo = new ArrayList<>();
+        this.userName=null;
         Log.i(TAG, LOG_CREATE_SUCCESS);
     }
 
@@ -131,9 +132,9 @@ public class RISKApplication extends Application {
      *
      * @param name is username
      * @param pwd  is the password
-     * @return null if succeed, a error message if false
      */
     public static void sendLogIn(String name, String pwd, onReceiveListener listener) {
+        userName=name;
         sendAccountInfo(LOG_SIGNIN, name, pwd, listener);
     }
 
@@ -142,7 +143,6 @@ public class RISKApplication extends Application {
      *
      * @param name is username
      * @param pwd  is the password
-     * @return null if succeed, a error message if false
      */
     public static void sendSignUp(String name, String pwd, onReceiveListener listener) {
         sendAccountInfo(LOG_SIGNUP, name, pwd, listener);
@@ -178,9 +178,10 @@ public class RISKApplication extends Application {
                     theWorld = (World) receivedO;
                 } else if (type == ROOMS) {
                     roomInfo = (ArrayList<RoomInfo>) receivedO;
-                } else if (type == NAME) {
-                    userName = (String) receivedO;
                 }
+//                else if (type == NAME) {
+//                    userName = (String) receivedO;
+//                }
                 listener.onSuccess(receivedO);
             } catch (Exception e) {
                 Log.e(TAG, e.toString());
@@ -210,8 +211,9 @@ public class RISKApplication extends Application {
                 try {
                     Log.i(TAG, LOG_FUNC_RUN + "receiveString null, create game success");
                     Object receivedWorld = playerClient.recvObject();
-                    if (receivedWorld != null) {
+                    if (receivedWorld instanceof World) {
                         Log.i(TAG, LOG_FUNC_RUN + "World received");
+                        theWorld = (World) receivedWorld;
                         listenerWorld.onSuccess(receivedWorld);
                     } else {
                         Log.i(TAG, LOG_FUNC_RUN + "not World received");
@@ -283,20 +285,32 @@ public class RISKApplication extends Application {
         return null;
     }
 
-    public static void doDone(BasicOrder order, onReceiveListener listener) {
+    public static void doDone(Order order, onReceiveListener listener) {
         sendReceiveHelper(order, listener, WORLD);
     }
 
-//    public static String doTechUpgrade(UpgradeTroopOrder order,onResultListener listener){
-//        try {
-//
-//
+
+    public static String doSoliderUpgrade(UpgradeTroopOrder order, onResultListener listener){
+        try {
+
+            theWorld.upgradeTroop(order,userName);
+            send(order, listener);
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+        return null;
+    }
+
+    public static String doTechUpgrade(onResultListener listener){
+        try {
+            theWorld.upgradePlayerTechLevelBy1(userName);
+//            UpgradeTroopOrder order
 //            send(order,listener);
-//        }catch(Exception e){
-//            return e.getMessage();
-//        }
-//        return null;
-//    }
+        }catch(Exception e){
+            return e.getMessage();
+        }
+        return null;
+    }
 
     public static void doPlacement(List<PlaceOrder> placements, onReceiveListener listener) {
         sendReceiveHelper(placements, listener, WORLD);
@@ -304,19 +318,53 @@ public class RISKApplication extends Application {
     }
 
 
-//    public static MoveOrder buildMoveOrder(String src,String des,int num, String job ){
-//        HashMap<String,Integer> dict=new HashMap<>();
-//        dict.put(job,num);
-//        Troop target=new Troop(dict,new TextPlayer(userName));
-//        return new MoveOrder(src,des,target,MOVE_ACTION);
-//    }
-//
-//    public static AttackOrder buildAttackOrder(String src,String des,int num, String job ){
-//        HashMap<String,Integer> dict=new HashMap<>();
-//        dict.put(job,num);
-//        Troop target=new Troop(dict,new TextPlayer(userName));
-//        return new AttackOrder (src,des,target,ATTACK_ACTION);
-//    }
+    public static MoveOrder buildMoveOrder(String src,String des,int num, String job ){
+        HashMap<String,Integer> dict=new HashMap<>();
+        dict.put(job,num);
+        Troop target=new Troop(dict,new TextPlayer(userName));
+        return new MoveOrder(src,des,target,MOVE_ACTION);
+    }
+
+    public static AttackOrder buildAttackOrder(String src,String des,int num, String job ){
+        HashMap<String,Integer> dict=new HashMap<>();
+        dict.put(job,num);
+        Troop target=new Troop(dict,new TextPlayer(userName));
+        return new AttackOrder (src,des,target,ATTACK_ACTION);
+    }
+
+    public static UpgradeTroopOrder buildUpOrder(String srcName,
+                                                 int levelBefore, int levelAfter,
+                                                 int nUnit){
+
+
+        return new UpgradeTroopOrder (srcName,levelBefore,levelAfter,nUnit);
+    }
+
+    public static List<String> getWorldInfo(){
+        List<Territory> terrs=theWorld.getAllTerritories();
+        List<String> info=new ArrayList<>();
+
+        for(Territory t: terrs){
+            info.add(t.getInfo());
+        }
+        return info;
+    }
+
+    public static String getPlayerInfo(){
+        PlayerInfo info=theWorld.getPlayerInfoByName(userName);
+       StringBuilder result=new StringBuilder();
+        result.append("Player name:  "+userName+"\n");
+        result.append("Food Resource: "+info.getFoodQuantity()+"\n");
+        result.append("Tech Resource: "+info.getTechQuantity()+"\n");
+        result.append("Tech Level: "+info.getTechLevel()+"\n");
+        result.append("My Territories: ");
+        List<Territory> terrs=theWorld.getTerritoriesOfPlayer(userName);
+        for(Territory t: terrs){
+            result.append(t.getName()+"  ");
+        }
+        result.append("\n");
+        return result.toString();
+    }
 
 
 }

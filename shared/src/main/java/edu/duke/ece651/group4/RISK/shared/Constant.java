@@ -51,4 +51,11 @@ public class Constant {
     public static  final List<Integer> UNIT_COSTS = Arrays.asList(0,3,11,30,55,90,140);
     public static final List<Integer> UNIT_BONUS= Arrays.asList(0,1,3,5,8,11,15);
 
+    public static final char MOVE_ACTION ='M';
+    public static final char ATTACK_ACTION='A';
+    public static final char DONE_ACTION='D';
+    public static final char UPTROOP_ACTION='U';
+    public static final char UPTECH_ACTION='T';
+    public static final char SWITCH_OUT_ACTION='E';
+
 }

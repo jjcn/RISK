@@ -1,9 +1,14 @@
 package edu.duke.ece651.group4.RISK.shared;
 
 import java.io.Serializable;
+import java.util.NoSuchElementException;
 
 public class PlaceOrder implements Order, Serializable {
     protected static final long serialVersionUID = 8L;
+
+    protected static final String NO_SRC_MSG = 
+    "Place order does not have source territory.";
+
     private Character actionName;
     private String des;
     private Troop troop;
@@ -21,8 +26,7 @@ public class PlaceOrder implements Order, Serializable {
 
     @Override
     public String getSrcName() {
-        // TODO Auto-generated method stub
-        return null;
+        throw new NoSuchElementException(NO_SRC_MSG);
     }
 
     @Override

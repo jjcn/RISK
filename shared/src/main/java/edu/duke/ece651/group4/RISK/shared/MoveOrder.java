@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public class MoveOrder implements Order, Serializable {
     protected static final long serialVersionUID = 6L;
+    
     private Character actionName;
     private String src;
     private String des;
