@@ -240,6 +240,7 @@ class ClientThreadTest {
     @Test
     public void test_findGame(){
         ClientThread ct = createAClientThread(1, 3);
+        ct.tryLogIn("user0", "123");
         assertEquals(null, ct.findGame(-1));
         Game g = new Game(0,2);
         assertEquals(g.getGameID(), ct.findGame(0).getGameID());
