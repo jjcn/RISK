@@ -229,11 +229,19 @@ public class World implements Serializable {
     }
 
     /**
-     * Register a player's info in the world.
-     * @param pInfo is the player info to register.
+     * Register a player and his/her info in the world.
+     * @param playerName is the player's name.
      */
     public void registerPlayer(String playerName) {
         playerInfos.put(playerName, new PlayerInfo(playerName));
+    }
+
+    /**
+     * Register a player's info in the world.
+     * @param pInfo is the player info to register.
+     */
+    public void registerPlayer(PlayerInfo pInfo) {
+        playerInfos.put(pInfo.getName(), pInfo);
     }
 
     /**
@@ -242,7 +250,7 @@ public class World implements Serializable {
      * @param playerName is the name of the player.
      * @return that player's playerInfo.
      */
-    public PlayerInfo findPlayerInfo(String playerName) {
+    public PlayerInfo getPlayerInfoByName(String playerName) {
         if (playerInfos.get(playerName) == null) {
             throw new IllegalArgumentException(String.format(NO_PLAYERINFO_MSG, playerName));
         }
@@ -250,29 +258,23 @@ public class World implements Serializable {
     }
 
     /**
-     * Finds a territory by its name. If the territory exists, returns that
-     * territory of that name. If not, an exception will be thrown.
-     * 
-     * @param terrName is the territory name to search.
-     * @return the specified territory.
+     * Overloaded function taking in a Player object.
+     * @param player
+     * @return
      */
-    public Territory findTerritory(String terrName) {
-        for (Territory terr : territories.getVertices()) {
-            if (terr.getName().equals(terrName)) {
-                return terr;
-            }
-        }
-        throw new NoSuchElementException(String.format(TERRITORY_NOT_FOUND_MSG, terrName));
+    public List<Territory> getTerritoriesOfPlayer(Player player) {      
+        return getTerritoriesOfPlayer(player.getName());
     }
 
     /**
      * Get a list of all territories owned by a player.
+     * @param playerName is a player's name.
      * @return all territories owned by a player.
      */
-    public List<Territory> getTerritoriesOfPlayer(Player player) {
+    public List<Territory> getTerritoriesOfPlayer(String playerName) {
         List<Territory> ans = new ArrayList<>();
         for (Territory terr : getAllTerritories()) {
-            if (terr.getOwner().equals(player)) {
+            if (terr.getOwner().getName().equals(playerName)) {
                 ans.add(terr);
             }
         }
@@ -423,7 +425,7 @@ public class World implements Serializable {
 
         end.sendInTroop(start.sendOutTroop(troop));
 
-        PlayerInfo pInfo = findPlayerInfo(playerName);
+        PlayerInfo pInfo = getPlayerInfoByName(playerName);
 
         int consumption = calculateMoveConsumption(order);
         pInfo.consumeFood(consumption);
@@ -461,7 +463,7 @@ public class World implements Serializable {
 
         end.sendInEnemyTroop(start.sendOutTroop(troop));
 
-        PlayerInfo pInfo = findPlayerInfo(playerName);
+        PlayerInfo pInfo = getPlayerInfoByName(playerName);
 
         int consumption = calculateAttackConsumption(order);
         pInfo.consumeFood(consumption);
@@ -479,7 +481,7 @@ public class World implements Serializable {
         int levelAfter = utOrder.getLevelAfter();
         int nUnit = utOrder.getNUnit();
         
-        PlayerInfo pInfo = findPlayerInfo(playerName);
+        PlayerInfo pInfo = getPlayerInfoByName(playerName);
         int remainder = terr.upgradeTroop(levelBefore, levelAfter, nUnit, pInfo.getTechQuantity());
         int consumption = pInfo.getTechQuantity() - remainder;
         pInfo.consumeTech(consumption);
@@ -501,16 +503,32 @@ public class World implements Serializable {
     /**
      * Add unit to all territories.
      * 
+     * Requirement:
+     * At the end of every turn, add a level 0 unit to every territory.
+     * 
      * @param num is the number of units to add to every territory.
      */
-    // TODO: unit now has level.
-    // At the end of every turn, add a level 0 unit to every territory.
     public void addUnitToAll(int num) {
         if (num < 0) {
             throw new IllegalArgumentException(NOT_POSITIVE_MSG);
         }
         for (Territory terr : getAllTerritories()) {
             terr.addUnit(num);
+        }
+    }
+
+    /**
+     * Requirement:
+     * At the end of turn,
+     * all players gain resources from the territories he owns.
+     */
+    public void allPlayersGainResources() {
+        for (PlayerInfo pInfo : playerInfos.values()) {
+            String playerName = pInfo.getName();
+            for (Territory terr : getTerritoriesOfPlayer(playerName)) {
+                pInfo.gainFood(terr.getFoodSpeed());
+                pInfo.gainTech(terr.getTechSpeed());
+            }
         }
     }
 
@@ -642,6 +660,22 @@ public class World implements Serializable {
             return territories.getVertices().get(0).getOwner().getName();
         }
         return null;
+    }
+
+    /**
+     * Finds a territory by its name. If the territory exists, returns that
+     * territory of that name. If not, an exception will be thrown.
+     * 
+     * @param terrName is the territory name to search.
+     * @return the specified territory.
+     */
+    public Territory findTerritory(String terrName) {
+        for (Territory terr : territories.getVertices()) {
+            if (terr.getName().equals(terrName)) {
+                return terr;
+            }
+        }
+        throw new NoSuchElementException(String.format(TERRITORY_NOT_FOUND_MSG, terrName));
     }
 
     @Override

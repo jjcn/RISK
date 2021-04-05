@@ -227,9 +227,9 @@ public class WorldTest {
     
     public World createWorldAndRegister(Troop... troop) {
         World world = createWorld(troop);
-        world.registerPlayerInfo(redInfo);
-        world.registerPlayerInfo(blueInfo);
-        world.registerPlayerInfo(greenInfo);
+        world.registerPlayer(redInfo);
+        world.registerPlayer(blueInfo);
+        world.registerPlayer(greenInfo);
         return world;
     }
 
@@ -353,7 +353,7 @@ public class WorldTest {
         World world = createWorldAndRegister(troopsSeparated);
         UpgradeTroopOrder utOrder1 = new UpgradeTroopOrder("Narnia", 0, 1, 1);
         world.upgradeTroop(utOrder1, "red");
-        assertEquals(100 - 3 * 1, world.findPlayerInfo("red").getTechQuantity());
+        assertEquals(100 - 3 * 1, world.getPlayerInfoByName("red").getTechQuantity());
 
         UpgradeTroopOrder utOrder2 = new UpgradeTroopOrder("Elantris", 0, 1, 6);
         world.upgradeTroop(utOrder2, "red");
