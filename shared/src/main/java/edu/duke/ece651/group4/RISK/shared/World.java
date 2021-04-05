@@ -23,7 +23,7 @@ public class World implements Serializable {
     /**
      * Auto-generated serialVersionUID
      */
-    private static final long serialVersionUID = 4696428798493622247L;
+    protected static final long serialVersionUID = 4696428798493622247L;
     /**
      * Error messages
      */
@@ -34,20 +34,23 @@ public class World implements Serializable {
     /**
      * All territories in the world. Implemented with a graph structure.
      */
-    public Graph<Territory> territories;
+    protected Graph<Territory> territories;
     /**
      * A mapping of player's name to his/her info.
      */
-    private Map<String, PlayerInfo> playerInfos;
+    protected Map<String, PlayerInfo> playerInfos;
     /**
      * Order checker
      */
-    private final OrderChecker basicOrderChecker;
+    protected final OrderChecker basicOrderChecker;
     /**
      * Random seed to use with random division of territories.
      */
-    private final Random rnd;
-    public String report;
+    protected final Random rnd;
+    /**
+     * Battle report
+     */
+    protected String report;
 
     /**
      * Construct a default world with an empty graph.
@@ -76,7 +79,7 @@ public class World implements Serializable {
         this.playerInfos = new HashMap<String, PlayerInfo>();
         basicOrderChecker = new OrderChecker();
         rnd = random;
-        report=null;
+        report = null;
     }
 
     /**
@@ -138,13 +141,9 @@ public class World implements Serializable {
         }
         List<Integer> weightsCopy = territories.cloneWeights();
         boolean[][] adjMatrixCopy = territories.cloneAdjMatrix();
-        World cpyWorld=new World(new Graph<>(cpy, weightsCopy, adjMatrixCopy), this.rnd);
+        World cpyWorld = new World(new Graph<>(cpy, weightsCopy, adjMatrixCopy), this.rnd);
         cpyWorld.setReport(new String(this.report));
         return cpyWorld;
-    }
-
-    public void setReport(String reprot){
-        this.report=reprot;
     }
 
     /**
@@ -205,6 +204,10 @@ public class World implements Serializable {
         findTerritory(terrName).setRandom(seed);
     }
 
+    protected void setReport(String reprot) {
+        this.report = reprot;
+    }
+
     /**
      * Add a territory to the world.
      * 
@@ -237,6 +240,7 @@ public class World implements Serializable {
 
     /**
      * Register a player and his/her info in the world.
+     * 
      * @param playerName is the player's name.
      */
     public void registerPlayer(String playerName) {
@@ -245,6 +249,7 @@ public class World implements Serializable {
 
     /**
      * Register a player's info in the world.
+     * 
      * @param pInfo is the player info to register.
      */
     public void registerPlayer(PlayerInfo pInfo) {
@@ -261,20 +266,22 @@ public class World implements Serializable {
         if (playerInfos.get(playerName) == null) {
             throw new IllegalArgumentException(String.format(NO_PLAYERINFO_MSG, playerName));
         }
-        return playerInfos.get(playerName);    
+        return playerInfos.get(playerName);
     }
 
     /**
      * Overloaded function taking in a Player object.
+     * 
      * @param player
      * @return
      */
-    public List<Territory> getTerritoriesOfPlayer(Player player) {      
+    public List<Territory> getTerritoriesOfPlayer(Player player) {
         return getTerritoriesOfPlayer(player.getName());
     }
 
     /**
      * Get a list of all territories owned by a player.
+     * 
      * @param playerName is a player's name.
      * @return all territories owned by a player.
      */
@@ -290,6 +297,7 @@ public class World implements Serializable {
 
     /**
      * Try upgrade a player's tech level by 1.
+     * 
      * @param playerName is a player's name.
      */
     public void upgradePlayerTechLevelBy1(String playerName) {
@@ -319,32 +327,31 @@ public class World implements Serializable {
     }
 
     public int calculateShortestPath(String start, String end) {
-    	return calculateShortestPath(findTerritory(start), findTerritory(end));
+        return calculateShortestPath(findTerritory(start), findTerritory(end));
     }
-    
+
     /**
      * Calculates the shortest path length between 2 vertices.
+     * 
      * @param start is the starting vertex.
-     * @param end is the ending vertex.
+     * @param end   is the ending vertex.
      * @return length of the shortest path .
      */
     public int calculateShortestPath(Territory start, Territory end) {
-    	String NOT_REACHABLE_MSG = "Cannot reach from start to end.";
-		/*
-		 * shortest distances from start to all vertices
-		 */
+        String NOT_REACHABLE_MSG = "Cannot reach from start to end.";
+        /*
+         * shortest distances from start to all vertices
+         */
         Map<Territory, Integer> distances = new HashMap<>();
         /*
-         *  initialize distances:
-         *  start: as its weight
-         *  others: infinity (substitute with Integer.MAX_VALUE)
+         * initialize distances: start: as its weight others: infinity (substitute with
+         * Integer.MAX_VALUE)
          */
         for (Territory terr : getAllTerritories()) {
             if (terr.equals(start)) {
-            	distances.put(terr, terr.getArea());
-            }
-            else {
-            	distances.put(terr, Integer.MAX_VALUE);
+                distances.put(terr, terr.getArea());
+            } else {
+                distances.put(terr, Integer.MAX_VALUE);
             }
         }
         /*
@@ -353,20 +360,20 @@ public class World implements Serializable {
         Set<Territory> unvisited = new HashSet<>();
         Set<Territory> visited = new HashSet<>();
         unvisited.add(start);
-        /* While the unvisited is not empty:
-		 * 1. Choose an unvisited vertex, 
-		 *    which should be the one with the lowest distance from the start,
-		 *    and remove it from unvisited.
-		 * 2. Calculate new distances to direct neighbors by keeping the lowest distance at each evaluation.
-		 * 3. Add neighbors that are not yet visited to the unvisited set.
+        /*
+         * While the unvisited is not empty: 1. Choose an unvisited vertex, which should
+         * be the one with the lowest distance from the start, and remove it from
+         * unvisited. 2. Calculate new distances to direct neighbors by keeping the
+         * lowest distance at each evaluation. 3. Add neighbors that are not yet visited
+         * to the unvisited set.
          */
         while (unvisited.size() != 0) {
-        	Territory current = getSmallestDistanceVertex(unvisited, distances);
+            Territory current = getSmallestDistanceVertex(unvisited, distances);
             unvisited.remove(current);
             for (Territory adjacent : getAdjacents(current)) {
                 if (!visited.contains(adjacent) && adjacent.getOwner().equals(start.getOwner())) {
-                    distances.put(adjacent, Math.min(distances.get(current) + adjacent.getArea(), 
-                    		                         distances.get(adjacent)));
+                    distances.put(adjacent,
+                            Math.min(distances.get(current) + adjacent.getArea(), distances.get(adjacent)));
                     unvisited.add(adjacent);
                 }
             }
@@ -374,18 +381,19 @@ public class World implements Serializable {
         }
 
         if (distances.get(end) == Integer.MAX_VALUE) {
-        	throw new IllegalArgumentException(NOT_REACHABLE_MSG);
+            throw new IllegalArgumentException(NOT_REACHABLE_MSG);
         }
         return distances.get(end);
     }
-    
+
     /**
      * Find the smallest distance vertex.
+     * 
      * @param tovisit
      * @return
      */
     protected Territory getSmallestDistanceVertex(Set<Territory> tovisit, Map<Territory, Integer> distances) {
-    	Territory smallestDistanceVertex = null;
+        Territory smallestDistanceVertex = null;
         int lowestDistance = Integer.MAX_VALUE;
         for (Territory vertex : tovisit) {
             int dist = distances.get(vertex);
@@ -396,7 +404,7 @@ public class World implements Serializable {
         }
         return smallestDistanceVertex;
     }
-    
+
     /**
      * Calculate the quantity of resources consumed by a move order.
      * 
@@ -425,7 +433,7 @@ public class World implements Serializable {
      * Also checks if the troop size is valid to send from the starting territory.
      * The function does NOT consume food resource.
      * 
-     * @param order is a move order.
+     * @param order      is a move order.
      * @param playerName is the player's name who commited this order.
      */
     public void moveTroop(BasicOrder order, String playerName) {
@@ -463,7 +471,7 @@ public class World implements Serializable {
      * the starting territory. The function does NOT consume food resource in this
      * function.
      * 
-     * @param order is the attack order.
+     * @param order      is the attack order.
      * @param playerName is the player's name who commited this order.
      */
     public void attackATerritory(BasicOrder order, String playerName) {
@@ -485,9 +493,10 @@ public class World implements Serializable {
     }
 
     /**
-     * Trys to upgrade troop on a territory. 
-     * If successful, tech resource will be consumed.
-     * @param utOrder is an UpgradeTroopOrder.
+     * Trys to upgrade troop on a territory. If successful, tech resource will be
+     * consumed.
+     * 
+     * @param utOrder    is an UpgradeTroopOrder.
      * @param playerName is the player's name who commited this order.
      */
     public void upgradeTroop(UpgradeTroopOrder utOrder, String playerName) {
@@ -495,7 +504,7 @@ public class World implements Serializable {
         int levelBefore = utOrder.getLevelBefore();
         int levelAfter = utOrder.getLevelAfter();
         int nUnit = utOrder.getNUnit();
-        
+
         PlayerInfo pInfo = getPlayerInfoByName(playerName);
         int remainder = terr.upgradeTroop(levelBefore, levelAfter, nUnit, pInfo.getTechQuantity());
         int consumption = pInfo.getTechQuantity() - remainder;
@@ -512,15 +521,14 @@ public class World implements Serializable {
         for (Territory terr : territories.getVertices()) {
             ans.append(terr.doBattles());
         }
-        this.report=ans.toString();
-        return ans.toString();
+        this.report = ans.toString();
+        return report;
     }
 
     /**
      * Add unit to all territories.
      * 
-     * Requirement:
-     * At the end of every turn, add a level 0 unit to every territory.
+     * Requirement: At the end of every turn, add a level 0 unit to every territory.
      * 
      * @param num is the number of units to add to every territory.
      */
@@ -534,9 +542,8 @@ public class World implements Serializable {
     }
 
     /**
-     * Requirement:
-     * At the end of turn,
-     * all players gain resources from the territories he owns.
+     * Requirement: At the end of turn, all players gain resources from the
+     * territories he owns.
      */
     public void allPlayersGainResources() {
         for (PlayerInfo pInfo : playerInfos.values()) {
