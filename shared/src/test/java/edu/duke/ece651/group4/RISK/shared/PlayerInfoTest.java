@@ -28,7 +28,51 @@ public class PlayerInfoTest {
 	
 	@Test
 	public void testTechLevel() {
-		PlayerInfo pInfo = new PlayerInfo("player");
+		PlayerInfo emptyNameInfo = new PlayerInfo("");
+		assertEquals(emptyNameInfo.playerName, "");
+		PlayerInfo pInfo = new PlayerInfo("!");
+		assertEquals(pInfo.playerName, "!");
+	}
+
+	@Test
+	public void TestGainResources() {
+		PlayerInfo pInfo = new PlayerInfo("A", 50, 25);
+		assertEquals(50, pInfo.getFoodQuantity());
+		assertEquals(25, pInfo.getTechQuantity());
+		
+		pInfo.gainFood(10);
+		pInfo.gainTech(0);
+		assertEquals(50 + 10, pInfo.getFoodQuantity());
+		assertEquals(25 + 0, pInfo.getTechQuantity());
+		
+		assertThrows(IllegalArgumentException.class,
+					() -> pInfo.gainFood(-1));
+		assertEquals(50 + 10, pInfo.getFoodQuantity());
+	}
+
+	@Test
+	public void TestConsumeResources() {
+		PlayerInfo pInfo = new PlayerInfo("A", 50, 25);
+		assertEquals(50, pInfo.getFoodQuantity());
+		assertEquals(25, pInfo.getTechQuantity());
+		
+		pInfo.consumeFood(10);
+		pInfo.consumeTech(0);
+		assertEquals(50 - 10, pInfo.getFoodQuantity());
+		assertEquals(25 + 0, pInfo.getTechQuantity());
+		
+		assertThrows(IllegalArgumentException.class,
+					() -> pInfo.consumeFood(-1));
+		assertEquals(50 - 10, pInfo.getFoodQuantity());
+
+		assertThrows(IllegalArgumentException.class,
+					() -> pInfo.consumeTech(26));
+		assertEquals(25 + 0, pInfo.getTechQuantity());
+	}
+
+	@Test
+	public void testUpgradeTechLevel() {
+		PlayerInfo pInfo = new PlayerInfo("player", 100, 100);
 		assertEquals(pInfo.techLevel, 1);
 		// try modify to -1
 		assertThrows(IllegalArgumentException.class,
@@ -40,4 +84,25 @@ public class PlayerInfoTest {
 		pInfo.upgradeTechLevelBy1();
 		assertEquals(pInfo.techLevel, 2);
 	}
+
+	@Test
+	public void testTechLevel_not_enough_resource() {
+		PlayerInfo pInfo = new PlayerInfo("A", 0, 0);
+		assertEquals(pInfo.techLevel, 1);
+		assertThrows(IllegalArgumentException.class, 
+					() -> pInfo.upgradeTechLevelBy1());
+		assertEquals(pInfo.techLevel, 1);
+	}
+
+	@Test
+	public void testCalcUpgradeTechLevelConsumption() {
+		assertEquals(125, PlayerInfo.calcUpgradeTechLevelConsumption(3, 4));
+		assertEquals(50, PlayerInfo.calcUpgradeTechLevelConsumption(1, 2));
+		assertEquals(300, PlayerInfo.calcUpgradeTechLevelConsumption(5, 6));
+		assertThrows(IllegalAccessException.class,
+					() -> PlayerInfo.calcUpgradeTechLevelConsumption(6, 7));
+		assertThrows(IllegalAccessException.class,
+					() -> PlayerInfo.calcUpgradeTechLevelConsumption(-1, 0));
+	}
+	
 }

@@ -24,7 +24,7 @@ public class PlayerInfo implements Serializable {
      * Cumulative costs of upgrading from tech level 1 to N.
      * Two 0's are put at the start for easy indexing by techLevel.
      */
-    protected final int[] cumTechLevelUpgradeCosts = 
+    protected static final int[] cumTechLevelUpgradeCosts = 
     {0, 0, 50, 125, 250, 450, 750}; // TODO: this is hardcoded for now, may put in a file?
 
     /**
@@ -36,12 +36,13 @@ public class PlayerInfo implements Serializable {
     /**
      * Error messages
      */
-    final String TECHLEVEL_INVALID_MODIFY_MSG = 
+    final static String TECHLEVEL_INVALID_MODIFY_MSG = 
     "Error: cannot modify the tech level of %s by %d.%n" +
     "The tech level after this modification will be %d,%n";
-    final String FAILURE_TECH_LEVEL_UPGRADE_MSG = String.format(
-    "Fails to upgrade player %s tech level.",
-    playerName);
+    final static String FAILURE_TECH_LEVEL_UPGRADE_MSG = 
+    "Fails to upgrade %s's tech level.";
+    final static String INVALID_TECH_LEVEL_MSG =
+    "Specified tech level does not exist.";
 
     protected PlayerInfo(String playerName, int techLevel, int minTechLevel, int maxTechLevel,
             FoodResource foodResource, TechResource techResource) {
@@ -157,7 +158,8 @@ public class PlayerInfo implements Serializable {
                 consumeTech(calcUpgradeTechLevelConsumption(techLevel, techLevelAfterMod));
                 techLevel += i;
             } catch (IllegalArgumentException iae) {
-                String err_msg = iae.getMessage() + "%n" + FAILURE_TECH_LEVEL_UPGRADE_MSG;
+                String err_msg = iae.getMessage() + "\n" + 
+                		String.format(FAILURE_TECH_LEVEL_UPGRADE_MSG, playerName);
                 throw new IllegalArgumentException(err_msg);
             }
         }
@@ -169,8 +171,13 @@ public class PlayerInfo implements Serializable {
      * @param after is the tech level after an upgrade.
      * @return quantity of tech resource consumed by this upgrade.
      */
-    protected int calcUpgradeTechLevelConsumption(int before, int after) {
-        return cumTechLevelUpgradeCosts[after] - cumTechLevelUpgradeCosts[before];
+    protected static int calcUpgradeTechLevelConsumption(int before, int after) {
+        try {
+            return cumTechLevelUpgradeCosts[after] 
+                    - cumTechLevelUpgradeCosts[before];
+        } catch (IndexOutOfBoundsException ioobe) {
+            throw new IllegalArgumentException(INVALID_TECH_LEVEL_MSG);
+        }
     }
 
     @Override
