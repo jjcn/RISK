@@ -156,6 +156,7 @@ public class Game {
     public void setUpGame(){
         WorldFactory factory = new WorldFactory();
         switch(this.maxNumUsers){
+            case 1:
             case 2:
             case 3:
                 this.theWorld = factory.create6TerritoryWorld();

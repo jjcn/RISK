@@ -34,4 +34,10 @@ class GameTest {
             System.out.println("Done wait");
         }).start();
     }
+
+    @Test
+    public void test_setUpGame(){
+        Game g = createAGame(1,3);
+        g.setUpGame();
+    }
 }
