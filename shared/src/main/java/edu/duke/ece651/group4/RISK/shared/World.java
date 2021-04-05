@@ -42,7 +42,7 @@ public class World implements Serializable {
     /**
      * Order checker
      */
-    protected final OrderChecker basicOrderChecker;
+    protected final OrderChecker orderChecker;
     /**
      * Random seed to use with random division of territories.
      */
@@ -77,7 +77,7 @@ public class World implements Serializable {
     public World(Graph<Territory> terrs, Random random) {
         territories = terrs;
         this.playerInfos = new HashMap<String, PlayerInfo>();
-        basicOrderChecker = new OrderChecker();
+        orderChecker = new OrderChecker();
         rnd = random;
         report = null;
     }
@@ -432,7 +432,7 @@ public class World implements Serializable {
      * @param order is the move order.
      * @return quantity of consumed resources.
      */
-    protected int calculateMoveConsumption(BasicOrder order) {
+    protected int calculateMoveConsumption(MoveOrder order) {
         Territory start = findTerritory(order.getSrcName());
         Territory end = findTerritory(order.getDesName());
         Troop troop = order.getActTroop();
@@ -452,12 +452,12 @@ public class World implements Serializable {
      * @param order      is a move order.
      * @param playerName is the player's name who commited this order.
      */
-    public void moveTroop(BasicOrder order, String playerName) {
+    public void moveTroop(MoveOrder order, String playerName) {
         Territory start = findTerritory(order.getSrcName());
         Territory end = findTerritory(order.getDesName());
         Troop troop = order.getActTroop();
 
-        String errorMsg = basicOrderChecker.checkOrder(order, this);
+        String errorMsg = orderChecker.checkOrder(order, this);
         if (errorMsg != null) {
             throw new IllegalArgumentException(errorMsg);
         }
@@ -477,7 +477,7 @@ public class World implements Serializable {
      * @param order is the attack order.
      * @return quantity of consumed resources.
      */
-    protected int calculateAttackConsumption(BasicOrder order) {
+    protected int calculateAttackConsumption(AttackOrder order) {
         return order.getActTroop().size();
     }
 
@@ -490,12 +490,12 @@ public class World implements Serializable {
      * @param order      is the attack order.
      * @param playerName is the player's name who commited this order.
      */
-    public void attackATerritory(BasicOrder order, String playerName) {
+    public void attackATerritory(AttackOrder order, String playerName) {
         Territory start = findTerritory(order.getSrcName());
         Territory end = findTerritory(order.getDesName());
         Troop troop = order.getActTroop();
 
-        String errorMsg = basicOrderChecker.checkOrder(order, this);
+        String errorMsg = orderChecker.checkOrder(order, this);
         if (errorMsg != null) {
             throw new IllegalArgumentException(errorMsg);
         }
@@ -647,16 +647,6 @@ public class World implements Serializable {
     }
 
     /**
-     * Checks if an order is legal.
-     * 
-     * @param order is the order to check.
-     * @return null, if the order is legal; a String indicating the problem, if not.
-     */
-    public String checkBasicOrder(BasicOrder order) {
-        return basicOrderChecker.checkOrder(order, this);
-    }
-
-    /**
      * Checks if a player has lost the game by losing all his territories.
      * 
      * @param playerName is the player's name.
@@ -729,7 +719,7 @@ public class World implements Serializable {
 
     @Override
     public String toString() {
-        return territories.toString() + basicOrderChecker.toString() + rnd.toString();
+        return territories.toString() + orderChecker.toString() + rnd.toString();
     }
 
     @Override
