@@ -35,7 +35,7 @@ public class MoveOrderChecker implements Serializable {
      * @return null, if the order is legal;
      *         a String indicating the problem, if not.
      */
-    protected String checkMyOrder(BasicOrder order, World world) {
+    protected String checkMyOrder(Order order, World world) {
         if (Character.toUpperCase(order.getActionName()) == 'M') {
             Territory start = world.findTerritory(order.getSrcName());
             Territory end = world.findTerritory(order.getDesName());

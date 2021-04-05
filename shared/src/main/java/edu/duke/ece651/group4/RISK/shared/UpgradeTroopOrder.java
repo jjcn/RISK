@@ -29,8 +29,19 @@ public class UpgradeTroopOrder implements Order {
         return actionName;
     }
 
+    @Override
     public String getSrcName() {
         return srcName;
+    }
+
+    @Override
+    public String getDesName() {
+        return null;
+    }
+
+    @Override
+    public Troop getActTroop() {
+        return null;
     }
 
     public int getLevelBefore() {

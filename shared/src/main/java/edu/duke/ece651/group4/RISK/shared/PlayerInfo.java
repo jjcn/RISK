@@ -81,6 +81,13 @@ public class PlayerInfo implements Serializable {
         this(playerName, 1, 0, 6, new FoodResource(nFood), new TechResource(nTech));
     }
 
+    public PlayerInfo clone() {
+        return new PlayerInfo(playerName, techLevel, 
+                            minTechLevel, maxTechLevel, 
+                            new FoodResource(foodResource.getQuantity()), 
+                            new TechResource(techResource.getQuantity()));
+    }
+
     public String getName() {
         return playerName;
     }

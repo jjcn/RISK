@@ -42,7 +42,7 @@ public class World implements Serializable {
     /**
      * Order checker
      */
-    protected final OrderChecker basicOrderChecker;
+    protected final OrderChecker orderChecker;
     /**
      * Random seed to use with random division of territories.
      */
@@ -75,11 +75,18 @@ public class World implements Serializable {
      * @param random is the random seed.
      */
     public World(Graph<Territory> terrs, Random random) {
-        territories = terrs;
-        this.playerInfos = new HashMap<String, PlayerInfo>();
-        basicOrderChecker = new OrderChecker();
-        rnd = random;
-        report = null;
+        this(terrs, new HashMap<String, PlayerInfo>(), random, "");
+    }
+
+    protected World(Graph<Territory> terrs, 
+                    Map<String, PlayerInfo> playerInfos,
+                    Random random,
+                    String report) {
+        this.territories = terrs;
+        this.playerInfos = playerInfos;
+        this.orderChecker = new OrderChecker();
+        this.rnd = random;
+        this.report = report;
     }
 
     /**
@@ -130,8 +137,6 @@ public class World implements Serializable {
 
     /**
      * Creates a deep copy of a world object.
-     * 
-     * @return a deep copy of the world object.
      */
     public World clone() {
         List<Territory> old = territories.getVertices();
@@ -141,14 +146,22 @@ public class World implements Serializable {
         }
         List<Integer> weightsCopy = territories.cloneWeights();
         boolean[][] adjMatrixCopy = territories.cloneAdjMatrix();
-        World cpyWorld = new World(new Graph<>(cpy, weightsCopy, adjMatrixCopy), this.rnd);
-        if(this.report==null){
-            cpyWorld.setReport(null);
-        }else{
-            cpyWorld.setReport(new String(this.report));
-        }
+        World cpyWorld = new World(new Graph<>(cpy, weightsCopy, adjMatrixCopy), 
+                    cloneAllPlayerInfos(), this.rnd, 
+                    new String(this.report == null ? null : new String(this.report)));        
 
         return cpyWorld;
+    }
+
+    /**
+     * Creates a deep copy of playerInfos.
+     */
+    public Map<String, PlayerInfo> cloneAllPlayerInfos() {
+        Map<String, PlayerInfo> newMap = new HashMap<>();
+        for (String playerName : playerInfos.keySet()) {
+            newMap.put(playerName, playerInfos.get(playerName).clone());
+        }
+        return newMap;
     }
 
     /**
@@ -437,7 +450,7 @@ public class World implements Serializable {
      * @param order is the move order.
      * @return quantity of consumed resources.
      */
-    protected int calculateMoveConsumption(BasicOrder order) {
+    protected int calculateMoveConsumption(MoveOrder order) {
         Territory start = findTerritory(order.getSrcName());
         Territory end = findTerritory(order.getDesName());
         Troop troop = order.getActTroop();
@@ -457,12 +470,12 @@ public class World implements Serializable {
      * @param order      is a move order.
      * @param playerName is the player's name who commited this order.
      */
-    public void moveTroop(BasicOrder order, String playerName) {
+    public void moveTroop(MoveOrder order, String playerName) {
         Territory start = findTerritory(order.getSrcName());
         Territory end = findTerritory(order.getDesName());
         Troop troop = order.getActTroop();
 
-        String errorMsg = basicOrderChecker.checkOrder(order, this);
+        String errorMsg = orderChecker.checkOrder(order, this);
         if (errorMsg != null) {
             throw new IllegalArgumentException(errorMsg);
         }
@@ -482,7 +495,7 @@ public class World implements Serializable {
      * @param order is the attack order.
      * @return quantity of consumed resources.
      */
-    protected int calculateAttackConsumption(BasicOrder order) {
+    protected int calculateAttackConsumption(AttackOrder order) {
         return order.getActTroop().size();
     }
 
@@ -495,12 +508,12 @@ public class World implements Serializable {
      * @param order      is the attack order.
      * @param playerName is the player's name who commited this order.
      */
-    public void attackATerritory(BasicOrder order, String playerName) {
+    public void attackATerritory(AttackOrder order, String playerName) {
         Territory start = findTerritory(order.getSrcName());
         Territory end = findTerritory(order.getDesName());
         Troop troop = order.getActTroop();
 
-        String errorMsg = basicOrderChecker.checkOrder(order, this);
+        String errorMsg = orderChecker.checkOrder(order, this);
         if (errorMsg != null) {
             throw new IllegalArgumentException(errorMsg);
         }
@@ -652,16 +665,6 @@ public class World implements Serializable {
     }
 
     /**
-     * Checks if an order is legal.
-     * 
-     * @param order is the order to check.
-     * @return null, if the order is legal; a String indicating the problem, if not.
-     */
-    public String checkBasicOrder(BasicOrder order) {
-        return basicOrderChecker.checkOrder(order, this);
-    }
-
-    /**
      * Checks if a player has lost the game by losing all his territories.
      * 
      * @param playerName is the player's name.
@@ -734,7 +737,7 @@ public class World implements Serializable {
 
     @Override
     public String toString() {
-        return territories.toString() + basicOrderChecker.toString() + rnd.toString();
+        return territories.toString() + orderChecker.toString() + rnd.toString();
     }
 
     @Override

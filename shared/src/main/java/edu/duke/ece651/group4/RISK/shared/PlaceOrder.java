@@ -18,12 +18,22 @@ public class PlaceOrder implements Order, Serializable {
         return actionName;
     }
 
+    @Override
+    public String getSrcName() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
     public String getDesName() {
         return des;
     }
 
+    @Override
     public Troop getActTroop() {
         return troop;
     }
+
+   
 
 }

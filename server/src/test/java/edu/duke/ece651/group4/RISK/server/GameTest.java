@@ -51,6 +51,5 @@ class GameTest {
 //        System.out.println(g.getUserNames().get(0));
         g.setUpGame();
         g.getTheWorld();
-
     }
 }
