@@ -75,7 +75,7 @@ public class World implements Serializable {
      * @param random is the random seed.
      */
     public World(Graph<Territory> terrs, Random random) {
-        this(terrs, new HashMap<String, PlayerInfo>(), random, "");
+        this(terrs, new HashMap<String, PlayerInfo>(), random, null);
     }
 
     protected World(Graph<Territory> terrs, 
