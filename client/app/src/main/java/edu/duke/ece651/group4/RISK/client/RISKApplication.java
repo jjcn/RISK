@@ -27,20 +27,19 @@ public class RISKApplication extends Application {
     static ArrayList<RoomInfo> roomInfo;
     static String userName;
 
+
+
     @Override
     public void onCreate() {
         super.onCreate();
         new Thread(() -> {
             try {
-
                 playerClient = new Client("vcm-18527.vm.duke.edu", SOCKET_PORT);
-
             } catch (IOException e) {
                 Log.e(TAG, LOG_CREATE_FAIL);
                 e.printStackTrace();
             }
-        }
-        ).start();
+        }).start();
         this.theWorld = null;
         this.totalPopulation = 15;
         this.rnd = new Random();
@@ -48,6 +47,7 @@ public class RISKApplication extends Application {
         Log.i(TAG, LOG_CREATE_SUCCESS);
     }
 
+    public static String getUserName(){return userName;}
 
     protected synchronized static void sendReceiveHelper(Object toSendO, onReceiveListener listener, String type){
         try {
@@ -328,7 +328,6 @@ public class RISKApplication extends Application {
     public static String doOneUpgrade(UpgradeTroopOrder order,onResultListener listener){
         try {
             theWorld.upgradeTroop(order,userName);
-
             send(order,listener);
         }catch(Exception e){
             return e.getMessage();
@@ -352,25 +351,24 @@ public class RISKApplication extends Application {
 //    }
 
     public static void doPlacement(List<PlaceOrder> placements,onReceiveListener listener){
-
           sendReceiveHelper(placements,listener,WORLD);
           // return world. world: getMyTerr
     }
 
 
-    public static MoveOrder buildMoveOrder(String src,String des,int num, String job ){
-        HashMap<String,Integer> dict=new HashMap<>();
-        dict.put(job,num);
-        Troop target=new Troop(dict,new TextPlayer(userName));
-        return new MoveOrder(src,des,target,MOVE_ACTION);
-    }
-
-    public static AttackOrder buildAttackOrder(String src,String des,int num, String job ){
-        HashMap<String,Integer> dict=new HashMap<>();
-        dict.put(job,num);
-        Troop target=new Troop(dict,new TextPlayer(userName));
-        return new AttackOrder (src,des,target,ATTACK_ACTION);
-    }
+//    public static MoveOrder buildMoveOrder(String src,String des,int num, String job ){
+//        HashMap<String,Integer> dict=new HashMap<>();
+//        dict.put(job,num);
+//        Troop target=new Troop(dict,new TextPlayer(userName));
+//        return new MoveOrder(src,des,target,MOVE_ACTION);
+//    }
+//
+//    public static AttackOrder buildAttackOrder(String src,String des,int num, String job ){
+//        HashMap<String,Integer> dict=new HashMap<>();
+//        dict.put(job,num);
+//        Troop target=new Troop(dict,new TextPlayer(userName));
+//        return new AttackOrder (src,des,target,ATTACK_ACTION);
+//    }
 
 
 

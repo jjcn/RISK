@@ -5,6 +5,8 @@ public class Constant {
     public static final String SUCCESS_JOIN = "Join a room successfully";
     public static final String SUCCESS_CREATE = "Create a new room successfully";
     public static final String EMPTY_INPUT = "Input cannot be empty";
+    public static final String PLACEMENT_MORE = "You have placed more soldiers than provided";
+    public static final String PLACEMENT_LESS = "You have placed less soldiers";
 
     //**************CONSTANTS FOR LOG***************//
     public static final String LOG_CREATE_FAIL = "*********** Fail onCreate *********";
@@ -25,5 +27,5 @@ public class Constant {
 
 
     public static final int MAXLEVEL = 6; //max soldier level
-    public static final int maxPlace = 15;//initial soldier allowed
+    public static final int PLACE_TOTAL = 15;//initial soldier allowed
 }
