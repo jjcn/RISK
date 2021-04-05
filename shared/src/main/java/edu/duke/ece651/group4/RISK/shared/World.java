@@ -296,6 +296,22 @@ public class World implements Serializable {
     }
 
     /**
+     * Get a list of all territories that are not owned by a player.
+     * 
+     * @param playerName is a player's name.
+     * @return all territories owned by a player.
+     */
+    public List<Territory> getTerritoriesNotOfPlayer(String playerName) {
+        List<Territory> ans = new ArrayList<>();
+        for (Territory terr : getAllTerritories()) {
+            if (!terr.getOwner().getName().equals(playerName)) {
+                ans.add(terr);
+            }
+        }
+        return ans;
+    }
+
+    /**
      * Try upgrade a player's tech level by 1.
      * 
      * @param playerName is a player's name.
