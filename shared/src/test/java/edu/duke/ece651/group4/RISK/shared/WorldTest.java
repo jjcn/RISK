@@ -128,9 +128,10 @@ public class WorldTest {
     @Test
     public void testClone() {
         World world = createWorldSimple();
+        world.setReport("test");
         World worldClone = world.clone();
 
-        assertEquals(world, worldClone);
+        assertEquals(world.report, worldClone.report);
         assertEquals(worldClone.getAllTerritories(),
             new ArrayList<Territory>(Arrays.asList(new Territory("1"), new Territory("2"))));
         assertEquals(worldClone.getAdjacents("1"),
@@ -227,9 +228,9 @@ public class WorldTest {
     
     public World createWorldAndRegister(Troop... troop) {
         World world = createWorld(troop);
-        world.registerPlayerInfo(redInfo);
-        world.registerPlayerInfo(blueInfo);
-        world.registerPlayerInfo(greenInfo);
+        world.registerPlayer(redInfo);
+        world.registerPlayer(blueInfo);
+        world.registerPlayer(greenInfo);
         return world;
     }
 
@@ -352,14 +353,12 @@ public class WorldTest {
     public void testUpgradeTroopValid() {
         World world = createWorldAndRegister(troopsSeparated);
         UpgradeTroopOrder utOrder1 = new UpgradeTroopOrder("Narnia", 0, 1, 1);
-        world.upgradeTroop(utOrder1, "red");
-        assertEquals(97, world.findPlayerInfo("red").getTechQuantity());
+        world.upgradeTroop(utOrder1, "green");
+        assertEquals(100 - 3 * 1, world.getPlayerInfoByName("green").getTechQuantity());
 
-        /*
         UpgradeTroopOrder utOrder2 = new UpgradeTroopOrder("Elantris", 0, 1, 6);
-        world.upgradeTroop(utOrder1, "red");
+        world.upgradeTroop(utOrder2, "red");
         assertEquals(100 - 3 * 6, redInfo.getTechQuantity());
-        */
     } 
 
     @Test
