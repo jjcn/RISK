@@ -198,6 +198,8 @@ public class ClientThread extends Thread {
             out.println(ownerUser.getUsername() + " switches in  game " + gameToJoin.getGameID() + " AGAIN");
         }
         gameOnGoing = gameToJoin;
+        out.println(gameOnGoing.getGameID() + " has " + gameOnGoing.getUserNames().size() );
+        out.println(gameOnGoing.getGameID()  + "is full? :" + gameOnGoing.isFull());
         return null;
     }
 
