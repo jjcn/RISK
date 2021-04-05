@@ -10,7 +10,6 @@ import edu.duke.ece651.group4.RISK.shared.message.LogMessage;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -18,7 +17,7 @@ import static edu.duke.ece651.group4.RISK.client.Constant.*;
 import static edu.duke.ece651.group4.RISK.shared.Constant.*;
 
 public class RISKApplication extends Application {
-    private static String TAG = RISKApplication.class.getSimpleName();
+    private static final String TAG = RISKApplication.class.getSimpleName();
     private static Client playerClient;
     private static World theWorld;
     private int totalPopulation;
@@ -131,7 +130,6 @@ public class RISKApplication extends Application {
      *
      * @param name is username
      * @param pwd  is the password
-     * @return null if succeed, a error message if false
      */
     public static void sendLogIn(String name, String pwd, onReceiveListener listener) {
         sendAccountInfo(LOG_SIGNIN, name, pwd, listener);
@@ -142,7 +140,6 @@ public class RISKApplication extends Application {
      *
      * @param name is username
      * @param pwd  is the password
-     * @return null if succeed, a error message if false
      */
     public static void sendSignUp(String name, String pwd, onReceiveListener listener) {
         sendAccountInfo(LOG_SIGNUP, name, pwd, listener);
@@ -210,8 +207,9 @@ public class RISKApplication extends Application {
                 try {
                     Log.i(TAG, LOG_FUNC_RUN + "receiveString null, create game success");
                     Object receivedWorld = playerClient.recvObject();
-                    if (receivedWorld != null) {
+                    if (receivedWorld instanceof World) {
                         Log.i(TAG, LOG_FUNC_RUN + "World received");
+                        theWorld = (World) receivedWorld;
                         listenerWorld.onSuccess(receivedWorld);
                     } else {
                         Log.i(TAG, LOG_FUNC_RUN + "not World received");
@@ -283,7 +281,7 @@ public class RISKApplication extends Application {
         return null;
     }
 
-    public static void doDone(BasicOrder order, onReceiveListener listener) {
+    public static void doDone(Order order, onReceiveListener listener) {
         sendReceiveHelper(order, listener, WORLD);
     }
 
