@@ -432,7 +432,7 @@ public class World implements Serializable {
         PlayerInfo pInfo = findPlayerInfo(playerName);
 
         int consumption = calculateMoveConsumption(order);
-        pInfo.modifyFoodQuantity(-consumption);
+        pInfo.consumeFood(consumption);
     }
 
     /**
@@ -470,7 +470,7 @@ public class World implements Serializable {
         PlayerInfo pInfo = findPlayerInfo(playerName);
 
         int consumption = calculateAttackConsumption(order);
-        pInfo.modifyFoodQuantity(-consumption);
+        pInfo.consumeFood(consumption);
     }
 
     /**
@@ -487,7 +487,8 @@ public class World implements Serializable {
         
         PlayerInfo pInfo = findPlayerInfo(playerName);
         int remainder = terr.upgradeTroop(levelBefore, levelAfter, nUnit, pInfo.getTechQuantity());
-        pInfo.setTechQuantity(remainder);
+        int consumption = pInfo.getTechQuantity() - remainder;
+        pInfo.consumeTech(consumption);
     }
 
     /**
