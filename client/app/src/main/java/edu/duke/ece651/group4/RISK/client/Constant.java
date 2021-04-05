@@ -18,6 +18,7 @@ public class Constant {
     public static final String MESSAGE="message";
     public static final String WRG_MESSAGE="fail to create world";
 
-    public static final int MAXLEVEL=6;
+    public static final int MAXLEVEL=6; //max soldier level
+    public static final int maxPlace=15;//initial soldier allowed
 
 }

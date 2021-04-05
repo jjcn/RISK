@@ -43,6 +43,7 @@ public class RISKApplication extends Application {
         this.theWorld = null;
         this.totalPopulation = 15;
         this.rnd = new Random();
+        this.roomInfo=new ArrayList<>();
         Log.i(TAG, LOG_CREATE_SUCCESS);
     }
 
@@ -225,7 +226,7 @@ public class RISKApplication extends Application {
     }
 
 
-    protected static void refreshGameInfo(onReceiveListener listener){
+    public static void refreshGameInfo(onReceiveListener listener){
         GameMessage m = new GameMessage(GAME_REFRESH,-1,-1);
         sendReceiveHelper(m,listener,ROOMS);
 
@@ -279,13 +280,23 @@ public class RISKApplication extends Application {
         return UNIT_NAMES;
     }
 
+
+    /**
+     *
+     * @return list of all my territory
+     */
+    public static List<Territory> myTerritory(){
+        return theWorld.getTerritoriesOfPlayer(new TextPlayer(userName));
+    }
+
+
 //    public static List<Territory> getMyTerritory(){
 //        return theWorld.
 //    }
 
     public static String doOneMove(BasicOrder order,onResultListener listener){
         try {
-            theWorld.moveTroop(order);
+            theWorld.moveTroop(order,userName);
             send(order,listener);
         }catch(Exception e){
             return e.getMessage();
@@ -295,7 +306,7 @@ public class RISKApplication extends Application {
 
     public static String doOneAttack(BasicOrder order,onResultListener listener){
         try {
-            theWorld.attackATerritory(order);
+            theWorld.attackATerritory(order,userName);
             send(order,listener);
         }catch(Exception e){
             return e.getMessage();
@@ -305,7 +316,8 @@ public class RISKApplication extends Application {
 
     public static String doOneUpgrade(UpgradeTroopOrder order,onResultListener listener){
         try {
-//            theWorld.upgradeTroop(order,);
+            theWorld.upgradeTroop(order,userName);
+
             send(order,listener);
         }catch(Exception e){
             return e.getMessage();
@@ -313,8 +325,20 @@ public class RISKApplication extends Application {
         return null;
     }
 
+//    public static String doTechUpgrade(UpgradeTroopOrder order,onResultListener listener){
+//        try {
+//
+//
+//            send(order,listener);
+//        }catch(Exception e){
+//            return e.getMessage();
+//        }
+//        return null;
+//    }
+
     public static void doPlacement(List<PlaceOrder> placements,onReceiveListener listener){
 
+          sendReceiveHelper(placements,listener,WORLD);
     }
 
 }
