@@ -153,10 +153,14 @@ public class RISKApplication extends Application {
 
     public static void sendReceiveAndUpdate(Object toSendO, onReceiveListener listener,String type) {
         new Thread(() -> {
+            Log.e(TAG,"sendReceiveAndUpdate called");
             try {
+
                 playerClient.sendObject(toSendO);
 
+
                 Object receivedO = playerClient.recvObject();
+
 
                 if(type==WORLD){
                     theWorld=(World) receivedO;
@@ -165,8 +169,6 @@ public class RISKApplication extends Application {
                 }else if(type==NAME){
                     userName=(String) receivedO;
                 }
-
-                Log.e(TAG,LOG_FUNC_RUN+"listener success");
                 listener.onSuccess(receivedO);
             } catch (Exception e) {
                 Log.e(TAG, e.toString());
@@ -355,11 +357,20 @@ public class RISKApplication extends Application {
     }
 
 
-//    public static Order buildOrder(String src,String des,int num, String job ){
-//        HashMap<String,Integer> dict=new HashMap<>();
-//        dict.put(job,num);
-//        Troop target=new Troop(dict,new TextPlayer(userName));
-////        return new BasicOrder(src,des,target,)
-//    }
+    public static MoveOrder buildMoveOrder(String src,String des,int num, String job ){
+        HashMap<String,Integer> dict=new HashMap<>();
+        dict.put(job,num);
+        Troop target=new Troop(dict,new TextPlayer(userName));
+        return new MoveOrder(src,des,target,MOVE_ACTION);
+    }
+
+    public static AttackOrder buildAttackOrder(String src,String des,int num, String job ){
+        HashMap<String,Integer> dict=new HashMap<>();
+        dict.put(job,num);
+        Troop target=new Troop(dict,new TextPlayer(userName));
+        return new AttackOrder (src,des,target,ATTACK_ACTION);
+    }
+
+
 
 }

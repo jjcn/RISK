@@ -25,4 +25,7 @@ public class Constant {
     public static final int maxPlace=15;//initial soldier allowed
 
 
+    public static final char MOVE_ACTION='M';
+    public static final char ATTACK_ACTION='A';
+
 }
