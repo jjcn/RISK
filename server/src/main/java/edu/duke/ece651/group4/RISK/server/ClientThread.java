@@ -127,6 +127,8 @@ public class ClientThread extends Thread {
             GameMessage gameMessage = (GameMessage) this.theClient.recvObject();
             String action = gameMessage.getAction();
             Object res = null;
+
+            out.println(ownerUser.getUsername() + " get " + action);
             switch(action) {
                 case GAME_CREATE:
                     res = tryCreateAGame(gameMessage);
