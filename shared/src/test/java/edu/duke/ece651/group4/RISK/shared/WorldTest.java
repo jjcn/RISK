@@ -349,11 +349,15 @@ public class WorldTest {
     }
 
     @Test
-    public void testUpgradeTroop() {
+    public void testUpgradeTroopValid() {
         World world = createWorldAndRegister(troopsSeparated);
         UpgradeTroopOrder utOrder1 = new UpgradeTroopOrder("Narnia", 0, 1, 1);
         world.upgradeTroop(utOrder1, "red");
-        assertEquals(97, redInfo.getTechQuantity());
+        assertEquals(97, world.findPlayerInfo("red").getTechQuantity());
+
+        UpgradeTroopOrder utOrder2 = new UpgradeTroopOrder("Elantris", 0, 1, 6);
+        world.upgradeTroop(utOrder1, "red");
+        assertEquals(100 - 3 * 6, redInfo.getTechQuantity());
     } 
 
     @Test
