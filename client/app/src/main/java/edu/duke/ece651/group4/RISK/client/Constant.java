@@ -9,6 +9,7 @@ public class Constant {
     public static final String PLACEMENT_MORE = "You have placed more soldiers than provided";
     public static final String PLACEMENT_LESS = "You have placed less soldiers";
     public static final String PLACEMENT_DONE = "All players have done their placements";
+    public static final String WAIT = "Waiting for other players";
 
     //**************CONSTANTS FOR LOG***************//
     public static final String LOG_CREATE_FAIL = "///////////// Fail onCreate /////////////";

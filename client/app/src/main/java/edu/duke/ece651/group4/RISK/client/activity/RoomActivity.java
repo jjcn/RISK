@@ -39,6 +39,7 @@ public class RoomActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         impUI();
         waitDG = new WaitDialog(RoomActivity.this);
+        //TODO:auto refresh once after join
         Log.i(TAG, LOG_CREATE_SUCCESS);
     }
 
