@@ -6,9 +6,9 @@ import org.junit.jupiter.api.Test;
 
 import java.io.PrintStream;
 import java.io.Reader;
+
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.HashSet;
 import java.util.Map;
@@ -69,11 +69,11 @@ public class WorldTest {
     PrintStream out = null;
     Reader inputReader = null;
     Player green = new TextPlayer(out, inputReader, "green");
-    PlayerInfo greenInfo = new PlayerInfo(green, 100, 100);
+    PlayerInfo greenInfo = new PlayerInfo(green.getName(), 100, 100);
     Player red = new TextPlayer(out, inputReader, "red");
-    PlayerInfo redInfo = new PlayerInfo(red, 100, 100);
+    PlayerInfo redInfo = new PlayerInfo(red.getName(), 100, 100);
     Player blue = new TextPlayer(out, inputReader, "blue");
-    PlayerInfo blueInfo = new PlayerInfo(blue, 100, 100);
+    PlayerInfo blueInfo = new PlayerInfo(blue.getName(), 100, 100);
 
     String names[] =
             "Narnia, Midkemia, Oz, Gondor, Mordor, Hogwarts, Scadrial, Elantris, Roshar".split(", ");
@@ -349,11 +349,17 @@ public class WorldTest {
     }
 
     @Test
-    public void testUpgradeTroop() {
+    public void testUpgradeTroopValid() {
         World world = createWorldAndRegister(troopsSeparated);
         UpgradeTroopOrder utOrder1 = new UpgradeTroopOrder("Narnia", 0, 1, 1);
         world.upgradeTroop(utOrder1, "red");
-        assertEquals(97, redInfo.getTechQuantity());
+        assertEquals(97, world.findPlayerInfo("red").getTechQuantity());
+
+        /*
+        UpgradeTroopOrder utOrder2 = new UpgradeTroopOrder("Elantris", 0, 1, 6);
+        world.upgradeTroop(utOrder1, "red");
+        assertEquals(100 - 3 * 6, redInfo.getTechQuantity());
+        */
     } 
 
     @Test

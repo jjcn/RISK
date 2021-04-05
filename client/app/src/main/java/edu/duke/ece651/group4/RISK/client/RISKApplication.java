@@ -2,8 +2,8 @@ package edu.duke.ece651.group4.RISK.client;
 
 import android.app.Application;
 import android.util.Log;
-import edu.duke.ece651.group4.RISK.client.activity.onReceiveListener;
-import edu.duke.ece651.group4.RISK.client.activity.onResultListener;
+import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
+import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
 import edu.duke.ece651.group4.RISK.shared.*;
 import edu.duke.ece651.group4.RISK.shared.message.GameMessage;
 import edu.duke.ece651.group4.RISK.shared.message.LogMessage;
@@ -48,7 +48,7 @@ public class RISKApplication extends Application {
     }
 
 
-    protected synchronized static void sendReceiveHelper(Object toSendO, onReceiveListener listener,String type){
+    protected synchronized static void sendReceiveHelper(Object toSendO, onReceiveListener listener, String type){
         try {
             sendReceiveAndUpdate(toSendO, new onReceiveListener() {
                 @Override
@@ -164,6 +164,7 @@ public class RISKApplication extends Application {
                     userName=(String) receivedO;
                 }
 
+                Log.e(TAG,LOG_FUNC_RUN+"listener success");
                 listener.onSuccess(receivedO);
             } catch (Exception e) {
                 Log.e(TAG, e.toString());
@@ -189,9 +190,9 @@ public class RISKApplication extends Application {
                 try {
                     Object receivedWorld = playerClient.recvObject();
                     if (receivedWorld != null) {
-
+                        listenerWorld.onSuccess(receivedWorld);
+                        Log.i(TAG,LOG_FUNC_RUN);
                     }
-                    listenerWorld.onSuccess(receivedWorld);
                 } catch (Exception e) {
                     Log.e(TAG, e.toString());
                     listenerWorld.onFailure(e.toString());
@@ -229,11 +230,9 @@ public class RISKApplication extends Application {
     public static void refreshGameInfo(onReceiveListener listener){
         GameMessage m = new GameMessage(GAME_REFRESH,-1,-1);
         sendReceiveHelper(m,listener,ROOMS);
-
-
     }
 
-    /*
+    /**
      * This send SignIn info
      * @param name is username
      * @param pwd is the password
@@ -243,7 +242,7 @@ public class RISKApplication extends Application {
         sendAccountInfo(LOG_SIGNIN, name, pwd, listener);
     }
 
-    /*
+    /**
      * This send SignUP info
      * @param name is username
      * @param pwd is the password
@@ -296,7 +295,11 @@ public class RISKApplication extends Application {
 
     public static String doOneMove(BasicOrder order,onResultListener listener){
         try {
+<<<<<<< HEAD
             theWorld.moveTroop(order,userName);
+=======
+//            theWorld.moveTroop(order);
+>>>>>>> 818f4b2867113a90c81e6ce1e06bb04f3ec2daa3
             send(order,listener);
         }catch(Exception e){
             return e.getMessage();
@@ -306,7 +309,11 @@ public class RISKApplication extends Application {
 
     public static String doOneAttack(BasicOrder order,onResultListener listener){
         try {
+<<<<<<< HEAD
             theWorld.attackATerritory(order,userName);
+=======
+//            theWorld.attackATerritory(order);
+>>>>>>> 818f4b2867113a90c81e6ce1e06bb04f3ec2daa3
             send(order,listener);
         }catch(Exception e){
             return e.getMessage();

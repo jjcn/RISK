@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:background="@drawable/border"
+              android:background="@color/greyBorder"
               android:layout_marginStart="@dimen/fragmentMargin"
               android:layout_marginEnd="@dimen/fragmentMargin"
               android:layout_marginTop="@dimen/fragmentMargin"
@@ -13,14 +13,14 @@
             android:id="@+id/roomIDTV"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Room ID:"
+            android:text="@string/ID_INSTRU"
     />
 
     <TextView
             android:id="@+id/playerTV"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Players:"
+            android:text="@string/ROOMINFO"
     />
 
 </LinearLayout>
