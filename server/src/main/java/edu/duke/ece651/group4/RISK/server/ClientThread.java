@@ -290,7 +290,9 @@ public class ClientThread extends Thread {
     * */
     public void waitNotifyFromRunner(){
         try {
-            gameOnGoing.wait();
+            synchronized (gameOnGoing){
+                gameOnGoing.wait();
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
