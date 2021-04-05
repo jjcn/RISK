@@ -118,6 +118,7 @@ public class ClientThread extends Thread {
     protected void trySetUpGame()  {
         out.println(ownerUser.getUsername() + " tries to set up a game");
         if(gameOnGoing != null){
+            out.println("Already is on a game, skip set up game ");
             return;
         }
         //1.send the gameInfo to Client
