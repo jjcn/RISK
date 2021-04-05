@@ -13,10 +13,11 @@
 
     <fragment
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="300dp"
             android:name="edu.duke.ece651.group4.RISK.client.fragment.WorldFragment"
             android:id="@+id/worldFG"
     />
+
     <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
               android:text="@string/INITPLACE"
               android:layout_marginTop="@dimen/fragmentMargin"
