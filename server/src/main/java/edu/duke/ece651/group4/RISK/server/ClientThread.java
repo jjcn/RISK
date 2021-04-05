@@ -127,6 +127,7 @@ public class ClientThread extends Thread {
                     res = tryJoinAGame(gameMessage);
                     break;
                 case GAME_REFRESH:
+                    out.println("Will send a room info to players");
                     res = getAllGameInfo();
                     break;
                 case GAME_EXIT:
