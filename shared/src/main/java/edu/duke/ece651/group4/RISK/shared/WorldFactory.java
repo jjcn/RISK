@@ -238,10 +238,15 @@ public class WorldFactory implements Serializable {
         int nInGroup = world.size() / playerNames.size();
         Map<Integer, List<Territory>> groups = world.divideTerritories(nGroup);
 
+        // set total size & total food speed & total tech speed here
+        // TODO: this is now hardcoded.
+        int worldSize = world.size();
         List<AttributeBundle> bundles = 
         generateBundlesWithTotal(nInGroup, 
-                                20, 40, 100, // size, food, tech, all total
-                                new Random(0)); // this is now hardcoded
+                                10 * worldSize, // size
+                                50 * worldSize, // food
+                                100 * worldSize, // tech
+                                new Random(0));
 
         setAttributesSame(groups, bundles);
 
@@ -254,7 +259,7 @@ public class WorldFactory implements Serializable {
             ans.put(playerName, territories);
         }
         // players start with 0 resource
-        playerNames.forEach(name -> world.registerPlayerInfo(new PlayerInfo(name)));
+        playerNames.forEach(name -> world.registerPlayer(name));
 
         return ans;
     }

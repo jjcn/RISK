@@ -36,9 +36,9 @@ public class World implements Serializable {
      */
     public Graph<Territory> territories;
     /**
-     * A list of infos of all players.
+     * A mapping of player's name to his/her info.
      */
-    private List<PlayerInfo> playerInfos;
+    private Map<String, PlayerInfo> playerInfos;
     /**
      * Order checker
      */
@@ -72,7 +72,7 @@ public class World implements Serializable {
      */
     public World(Graph<Territory> terrs, Random random) {
         territories = terrs;
-        this.playerInfos = new ArrayList<PlayerInfo>();
+        this.playerInfos = new HashMap<String, PlayerInfo>();
         basicOrderChecker = new OrderChecker();
         rnd = random;
     }
@@ -232,8 +232,8 @@ public class World implements Serializable {
      * Register a player's info in the world.
      * @param pInfo is the player info to register.
      */
-    public void registerPlayerInfo(PlayerInfo pInfo) {
-        playerInfos.add(pInfo);
+    public void registerPlayer(String playerName) {
+        playerInfos.put(playerName, new PlayerInfo(playerName));
     }
 
     /**
@@ -243,16 +243,10 @@ public class World implements Serializable {
      * @return that player's playerInfo.
      */
     public PlayerInfo findPlayerInfo(String playerName) {
-        /*
-         * return playerInfos.stream() .filter(pInfo ->
-         * pInfo.getName().equals(playerName)) .collect(Collectors.toList()) .get(0);
-         */
-        for (PlayerInfo pInfo : playerInfos) {
-            if (pInfo.getName().equals(playerName)) {
-                return pInfo;
-            }
+        if (playerInfos.get(playerName) == null) {
+            throw new IllegalArgumentException(String.format(NO_PLAYERINFO_MSG, playerName));
         }
-        throw new IllegalArgumentException(String.format(NO_PLAYERINFO_MSG, playerName));
+        return playerInfos.get(playerName);    
     }
 
     /**
@@ -505,6 +499,38 @@ public class World implements Serializable {
     }
 
     /**
+     * Add unit to all territories.
+     * 
+     * @param num is the number of units to add to every territory.
+     */
+    // TODO: unit now has level.
+    // At the end of every turn, add a level 0 unit to every territory.
+    public void addUnitToAll(int num) {
+        if (num < 0) {
+            throw new IllegalArgumentException(NOT_POSITIVE_MSG);
+        }
+        for (Territory terr : getAllTerritories()) {
+            terr.addUnit(num);
+        }
+    }
+
+    /**
+     * Add level 0 unit to a territory.
+     * 
+     * @param num is the number of level 0 units added to this territory.
+     */
+    public void addUnitToATerritory(String playerName, String terrName, int num) {
+        if (num < 0) {
+            throw new IllegalArgumentException(NOT_POSITIVE_MSG);
+        }
+        Territory terr = findTerritory(terrName);
+        if (!playerName.equals(terr.getOwner().getName())) {
+            throw new IllegalArgumentException("Not your territory.");
+        }
+        terr.addUnit(num);
+    }
+
+    /**
      * Check if two territories are adjacent to each other
      * 
      * @param terr1 is a territory.
@@ -571,38 +597,6 @@ public class World implements Serializable {
      */
     public String checkBasicOrder(BasicOrder order) {
         return basicOrderChecker.checkOrder(order, this);
-    }
-
-    /**
-     * Add unit to all territories.
-     * 
-     * @param num is the number of units to add to every territory.
-     */
-    // TODO: unit now has level.
-    // At the end of every turn, add a level 0 unit to every territory.
-    public void addUnitToAll(int num) {
-        if (num < 0) {
-            throw new IllegalArgumentException(NOT_POSITIVE_MSG);
-        }
-        for (Territory terr : getAllTerritories()) {
-            terr.addUnit(num);
-        }
-    }
-
-    /**
-     * Add level 0 unit to a territory.
-     * 
-     * @param num is the number of level 0 units added to this territory.
-     */
-    public void addUnitToATerritory(String playerName, String terrName, int num) {
-        if (num < 0) {
-            throw new IllegalArgumentException(NOT_POSITIVE_MSG);
-        }
-        Territory terr = findTerritory(terrName);
-        if (!playerName.equals(terr.getOwner().getName())) {
-            throw new IllegalArgumentException("Not your territory.");
-        }
-        terr.addUnit(num);
     }
 
     /**

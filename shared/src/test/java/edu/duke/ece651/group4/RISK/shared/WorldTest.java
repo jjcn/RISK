@@ -353,13 +353,11 @@ public class WorldTest {
         World world = createWorldAndRegister(troopsSeparated);
         UpgradeTroopOrder utOrder1 = new UpgradeTroopOrder("Narnia", 0, 1, 1);
         world.upgradeTroop(utOrder1, "red");
-        assertEquals(97, world.findPlayerInfo("red").getTechQuantity());
+        assertEquals(100 - 3 * 1, world.findPlayerInfo("red").getTechQuantity());
 
-        /*
         UpgradeTroopOrder utOrder2 = new UpgradeTroopOrder("Elantris", 0, 1, 6);
-        world.upgradeTroop(utOrder1, "red");
+        world.upgradeTroop(utOrder2, "red");
         assertEquals(100 - 3 * 6, redInfo.getTechQuantity());
-        */
     } 
 
     @Test
