@@ -29,8 +29,9 @@ public class WorldInfoAdapter extends RecyclerView.Adapter<WorldInfoAdapter.Worl
         List<Territory> allTerrs = world.getAllTerritories();
     }
 
-    public void setPlayers(World world){
+    public void setWorldInfo(World world){
 
+        notifyDataSetChanged();
     }
 
     @NonNull

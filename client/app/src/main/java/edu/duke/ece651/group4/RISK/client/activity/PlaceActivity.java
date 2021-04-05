@@ -13,6 +13,7 @@ import edu.duke.ece651.group4.RISK.shared.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static edu.duke.ece651.group4.RISK.client.Constant.*;
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.*;
@@ -40,7 +41,7 @@ public class PlaceActivity extends AppCompatActivity {
         EditText terrCETInput = findViewById(R.id.terrC).findViewById(R.id.inputNum);
         Button commitBT = findViewById(R.id.buttonCommitPlace);
 
-        List<Territory> myTerr =  getMyTerritory();
+        List<Territory> myTerr = Objects.requireNonNull(getMyTerritory());
         terrAETInput.append(myTerr.get(0).getName());
         terrBETInput.append(myTerr.get(1).getName());
         terrCETInput.append(myTerr.get(2).getName());
