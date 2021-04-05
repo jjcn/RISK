@@ -227,15 +227,15 @@ class ClientThreadTest {
         assertEquals(null, ct.tryJoinAGame(new GameMessage(GAME_JOIN, 1, -1)));
     }
 
-    @Test
-    public void test_getRoomInfo(){
-        ClientThread ct = createAClientThread(1, 3);
-        ArrayList<RoomInfo> roomsInfo = ct.getAllGameInfo();
-        assertEquals(3, roomsInfo.size());
-        ct = createAClientThread(1, 2);
-        roomsInfo = ct.getAllGameInfo();
-        assertEquals(2, roomsInfo.size());
-    }
+//    @Test
+//    public void test_getRoomInfo(){
+//        ClientThread ct = createAClientThread(1, 3);
+//        ArrayList<RoomInfo> roomsInfo = ct.getAllGameInfo();
+//        assertEquals(3, roomsInfo.size());
+//        ct = createAClientThread(1, 2);
+//        roomsInfo = ct.getAllGameInfo();
+//        assertEquals(2, roomsInfo.size());
+//    }
 
     @Test
     public void test_findGame(){
