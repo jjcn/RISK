@@ -23,7 +23,7 @@ public class World implements Serializable {
     /**
      * Auto-generated serialVersionUID
      */
-    private static final long serialVersionUID = 4696428798493622247L;
+    protected static final long serialVersionUID = 4696428798493622247L;
     /**
      * Error messages
      */
@@ -34,23 +34,23 @@ public class World implements Serializable {
     /**
      * All territories in the world. Implemented with a graph structure.
      */
-    public Graph<Territory> territories;
+    protected Graph<Territory> territories;
     /**
      * A mapping of player's name to his/her info.
      */
-    private Map<String, PlayerInfo> playerInfos;
+    protected Map<String, PlayerInfo> playerInfos;
     /**
      * Order checker
      */
-    private final OrderChecker basicOrderChecker;
+    protected final OrderChecker basicOrderChecker;
     /**
      * Random seed to use with random division of territories.
      */
-    private final Random rnd;
+    protected final Random rnd;
     /**
      * Battle report
      */
-    public String report;
+    protected String report;
 
     /**
      * Construct a default world with an empty graph.
@@ -146,10 +146,6 @@ public class World implements Serializable {
         return cpyWorld;
     }
 
-    public void setReport(String reprot) {
-        this.report = reprot;
-    }
-
     /**
      * Get the total number of territories in the world.
      * 
@@ -206,6 +202,10 @@ public class World implements Serializable {
      */
     public void setRandom(String terrName, Random seed) {
         findTerritory(terrName).setRandom(seed);
+    }
+
+    protected void setReport(String reprot) {
+        this.report = reprot;
     }
 
     /**
