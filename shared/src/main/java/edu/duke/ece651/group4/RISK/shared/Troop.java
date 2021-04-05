@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 public class Troop implements Serializable {
-
+    protected static final long serialVersionUID = 17L;
     private final ArrayList<Unit> population;
     private final HashMap<String, Integer> dict;
 

@@ -23,7 +23,7 @@ import java.util.stream.IntStream;
  *    of each attribute.
  */
 public class WorldFactory implements Serializable {
-
+    protected static final long serialVersionUID = 20L;
     public WorldFactory() {}
 
     /**

@@ -3,6 +3,7 @@ package edu.duke.ece651.group4.RISK.shared;
 import java.io.Serializable;
 
 public class BasicOrder implements Order, Serializable {
+    protected static final long serialVersionUID = 2L;
     private Character actionName;
     private String src;
     private String des;

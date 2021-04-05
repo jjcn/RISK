@@ -19,6 +19,7 @@ import java.io.Serializable;
  * - only one edge is allowed between 2 vertices.
  */
 public class Graph<T> implements Serializable {
+    protected static final long serialVersionUID = 4L;
     /**
      * All vertices.
      */
