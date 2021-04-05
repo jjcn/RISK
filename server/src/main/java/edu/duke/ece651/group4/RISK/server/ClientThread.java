@@ -158,7 +158,7 @@ public class ClientThread extends Thread {
         GameRunner gameRunner = new GameRunner(gameOnGoing,out);
         gameOnGoing.addUser(ownerUser);
         gameRunner.start();
-        out.println(ownerUser.getUsername() + " creates a game successfully");
+        out.println(ownerUser.getUsername() + " creates a game" + gameOnGoing.getGameID() + "successfully and the number of the game support is " + gameOnGoing.getMaxNumUsers());
         return null;
     }
 
