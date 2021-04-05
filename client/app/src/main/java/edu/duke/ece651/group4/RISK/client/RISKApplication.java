@@ -42,6 +42,7 @@ public class RISKApplication extends Application {
         this.totalPopulation = 15;
         this.rnd = new Random();
         this.roomInfo = new ArrayList<>();
+        this.userName=null;
         Log.i(TAG, LOG_CREATE_SUCCESS);
     }
 
@@ -132,6 +133,7 @@ public class RISKApplication extends Application {
      * @param pwd  is the password
      */
     public static void sendLogIn(String name, String pwd, onReceiveListener listener) {
+        userName=name;
         sendAccountInfo(LOG_SIGNIN, name, pwd, listener);
     }
 
@@ -175,9 +177,10 @@ public class RISKApplication extends Application {
                     theWorld = (World) receivedO;
                 } else if (type == ROOMS) {
                     roomInfo = (ArrayList<RoomInfo>) receivedO;
-                } else if (type == NAME) {
-                    userName = (String) receivedO;
                 }
+//                else if (type == NAME) {
+//                    userName = (String) receivedO;
+//                }
                 listener.onSuccess(receivedO);
             } catch (Exception e) {
                 Log.e(TAG, e.toString());
