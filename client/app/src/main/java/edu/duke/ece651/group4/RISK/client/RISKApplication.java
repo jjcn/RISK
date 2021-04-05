@@ -152,9 +152,21 @@ public class RISKApplication extends Application {
 
     public static void sendReceiveAndUpdate(Object toSendO, onReceiveListener listener,String type) {
         new Thread(() -> {
+            Log.e(TAG,"sendReceiveAndUpdate called");
             try {
+                if(toSendO instanceof GameMessage){
+                    GameMessage g = (GameMessage) toSendO;
+                    Log.e(TAG,LOG_FUNC_RUN+"send o:"+g.getAction());
+                }
                 playerClient.sendObject(toSendO);
+
+                Log.e(TAG,LOG_FUNC_RUN+"room receive start");
                 Object receivedO = playerClient.recvObject();
+                if(receivedO != null) {
+                    Log.e(TAG, LOG_FUNC_RUN + "object receive success" + receivedO.getClass().getSimpleName());
+                }else{
+                    Log.e(TAG, LOG_FUNC_RUN + "object receive success: null");
+                }
 
                 if(type==WORLD){
                     theWorld=(World) receivedO;
@@ -163,8 +175,6 @@ public class RISKApplication extends Application {
                 }else if(type==NAME){
                     userName=(String) receivedO;
                 }
-
-                Log.e(TAG,LOG_FUNC_RUN+"listener success");
                 listener.onSuccess(receivedO);
             } catch (Exception e) {
                 Log.e(TAG, e.toString());

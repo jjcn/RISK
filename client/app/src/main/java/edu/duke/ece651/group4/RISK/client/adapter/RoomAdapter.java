@@ -26,12 +26,11 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         rooms = new ArrayList<>();
         if(DEBUG_MODE) {
             ArrayList<String> l = new ArrayList<>();
-            l.add("123");
+            l.add("test");
             RoomInfo t1 = new RoomInfo(0,l , 2);
             rooms.add(t1);
         }
         Log.i(TAG,LOG_CREATE_SUCCESS+rooms.size());
-        System.out.println(LOG_CREATE_SUCCESS+rooms.size());
     }
 
     // create new views invoked by layout manager
@@ -50,10 +49,10 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         String totalUserNum = Integer.toString(room.getMaxNumPlayers());
         String usersInfo = "";
         String sep = "";
-//        for (String userName : room.getUserNames()) {
-//            usersInfo.concat(sep + userName);
-//            sep = ", ";
-//        }
+        for (String userName : room.getUserNames()) {
+            usersInfo.concat(sep + userName);
+            sep = ", ";
+        }
 
         holder.roomIDView.setText(idNum); //append();
         holder.usersView.setText(usersInfo); //append();
@@ -88,6 +87,11 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
     public void setRooms(List<RoomInfo> rooms) {
         this.rooms.clear();
         this.rooms.addAll(rooms);
+        if(rooms != null) {
+            Log.i(TAG, LOG_FUNC_RUN + "setRoom called with size: " + rooms.size());
+        }else{
+            Log.i(TAG, LOG_FUNC_RUN + "setRoom called with null");
+        }
         notifyDataSetChanged();
     }
 
