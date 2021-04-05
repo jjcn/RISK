@@ -45,17 +45,17 @@ public class HostApp implements Runnable {
      *  */
 
     public void acceptConnection(){
-            while(true) {
-                try {
-                    Socket s = hostSocket.accept();
-                    Client theClient = new Client(s);
-                    ClientThread theThread = new ClientThread(games, users,theClient,globalID);
-                    out.println("Get one user and the total number of users: " + users.size());
-                    theThread.start();
-                }catch(IOException e){
-                    out.println("HostApp: Issue with acceptConnection.");
-                }
+        while(true) {
+            try {
+                Socket s = hostSocket.accept();
+                Client theClient = new Client(s);
+                ClientThread theThread = new ClientThread(games, users,theClient,globalID,out);
+                out.println("A client joined.");
+                theThread.start();
+            }catch(IOException e){
+                out.println("HostApp: Issue with acceptConnection.");
             }
+        }
 
     }
 
