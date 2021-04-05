@@ -1,5 +1,7 @@
 package edu.duke.ece651.group4.RISK.server;
 
+import java.io.PrintStream;
+
 import static edu.duke.ece651.group4.RISK.server.ServerConstant.GAME_STATE_DONE_UPDATE;
 import static edu.duke.ece651.group4.RISK.server.ServerConstant.GAME_STATE_WAIT_TO_UPDATE;
 
@@ -9,10 +11,15 @@ import static edu.duke.ece651.group4.RISK.server.ServerConstant.GAME_STATE_WAIT_
 * */
 public class GameRunner extends Thread{
     Game game;
+    PrintStream out;
+    public GameRunner(Game g, PrintStream out){
+        this.game = g;
+        this.out = out;
+    }
     public GameRunner(Game g){
         this.game = g;
+        out = System.out;
     }
-
     /*
     * Run the game
     *   1.1 wait for all users join
@@ -28,13 +35,14 @@ public class GameRunner extends Thread{
 
     @Override
     public void run(){
-
+        out.println("Game runner waits for all players to join");
         while(!game.isFull()){} // wait all users to join to start the game
 
         game.setUpGame();
+        out.println("Game runner finishes sets up");
         //Initialization
         game.notifyAll(); // notify all players to start send world and do placement
-
+        out.println("Game runner notifies all players");
         //ActionPhase
         while(true){
             while(!game.gameState.isAllPlayersDoneOneTurn()){} // wait until all players finish updating their turn
@@ -42,10 +50,13 @@ public class GameRunner extends Thread{
             game.updateGameAfterOneTurn();
             game.gameState.updateStateTo(GAME_STATE_DONE_UPDATE);
             game.gameState.setActivePlayersStateToUpdating();
+            out.println("Game runner set all active players updating state");
             game.notifyAll(); // notify all players to enter updating state
             while(!game.gameState.isAllPlayersDoneUpdatingState()){} // wait until all players finish updating their state
+
             if(game.isEndGame()){
                 game.gameState.setGameDead();
+                out.println("Game runner ends, set this game dead");
                 break;
             }
             game.gameState.updateStateTo(GAME_STATE_WAIT_TO_UPDATE);
