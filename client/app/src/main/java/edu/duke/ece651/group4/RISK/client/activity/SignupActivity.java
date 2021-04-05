@@ -101,7 +101,7 @@ public class SignupActivity extends AppCompatActivity {
     /**
      * send name and password to remote server and receive message if signed up a new account.
      * back to login activity if new account created.
-     *remain in this activity
+     * remain in this activity
      */
     private void impSignUpBt() {
         signupButton = findViewById(R.id.buttonSignUp);
@@ -114,7 +114,7 @@ public class SignupActivity extends AppCompatActivity {
                 signupButton.setClickable(true);
                 return;
             }
-
+            //connect to server and try sign up account
             sendSignUp(name, password, new onReceiveListener() {
                 @Override
                 public void onSuccess(Object o) {
@@ -141,15 +141,5 @@ public class SignupActivity extends AppCompatActivity {
 
         });
     }
-
-    //    @Override
-//    public boolean onKeyDown(int keyCode, KeyEvent event) {
-//        if (keyCode==KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-//            Intent loginIntent = new Intent(this,LoginActivity.class);
-//            startActivity(loginIntent);
-//            this.finish();
-//        }
-//        return false;
-//    }
 
 }
