@@ -10,6 +10,7 @@ import edu.duke.ece651.group4.RISK.shared.message.LogMessage;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -154,6 +155,7 @@ public class RISKApplication extends Application {
         new Thread(() -> {
             try {
                 playerClient.sendObject(toSendO);
+
                 Object receivedO = playerClient.recvObject();
 
                 if(type==WORLD){
@@ -332,6 +334,10 @@ public class RISKApplication extends Application {
         return null;
     }
 
+    public static void doDone(BasicOrder order,onReceiveListener listener){
+        sendReceiveHelper(order,listener,WORLD);
+    }
+
 //    public static String doTechUpgrade(UpgradeTroopOrder order,onResultListener listener){
 //        try {
 //
@@ -347,5 +353,13 @@ public class RISKApplication extends Application {
 
           sendReceiveHelper(placements,listener,WORLD);
     }
+
+
+//    public static Order buildOrder(String src,String des,int num, String job ){
+//        HashMap<String,Integer> dict=new HashMap<>();
+//        dict.put(job,num);
+//        Troop target=new Troop(dict,new TextPlayer(userName));
+////        return new BasicOrder(src,des,target,)
+//    }
 
 }
