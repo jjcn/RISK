@@ -7,6 +7,8 @@
         android:layout_height="match_parent"
         android:layout_marginStart="@dimen/fragmentMargin"
         android:layout_marginEnd="@dimen/fragmentMargin"
+        android:layout_marginTop="@dimen/fragmentMargin"
+        android:layout_marginBottom="@dimen/fragmentMargin"
         tools:context=".activity.TurnActivity">
 
     <TextView
@@ -41,21 +43,30 @@
 
     <TextView
             android:id="@+id/noticeInfo"
-            android:layout_width="match_parent"
+            android:layout_width="300dp"
             android:layout_height="150dp"
             android:background="@drawable/border"
             android:text="Instructions info"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/playerInfo"
             app:layout_constraintTop_toBottomOf="@id/terrInfo"
             app:layout_constraintBottom_toTopOf="@id/chooseAction"
+    />
+    <TextView
+            android:id="@+id/playerInfo"
+            android:layout_width="90dp" android:layout_height="150dp"
+            android:background="@drawable/border"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/noticeInfo"
+            app:layout_constraintTop_toTopOf="@id/noticeInfo"
+            android:text="@string/PLAYERINFO"
+            app:layout_constraintBottom_toBottomOf="@id/noticeInfo"
     />
 
     <Spinner
             android:id="@+id/actions_spinner"
             android:layout_width="300dp"
             android:layout_height="45dp"
-            android:autofillHints="@string/CHOOSE_ACTION_INSTRU"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/noticeInfo"
             app:layout_constraintStart_toStartOf="parent"

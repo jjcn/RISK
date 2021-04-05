@@ -61,6 +61,12 @@ public class RISKApplication extends Application {
     public static List<String> getLevelNames() {
         return UNIT_NAMES;
     }
+    /**
+     * @return list of all my territory
+     */
+    public static List<Territory> getMyTerritory() {
+        return theWorld.getTerritoriesOfPlayer(new TextPlayer(userName));
+    }
 
 
     /**
@@ -202,13 +208,13 @@ public class RISKApplication extends Application {
             }
             if (receivedString == null) {
                 try {
-                    Log.i(TAG, LOG_FUNC_RUN + "create game success");
+                    Log.i(TAG, LOG_FUNC_RUN + "receiveString null, create game success");
                     Object receivedWorld = playerClient.recvObject();
                     if (receivedWorld != null) {
                         Log.i(TAG, LOG_FUNC_RUN + "World received");
                         listenerWorld.onSuccess(receivedWorld);
                     } else {
-                        Log.i(TAG, LOG_FUNC_RUN + "not world received");
+                        Log.i(TAG, LOG_FUNC_RUN + "not World received");
                     }
                 } catch (Exception e) {
                     Log.e(TAG, e.toString());
@@ -232,18 +238,11 @@ public class RISKApplication extends Application {
         createGameHelper(m, listenerString, listenerWorld);
     }
 
-    /**
-     * @return list of all my territory
-     */
-    public static List<Territory> getMyTerritory() {
-        return theWorld.getTerritoriesOfPlayer(new TextPlayer(userName));
+    // TODO:
+    public static String doOneMove(MoveOrder order) {
+        return null; // move validate
     }
-
-
-//    public static List<Territory> getMyTerritory(){
-//        return theWorld.
-//    }
-
+/*
     public static String doOneMove(MoveOrder order, onResultListener listener) {
         try {
 
@@ -257,7 +256,9 @@ public class RISKApplication extends Application {
         }
         return null;
     }
+ */
 
+    // TODO:
     public static String doOneAttack(AttackOrder order, onResultListener listener) {
         try {
 

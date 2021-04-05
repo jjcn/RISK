@@ -22,4 +22,5 @@
     <string name="INPUT_NUM_INSTRU">"Please input the number "</string>
     <string name="COMMIT">COMMIT</string>
     <string name="CHOOSE_ACTION_INSTRU">Choose action here</string>
+    <string name="PLAYERINFO">Player Information:\n</string>
 </resources>

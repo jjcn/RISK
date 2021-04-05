@@ -29,7 +29,7 @@ public class RoomActivity extends AppCompatActivity {
     private RecyclerView roomsRC;
     private RoomAdapter roomsAdapt;
     private SwipeRefreshLayout refreshGS;
-    private WaitDialog waitDG = new WaitDialog(RoomActivity.this);
+    private WaitDialog waitDG;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +38,7 @@ public class RoomActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         impUI();
+        waitDG = new WaitDialog(RoomActivity.this);
         Log.i(TAG, LOG_CREATE_SUCCESS);
     }
 
@@ -186,7 +187,7 @@ public class RoomActivity extends AppCompatActivity {
                     new onReceiveListener() { // receive a World if successfully join created game otherwise null
                         @Override
                         public void onSuccess(Object o) {
-                            Log.i(TAG, LOG_FUNC_RUN + "try to receive World");
+                            Log.i(TAG, LOG_FUNC_RUN + "should receive World");
                             if (o instanceof World) {
                                 Log.i(TAG, LOG_FUNC_RUN + "receive a World");
                                 runOnUiThread(() -> {
