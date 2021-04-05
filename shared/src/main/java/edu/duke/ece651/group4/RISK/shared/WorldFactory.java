@@ -88,10 +88,10 @@ public class WorldFactory implements Serializable {
         World world = createTerritories(Arrays.asList(names));
 
         world.addConnection("A", "B");
-        world.addConnection("B", "D");
-        world.addConnection("C", "D");
         world.addConnection("A", "C");
         world.addConnection("A", "D");
+        world.addConnection("B", "D");
+        world.addConnection("C", "D");
 
         return world;
     }

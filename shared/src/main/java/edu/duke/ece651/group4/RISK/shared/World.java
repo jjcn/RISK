@@ -222,8 +222,8 @@ public class World implements Serializable {
         findTerritory(terrName).setRandom(seed);
     }
 
-    protected void setReport(String reprot) {
-        this.report = reprot;
+    protected void setReport(String report) {
+        this.report = report;
     }
 
     /**
@@ -334,8 +334,8 @@ public class World implements Serializable {
      * 
      * @param playerName is a player's name.
      */
-    public void upgradePlayerTechLevelBy1(String playerName) {
-        playerInfos.get(playerName).upgradeTechLevelBy1();
+    public void upgradePlayerTechLevelBy(UpgradeTechOrder upgradeTechOrder, String playerName) {
+        playerInfos.get(playerName).upgradeTechLevelBy(upgradeTechOrder.getNLevel());
     }
 
     /**

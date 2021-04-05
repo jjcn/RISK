@@ -1,6 +1,7 @@
 package edu.duke.ece651.group4.RISK.shared;
 
 import java.io.Serializable;
+import java.util.NoSuchElementException;
 
 /**
  * An order that upgrades troop on a territory.
@@ -11,6 +12,12 @@ import java.io.Serializable;
  */
 public class UpgradeTroopOrder implements Order, Serializable {
     protected static final long serialVersionUID = 18L;
+
+    protected static final String NO_DES_MSG = 
+    "Place order does not have desitination territory.";
+    protected static final String NO_TROOP_MSG = 
+    "Place order does not have troop.";
+
     private Character actionName;
     private String srcName;
     private int levelBefore;
@@ -39,12 +46,12 @@ public class UpgradeTroopOrder implements Order, Serializable {
 
     @Override
     public String getDesName() {
-        return null;
+        throw new NoSuchElementException(NO_DES_MSG);
     }
 
     @Override
     public Troop getActTroop() {
-        return null;
+        throw new NoSuchElementException(NO_TROOP_MSG);
     }
 
     public int getLevelBefore() {
