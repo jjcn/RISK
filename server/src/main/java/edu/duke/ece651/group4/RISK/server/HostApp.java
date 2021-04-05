@@ -10,6 +10,7 @@ import edu.duke.ece651.group4.RISK.shared.World;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashSet;
@@ -23,11 +24,13 @@ public class HostApp implements Runnable {
     HashSet<Game> games;
     HashSet<User> users;
     AtomicInteger globalID;
+    final PrintStream out;
     public HostApp(ServerSocket s){
         this.hostSocket = s;
         games = new HashSet<Game>();
         users = new HashSet<User>();
         this.globalID = new AtomicInteger(0);
+        this.out = System.out;
     }
 
 
@@ -44,27 +47,26 @@ public class HostApp implements Runnable {
     public void acceptConnection(){
             while(true) {
                 try {
-                    System.out.println("Start to listen to clients");
                     Socket s = hostSocket.accept();
                     Client theClient = new Client(s);
                     ClientThread theThread = new ClientThread(games, users,theClient,globalID);
-                    System.out.println("Get one Client");
+                    out.println("Get one user and the total number of users: " + users.size());
                     theThread.start();
                 }catch(IOException e){
-                    System.out.println("HostApp: Issue with acceptConnection.");
+                    out.println("HostApp: Issue with acceptConnection.");
                 }
             }
 
     }
 
     public void run() {
+        out.println("Server starts to run");
         acceptConnection();
     }
 
     public static void main(String[] args) throws IOException {
         ServerSocket hostSocket = new ServerSocket(SOCKET_PORT);
         HostApp hostApp = new HostApp(hostSocket);
-        System.out.println("Server starts to run");
         hostApp.run();
     }
 }
