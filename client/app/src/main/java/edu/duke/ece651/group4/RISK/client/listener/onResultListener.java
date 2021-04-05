@@ -1,4 +1,4 @@
-package edu.duke.ece651.group4.RISK.client.activity;
+package edu.duke.ece651.group4.RISK.client.listener;
 
 /**
  * check if successfully send Object to remote server.

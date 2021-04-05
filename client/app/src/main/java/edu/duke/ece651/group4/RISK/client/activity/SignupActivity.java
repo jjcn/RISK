@@ -5,17 +5,19 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import androidx.appcompat.app.AppCompatActivity;
 import edu.duke.ece651.group4.RISK.client.R;
+import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
 
 import java.util.Objects;
 
 import static edu.duke.ece651.group4.RISK.client.Constant.EMPTY_INPUT;
 import static edu.duke.ece651.group4.RISK.client.Constant.SUCCESS_SIGNUP;
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.sendSignUp;
-import static edu.duke.ece651.group4.RISK.client.utility.Instruction.showByToast;
+import static edu.duke.ece651.group4.RISK.client.utility.Notice.showByToast;
 
 
 public class SignupActivity extends AppCompatActivity {
@@ -33,10 +35,19 @@ public class SignupActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         impUI();
+    }
+
+    // back button at toolbar
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void impUI() {
@@ -44,6 +55,10 @@ public class SignupActivity extends AppCompatActivity {
         impSignUpBt();
     }
 
+    /**
+     * Set up input name and two password.
+     * Check if input two password are the same. Sign up button been activated if true.
+     */
     private void impAccountInput() {
         // read input
         nameET = findViewById(R.id.editTextTextAccount);
@@ -83,6 +98,11 @@ public class SignupActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * send name and password to remote server and receive message if signed up a new account.
+     * back to login activity if new account created.
+     *remain in this activity
+     */
     private void impSignUpBt() {
         signupButton = findViewById(R.id.buttonSignUp);
         signupButton.setOnClickListener(v -> {
@@ -99,16 +119,18 @@ public class SignupActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(Object o) {
                     String result = (String) o;
-                    if (result == null) {
-                        Intent loginIntent = new Intent(SignupActivity.this, LoginActivity.class);
-                        showByToast(SignupActivity.this, SUCCESS_SIGNUP);
-                        startActivity(loginIntent);
-                        finish();
-                    } else {
-                        showByToast(SignupActivity.this, result);// show account err message
-                        signupButton.setClickable(true);
-                        return;
-                    }
+                    runOnUiThread(() -> {
+                        if (result == null) {
+                            Intent loginIntent = new Intent(SignupActivity.this, LoginActivity.class);
+                            showByToast(SignupActivity.this, SUCCESS_SIGNUP);
+                            startActivity(loginIntent);
+                            finish();
+                        } else {
+                            showByToast(SignupActivity.this, result);// show account err message
+                            signupButton.setClickable(true);
+                            return;
+                        }
+                    });
                 }
 
                 @Override
@@ -120,7 +142,7 @@ public class SignupActivity extends AppCompatActivity {
         });
     }
 
-//    @Override
+    //    @Override
 //    public boolean onKeyDown(int keyCode, KeyEvent event) {
 //        if (keyCode==KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
 //            Intent loginIntent = new Intent(this,LoginActivity.class);
@@ -129,4 +151,5 @@ public class SignupActivity extends AppCompatActivity {
 //        }
 //        return false;
 //    }
+
 }
