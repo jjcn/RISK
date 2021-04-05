@@ -109,7 +109,7 @@ public class ClientThread extends Thread {
             return;
         }
         //1.send the gameInfo to Client
-        this.theClient.sendObject(getAllGameInfo());
+//        this.theClient.sendObject(getAllGameInfo());
         //2. select an option
         while(true){
             GameMessage gameMessage = (GameMessage) this.theClient.recvObject();
