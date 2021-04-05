@@ -282,6 +282,14 @@ public class World implements Serializable {
     }
 
     /**
+     * Try upgrade a player's tech level by 1.
+     * @param playerName is a player's name.
+     */
+    public void upgradePlayerTechLevelBy1(String playerName) {
+        playerInfos.get(playerName).upgradeTechLevelBy1();
+    }
+
+    /**
      * Station troop to a territory.
      * 
      * @param terrName is the territory name.
