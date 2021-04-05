@@ -541,4 +541,6 @@ public class WorldTest {
     	System.out.println(world.findTerritory("1").getArea());
     	System.out.println(world.findTerritory("2").getArea());
     }
+
+
 }
