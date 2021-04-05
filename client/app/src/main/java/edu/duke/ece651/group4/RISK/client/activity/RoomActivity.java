@@ -151,7 +151,7 @@ public class RoomActivity extends AppCompatActivity {
         createBT.setOnClickListener(v -> {
             createBT.setClickable(false);
             // TODO: choose number diag
-            int numUser = 2;
+            int numUser = 1;
                 createGame(numUser,
                         new onReceiveListener() {
                             @Override

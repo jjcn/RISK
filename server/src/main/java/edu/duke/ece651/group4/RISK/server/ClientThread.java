@@ -32,8 +32,18 @@ public class ClientThread extends Thread {
         this.ownerUser = null;
         this.globalID = globalID;
         this.out = System.out;
+        this.gameOnGoing = null;
     }
 
+    public ClientThread(HashSet<Game> games, HashSet<User> users, Client theClient, AtomicInteger globalID,PrintStream out) {
+        this.games = games;
+        this.users = users;
+        this.theClient = theClient;
+        this.ownerUser = null;
+        this.globalID = globalID;
+        this.out = out;
+        this.gameOnGoing = null;
+    }
 
     /*
      * Part1 user
@@ -110,6 +120,7 @@ public class ClientThread extends Thread {
     protected void trySetUpGame()  {
         out.println(ownerUser.getUsername() + " tries to set up a game");
         if(gameOnGoing != null){
+            out.println("Already is on a game, skip set up game ");
             return;
         }
         //1.send the gameInfo to Client
@@ -119,6 +130,8 @@ public class ClientThread extends Thread {
             GameMessage gameMessage = (GameMessage) this.theClient.recvObject();
             String action = gameMessage.getAction();
             Object res = null;
+
+            out.println(ownerUser.getUsername() + " get " + action);
             switch(action) {
                 case GAME_CREATE:
                     res = tryCreateAGame(gameMessage);
@@ -127,6 +140,7 @@ public class ClientThread extends Thread {
                     res = tryJoinAGame(gameMessage);
                     break;
                 case GAME_REFRESH:
+                    out.println("Will send a room info to players");
                     res = getAllGameInfo();
                     break;
                 case GAME_EXIT:
@@ -150,7 +164,7 @@ public class ClientThread extends Thread {
      * */
     synchronized protected String tryCreateAGame(GameMessage gMess){
         int maxNumPlayers = gMess.getNumPlayers();
-        if(maxNumPlayers < 2 || maxNumPlayers > 5){
+        if(maxNumPlayers < 1 || maxNumPlayers > 5){
             return INVALID_CREATE;
         }
         this.gameOnGoing = new Game(globalID.getAndIncrement(), maxNumPlayers);
@@ -158,7 +172,7 @@ public class ClientThread extends Thread {
         GameRunner gameRunner = new GameRunner(gameOnGoing,out);
         gameOnGoing.addUser(ownerUser);
         gameRunner.start();
-        out.println(ownerUser.getUsername() + " creates a game successfully");
+        out.println(ownerUser.getUsername() + " creates a game" + gameOnGoing.getGameID() + "successfully and the number of the game support is " + gameOnGoing.getMaxNumUsers());
         return null;
     }
 
@@ -170,7 +184,7 @@ public class ClientThread extends Thread {
      * 2. If old game , switchIn this user
      * 3. set gameOngoing = gameToJoin
      * */
-     protected String tryJoinAGame(GameMessage gMess){
+    protected String tryJoinAGame(GameMessage gMess){
         int gameID = gMess.getGameID();
         Game gameToJoin = findGame(gameID);
         String res = checkJoinGame(gameToJoin);
@@ -184,6 +198,8 @@ public class ClientThread extends Thread {
             out.println(ownerUser.getUsername() + " switches in  game " + gameToJoin.getGameID() + " AGAIN");
         }
         gameOnGoing = gameToJoin;
+        out.println(gameOnGoing.getGameID() + " has " + gameOnGoing.getUserNames().size() );
+        out.println(gameOnGoing.getGameID()  + "is full? :" + gameOnGoing.isFull());
         return null;
     }
 
@@ -213,6 +229,7 @@ public class ClientThread extends Thread {
      * send all gameInfo to a client
      * */
     protected ArrayList<RoomInfo> getAllGameInfo(){
+        out.println(ownerUser.getUsername() + " push refresh button and the number of games now: " + games.size());
         ArrayList<RoomInfo> roomsInfo = new ArrayList<RoomInfo>();
         for(Game g : games){
             if(g.gameState.isAlive()){
@@ -239,8 +256,10 @@ public class ClientThread extends Thread {
         out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " wait to place units");
         // wait all players to join and runner to set up the game
         waitNotifyFromRunner();
+        out.println("Game" + gameOnGoing.getGameID() + ": "+ ownerUser.getUsername()+ ": get notify from runner");
         // send the world info
         this.theClient.sendObject(gameOnGoing.getTheWorld());
+        out.println("Game" + gameOnGoing.getGameID() + ": send world to" + ownerUser.getUsername() + "wait for orders" );
         // start to place Units
         List<PlaceOrder> placeOrders = (List<PlaceOrder> )this.theClient.recvObject();
         for(PlaceOrder p: placeOrders){
@@ -254,9 +273,9 @@ public class ClientThread extends Thread {
 
 
     /*
-    * PART4
-    * Run Game for one turn
-    * */
+     * PART4
+     * Run Game for one turn
+     * */
     protected void tryRunGameOneTurn() {
         if(gameOnGoing == null){
             return;
@@ -275,11 +294,11 @@ public class ClientThread extends Thread {
     }
 
     /*
-    * This mainly update the player state after one turn
-    * If switchOut, change state to PLAYER_STATE_SWITCH_OUT and set gameOnGoing = null;
-    * else if lose, change state to PLAYER_STATE_LOSE
-    * else, change state to PLAYER_STATE_ACTION_PHASE
-    * */
+     * This mainly update the player state after one turn
+     * If switchOut, change state to PLAYER_STATE_SWITCH_OUT and set gameOnGoing = null;
+     * else if lose, change state to PLAYER_STATE_LOSE
+     * else, change state to PLAYER_STATE_ACTION_PHASE
+     * */
     protected void checkResultOneTurn(){
         //Go back to Games Page (Part2)
         if(gameOnGoing.gameState.getAPlayerState(ownerUser).equals(PLAYER_STATE_SWITCH_OUT)){
@@ -294,8 +313,8 @@ public class ClientThread extends Thread {
     }
 
     /*
-    * This waits for notify from runner
-    * */
+     * This waits for notify from runner
+     * */
     public void waitNotifyFromRunner(){
         try {
             synchronized (gameOnGoing){
