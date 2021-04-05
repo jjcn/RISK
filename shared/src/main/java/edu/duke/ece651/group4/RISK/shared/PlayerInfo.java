@@ -21,6 +21,7 @@ public class PlayerInfo implements Serializable {
      */
     protected final int minTechLevel; // minimum tech level
     protected final int maxTechLevel; // max tech level a player can reach
+
     /**
      * Cumulative costs of upgrading from tech level 1 to N.
      * Two 0's are put at the start for easy indexing by techLevel.
@@ -142,6 +143,13 @@ public class PlayerInfo implements Serializable {
      */
     public void upgradeTechLevelBy1() {
         modifyTechLevelBy(1);
+    }
+
+    /**
+     * Upgrades player's tech level by a certain number.
+     */
+    public void upgradeTechLevelBy(int n) {
+        modifyTechLevelBy(n);
     }
 
     /**

@@ -222,8 +222,8 @@ public class World implements Serializable {
         findTerritory(terrName).setRandom(seed);
     }
 
-    protected void setReport(String reprot) {
-        this.report = reprot;
+    protected void setReport(String report) {
+        this.report = report;
     }
 
     /**
@@ -336,6 +336,16 @@ public class World implements Serializable {
      */
     public void upgradePlayerTechLevelBy1(String playerName) {
         playerInfos.get(playerName).upgradeTechLevelBy1();
+    }
+
+    /**
+     * Try upgrade a player's tech level using an upgrade tech order.
+     * 
+     * @param upgradeTechOrder is an upgrade tech order
+     * @param playerName is a player's name.
+     */
+    public void upgradePlayerTechLevelBy(UpgradeTechOrder upgradeTechOrder, String playerName) {
+        playerInfos.get(playerName).upgradeTechLevelBy(upgradeTechOrder.getNLevel());
     }
 
     /**
@@ -737,7 +747,16 @@ public class World implements Serializable {
 
     @Override
     public String toString() {
-        return territories.toString() + orderChecker.toString() + rnd.toString();
+        StringBuilder ans = new StringBuilder();
+        for (Territory terr : getAllTerritories()) {
+            ans.append(terr.toString());
+            ans.append("\n");
+        }
+        for (PlayerInfo pInfo : playerInfos.values()) {
+            ans.append(pInfo.toString());
+            ans.append("\n");
+        }
+        return ans.toString();
     }
 
     @Override

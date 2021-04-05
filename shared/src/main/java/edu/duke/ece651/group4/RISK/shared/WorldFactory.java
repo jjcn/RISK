@@ -62,7 +62,7 @@ public class WorldFactory implements Serializable {
     	}
     }
 
-    /**
+    /*
      * Step 1: Create unconnected territories.
      * 
      * @param names is a list of territory names.
@@ -82,6 +82,19 @@ public class WorldFactory implements Serializable {
      * Below are fixed world templates.
      * If you want to generate a world with random connections, use World(int: nTerrs)
      */
+
+    public World create4TerritoryWorld() {
+        String[] names = {"A", "B", "C", "D"};
+        World world = createTerritories(Arrays.asList(names));
+
+        world.addConnection("A", "B");
+        world.addConnection("A", "C");
+        world.addConnection("A", "D");
+        world.addConnection("B", "D");
+        world.addConnection("C", "D");
+
+        return world;
+    }
 
     public World create6TerritoryWorld() {
         String[] names = {"A", "B", "C", "D", "E", "F"};

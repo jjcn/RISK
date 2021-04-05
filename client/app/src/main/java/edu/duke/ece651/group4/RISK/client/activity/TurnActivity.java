@@ -92,17 +92,18 @@ private final String TAG = this.getClass().getSimpleName();
             // commitBT.setClickable(false);
             Intent intent = new Intent();
             switch(actionType){
-                case ACTION_MOVE:
-                    intent.setComponent(new ComponentName(TurnActivity.this,BasicOrderActivity.class));
-                case ACTION_ATK:
-                    intent.setComponent(new ComponentName(TurnActivity.this,BasicOrderActivity.class));
-                    intent.putExtra("actionType",actionType);
-                    break;
-                case ACTION_UPGRADE: //TODO:upgrade tech or soldier
-                    intent.setComponent(new ComponentName(TurnActivity.this,UpgradeActivity.class));
-                    break;
-                case ACTION_DONE:
-                    waitNextTurn();
+//                case MOVE_ACTION:
+//                    intent.setComponent(new ComponentName(TurnActivity.this,BasicOrderActivity.class));
+//                case ATTACK_ACTION:
+//                    intent.setComponent(new ComponentName(TurnActivity.this,BasicOrderActivity.class));
+//                    intent.putExtra("actionType",actionType);
+//                    break;
+//                case UPTROOP_ACTION: //TODO:upgrade tech or soldier
+//                    intent.setComponent(new ComponentName(TurnActivity.this,UpgradeActivity.class));
+//                    break;
+//                case UPTECH_ACTION:
+//                case DONE_ACTION:
+//                    waitNextTurn();
             }
         });
     }
