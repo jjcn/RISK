@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class RoomInfo implements Serializable {
+    protected static final long serialVersionUID = 11L;
     int roomID;
     ArrayList<String> userNames;
     final int maxNumPlayers;

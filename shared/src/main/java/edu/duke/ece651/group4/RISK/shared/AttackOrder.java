@@ -3,6 +3,8 @@ package edu.duke.ece651.group4.RISK.shared;
 import java.io.Serializable;
 
 public class AttackOrder implements Order, Serializable {
+    protected static final long serialVersionUID = 1L;
+
     private Character actionName;
     private String src;
     private String des;

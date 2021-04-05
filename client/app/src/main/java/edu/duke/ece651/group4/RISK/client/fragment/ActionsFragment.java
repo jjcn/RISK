@@ -12,8 +12,8 @@ import androidx.fragment.app.Fragment;
 import edu.duke.ece651.group4.RISK.client.R;
 
 public class ActionsFragment extends Fragment {
-    private Spinner mActionSpinner;
-    private Button mDoneButton;
+    private Spinner actionSpinner;
+    private Button commitButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -25,8 +25,9 @@ public class ActionsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_actions, container, false);
 
-        mActionSpinner = v.findViewById(R.id.actions_spinner);
-        mDoneButton = v.findViewById(R.id.commit_button);
+        actionSpinner = v.findViewById(R.id.actions_spinner);
+        commitButton = v.findViewById(R.id.commit_button);
+
 
         return v;
     }

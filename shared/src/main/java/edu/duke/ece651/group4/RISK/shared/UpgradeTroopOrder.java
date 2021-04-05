@@ -1,5 +1,7 @@
 package edu.duke.ece651.group4.RISK.shared;
 
+import java.io.Serializable;
+
 /**
  * An order that upgrades troop on a territory.
  * @param srcName is the name of territory to upgrade its troop.
@@ -7,7 +9,8 @@ package edu.duke.ece651.group4.RISK.shared;
  * @param levelAfter is the level of unit after the upgrade.
  * @param nUnit is the number of units to upgrade.
  */
-public class UpgradeTroopOrder implements Order {
+public class UpgradeTroopOrder implements Order, Serializable {
+    protected static final long serialVersionUID = 18L;
     private Character actionName;
     private String srcName;
     private int levelBefore;

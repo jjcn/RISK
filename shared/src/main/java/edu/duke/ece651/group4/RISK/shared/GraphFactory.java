@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 public class GraphFactory implements Serializable {
+    protected static final long serialVersionUID = 5L;
 
 	public GraphFactory() {}
 	

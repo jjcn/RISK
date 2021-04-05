@@ -259,6 +259,9 @@ public class ClientThread extends Thread {
         out.println("Game" + gameOnGoing.getGameID() + ": "+ ownerUser.getUsername()+ ": get notify from runner");
         // send the world info
         this.theClient.sendObject(gameOnGoing.getTheWorld());
+        if(gameOnGoing.getTheWorld() != null){
+            out.println("This world is not null");
+        }
         out.println("Game" + gameOnGoing.getGameID() + ": send world to" + ownerUser.getUsername() + "wait for orders" );
         // start to place Units
         List<PlaceOrder> placeOrders = (List<PlaceOrder> )this.theClient.recvObject();
