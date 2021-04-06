@@ -606,6 +606,20 @@ public class World implements Serializable {
     }
 
     /**
+     * Requirement: At the end of turn, all players gain resources from the
+     * territories he owns.
+     */
+    public void allPlayersGainResources() {
+        for (PlayerInfo pInfo : playerInfos.values()) {
+            String playerName = pInfo.getName();
+            for (Territory terr : getTerritoriesOfPlayer(playerName)) {
+                pInfo.gainFood(terr.getFoodSpeed());
+                pInfo.gainTech(terr.getTechSpeed());
+            }
+        }
+    }
+
+    /**
      * Add unit to all territories.
      * 
      * Requirement: At the end of every turn, add a level 0 unit to every territory.
@@ -621,19 +635,6 @@ public class World implements Serializable {
         }
     }
 
-    /**
-     * Requirement: At the end of turn, all players gain resources from the
-     * territories he owns.
-     */
-    public void allPlayersGainResources() {
-        for (PlayerInfo pInfo : playerInfos.values()) {
-            String playerName = pInfo.getName();
-            for (Territory terr : getTerritoriesOfPlayer(playerName)) {
-                pInfo.gainFood(terr.getFoodSpeed());
-                pInfo.gainTech(terr.getTechSpeed());
-            }
-        }
-    }
 
     /**
      * Add level 0 units to a territory.

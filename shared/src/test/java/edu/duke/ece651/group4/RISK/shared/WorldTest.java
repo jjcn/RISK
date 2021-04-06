@@ -557,7 +557,7 @@ public class WorldTest {
     @Test
     public void testAllPlayersGainResources() {
         World world = createWorldSimple();
-        // initialize resource attributes and owner
+        // initialize resource attributes and owners
         initTerrAttributes(world, "1", 0, 1, 1, "p1"); 
         initTerrAttributes(world, "2", 0, 2, 2, "p2"); 
         // register player infos
@@ -574,6 +574,20 @@ public class WorldTest {
         assertEquals(1, p1AfterGain.getTechQuantity());
         assertEquals(2, p2AfterGain.getFoodQuantity());
         assertEquals(2, p2AfterGain.getTechQuantity());
+    }
+
+    @Test
+    public void testAddUnitToATerritory() {
+        World world = createWorldSimple();
+        // initialize resource attributes and owners
+        initTerrAttributes(world, "1", 0, 1, 1, "p1"); 
+        initTerrAttributes(world, "2", 0, 2, 2, "p2"); 
+
+        assertEquals(0, world.findTerritory("1").checkPopulation());
+        world.addUnitToATerritory("p1", "1", 1);
+        assertEquals(1, world.findTerritory("1").checkPopulation());
+        assertThrows(IllegalArgumentException.class, 
+                    () -> world.addUnitToATerritory("p1", "2", 1));
     }
 
     @Test
