@@ -30,7 +30,6 @@ public class WorldInfoAdapter extends RecyclerView.Adapter<WorldInfoAdapter.Worl
     }
 
     public void setWorldInfo(World world){
-
         notifyDataSetChanged();
     }
 
