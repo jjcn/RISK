@@ -32,16 +32,10 @@ public class PlaceActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_place);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
         impUI();
-        initInstr();
         Log.i(TAG,LOG_CREATE_SUCCESS);
     }
 
-    //TODO
-    private void initInstr() {
-    }
 
     private void impUI() {
         LinearLayout terrA = findViewById(R.id.terrA);
@@ -53,16 +47,16 @@ public class PlaceActivity extends AppCompatActivity {
         EditText terrCETInput = findViewById(R.id.terrC).findViewById(R.id.inputNum);
         Button commitBT = findViewById(R.id.buttonCommitPlace);
 
+        List<Territory> myTerr = getMyTerritory();
+        TextView terrATV = terrA.findViewById(R.id.placeinstrTV);
+        terrATV.append(myTerr.get(0).getName());
+        TextView terrBTV = terrB.findViewById(R.id.placeinstrTV);
+        terrBTV.append(myTerr.get(1).getName());
+        TextView terrCTV = terrC.findViewById(R.id.placeinstrTV);
+        terrCTV.append(myTerr.get(2).getName());
+
         commitBT.setOnClickListener(v -> {
             commitBT.setClickable(false);
-
-            List<Territory> myTerr = getMyTerritory();
-            TextView terrATV = terrA.findViewById(R.id.placeinstrTV);
-            terrATV.append(myTerr.get(0).getName());
-            TextView terrBTV = terrB.findViewById(R.id.placeinstrTV);
-            terrBTV.append(myTerr.get(1).getName());
-            TextView terrCTV = terrC.findViewById(R.id.placeinstrTV);
-            terrCTV.append(myTerr.get(2).getName());
 
             // check total number
             numTerrA = Integer.parseInt(String.valueOf(terrAETInput.getText()));
