@@ -160,6 +160,7 @@ public class TurnActivity extends AppCompatActivity {
             case UI_ATK:
                 intent.setComponent(new ComponentName(TurnActivity.this, BasicOrderActivity.class));
                 intent.putExtra("actionType", actionType);
+                startActivity(intent);
                 break;
             case UI_UPTROOP:
                 intent.setComponent(new ComponentName(TurnActivity.this, UpgradeActivity.class));
