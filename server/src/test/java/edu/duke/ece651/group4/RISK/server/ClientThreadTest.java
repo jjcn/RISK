@@ -152,14 +152,14 @@ class ClientThreadTest {
 //
 //    }
 //
-    private List<User> createUsers(int num){
+    public static List<User> createUsers(int num){
         List<User> users = new ArrayList<User>();
         for(int i = 0; i < num; i++){
             users.add(new User(i,"user"+i,"123" ));
         }
         return users;
     }
-    private List<Game> createGames(int num, int maxNumUsers){
+    private static List<Game> createGames(int num, int maxNumUsers){
         List<Game> games = new ArrayList<Game>();
         for(int i = 0; i< num; i++){
             games.add(new Game(i,maxNumUsers));

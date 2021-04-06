@@ -23,7 +23,7 @@ class GameTest {
         hostSocket = new ServerSocket(PORT);
     }
 
-    private Game createAGame(int gid, int numUser){
+    public static Game createAGame(int gid, int numUser){
         Game g = new Game(gid,numUser);
         for(int i = 0; i < numUser; i++){
             User u = new User(i,"user" + i,"1234");
