@@ -77,6 +77,10 @@ public class RISKApplication extends Application {
         return UNIT_NAMES.size() - 1;
     }
 
+    public static List<Territory> getMyTerritory() {
+        return theWorld.getTerritoriesOfPlayer(new TextPlayer(userName));
+    }
+
     /**
      * @return list of names of soldier at each level
      */

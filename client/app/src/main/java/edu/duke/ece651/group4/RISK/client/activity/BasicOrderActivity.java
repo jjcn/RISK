@@ -96,7 +96,7 @@ public class BasicOrderActivity extends AppCompatActivity {
                 typeNames);
         typeSpinner.setAdapter(typeAdapter);
 
-        nUnitET = findViewById(R.id.numUnit);
+        nUnitET = findViewById(R.id.numUnit).findViewById(R.id.inputNum);
 
         commitBT = findViewById(R.id.commit_button);
         commitBT.setOnClickListener(v -> {
