@@ -166,7 +166,7 @@ public class TurnActivity extends AppCompatActivity {
     }
 
     private void upgradeTech() {
-        doTechUpgrade(new onResultListener() {
+        doOneUpgrade(new onResultListener() {
             @Override
             public void onSuccess() {
                 userInfoTV.setText(getPlayerInfo());

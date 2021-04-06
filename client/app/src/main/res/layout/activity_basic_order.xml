@@ -50,7 +50,7 @@
     />
 
     <Spinner
-            android:id="@+id/levelText"
+            android:id="@+id/terrDes"
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:prompt="@string/CHOOSE_DES_INSTRU"
@@ -80,8 +80,9 @@
             app:layout_constraintEnd_toStartOf="@id/switchOut"
     />
 
-    <include layout="@layout/item_input_num"
-             android:id="@+id/terrB"/>
+    <include
+            layout="@layout/item_input_num"
+            android:id="@+id/numUnit"/>
 
     <Button
             android:id="@+id/commit_button"
