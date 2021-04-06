@@ -32,7 +32,11 @@ public class UpgradeActivity extends AppCompatActivity {
         this.from = -1;
         this.to = -1;
         this.num = -1;
+
+        Log.e(TAG, "Upgrade Activity: set up sucessfully and will enter UI" );
+
         impUI();
+        Log.e(TAG, "UI finishes" );
     }
 
     // back button at toolbar
@@ -47,8 +51,6 @@ public class UpgradeActivity extends AppCompatActivity {
 
     private void impUI() {
         List<String> myTerrNames = getMyTerrNames();
-
-
         Spinner srcChoices = findViewById(R.id.terrSrc);
         SpinnerAdapter srcAdapter = new ArrayAdapter<>(UpgradeActivity.this, R.layout.item_choice, myTerrNames);
         srcChoices.setAdapter(srcAdapter);

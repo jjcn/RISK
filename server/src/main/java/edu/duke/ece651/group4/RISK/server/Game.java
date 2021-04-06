@@ -184,7 +184,11 @@ public class Game {
      * */
     synchronized protected void upgradeTroopOnWorld(Order order, String userName){
         UpgradeTroopOrder upgradeOrder = (UpgradeTroopOrder) order;
-        theWorld.upgradeTroop(upgradeOrder, userName);
+        try{
+            theWorld.upgradeTroop(upgradeOrder, userName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         out.println("Game" + gameID + ": " + userName + " upgrade Troop");
     }
     synchronized protected void doDoneActionFor(User u){
@@ -193,7 +197,11 @@ public class Game {
     }
 
     synchronized protected void upgradeTechOnWorld(String userName){
-        theWorld.upgradePlayerTechLevelBy1(userName);
+        try{
+            theWorld.upgradePlayerTechLevelBy1(userName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         out.println("Game" + gameID + ": " + userName + " upgrade Tech");
     }
     /*
@@ -203,7 +211,11 @@ public class Game {
      * */
     synchronized protected void doMoveOnWorld(Order order, String userName){
         MoveOrder moveOrder = (MoveOrder) order;
-        this.theWorld.moveTroop(moveOrder, userName);
+        try{
+            this.theWorld.moveTroop(moveOrder, userName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         out.println("Game" + gameID + ": " + userName + " move action");
     }
     /*
@@ -213,7 +225,11 @@ public class Game {
      * */
     synchronized protected void doAttackOnWorld(Order order, String userName){
         AttackOrder attackOrder = (AttackOrder) order;
-        this.theWorld.attackATerritory(attackOrder, userName);
+        try{
+            this.theWorld.attackATerritory(attackOrder, userName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         out.println("Game" + gameID + ": " + userName + " attack action");
     }
     /*
