@@ -359,7 +359,7 @@ public class World implements Serializable {
      */
     public void stationTroop(String terrName, Troop troop) {
         Territory terr = findTerritory(terrName);
-        terr.initializeTerritory(troop.checkTroopSize(), troop.getOwner());
+        terr.setOwnerTroop(troop.checkTroopSize(), troop.getOwner());
     }
 
     /**
@@ -370,7 +370,7 @@ public class World implements Serializable {
      */
     public void stationTroop(String terrName, int population) {
         Territory terr = findTerritory(terrName);
-        terr.initializeTerritory(population, terr.getOwner());
+        terr.setOwnerTroop(population, terr.getOwner());
     }
 
     /**
@@ -636,8 +636,9 @@ public class World implements Serializable {
     }
 
     /**
-     * Add level 0 unit to a territory.
-     * 
+     * Add level 0 units to a territory.
+     * @param playerName is the name of the player who commits this action.
+     * @param terrName is the name of the territory.
      * @param num is the number of level 0 units added to this territory.
      */
     public void addUnitToATerritory(String playerName, String terrName, int num) {

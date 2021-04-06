@@ -537,6 +537,45 @@ public class WorldTest {
                     
     }
 
+    /**
+     * initialize attributes of territory:
+     * 1. area
+     * 2. food speed
+     * 3. tech speed
+     * 4. owner
+     */
+    protected void initTerrAttributes(
+                World world, String terrName,
+                int area, int foodYield, int techYield, 
+                String playerName) {
+        world.findTerritory(terrName).setArea(area);
+        world.findTerritory(terrName).setFoodSpeed(foodYield);
+        world.findTerritory(terrName).setTechSpeed(techYield);
+        world.findTerritory(terrName).setOwnerTroop(0, new TextPlayer(playerName));
+    }
+
+    @Test
+    public void testAllPlayersGainResources() {
+        World world = createWorldSimple();
+        // initialize resource attributes and owner
+        initTerrAttributes(world, "1", 0, 1, 1, "p1"); 
+        initTerrAttributes(world, "2", 0, 2, 2, "p2"); 
+        // register player infos
+        PlayerInfo p1 = new PlayerInfo("p1", 0, 0);
+        PlayerInfo p2 = new PlayerInfo("p2", 0, 0);
+        world.registerPlayer(p1);
+        world.registerPlayer(p2);
+        // all players gain resource from their territories
+        world.allPlayersGainResources();
+
+        PlayerInfo p1AfterGain = world.getPlayerInfoByName("p1");
+        PlayerInfo p2AfterGain = world.getPlayerInfoByName("p2");
+        assertEquals(1, p1AfterGain.getFoodQuantity());
+        assertEquals(1, p1AfterGain.getTechQuantity());
+        assertEquals(2, p2AfterGain.getFoodQuantity());
+        assertEquals(2, p2AfterGain.getTechQuantity());
+    }
+
     @Test
     public void testCheckLost() {
         World world1 = createWorld(troopsConnected);
