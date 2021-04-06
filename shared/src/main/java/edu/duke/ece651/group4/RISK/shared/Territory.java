@@ -134,7 +134,7 @@ public class Territory implements Serializable {
      * @param num   shows number added
      * @param owner shows owner of territory
      */
-    public void initializeTerritory(int num, Player owner) {
+    public void setOwnerTroop(int num, Player owner) {
         this.ownerTroop = new Troop(num, owner);
     }
 
