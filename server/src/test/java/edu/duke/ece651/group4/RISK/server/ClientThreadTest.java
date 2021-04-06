@@ -3,6 +3,7 @@ package edu.duke.ece651.group4.RISK.server;
 import edu.duke.ece651.group4.RISK.shared.*;
 import edu.duke.ece651.group4.RISK.shared.message.GameMessage;
 import edu.duke.ece651.group4.RISK.shared.message.LogMessage;
+import org.checkerframework.checker.units.qual.C;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -26,19 +27,20 @@ class ClientThreadTest {
     private final static int TIME = 500;
     private final static int PORT = 7777;
     static ServerSocket hostSocket;
+    static String hostname = "localhost";
     Client theClient;
     World theWorld;
-//    @BeforeAll
-//    public void setUpAll() throws InterruptedException {
-//        new Thread(() -> {
-//            try {
-//                hostSocket = new ServerSocket(PORT);// initialize the server
-//            } catch (IOException ignored) {
-//            }
-//        }).start();
-//        // pause to give the server some time to setup
-//        Thread.sleep(TIME);
-//    }
+    @BeforeAll
+    public void setUpAll() throws InterruptedException {
+        new Thread(() -> {
+            try {
+                hostSocket = new ServerSocket(PORT);// initialize the server
+            } catch (IOException ignored) {
+            }
+        }).start();
+        // pause to give the server some time to setup
+        Thread.sleep(TIME);
+    }
 //
 //
 //    private World createWorld(){
@@ -263,27 +265,33 @@ class ClientThreadTest {
     }
 
 
-
-
-    /*
-    * This should be tested later
-    * */
-    @Test
-    public void test_tryPlaceUnits(){
-
-
+    private void simulateOneClient(User u, Client theClient){
 
     }
 
-    /*
-     *
-     * */
     @Test
-    public void test_tryRunGameOneTurn(){
+    public void test_wholeProcess(){
+        List<User> users =  createUsers(2);
+        List<Game> games = createGames(1, 2);
+        new Thread(() -> {
+            try {
+                Socket socket = hostSocket.accept();
+                this.theClient = new Client(socket);
+                ClientThread ct = new ClientThread(games, users,null, new AtomicInteger(0));
+                ct.start();
+            } catch (IOException ignored) {
+            }
+        }).start();
 
+        new Thread(() -> {
+            try {
+                Client theClient = new Client(hostname, PORT);
 
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
 
     }
-
 
 }

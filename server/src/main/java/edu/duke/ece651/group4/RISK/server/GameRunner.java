@@ -43,7 +43,7 @@ public class GameRunner extends Thread{
     @Override
     public void run(){
         out.println("Game runner waits for all players to join");
-        while(!game.isFull()){} // wait all users to join to start the game
+//        while(!game.isFull()){} // wait all users to join to start the game
 
         game.setUpGame();
         out.println("Game runner finishes sets up");
