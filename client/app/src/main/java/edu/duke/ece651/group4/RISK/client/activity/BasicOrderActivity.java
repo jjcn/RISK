@@ -133,7 +133,7 @@ public class BasicOrderActivity extends AppCompatActivity {
             nUnit = Integer.parseInt(nUnitET.getText().toString());
             Log.d(TAG, "User selected: from " + srcName + " to " + desName
                    + " move " + nUnit + " " + typeName);
-            String result = null;
+            String result = "";
             if (actionType.equals(UI_MOVE)) {
                 result = doOneMove(buildMoveOrder(srcName, desName, nUnit, typeName),
                         new onResultListener() {

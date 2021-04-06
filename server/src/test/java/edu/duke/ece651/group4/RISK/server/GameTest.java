@@ -74,7 +74,9 @@ class GameTest {
 //    @Test
 //    public void test_sendWorld() throws IOException {
 //        Game g = createAGame(1, 2);
+
 ////        System.out.println(g.getUserNames().get(0));
+
 //        g.setUpGame();
 //        World w = g.getTheWorld();
 //        User u = new User(1,"???","1");
