@@ -23,12 +23,12 @@ public class Resource implements Serializable {
     /**
      * Error mesages
      */
-    final String NEG_MSG = String.format(
-        "Error: %s resource's gain and consume input value shall be non-negative.",
-        name);
-    final String NEG_AFTER_CONSUME_MSG = String.format(
-        "Error: quantity of %s resource will be negative after this consumption.",
-        name);
+    final String NEG_MSG = 
+        "Error: %s resource's gain and consume input value shall be non-negative.";
+
+    final String NEG_AFTER_CONSUME_MSG =
+        "Error: quantity of %s resource will be negative after this consumption.";
+       
 
     public Resource(String name) {
         this(name, 0);
