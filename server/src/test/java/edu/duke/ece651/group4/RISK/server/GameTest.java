@@ -75,7 +75,7 @@ class GameTest {
     public void test_sendWorld() throws IOException {
         Game g = createAGame(1, 2);
 //        System.out.println(g.getUserNames().get(0));
-        g.setUpGame();
+        g.setUpGame(); // every player now starts with 200 food & 2000 tech
         World w = g.getTheWorld();
         User u = new User(1,"???","1");
         User u0 = new User(1,"user0","1");
@@ -95,8 +95,8 @@ class GameTest {
         g.tryUpdateActionOnWorld(p,u0);
 
         MoveOrder m=new MoveOrder("A","B",new Troop(1,new TextPlayer("user0")),'M');
-        assertThrows(new IllegalArgumentException().getClass(),() ->g.doMoveOnWorld(m,"user0"));
-        assertThrows(new IllegalArgumentException().getClass(),() ->g.tryUpdateActionOnWorld(m,u0));
+        g.doMoveOnWorld(m,"user0");
+        g.tryUpdateActionOnWorld(m,u0);
 
 
         AttackOrder a=new AttackOrder("A","C",new Troop(1,new TextPlayer("user0")),'A');
