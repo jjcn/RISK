@@ -470,6 +470,20 @@ public class RISKApplication extends Application {
         sendReceiveHelper(order, listener, WORLD);
     }
 
+    public static boolean checkLost(){
+        return theWorld.checkLost(userName);
+    }
+
+
+    public static void stayInGame(onReceiveListener listener){
+        String message=null;
+        sendReceiveHelper(message, listener, WORLD);
+    }
+
+    public static void exitGame(onResultListener listener){
+        send(EXIT_GAME_MESSAGE,listener);
+    }
+
 
 
 }

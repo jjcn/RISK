@@ -27,7 +27,8 @@ public class TroopTest {
         myDict.put("Soldier LV0", 4);
         Troop dem = new Troop(myDict, new TextPlayer("test"));
         assertThrows(new IllegalArgumentException().getClass(), () -> test.sendTroop(dem));
-
+        assertThrows(new IllegalArgumentException().getClass(), () -> test.dispatchCertainUnit("Soldier LV6"));
+        assertEquals(test.checkUnitNum("Soldier LV6"),0);
     }
 
     @Test
@@ -45,9 +46,15 @@ public class TroopTest {
 
         // promote 4 lv2 units by 2 levels
         // need 4 * 44 = 176 > 170, only upgrade 3.
+        assertThrows(new IllegalArgumentException().getClass(), () -> test.updateUnit(2, 2, 10, 170));
         assertThrows(new IllegalArgumentException().getClass(), () -> test.updateUnit(2, 2, 4, 170)); 
         assertEquals(test.checkUnitNum("Soldier LV4"), 3);
         assertEquals(test.checkUnitNum("Soldier LV2"), 1);
+
+        test.updateUnit(0,5,6,2000000);
+
+        assertEquals(test.getWeakest().getJobName(),"Soldier LV2");
+        assertEquals(test.getStrongest().getJobName(),"Soldier LV5");
     }
 
     @Test
@@ -105,6 +112,8 @@ public class TroopTest {
         Troop enemy2 = new Troop(25, new TextPlayer("test"), rnd);
         test2.combat(enemy2);
         assertEquals(test2.checkTroopSize(), 5);
+
+
     }
 
     @Test
