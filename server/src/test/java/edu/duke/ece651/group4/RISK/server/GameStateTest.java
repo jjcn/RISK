@@ -51,13 +51,16 @@ class GameStateTest {
         ArrayList<User> users = createUsers(2);
         GameState gs = createAGameState(users);
         assertEquals(GAME_STATE_WAIT_TO_UPDATE, gs.getState());
+        assertEquals(true, gs.isWaitToUpdate());
         assertEquals(true, gs.isAllPlayersDoneUpdatingState());
         assertEquals(true, gs.changAPlayerStateTo(users.get(0), PLAYER_STATE_UPDATING ));
+
         assertEquals(false, gs.isAllPlayersDoneUpdatingState());
         gs.setActivePlayersStateToUpdating();
         assertEquals(false, gs.isAllPlayersDoneUpdatingState());
         assertEquals(PLAYER_STATE_UPDATING, gs.getAPlayerState(users.get(1)));
         gs.changAPlayerStateTo(users.get(1), PLAYER_STATE_SWITCH_OUT);
+        gs.setActivePlayersStateToUpdating();
         assertEquals(false, gs.isAllPlayersDoneUpdatingState());
         gs.changAPlayerStateTo(users.get(0), PLAYER_STATE_ACTION_PHASE);
         assertEquals(true, gs.isAllPlayersDoneUpdatingState());
@@ -77,6 +80,17 @@ class GameStateTest {
         gs.setGameDead();
         assertEquals(false,gs.isAlive());
 
+    }
+
+    @Test
+    public void test_isAllPlayerSwitchOut(){
+        ArrayList<User> users = createUsers(2);
+        GameState gs = createAGameState(users);
+        assertEquals(false, gs.isAllPlayersSwitchOut());
+        gs.changAPlayerStateTo(users.get(1), PLAYER_STATE_SWITCH_OUT);
+        assertEquals(false, gs.isAllPlayersSwitchOut());
+        gs.changAPlayerStateTo(users.get(0), PLAYER_STATE_SWITCH_OUT);
+        assertEquals(true, gs.isAllPlayersSwitchOut());
     }
 
 }
