@@ -184,7 +184,12 @@ public class Game {
      * */
     synchronized protected void upgradeTroopOnWorld(Order order, String userName){
         UpgradeTroopOrder upgradeOrder = (UpgradeTroopOrder) order;
-        theWorld.upgradeTroop(upgradeOrder, userName);
+        try{
+            theWorld.upgradeTroop(upgradeOrder, userName);
+            out.println(upgradeOrder.getActionName()+upgradeOrder.getLevelAfter());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         out.println("Game" + gameID + ": " + userName + " upgrade Troop");
     }
     synchronized protected void doDoneActionFor(User u){
@@ -193,7 +198,11 @@ public class Game {
     }
 
     synchronized protected void upgradeTechOnWorld(String userName){
-        theWorld.upgradePlayerTechLevelBy1(userName);
+        try{
+            theWorld.upgradePlayerTechLevelBy1(userName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         out.println("Game" + gameID + ": " + userName + " upgrade Tech");
     }
     /*
@@ -203,7 +212,15 @@ public class Game {
      * */
     synchronized protected void doMoveOnWorld(Order order, String userName){
         MoveOrder moveOrder = (MoveOrder) order;
-        this.theWorld.moveTroop(moveOrder, userName);
+        try{
+            out.println(moveOrder.getActTroop().getSummary());
+            this.theWorld.moveTroop(moveOrder, userName);
+            out.println(moveOrder.getActionName() +"Troop size:" + moveOrder.getActTroop().checkTroopSize() + "from " + moveOrder.getSrcName() + " to " + moveOrder.getDesName());
+            out.println(this.theWorld.findTerritory(moveOrder.getSrcName()).getInfo() );
+            out.println(this.theWorld.findTerritory(moveOrder.getDesName()).getInfo() );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         out.println("Game" + gameID + ": " + userName + " move action");
     }
     /*
@@ -213,7 +230,11 @@ public class Game {
      * */
     synchronized protected void doAttackOnWorld(Order order, String userName){
         AttackOrder attackOrder = (AttackOrder) order;
-        this.theWorld.attackATerritory(attackOrder, userName);
+        try{
+            this.theWorld.attackATerritory(attackOrder, userName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         out.println("Game" + gameID + ": " + userName + " attack action");
     }
     /*
@@ -272,6 +293,7 @@ public class Game {
             case 1:
             case 2:
                 this.theWorld = factory.create4TerritoryWorld();
+                break;
             case 3:
                 this.theWorld = factory.create6TerritoryWorld();
                 break;

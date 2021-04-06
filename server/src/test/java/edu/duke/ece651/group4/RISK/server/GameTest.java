@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.HashSet;
 
 import static edu.duke.ece651.group4.RISK.shared.Constant.SWITCH_OUT_ACTION;
@@ -71,17 +72,19 @@ class GameTest {
         g.getTheWorld();
     }
 
-//    @Test
-//    public void test_sendWorld() throws IOException {
-//        Game g = createAGame(1, 2);
-//
-//        g.setUpGame();
-//        World w = g.getTheWorld();
-//        User u = new User(1,"???","1");
-//        User u0 = new User(1,"user0","1");
-//        assertEquals(g.isUserLose(u),true);
-//        assertEquals(g.isEndGame(),false);
-//
+    @Test
+    public void test_sendWorld() throws IOException {
+        Game g = createAGame(1, 2);
+
+//        System.out.println(g.getUserNames().get(0));
+
+        g.setUpGame();
+        World w = g.getTheWorld();
+        User u = new User(1,"???","1");
+        User u0 = new User(1,"user0","1");
+        assertEquals(g.isUserLose(u),true);
+        assertEquals(g.isEndGame(),false);
+        g.upgradeTechOnWorld("user0");
 //        assertThrows(new IllegalArgumentException().getClass(), () ->g.upgradeTechOnWorld("user0"));
 //        UpgradeTroopOrder uo=new UpgradeTroopOrder("A",0,1,0);
 //        g.upgradeTroopOnWorld(uo, "user0");
@@ -136,7 +139,7 @@ class GameTest {
 //        assertEquals(strFromServer, "Copy that, this is server");
 //        clientSocket.sendObject(w);
 //        clientSocket.close();
-//    }
+    }
 
     @Test
     public void test_basic(){
@@ -163,8 +166,29 @@ class GameTest {
         g4.setUpGame();
         g5.setUpGame();
 
-
     }
 
+    @Test
+    public void test_MoveOrder(){
+        Game g=new Game(2,2);
+        g.addUser(new User(0,"user0","1"));
+        g.addUser(new User(1,"user1","1"));
+        g.setUpGame();
+        PlaceOrder pp =new PlaceOrder("A",new Troop(5,new TextPlayer("user0")));
+        g.placeUnitsOnWorld(pp);
+        PlaceOrder pp1 =new PlaceOrder("B",new Troop(5,new TextPlayer("user0")));
+        g.placeUnitsOnWorld(pp1);
+
+        HashMap<String, Integer> myDict = new HashMap<>();
+        myDict.put("Soldier LV0", 5);
+
+
+
+        Troop dem = new Troop(myDict, new TextPlayer("user0"));
+        MoveOrder m =new MoveOrder("A","B",dem,'M');
+        g.doMoveOnWorld(m, "user0");
+        System.out.println(g.getTheWorld().findTerritory(m.getSrcName()).getInfo() );
+        System.out.println(g.getTheWorld().findTerritory(m.getDesName()).getInfo() );
+    }
 
 }

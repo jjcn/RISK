@@ -343,7 +343,7 @@ public class RISKApplication extends Application {
     public static void JoinGame(int gameID, onReceiveListener listenerString, onJoinRoomListener listenerWorld) {
         GameMessage m = new GameMessage(GAME_JOIN, gameID, -1);
         for(RoomInfo in:roomInfo){
-            if(in.getRoomID()==gameID){
+            if(in.getRoomID() == gameID){
                 currentRoomSize=in.getMaxNumPlayers();
             }
         }
@@ -389,6 +389,7 @@ public class RISKApplication extends Application {
      */
     public static void createGame(int playerNum, onReceiveListener listenerString, onReceiveListener listenerWorld) {
         GameMessage m = new GameMessage(GAME_CREATE, -1, playerNum);
+        currentRoomSize = playerNum;
         createGameHelper(m, listenerString, listenerWorld);
     }
 
@@ -412,6 +413,8 @@ public class RISKApplication extends Application {
         HashMap<String, Integer> dict = new HashMap<>();
         dict.put(job, num);
         Troop target = new Troop(dict, new TextPlayer(userName));
+        Log.i(TAG, LOG_FUNC_RUN +"MOVEORDER: num" + num);
+        Log.i(TAG, LOG_FUNC_RUN +"MOVEORDER: job" + job);
         return new MoveOrder(src, des, target, MOVE_ACTION);
     }
 
@@ -420,9 +423,12 @@ public class RISKApplication extends Application {
      */
     public static String doOneMove(MoveOrder order, onResultListener listener) {
         try {
+            Log.i(TAG, LOG_FUNC_RUN + "Move starts");
 
+            Log.i(TAG, LOG_FUNC_RUN + order.getActTroop().getSummary());
             MoveOrder tmp=new MoveOrder(order.getSrcName(),order.getDesName(),order.getActTroop().clone(),MOVE_ACTION);
             theWorld.moveTroop(order, userName);
+            Log.i(TAG, LOG_FUNC_RUN + "Move sucessfully");
 
             send(tmp, listener);
         } catch (Exception e) {
@@ -430,6 +436,8 @@ public class RISKApplication extends Application {
         }
         return null;
     }
+
+
 
     /**
      * Used to construct an attack order

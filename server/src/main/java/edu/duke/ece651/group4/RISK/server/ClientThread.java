@@ -88,6 +88,7 @@ public class ClientThread extends Thread {
         out.println("This user signs up successfully");
         return null;
     }
+
     /*
      * Part1.2
      * This tries to let a user log in.
@@ -192,7 +193,7 @@ public class ClientThread extends Thread {
 //            out.println(ownerUser.getUsername() + " switches in  game " + gameToJoin.getGameID() + " AGAIN");
         }
         gameOnGoing = gameToJoin;
-        out.println(gameOnGoing.getGameID() + " has " + gameOnGoing.getUserNames().size() );
+        out.println( "Game" + gameOnGoing.getGameID() + " has " + gameOnGoing.getUserNames().size() +" users now.");
         return null;
     }
 
@@ -252,6 +253,7 @@ public class ClientThread extends Thread {
         if(gameOnGoing.gameState.isDonePlaceUnits()){
             return;
         }
+        gameOnGoing.barrierWait();
         // wait all players to join and runner to set up the game
         waitNotifyFromRunner(); // This is to make sure runner notify all after all waits
         // send the world info
@@ -302,6 +304,7 @@ public class ClientThread extends Thread {
         boolean exit = false;
         while(!exit){
             Order order = (Order) this.theClient.recvObject();
+            out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " has a order: " + order.getActionName());
             exit = gameOnGoing.tryUpdateActionOnWorld(order,ownerUser);
         }
     }
