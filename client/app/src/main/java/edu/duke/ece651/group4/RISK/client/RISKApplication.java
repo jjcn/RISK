@@ -27,6 +27,7 @@ public class RISKApplication extends Application {
     static String response;
     static ArrayList<RoomInfo> roomInfo;
     static String userName;
+    static int currentRoomSize;
 
 
     @Override
@@ -45,6 +46,7 @@ public class RISKApplication extends Application {
         this.rnd = new Random();
         this.roomInfo = new ArrayList<>();
         this.userName=null;
+        this.currentRoomSize=0;
         Log.i(TAG, LOG_CREATE_SUCCESS);
     }
 
@@ -76,6 +78,12 @@ public class RISKApplication extends Application {
     public static int getMaxLevel() {
         return UNIT_NAMES.size() - 1;
     }
+
+
+    /**
+     * @return maximum number of players in current game
+     */
+    public static int getCurrentRoomSize(){return currentRoomSize;}
 
     /**
      * @return list of names of soldier at each level
@@ -332,6 +340,11 @@ public class RISKApplication extends Application {
      */
     public static void JoinGame(int gameID, onReceiveListener listenerString, onJoinRoomListener listenerWorld) {
         GameMessage m = new GameMessage(GAME_JOIN, gameID, -1);
+        for(RoomInfo in:roomInfo){
+            if(in.getRoomID()==gameID){
+                currentRoomSize=in.getMaxNumPlayers();
+            }
+        }
         try {
             new Thread(() -> {
                 Log.i(TAG, LOG_FUNC_RUN + "new thread on JoinRoom");
@@ -374,6 +387,7 @@ public class RISKApplication extends Application {
      */
     public static void createGame(int playerNum, onReceiveListener listenerString, onReceiveListener listenerWorld) {
         GameMessage m = new GameMessage(GAME_CREATE, -1, playerNum);
+        currentRoomSize=playerNum;
         createGameHelper(m, listenerString, listenerWorld);
     }
 
