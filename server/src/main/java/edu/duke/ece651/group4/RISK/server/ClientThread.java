@@ -253,7 +253,7 @@ public class ClientThread extends Thread {
             return;
         }
         // wait all players to join and runner to set up the game
-        waitNotifyFromRunner();
+        waitNotifyFromRunner(); // This is to make sure runner notify all after all waits
         // send the world info
         this.theClient.sendObject(gameOnGoing.getTheWorld());
         out.println("Game" + gameOnGoing.getGameID() + ": send world to " + ownerUser.getUsername() + " wait for orders" );

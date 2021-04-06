@@ -24,14 +24,31 @@ public class GameState extends State{
         isAlive = true;
     }
 
+    /*
+    * This set the game dead after the game ends
+    * */
     public void setGameDead(){
         this.isAlive = false;
     }
+
+    /*
+     * This marks the DonePlaceUnits to make sure users will not join PlacePhase anytime
+     * */
     synchronized void setDonePlaceUnits(){isDonePlaceUnits = true;}
+
+    /*
+     * This checks if a game is alive
+     * */
     public boolean isAlive(){
         return isAlive;
     }
 
+    /*
+    * This change a player state to a specific state
+    * @param u is the user
+    * @param state is the playerState
+    * @return true if success, false otherwise.
+    * */
     synchronized public boolean changAPlayerStateTo(User u, String state){
         String username = u.getUsername();
         for(PlayerState ps : playerStates){
@@ -42,6 +59,13 @@ public class GameState extends State{
         }
         return false;
     }
+
+    /*
+     * This helps to make sure that runner notify all players after them waits
+     * This set playerState isWating to true
+     * @param u is the user
+     * @return true if success, false if fails
+     * */
     synchronized public boolean askUserWaiting(User u){
         String username = u.getUsername();
         for(PlayerState ps : playerStates){
@@ -52,6 +76,13 @@ public class GameState extends State{
         }
         return false;
     }
+
+    /*
+     * This helps to make sure that runner notify all players after them waits
+     * This set playerState isWating to false
+     * @param u is the user
+     * @return true if success, false if fails
+     * */
     synchronized public boolean askUserDoneWaiting(User u){
         String username = u.getUsername();
         for(PlayerState ps : playerStates){
@@ -63,7 +94,11 @@ public class GameState extends State{
         return false;
     }
 
-
+    /*
+     * Get playerState of this user
+     * @param u is the user
+     * @return a string of the playerState
+     * */
     public String getAPlayerState(User u){
         String username = u.getUsername();
         String state = null;
@@ -85,6 +120,10 @@ public class GameState extends State{
         }
     }
 
+    /*
+    *  This adds a playerState of the user
+    *  @param a User
+    * */
     synchronized public void addPlayerState(User u){
         playerStates.add(new PlayerState(u.getUsername()));
     }
@@ -139,14 +178,22 @@ public class GameState extends State{
     }
 
     /*
-    *
+    * This checks if gameState is at GAME_STATE_DONE_UPDATE
+    * @return true if it is, false otherwise
     * */
     public boolean isDoneUpdateGame(){return getState().equals(GAME_STATE_DONE_UPDATE);}
 
+    /*
+     * This checks if this game finishes donePlaceUnits
+     * This is to make sure if a user joins the game again, it will not do placeUnits Phase
+     * */
     public boolean isDonePlaceUnits(){
         return this.isDonePlaceUnits;
     }
-
+    /*
+     * This checks if gameState is at GAME_STATE_WAIT_TO_UPDATE
+     * @return true if it is, false otherwise
+     * */
     public boolean isWaitToUpdate(){return getState().equals(GAME_STATE_WAIT_TO_UPDATE);}
 
 }

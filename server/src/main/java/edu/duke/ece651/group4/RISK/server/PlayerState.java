@@ -25,9 +25,15 @@ public class PlayerState extends State{
         isWaiting = false;
     }
 
+    /*
+    * This helps to make sure that runner notify all players after them waits
+    * */
     public void setWaiting(){
         isWaiting = true;
     }
+    /*
+     * This helps to make sure that runner notify all players after them waits
+     * */
     public void doneWaiting(){
         isWaiting = false;
     }
@@ -72,7 +78,9 @@ public class PlayerState extends State{
     * This is updating state where the players update's its own state.
     * */
     public boolean isUpdating(){return getState().equals(PLAYER_STATE_UPDATING);}
-
+    /*
+     * This checks if a user is still active which also means that user does not switchOut
+     * */
     public boolean isActive(){
         return !isSwitchOut();
     }
