@@ -83,4 +83,12 @@
     <include layout="@layout/item_input_num"
              android:id="@+id/terrB"/>
 
+    <Button
+            android:id="@+id/commit_button"
+            android:text="@string/COMMIT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+    />
+
 </LinearLayout>
