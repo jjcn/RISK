@@ -1,6 +1,7 @@
 package edu.duke.ece651.group4.RISK.server;
 
 import edu.duke.ece651.group4.RISK.shared.Client;
+import edu.duke.ece651.group4.RISK.shared.Order;
 import edu.duke.ece651.group4.RISK.shared.PlaceOrder;
 import edu.duke.ece651.group4.RISK.shared.RoomInfo;
 import edu.duke.ece651.group4.RISK.shared.message.GameMessage;
@@ -278,6 +279,11 @@ public class ClientThread extends Thread {
 
     /*
      * PART4
+     * 4.1 action phase
+     *       4.10 do actions
+     *       4.11 wait runner to update the world
+     *       4.12 wait runner to set active players as updaing state
+     * 4.2  updating states phase
      * Run Game for one turn
      * */
     protected void tryRunGameOneTurn() {
@@ -289,28 +295,32 @@ public class ClientThread extends Thread {
         while(!gameOnGoing.gameState.isDoneUpdateGame()){}
         out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " wait for runner set updating state");
         waitNotifyFromRunner();
-        checkResultOneTurn();
-    }
-
-    protected void doActionPhaseOneTurn(){
-        this.theClient.sendObject(gameOnGoing.getTheWorld());
-        out.println("Game" + gameOnGoing.getGameID() + ": Action Phase :  " + ownerUser.getUsername() + " get the world to do action phase");
-        // if Done or SwitchOut
-        {
-            // if Done or SwitchOut
-
-
-        }
-
+        updatePlayerStateOneTurn();
     }
 
     /*
+    * 4.1 action phase
+    * This does action phase for one turn
+    * */
+    protected void doActionPhaseOneTurn(){
+        this.theClient.sendObject(gameOnGoing.getTheWorld());
+        out.println("Game" + gameOnGoing.getGameID() + ": Action Phase :  " + ownerUser.getUsername() + " get the world to do action phase");
+        boolean exit = false;
+        while(!exit){
+            Order order = (Order) this.theClient.recvObject();
+            exit = gameOnGoing.tryUpdateActionOnWorld(order,ownerUser);
+        }
+        out.println("Game" + gameOnGoing.getGameID() + ": Action Phase :  " + ownerUser.getUsername() + "finish action phase");
+    }
+
+    /*
+     * 4.2 action phase
      * This mainly update the player state after one turn
-     * If switchOut, change state to PLAYER_STATE_SWITCH_OUT and set gameOnGoing = null;
+     * if switch out, set gameOnGoing = null
      * else if lose, change state to PLAYER_STATE_LOSE
      * else, change state to PLAYER_STATE_ACTION_PHASE
      * */
-    protected void checkResultOneTurn(){
+    protected void updatePlayerStateOneTurn(){
         this.theClient.sendObject(gameOnGoing.getTheWorld()); // send world to client after runner finishes one turn
         //Go back to Games Page (Part2)
         if(gameOnGoing.gameState.getAPlayerState(ownerUser).equals(PLAYER_STATE_SWITCH_OUT)){

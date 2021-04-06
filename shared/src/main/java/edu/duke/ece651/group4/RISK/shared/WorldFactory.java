@@ -223,7 +223,7 @@ public class WorldFactory implements Serializable {
             String playerName = playerNames.get(i);
             List<Territory> territories = groups.get(i);
             // TODO: use TextPlayer for now. Change to other subclass of Player later.
-            territories.forEach(terr -> terr.initializeTerritory(0, new TextPlayer(playerName)));
+            territories.forEach(terr -> terr.setOwnerTroop(0, new TextPlayer(playerName)));
             ans.put(playerName, territories);
         }
         // players start with 0 resource

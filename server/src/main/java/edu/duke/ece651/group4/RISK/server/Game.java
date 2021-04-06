@@ -1,9 +1,6 @@
 package edu.duke.ece651.group4.RISK.server;
 
-import edu.duke.ece651.group4.RISK.shared.BasicOrder;
-import edu.duke.ece651.group4.RISK.shared.PlaceOrder;
-import edu.duke.ece651.group4.RISK.shared.World;
-import edu.duke.ece651.group4.RISK.shared.WorldFactory;
+import edu.duke.ece651.group4.RISK.shared.*;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -12,8 +9,8 @@ import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 
-import static edu.duke.ece651.group4.RISK.server.ServerConstant.PLAYER_STATE_ACTION_PHASE;
-import static edu.duke.ece651.group4.RISK.server.ServerConstant.PLAYER_STATE_SWITCH_OUT;
+import static edu.duke.ece651.group4.RISK.server.ServerConstant.*;
+import static edu.duke.ece651.group4.RISK.shared.Constant.*;
 
 public class Game {
     private final int gameID;
@@ -150,16 +147,17 @@ public class Game {
         return this.theWorld.isGameEnd();
     }
 
-
     /*
-     * This function is used to update world with any action received from the Client
-     * This function has to be locked. This is because all players are sharing the
-     * same world
-     * */
-    synchronized protected void updateActionOnWorld(){
-
-
+    * This checks if all players switch out.
+    * */
+    public boolean isAllPlayersSwitchOut(){
+        return gameState.isAllPlayersSwitchOut();
     }
+    synchronized protected void doDoneActionFor(User u){
+        this.gameState.changAPlayerStateTo(u, PLAYER_STATE_END_ONE_TURN);
+    }
+
+
     /*
      * This is to select territory for each player.
      * This function has to be locked. This is because all players are sharing the
@@ -173,10 +171,33 @@ public class Game {
      * This function has to be locked. This is because all players are sharing the
      * same world
      * */
-    synchronized protected void UpgradeUnitsOnWorld(){
+    synchronized protected void upgradeTroopOnWorld(Order order, String userName){
+        UpgradeTroopOrder upgradeOrder = (UpgradeTroopOrder) order;
+        theWorld.upgradeTroop(upgradeOrder, userName);
 
     }
 
+    synchronized protected void upgradeTechOnWorld(String userName){
+        theWorld.upgradePlayerTechLevelBy1(userName);
+    }
+    /*
+     * This is to do move for each player.
+     * This function has to be locked. This is because all players are sharing the
+     * same world
+     * */
+    synchronized protected void doMoveOnWorld(Order order, String userName){
+        MoveOrder moveOrder = (MoveOrder) order;
+        this.theWorld.moveTroop(moveOrder, userName);
+    }
+    /*
+     * This is to do attack for each player.
+     * This function has to be locked. This is because all players are sharing the
+     * same world
+     * */
+    synchronized protected void doAttackOnWorld(Order order, String userName){
+        AttackOrder attackOrder = (AttackOrder) order;
+        this.theWorld.attackATerritory(attackOrder, userName);
+    }
     /*
     * This is the final update for the whole world after one turn
     * */
@@ -184,7 +205,43 @@ public class Game {
         this.theWorld.doAllBattles();
     }
 
-
+    /*
+     * This function is used to update world with any order received from the Client
+     * @param order is the order from client
+     * @param u is the User who ask for this order
+     * @return exit is the boolean value to check if exit this this action phase
+     * */
+    synchronized protected boolean tryUpdateActionOnWorld(Order order, User u){
+        String userName = u.getUsername();
+        Character action = order.getActionName();
+        boolean exit = false;
+        switch(action){
+            case ATTACK_ACTION:
+                doAttackOnWorld(order, userName);
+                break;
+            case MOVE_ACTION:
+                doMoveOnWorld(order,userName);
+                break;
+            case UPTECH_ACTION:
+                upgradeTechOnWorld(userName);
+                break;
+            case UPTROOP_ACTION:
+                upgradeTroopOnWorld(order, userName);
+                break;
+            case DONE_ACTION:
+                doDoneActionFor(u);
+                exit = true;
+                break;
+            case SWITCH_OUT_ACTION:
+                switchOutUser(u);
+                exit = true;
+                break;
+            default:
+                exit = true; // when user lose the game, server will receive null from client
+                break;
+        }
+        return exit;
+    }
     /*
     *  Those functions below is for gameRunner
     *
@@ -196,6 +253,7 @@ public class Game {
         switch(this.maxNumUsers){
             case 1:
             case 2:
+                this.theWorld = factory.create4TerritoryWorld();
             case 3:
                 this.theWorld = factory.create6TerritoryWorld();
                 break;
@@ -208,7 +266,6 @@ public class Game {
             default:
                 break;
         }
-
         factory.assignTerritories(this.theWorld, getUserNames());
     }
 

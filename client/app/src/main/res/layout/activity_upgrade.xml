@@ -1,10 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".activity.UpgradeActivity">
+        android:layout_marginStart="@dimen/fragmentMargin"
+        android:layout_marginEnd="@dimen/fragmentMargin"
+        tools:context=".activity.BasicOrderActivity" android:orientation="vertical">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageView
+            android:id="@+id/world_image_view"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/mapText"
+            app:srcCompat="@android:drawable/ic_menu_mapmode"/>
+
+    <TextView
+            android:id="@+id/terrText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="World Map"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/world_image_view"
+    />
+
+    <Spinner
+            android:id="@+id/terrChoices"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:prompt="@string/CHOOSE_SRC_INSTRU"
+            android:spinnerMode="dialog"
+    />
+
+    <TextView
+            android:id="@+id/unitToText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="World Map"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/world_image_view"
+    />
+
+    <Spinner
+            android:id="@+id/unitChoices"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:prompt="@string/CHOOSE_DES_INSTRU"
+            android:spinnerMode="dialog"
+    />
+
+    <TextView
+            android:id="@+id/unitFromText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="World Map"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/world_image_view"
+    />
+
+    <Spinner
+            android:id="@+id/unitChoices2"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:prompt="@string/CHOOSE_TYPE_INSTRU"
+            android:spinnerMode="dialog"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/noticeInfo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/switchOut"
+    />
+
+    <include layout="@layout/item_input_num"
+             android:id="@+id/terrB"/>
+
+    <Button
+            android:id="@+id/commit_button"
+            android:text="@string/COMMIT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+    />
+
+</LinearLayout>
