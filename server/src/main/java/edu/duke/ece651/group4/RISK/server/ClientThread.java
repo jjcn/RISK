@@ -234,6 +234,7 @@ public class ClientThread extends Thread {
         ArrayList<RoomInfo> roomsInfo = new ArrayList<RoomInfo>();
         for(Game g : games){
             if(g.gameState.isAlive()){
+                out.println("Game"+ g.getGameID() + " is active and should be shown in room list");
                 roomsInfo.add(createARoomInfo(g));
             }
         }
@@ -293,7 +294,6 @@ public class ClientThread extends Thread {
         out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " wait for runner update the world");
         while(!gameOnGoing.gameState.isDoneUpdateGame()){}
         waitNotifyFromRunner();
-
         updatePlayerStateOneTurn();
     }
 
@@ -332,6 +332,7 @@ public class ClientThread extends Thread {
         }
         else if(gameOnGoing.isEndGame()){
             out.println("Game" + gameOnGoing.getGameID() + ": Checking Phase :  game END!!!! and winner is " + gameOnGoing.getTheWorld().getWinner() );
+            gameOnGoing.switchOutUser(ownerUser);
             gameOnGoing = null;
         }
         else{
