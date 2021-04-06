@@ -111,6 +111,8 @@ class GameTest {
         g.tryUpdateActionOnWorld(eorder,u0);
         g.updateGameAfterOneTurn();
 
+
+
         new Thread( ()-> {
             try{
                 Socket s = hostSocket.accept();
@@ -153,6 +155,11 @@ class GameTest {
         assertEquals(g.isAllPlayersSwitchOut(),false);
         g.switchInUser(u3);
         g.switchInUser(u2);
+
+        Game g4=createAGame(1,4);
+        Game g5=createAGame(1,5);
+        g4.setUpGame();
+        g5.setUpGame();
 
 
     }
