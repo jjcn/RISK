@@ -17,9 +17,9 @@ import static edu.duke.ece651.group4.RISK.shared.Constant.PLACEMENT_DONE;
 /**
  * This class models the world which constitutes a certain number of territories
  * connected with each other.
- * 
+ * <p>
  * Maintains:
- * 1. territories in a graph structure; 
+ * 1. territories in a graph structure;
  * 2. Info of all players in the world;
  * 3. a war report that stores the result of battles happened on one turn.
  * 4. an order checker that checks validity of move & attack orders;
@@ -57,7 +57,7 @@ public class World implements Serializable {
      * Random seed to use with random division of territories.
      */
     protected final Random rnd;
-    
+
 
     /**
      * Construct a default world with an empty graph.
@@ -68,7 +68,7 @@ public class World implements Serializable {
 
     /**
      * Construct world with a graph.
-     * 
+     *
      * @param terrs
      */
     public World(Graph<Territory> terrs) {
@@ -77,7 +77,7 @@ public class World implements Serializable {
 
     /**
      * Construct world with a graph and a random seed.
-     * 
+     *
      * @param terrs  is the number of territories.
      * @param random is the random seed.
      */
@@ -85,7 +85,7 @@ public class World implements Serializable {
         this(terrs, new HashMap<String, PlayerInfo>(), random, "");
     }
 
-    protected World(Graph<Territory> terrs, 
+    protected World(Graph<Territory> terrs,
                     Map<String, PlayerInfo> playerInfos,
                     Random random,
                     String report) {
@@ -101,7 +101,7 @@ public class World implements Serializable {
      * territories created will share a random seed with the world. Territory names
      * are: 1, 2, 3, ... Number of total connections is random, and is propotional
      * to number of territories.
-     * 
+     *
      * @param numTerrs is the number of territories.
      */
     public World(int numTerrs, Random random) {
@@ -111,12 +111,11 @@ public class World implements Serializable {
             addTerritory(new Territory(String.format("%d", i), random));
         }
         territories.addRandomEdges(numTerrs, random);
-
     }
 
     /**
      * Overloading constructor that only has its number of territories specified.
-     * 
+     *
      * @param numTerrs is the number of territories.
      */
     public World(int numTerrs) {
@@ -130,7 +129,7 @@ public class World implements Serializable {
 
     /**
      * Overloading constructor that takes an array of territories names.
-     * 
+     *
      * @param terrNames is an array of territory names.
      */
     public World(String[] terrNames) {
@@ -153,9 +152,9 @@ public class World implements Serializable {
         }
         List<Integer> weightsCopy = territories.cloneWeights();
         boolean[][] adjMatrixCopy = territories.cloneAdjMatrix();
-        World cpyWorld = new World(new Graph<>(cpy, weightsCopy, adjMatrixCopy), 
-                    cloneAllPlayerInfos(), this.rnd, 
-                    new String(this.report == null ? null : new String(this.report)));        
+        World cpyWorld = new World(new Graph<>(cpy, weightsCopy, adjMatrixCopy),
+                cloneAllPlayerInfos(), this.rnd,
+                new String(this.report == null ? null : new String(this.report)));
 
         return cpyWorld;
     }
@@ -173,7 +172,7 @@ public class World implements Serializable {
 
     /**
      * Get the total number of territories in the world.
-     * 
+     *
      * @return size of the world.
      */
     public int size() {
@@ -182,6 +181,7 @@ public class World implements Serializable {
 
     /**
      * Get the total number of players registered in the world.
+     *
      * @return total number of players.
      */
     public int getNumPlayers() {
@@ -190,7 +190,7 @@ public class World implements Serializable {
 
     /**
      * Get all the territories in the world.
-     * 
+     *
      * @return a list of all territories in the world.
      */
     public List<Territory> getAllTerritories() {
@@ -199,7 +199,7 @@ public class World implements Serializable {
 
     /**
      * Get all the territories that are adjacent to a certain territory.
-     * 
+     *
      * @param terr is the territory to search adjacents.
      * @return a list of adjacent territories.
      */
@@ -209,7 +209,7 @@ public class World implements Serializable {
 
     /**
      * Get all the territories that are adjacent to a territory of certain name.
-     * 
+     *
      * @param terrName is the name of territory to search adjacents.
      * @return a list of adjacent territories.
      */
@@ -219,7 +219,7 @@ public class World implements Serializable {
 
     /**
      * Set a random seed on a territory.
-     * 
+     *
      * @param terr is the territory to set random seed.
      * @param seed is a random seed.
      */
@@ -229,7 +229,7 @@ public class World implements Serializable {
 
     /**
      * Set a random seed on a territory with certain name.
-     * 
+     *
      * @param terrName is the name of the territory to set random seed.
      * @param seed     is a random seed.
      */
@@ -237,9 +237,10 @@ public class World implements Serializable {
         findTerritory(terrName).setRandom(seed);
     }
 
-    
+
     /**
      * Get battle report.
+     *
      * @return A report of all battles happened in one turn.
      */
     public String getReport() {
@@ -252,7 +253,7 @@ public class World implements Serializable {
 
     /**
      * Add a territory to the world.
-     * 
+     *
      * @param terr is the territory to add.
      */
     public void addTerritory(Territory terr) {
@@ -261,7 +262,7 @@ public class World implements Serializable {
 
     /**
      * Add connection between two adjacent territories so that they become adjacent.
-     * 
+     *
      * @param terr1 is a territory.
      * @param terr2 is the other territory.
      */
@@ -272,7 +273,7 @@ public class World implements Serializable {
     /**
      * Add connection between two adjacent territories by the name of these
      * territories.
-     * 
+     *
      * @param terrName1 is the name of a territory.
      * @param terrName2 is the name of the other territory.
      */
@@ -282,7 +283,7 @@ public class World implements Serializable {
 
     /**
      * Register a player and a default info in the world.
-     * 
+     *
      * @param playerName is the player's name.
      */
     public void registerPlayer(String playerName) {
@@ -291,7 +292,7 @@ public class World implements Serializable {
 
     /**
      * Register a player's info in the world.
-     * 
+     *
      * @param pInfo is the player info to register.
      */
     public void registerPlayer(PlayerInfo pInfo) {
@@ -300,7 +301,7 @@ public class World implements Serializable {
 
     /**
      * Find the info of a player by his name.
-     * 
+     *
      * @param playerName is the name of the player.
      * @return that player's playerInfo.
      */
@@ -313,7 +314,7 @@ public class World implements Serializable {
 
     /**
      * Overloaded function taking in a Player object.
-     * 
+     *
      * @param player
      * @return
      */
@@ -323,7 +324,7 @@ public class World implements Serializable {
 
     /**
      * Get a list of all territories owned by a player.
-     * 
+     *
      * @param playerName is a player's name.
      * @return all territories owned by a player.
      */
@@ -339,7 +340,7 @@ public class World implements Serializable {
 
     /**
      * Get a list of all territories that are not owned by a player.
-     * 
+     *
      * @param playerName is a player's name.
      * @return all territories owned by a player.
      */
@@ -355,31 +356,31 @@ public class World implements Serializable {
 
     /**
      * Station troop to a territory.
-     * 
+     *
      * @param terrName is the territory name.
      * @param troop    is a Troop object.
      */
     public void stationTroop(String terrName, Troop troop) {
-        this.report=PLACEMENT_DONE;
+        this.report = PLACEMENT_DONE;
         Territory terr = findTerritory(terrName);
         terr.setOwnerTroop(troop.checkTroopSize(), troop.getOwner());
     }
 
     /**
      * Station troop to a territory by specifying territory name and population.
-     * 
+     *
      * @param terrName   is the territory name.
      * @param population is the population of the troop.
      */
     public void stationTroop(String terrName, int population) {
-        this.report=PLACEMENT_DONE;
+        this.report = PLACEMENT_DONE;
         Territory terr = findTerritory(terrName);
         terr.setOwnerTroop(population, terr.getOwner());
     }
 
     /**
      * Overloaded function to Calculates the shortest path length between 2 vertices.
-     * 
+     *
      * @param startName
      * @param endName
      * @return
@@ -390,7 +391,7 @@ public class World implements Serializable {
 
     /**
      * Calculates the shortest path length between 2 vertices.
-     * 
+     *
      * @param start is the starting vertex.
      * @param end   is the ending vertex.
      * @return length of the shortest path .
@@ -446,7 +447,7 @@ public class World implements Serializable {
 
     /**
      * Find the smallest distance vertex.
-     * 
+     *
      * @param tovisit
      * @return
      */
@@ -465,12 +466,12 @@ public class World implements Serializable {
 
     /**
      * Calculate the quantity of resources consumed by a move order.
-     * 
+     * <p>
      * A. Each move order consumes "food" resources. Specifically, the cost of each
      * move is (total size of territories moved through) * (number of units moved).
-     * 
+     * <p>
      * B. The minimum total cost valid path is picked.
-     * 
+     *
      * @param order is the move order.
      * @return quantity of consumed resources.
      */
@@ -489,7 +490,7 @@ public class World implements Serializable {
     /**
      * Calculate the quantity of resources consumed by an attack order. An attack
      * order costs 1 "food" resource per unit attacking.
-     * 
+     *
      * @param order is the attack order.
      * @return quantity of consumed resources.
      */
@@ -500,9 +501,9 @@ public class World implements Serializable {
     /**
      * Moves a troop to a different a territory. Owner of the troop is not checked.
      * Also checks if the troop size is valid to send from the starting territory.
-     * 
+     * <p>
      * Consumes food resource.
-     * 
+     *
      * @param order      is a move order.
      * @param playerName is the player's name who commited this order.
      */
@@ -510,94 +511,88 @@ public class World implements Serializable {
         Territory start = findTerritory(order.getSrcName());
         Territory end = findTerritory(order.getDesName());
         Troop troop = order.getActTroop();
-
+        // check error of move order
         String errorMsg = orderChecker.checkOrder(order, this);
         if (errorMsg != null) {
             throw new IllegalArgumentException(errorMsg);
         }
-
+        // moves troop
         end.sendInTroop(start.sendOutTroop(troop));
-
-        PlayerInfo pInfo = getPlayerInfoByName(playerName);
-
-        int consumption = calculateMoveConsumption(order);
-        pInfo.consumeFood(consumption);
+        // consume food resource
+        playerInfos.get(playerName).consumeFood(calculateMoveConsumption(order));
     }
 
     /**
      * Sends a troop to a territory with different owner, in order to engage in
      * battle on that territory. Also checks if the troop size is valid to send from
      * the starting territory.
-     *  
+     * <p>
      * Consumes food resource.
-     * 
+     *
      * @param order      is the attack order.
-     * @param playerName is the player's name who commited this order.
+     * @param playerName is the name of the player who committed this order.
      */
     public void attackATerritory(AttackOrder order, String playerName) {
         Territory start = findTerritory(order.getSrcName());
         Territory end = findTerritory(order.getDesName());
         Troop troop = order.getActTroop();
-
+        // check error of attack order
         String errorMsg = orderChecker.checkOrder(order, this);
         if (errorMsg != null) {
             throw new IllegalArgumentException(errorMsg);
         }
-
+        // moves troop
         end.sendInEnemyTroop(start.sendOutTroop(troop));
-
-        PlayerInfo pInfo = getPlayerInfoByName(playerName);
-
-        int consumption = calculateAttackConsumption(order);
-        pInfo.consumeFood(consumption);
+        // consume food resource
+        getPlayerInfoByName(playerName).consumeFood(calculateAttackConsumption(order));
     }
 
     /**
      * Trys to upgrade troop on a territory. If successful, tech resource will be
      * consumed.
-     * 
+     *
      * @param utOrder    is an UpgradeTroopOrder.
-     * @param playerName is the player's name who commited this order.
+     * @param playerName is the name of the player who committed this order.
      */
     public void upgradeTroop(UpgradeTroopOrder utOrder, String playerName) {
         Territory terr = findTerritory(utOrder.getSrcName());
         int levelBefore = utOrder.getLevelBefore();
         int levelAfter = utOrder.getLevelAfter();
         int nUnit = utOrder.getNUnit();
-
+        // consume tech resource
         PlayerInfo pInfo = getPlayerInfoByName(playerName);
         int remainder = terr.upgradeTroop(levelBefore, levelAfter, nUnit, pInfo.getTechQuantity());
         int consumption = pInfo.getTechQuantity() - remainder;
-        pInfo.consumeTech(consumption);
+        getPlayerInfoByName(playerName).consumeTech(consumption);
     }
 
-    
+
     /**
      * Try upgrade a player's tech level by 1.
-     * 
+     * <p>
      * Consumes tech resource.
-     * 
+     *
      * @param playerName is a player's name.
      */
     public void upgradePlayerTechLevelBy1(String playerName) {
-        playerInfos.get(playerName).upgradeTechLevelBy1();
+        getPlayerInfoByName(playerName).upgradeTechLevelBy1();
     }
 
     /**
      * Try upgrade a player's tech level using an upgrade tech order.
-     * 
+     * <p>
      * Consumes tech resource.
-     * 
+     *
      * @param upgradeTechOrder is an upgrade tech order
-     * @param playerName is a player's name.
+     * @param playerName       is a player's name.
      */
     public void upgradePlayerTechLevelBy(UpgradeTechOrder upgradeTechOrder, String playerName) {
-        playerInfos.get(playerName).upgradeTechLevelBy(upgradeTechOrder.getNLevel());
+        getPlayerInfoByName(playerName).upgradeTechLevelBy(upgradeTechOrder.getNLevel());
     }
 
     /**
      * Iterate over all territories around the world, and do battles on them.
-     * 
+     *
      * @return A summary of battle info on all territories.
      */
     public String doAllBattles() {
@@ -625,9 +620,9 @@ public class World implements Serializable {
 
     /**
      * Add unit to all territories.
-     * 
+     * <p>
      * Requirement: At the end of every turn, add a level 0 unit to every territory.
-     * 
+     *
      * @param num is the number of units to add to every territory.
      */
     public void addUnitToAll(int num) {
@@ -642,9 +637,10 @@ public class World implements Serializable {
 
     /**
      * Add level 0 units to a territory.
+     *
      * @param playerName is the name of the player who commits this action.
-     * @param terrName is the name of the territory.
-     * @param num is the number of level 0 units added to this territory.
+     * @param terrName   is the name of the territory.
+     * @param num        is the number of level 0 units added to this territory.
      */
     public void addUnitToATerritory(String playerName, String terrName, int num) {
         if (num < 0) {
@@ -659,7 +655,7 @@ public class World implements Serializable {
 
     /**
      * Check if two territories are adjacent to each other
-     * 
+     *
      * @param terr1 is a territory.
      * @param terr2 is the other territory.
      * @return true, if two territories are adjacent; false, if not.
@@ -670,7 +666,7 @@ public class World implements Serializable {
 
     /**
      * Check if two territories are adjacent to each other by their names.
-     * 
+     *
      * @param name1 is the name of one territory to check.
      * @param name2 is the name of thr other territory.
      * @return true, if two territories are adjacent; false, if not.
@@ -681,10 +677,10 @@ public class World implements Serializable {
 
     /**
      * Divide territories into n equal groups.
-     * 
+     *
      * @param nGroup is the number of groups the world is divided into.
      * @return a HashMap. The mapping being: group number -> grouped territories.
-     *         NOTE: group number starts from 0.
+     * NOTE: group number starts from 0.
      */
     public Map<Integer, List<Territory>> divideTerritories(int nGroup) {
         // check if nGroup is an integer is greater than 0
@@ -718,7 +714,7 @@ public class World implements Serializable {
 
     /**
      * Checks if a player has lost the game by losing all his territories.
-     * 
+     *
      * @param playerName is the player's name.
      * @return true, if player has lost. false, if not.
      */
@@ -733,7 +729,7 @@ public class World implements Serializable {
 
     /**
      * Check if the game has ended, that is, a player owns all the territories.
-     * 
+     *
      * @return true, if the game ends. false, if not.
      */
     public boolean isGameEnd() {
@@ -750,9 +746,9 @@ public class World implements Serializable {
 
     /**
      * Get the name of the game winner.
-     * 
+     *
      * @return winner's the name, if the game has ended. null, if there is no winner
-     *         yet.
+     * yet.
      */
     public String getWinner() {
         if (isGameEnd()) {
@@ -764,7 +760,7 @@ public class World implements Serializable {
     /**
      * Finds a territory by its name. If the territory exists, returns that
      * territory of that name. If not, an exception will be thrown.
-     * 
+     *
      * @param terrName is the territory name to search.
      * @return the specified territory.
      */

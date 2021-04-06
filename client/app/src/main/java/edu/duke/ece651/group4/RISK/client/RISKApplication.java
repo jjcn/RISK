@@ -423,9 +423,6 @@ public class RISKApplication extends Application {
      */
     public static String doOneMove(MoveOrder order, onResultListener listener) {
         try {
-            Log.i(TAG, LOG_FUNC_RUN + "Move starts");
-
-            Log.i(TAG, LOG_FUNC_RUN + order.getActTroop().getSummary());
             MoveOrder tmp=new MoveOrder(order.getSrcName(),order.getDesName(),order.getActTroop().clone(),MOVE_ACTION);
             theWorld.moveTroop(order, userName);
             Log.i(TAG, LOG_FUNC_RUN + "Move sucessfully");
