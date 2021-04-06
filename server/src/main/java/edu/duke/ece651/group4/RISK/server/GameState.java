@@ -88,6 +88,7 @@ public class GameState extends State{
         }
         return true;
     }
+
     /*
     * This checks if all players switch out
     * runner will end automatically if all players Switch out

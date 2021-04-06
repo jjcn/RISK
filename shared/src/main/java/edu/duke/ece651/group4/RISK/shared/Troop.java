@@ -83,13 +83,14 @@ public class Troop implements Serializable {
         while (this.checkTroopSize() != 0 && enemy.checkTroopSize() != 0) {
 
             Unit myUnit = attack ? this.getWeakest() : this.getStrongest();
-            Unit enemyUnit = attack ? enemy.getStrongest() : this.getWeakest();
+            Unit enemyUnit = attack ? enemy.getStrongest() : enemy.getWeakest();
 
             if (myUnit.fight(enemyUnit)) {
                 enemy.loseUnit(enemyUnit);
             } else {
                 this.loseUnit(myUnit);
             }
+            attack=!attack;
         }
         return enemy;
     }
@@ -292,7 +293,7 @@ public class Troop implements Serializable {
         return true;
     }
 
-    private Unit getStrongest() {
+    public Unit getStrongest() {
         int maxLevel = -1;
         Unit target = null;
 
@@ -309,7 +310,7 @@ public class Troop implements Serializable {
         return target;
     }
 
-    private Unit getWeakest() {
+    public Unit getWeakest() {
 
         Unit target = null;
         int minLevel = Integer.MAX_VALUE;

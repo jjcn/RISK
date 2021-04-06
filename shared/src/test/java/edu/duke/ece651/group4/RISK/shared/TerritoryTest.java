@@ -3,6 +3,7 @@ package edu.duke.ece651.group4.RISK.shared;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -40,27 +41,35 @@ class TerritoryTest {
         assertEquals(test.checkPopulation(),5);
     }
 
-//    @Test
-//    void Test_doBattles() throws IOException {
-//        Player p1 = new TextPlayer(null, null, "p1");
-//        Player p2 = new TextPlayer(null, null, "p2");
-//        Player p3 = new TextPlayer(null, null, "p3");
-//        Territory test = new Territory("test", p1, 4, new Random(0));
-//
-//
-//        test.sendInEnemyTroop(new Troop(2, p2, new Random(0)));
-//        test.sendInEnemyTroop(new Troop(1, p3, new Random(0)));
-//        test.doBattles();
-//
-//
-//        assertEquals(test.getOwner().getName(), "p1");
-//        assertEquals(test.checkPopulation(),2);
-//        test.doBattles();
-//        test.sendInEnemyTroop(new Troop(10, p3, new Random(0)));
-//        test.doBattles();
-//        assertEquals(test.getOwner().getName(), "p3");
-//
-//    }
+    @Test
+    void Test_doBattles() throws IOException {
+        Player p1 = new TextPlayer(null, null, "p1");
+        Player p2 = new TextPlayer(null, null, "p2");
+        Player p3 = new TextPlayer(null, null, "p3");
+        Territory test = new Territory("test", p1, 4, new Random(0));
+
+
+        test.sendInEnemyTroop(new Troop(2, p2, new Random(0)));
+        test.sendInEnemyTroop(new Troop(1, p3, new Random(0)));
+        test.doBattles();
+
+
+        assertEquals(test.getOwner().getName(), "p1");
+        assertEquals(test.checkPopulation(),2);
+        test.doBattles();
+        test.sendInEnemyTroop(new Troop(10, p3, new Random(0)));
+        test.doBattles();
+        assertEquals(test.getOwner().getName(), "p3");
+
+        test.sendInEnemyTroop(new Troop(1, p2, new Random(0)));
+        test.sendInEnemyTroop(new Troop(1, p2, new Random(0)));
+        Territory clo=test.clone();
+        test.doBattles();
+        assertEquals(test.getOwner().getName(), "p3");
+        HashMap<String,Integer> dict=clo.checkTroopInfo();
+        assertEquals(dict.get("Soldier LV0"),10);
+
+    }
 
     @Test
     void Test_equals() throws IOException {

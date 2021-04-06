@@ -2,6 +2,7 @@ package edu.duke.ece651.group4.RISK.server;
 
 import edu.duke.ece651.group4.RISK.shared.*;
 
+import java.io.PrintStream;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -19,6 +20,7 @@ public class Game {
     private World theWorld;
     private CyclicBarrier barrier; // Barrier is only used in PlaceUnitsPhase
     public GameState gameState;
+    PrintStream out;
     public Game(int gameID, int maxNumUsers) {
         this.gameID = gameID;
         this.maxNumUsers = maxNumUsers;
@@ -26,6 +28,17 @@ public class Game {
         this.theWorld = null; // This should use init function to get a world based on the number of players
         this.barrier = new CyclicBarrier(maxNumUsers);
         this.gameState = new GameState();
+        this.out = System.out;
+    }
+
+    public Game(int gameID, int maxNumUsers, PrintStream out) {
+        this.gameID = gameID;
+        this.maxNumUsers = maxNumUsers;
+        this.usersOnGame = new HashSet<User>();
+        this.theWorld = null; // This should use init function to get a world based on the number of players
+        this.barrier = new CyclicBarrier(maxNumUsers);
+        this.gameState = new GameState();
+        this.out = out;
     }
     /*
     * This gets the gameID
@@ -153,9 +166,7 @@ public class Game {
     public boolean isAllPlayersSwitchOut(){
         return gameState.isAllPlayersSwitchOut();
     }
-    synchronized protected void doDoneActionFor(User u){
-        this.gameState.changAPlayerStateTo(u, PLAYER_STATE_END_ONE_TURN);
-    }
+
 
 
     /*
@@ -174,11 +185,15 @@ public class Game {
     synchronized protected void upgradeTroopOnWorld(Order order, String userName){
         UpgradeTroopOrder upgradeOrder = (UpgradeTroopOrder) order;
         theWorld.upgradeTroop(upgradeOrder, userName);
-
+        out.println("Game" + gameID + ": " + userName + " upgrade Troop");
     }
-
+    synchronized protected void doDoneActionFor(User u){
+        this.gameState.changAPlayerStateTo(u, PLAYER_STATE_END_ONE_TURN);
+        out.println("Game" + gameID + ": " + u.getUsername() + " Done action");
+    }
     synchronized protected void upgradeTechOnWorld(String userName){
         theWorld.upgradePlayerTechLevelBy1(userName);
+        out.println("Game" + gameID + ": " + userName + " upgrade Tech");
     }
     /*
      * This is to do move for each player.
@@ -188,6 +203,7 @@ public class Game {
     synchronized protected void doMoveOnWorld(Order order, String userName){
         MoveOrder moveOrder = (MoveOrder) order;
         this.theWorld.moveTroop(moveOrder, userName);
+        out.println("Game" + gameID + ": " + userName + " move action");
     }
     /*
      * This is to do attack for each player.
@@ -197,6 +213,7 @@ public class Game {
     synchronized protected void doAttackOnWorld(Order order, String userName){
         AttackOrder attackOrder = (AttackOrder) order;
         this.theWorld.attackATerritory(attackOrder, userName);
+        out.println("Game" + gameID + ": " + userName + " attack action");
     }
     /*
     * This is the final update for the whole world after one turn

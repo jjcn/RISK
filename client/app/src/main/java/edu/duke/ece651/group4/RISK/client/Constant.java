@@ -38,6 +38,7 @@ public class Constant {
     public static final String NAME = "name";
     public static final String MESSAGE = "message";
     public static final String WRG_MESSAGE = "fail to create world";
+    public static final String EXIT_GAME_MESSAGE = "Exit Game";
 
 
     public static final int MAXLEVEL = 6; //max soldier level
