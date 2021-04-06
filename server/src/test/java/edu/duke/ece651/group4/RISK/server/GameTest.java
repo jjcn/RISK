@@ -82,13 +82,13 @@ class GameTest {
         assertEquals(g.isUserLose(u),true);
         assertEquals(g.isEndGame(),false);
 
-        assertThrows(new IllegalArgumentException().getClass(), () ->g.upgradeTechOnWorld("user0"));
+        g.upgradeTechOnWorld("user0");
         UpgradeTroopOrder uo=new UpgradeTroopOrder("A",0,1,0);
         g.upgradeTroopOnWorld(uo, "user0");
 
         UpgradeTechOrder ut=new UpgradeTechOrder(0);
         g.tryUpdateActionOnWorld(uo,u0);
-        assertThrows(new IllegalArgumentException().getClass(), () ->g.tryUpdateActionOnWorld(ut,u0));
+        g.tryUpdateActionOnWorld(ut,u0);
 
         PlaceOrder p=new PlaceOrder("A",new Troop(10,new TextPlayer("user0")));
         g.placeUnitsOnWorld(p);
