@@ -244,9 +244,13 @@ class GameTest {
         HashMap<String, Integer> myDict = new HashMap<>();
         myDict.put("Soldier LV0", 5);
 
+
+
         Troop dem = new Troop(myDict, new TextPlayer("user0"));
-        MoveOrder m=new MoveOrder("A","B",dem,'M');
+        MoveOrder m =new MoveOrder("A","B",dem,'M');
         g.doMoveOnWorld(m, "user0");
+        System.out.println(g.getTheWorld().findTerritory(m.getSrcName()).getInfo() );
+        System.out.println(g.getTheWorld().findTerritory(m.getDesName()).getInfo() );
     }
 
 }
