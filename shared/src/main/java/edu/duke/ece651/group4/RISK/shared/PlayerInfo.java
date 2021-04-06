@@ -171,7 +171,8 @@ public class PlayerInfo implements Serializable {
             throw new IllegalArgumentException(explanation_msg + overflow_msg);
         } else {
             try {
-                consumeTech(calcUpgradeTechLevelConsumption(techLevel, techLevelAfterMod));
+                int consumption = calcUpgradeTechLevelConsumption(techLevel, techLevelAfterMod);
+                consumeTech(consumption);
                 techLevel += i;
             } catch (IllegalArgumentException iae) {
                 String err_msg = iae.getMessage() + "\n" + 
