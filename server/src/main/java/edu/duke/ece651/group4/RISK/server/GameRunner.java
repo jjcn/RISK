@@ -42,15 +42,15 @@ public class GameRunner extends Thread{
 
     @Override
     public void run(){
-        out.println("Game runner waits for all players to join");
-//        while(!game.isFull()){} // wait all users to join to start the game
+        out.println("Game" +game.getGameID()+" runner waits for all players to join");
+        while(!game.isFull()){} // wait all users to join to start the game
 
         game.setUpGame();
-        out.println("Game runner finishes sets up");
+        out.println("Game" +game.getGameID()+" runner finishes sets up");
         //Initialization
         notifyAllUsers();
 
-        out.println("Game runner notifies all players");
+        out.println("Game" +game.getGameID()+" runner notifies all players");
         //ActionPhase
         while(true){
             while(!game.gameState.isAllPlayersDoneOneTurn()){} // wait until all players finish updating their turn
@@ -58,15 +58,15 @@ public class GameRunner extends Thread{
             game.updateGameAfterOneTurn();
             game.gameState.updateStateTo(GAME_STATE_DONE_UPDATE);
             game.gameState.setActivePlayersStateToUpdating();
-            out.println("Game runner set all active players updating state");
+            out.println("Game" +game.getGameID()+" runner set all active players updating state");
 
             notifyAllUsers(); // notify all players to enter updating state
-            out.println("Game runner notifies all players");
+            out.println("Game" +game.getGameID()+" runner notifies all players");
             while(!game.gameState.isAllPlayersDoneUpdatingState()){} // wait until all players finish updating their state
-            out.println("Game runner knows all players are done updating");
+            out.println("Game" +game.getGameID()+" runner knows all players are done updating");
             if(game.isEndGame() || game.gameState.isAllPlayersSwitchOut()){
                 game.gameState.setGameDead();
-                out.println("Game runner ends, set this game dead");
+                out.println("Game" +game.getGameID()+" runner ends, set this game dead");
                 break;
             }
             game.gameState.updateStateTo(GAME_STATE_WAIT_TO_UPDATE);
