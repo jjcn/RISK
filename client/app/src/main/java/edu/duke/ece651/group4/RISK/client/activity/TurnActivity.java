@@ -37,7 +37,7 @@ public class TurnActivity extends AppCompatActivity {
     private final String TAG = this.getClass().getSimpleName();
 
     // TODO:expendable list view
-    private Button switchBT;
+    private Button commitBT;
     private ListView worldInfoRC;
     private ArrayAdapter<String> worldInfoAdapter;
     private Spinner chooseActionSP;
@@ -45,6 +45,7 @@ public class TurnActivity extends AppCompatActivity {
     private ListView noticeInfoRC;
     private ArrayAdapter<String> noticesAdapter;
     private TextView userInfoTV;
+    private ImageView mapIV;
 
     private String actionType;
     private boolean isWatch; // turn to true after lose game.
@@ -60,17 +61,23 @@ public class TurnActivity extends AppCompatActivity {
         isWatch = false;
         waitDG = new WaitDialog(TurnActivity.this);
         impUI();
+        updateAfterTurn();
     }
 
+    /**
+     * overwrite the functions to have switch room and back and menu button.
+     *
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
                 return true;
-            //TODO: switch rooms
             case R.id.menu_rooms:
-                // waitDG.show();
+                Intent joinIntent = new Intent(TurnActivity.this, RoomActivity.class);
+                startActivity(joinIntent);
+                finish();
                 return true;
             case R.id.menu_devinfo:
                 showByToast(TurnActivity.this, COLOR_EGG);
@@ -89,14 +96,17 @@ public class TurnActivity extends AppCompatActivity {
 
     private void impUI() {
         chooseActionSP = findViewById(R.id.actions_spinner);
-        switchBT = findViewById(R.id.switchOut);
+        commitBT = findViewById(R.id.commitBT);
         worldInfoRC = findViewById(R.id.terrInfo);
         userInfoTV = findViewById(R.id.playerInfo);
         noticeInfoRC = findViewById(R.id.noticeInfo);
+        mapIV = findViewById(R.id.world_image_view);
+        mapIV.setImageResource(MAPS.get(getCurrentRoomSize()));
         impActionSpinner();
         impWorldInfoRC();
         impNoticeInfoRC();
-        impSwitchBT();
+        impCommitBT();
+        userInfoTV.setText(getPlayerInfo());
     }
 
     private void impWorldInfoRC() {
@@ -106,73 +116,57 @@ public class TurnActivity extends AppCompatActivity {
     }
 
     private void impNoticeInfoRC() {
-        List<String> worldInfo = getWorldInfo();
-        noticesAdapter = new ArrayAdapter<>(TurnActivity.this, R.layout.item_choice, worldInfo);
+        List<String> noticeInfo = new ArrayList<>();
+        noticesAdapter = new ArrayAdapter<>(TurnActivity.this, R.layout.item_choice, noticeInfo);
         noticeInfoRC.setAdapter(noticesAdapter);
     }
 
-    private void impSwitchBT() {
-        switchBT.setOnClickListener(v -> {
-            Intent joinIntent = new Intent(TurnActivity.this, RoomActivity.class);
-            startActivity(joinIntent);
-            finish();
-        });
-    }
-
-//    private void impActionSpinner() {
-//        List<String> actions = new ArrayList<>(Arrays.asList(UI_MOVE, UI_ATK, UI_UPTECH, UI_UPTROOP, UI_DONE));
-//        actionAdapter = new ArrayAdapter<>(TurnActivity.this, R.layout.item_choice, actions);
-//        chooseActionSP.setAdapter(actionAdapter);
-////        chooseActionSP.setOnItemClickListener((parent, view, position, id) -> {
-//        chooseActionSP.setOnItemSelectedListener((parent, view, position, id) -> {
-//            actionType = actionAdapter.getItem(position);
-//            impCommit();
-//        });
-//    }
     private void impActionSpinner() {
         List<String> actions = new ArrayList<>(Arrays.asList(UI_MOVE, UI_ATK, UI_UPTECH, UI_UPTROOP, UI_DONE));
         actionAdapter = new ArrayAdapter<>(TurnActivity.this, R.layout.item_choice, actions);
         chooseActionSP.setAdapter(actionAdapter);
+        chooseActionSP.setSelection(0,false);
         chooseActionSP.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 actionType = actionAdapter.getItem(position);
-                impCommit();
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // nothing
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+    }
+
+    private void impCommitBT() {
+        commitBT.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                commitBT.setClickable(false);
+                Intent intent = new Intent();
+                switch (actionType) {
+                    case UI_MOVE:
+                    case UI_ATK:
+                        intent.setComponent(new ComponentName(TurnActivity.this, BasicOrderActivity.class));
+                        intent.putExtra("actionType", actionType);
+                        startActivity(intent);
+                        break;
+                    case UI_UPTROOP:
+                        intent.setComponent(new ComponentName(TurnActivity.this, UpgradeActivity.class));
+                        startActivity(intent);
+                        break;
+                    case UI_UPTECH:
+                        upgradeTech();
+                        break;
+                    case UI_DONE:
+                        if (isWatch) {
+                            showStayDialog();
+                        }
+                        waitNextTurn();
+                        break;
+                }
+                commitBT.setClickable(true);
             }
         });
-            /*
-            chooseActionSP.setOnItemClickListener((parent, view, position, id) -> {
-                actionType = actionAdapter.getItem(position);
-                impCommit();
-            });
-            */
-    }
-    private void impCommit() {
-        // commitBT.setClickable(false);
-        Intent intent = new Intent();
-        switch (actionType) {
-            case UI_MOVE:
-            case UI_ATK:
-                intent.setComponent(new ComponentName(TurnActivity.this, BasicOrderActivity.class));
-                intent.putExtra("actionType", actionType);
-                break;
-            case UI_UPTROOP:
-                intent.setComponent(new ComponentName(TurnActivity.this, UpgradeActivity.class));
-                break;
-            case UI_UPTECH:
-                upgradeTech();
-                break;
-            case UI_DONE:
-                if (isWatch) {
-                    showStayDialog();
-                }
-                waitNextTurn();
-        }
     }
 
     private void showStayDialog() {
@@ -187,6 +181,7 @@ public class TurnActivity extends AppCompatActivity {
             startActivity(joinGame);
             finish();
         });
+        builder.show();
     }
 
     private void upgradeTech() {
@@ -194,6 +189,7 @@ public class TurnActivity extends AppCompatActivity {
             @Override
             public void onSuccess() {
                 userInfoTV.setText(getPlayerInfo());
+                actionAdapter.remove(UI_UPTECH); // can only upgrade once in one turn
             }
 
             @Override
@@ -223,11 +219,10 @@ public class TurnActivity extends AppCompatActivity {
                     if (isWatch) {
                         actionType = UI_DONE;
                         runOnUiThread(() -> {
-                            impCommit();
+                            commitBT.performClick();
                         });
                     } else {
-                        World newWorld = (World) o;
-                        updateAfterTurn(newWorld);
+                        updateAfterTurn();
                         showByToast(TurnActivity.this, TURN_END);
                     }
                 } else {
@@ -242,13 +237,15 @@ public class TurnActivity extends AppCompatActivity {
         });
     }
 
-    private void updateAfterTurn(World world) {
+    private void updateAfterTurn() {
         runOnUiThread(() -> {
             if (isWatch) {
                 chooseActionSP.setVisibility(View.GONE);
                 userInfoTV.setVisibility(View.GONE);
             }
             userInfoTV.setText(getPlayerInfo());
+            noticesAdapter.notifyDataSetChanged();
+            worldInfoAdapter.notifyDataSetChanged();
             waitDG.cancel();
         });
     }

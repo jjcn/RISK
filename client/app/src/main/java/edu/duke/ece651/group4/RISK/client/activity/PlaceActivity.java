@@ -5,6 +5,8 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import edu.duke.ece651.group4.RISK.client.R;
@@ -30,25 +32,32 @@ public class PlaceActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_place);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
         impUI();
         Log.i(TAG,LOG_CREATE_SUCCESS);
     }
 
+
     private void impUI() {
+        LinearLayout terrA = findViewById(R.id.terrA);
+        LinearLayout terrB = findViewById(R.id.terrB);
+        LinearLayout terrC = findViewById(R.id.terrC);
+
         EditText terrAETInput = findViewById(R.id.terrA).findViewById(R.id.inputNum);
         EditText terrBETInput = findViewById(R.id.terrB).findViewById(R.id.inputNum);
         EditText terrCETInput = findViewById(R.id.terrC).findViewById(R.id.inputNum);
         Button commitBT = findViewById(R.id.buttonCommitPlace);
 
+        List<Territory> myTerr = getMyTerritory();
+        TextView terrATV = terrA.findViewById(R.id.placeinstrTV);
+        terrATV.append(myTerr.get(0).getName());
+        TextView terrBTV = terrB.findViewById(R.id.placeinstrTV);
+        terrBTV.append(myTerr.get(1).getName());
+        TextView terrCTV = terrC.findViewById(R.id.placeinstrTV);
+        terrCTV.append(myTerr.get(2).getName());
+
         commitBT.setOnClickListener(v -> {
             commitBT.setClickable(false);
 
-            List<Territory> myTerr = getMyTerritory();
-            terrAETInput.append(myTerr.get(0).getName());
-            terrBETInput.append(myTerr.get(1).getName());
-            terrCETInput.append(myTerr.get(2).getName());
             // check total number
             numTerrA = Integer.parseInt(String.valueOf(terrAETInput.getText()));
             numTerrB = Integer.parseInt(String.valueOf(terrBETInput.getText()));

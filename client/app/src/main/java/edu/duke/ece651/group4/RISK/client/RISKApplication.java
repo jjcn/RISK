@@ -27,6 +27,7 @@ public class RISKApplication extends Application {
     static String response;
     static ArrayList<RoomInfo> roomInfo;
     static String userName;
+    static int currentRoomSize;
 
 
     @Override
@@ -45,6 +46,7 @@ public class RISKApplication extends Application {
         this.rnd = new Random();
         this.roomInfo = new ArrayList<>();
         this.userName=null;
+        this.currentRoomSize=0;
         Log.i(TAG, LOG_CREATE_SUCCESS);
     }
 
@@ -77,6 +79,16 @@ public class RISKApplication extends Application {
         return UNIT_NAMES.size() - 1;
     }
 
+
+    /**
+     * @return maximum number of players in current game
+     */
+    public static int getCurrentRoomSize(){return currentRoomSize;}
+
+    public static List<Territory> getMyTerritory() {
+        return theWorld.getTerritoriesOfPlayer(new TextPlayer(userName));
+    }
+
     /**
      * @return list of names of soldier at each level
      */
@@ -87,18 +99,35 @@ public class RISKApplication extends Application {
     /**
      * @return list of all my territory
      */
-    public static List<Territory> getMyTerritory() {
-        return theWorld.getTerritoriesOfPlayer(new TextPlayer(userName));
+    public static List<String> getMyTerrNames() {
+        return transferToNames(theWorld.getTerritoriesOfPlayer(new TextPlayer(userName)));
+    }
+
+    /**
+     *
+     * @return list of enemy territory
+     */
+    public static List<String> getEnemyTerrNames() {
+        return transferToNames(theWorld.getTerritoriesNotOfPlayer(userName));
+    }
+
+    // helper function
+    private static List<String> transferToNames(List<Territory> list) {
+        List<String> names = new ArrayList<>();
+        for (Territory item : list) {
+            names.add(item.getName());
+        }
+        return names;
     }
 
     /**
      * @return list information of each territory
      */
-    public static List<String> getWorldInfo(){
-        List<Territory> terrs=theWorld.getAllTerritories();
-        List<String> info=new ArrayList<>();
+    public static List<String> getWorldInfo() {
+        List<Territory> terrs = theWorld.getAllTerritories();
+        List<String> info = new ArrayList<>();
 
-        for(Territory t: terrs){
+        for (Territory t : terrs) {
             info.add(t.getInfo());
         }
         return info;
@@ -107,17 +136,17 @@ public class RISKApplication extends Application {
     /**
      * @return list information of the player
      */
-    public static String getPlayerInfo(){
-        PlayerInfo info=theWorld.getPlayerInfoByName(userName);
-        StringBuilder result=new StringBuilder();
-        result.append("Player name:  "+userName+"\n");
-        result.append("Food Resource: "+info.getFoodQuantity()+"\n");
-        result.append("Tech Resource: "+info.getTechQuantity()+"\n");
-        result.append("Tech Level: "+info.getTechLevel()+"\n");
+    public static String getPlayerInfo() {
+        PlayerInfo info = theWorld.getPlayerInfoByName(userName);
+        StringBuilder result = new StringBuilder();
+        result.append("Player name:  " + userName + "\n");
+        result.append("Food Resource: " + info.getFoodQuantity() + "\n");
+        result.append("Tech Resource: " + info.getTechQuantity() + "\n");
+        result.append("Tech Level: " + info.getTechLevel() + "\n");
         result.append("My Territories: ");
-        List<Territory> terrs=theWorld.getTerritoriesOfPlayer(userName);
-        for(Territory t: terrs){
-            result.append(t.getName()+"  ");
+        List<Territory> terrs = theWorld.getTerritoriesOfPlayer(userName);
+        for (Territory t : terrs) {
+            result.append(t.getName() + "  ");
         }
         result.append("\n");
         return result.toString();
@@ -231,8 +260,6 @@ public class RISKApplication extends Application {
     }
 
 
-
-
     /*******function used for sign in and log in activity******/
 
     protected static void sendAccountInfo(String actName,
@@ -315,6 +342,11 @@ public class RISKApplication extends Application {
      */
     public static void JoinGame(int gameID, onReceiveListener listenerString, onJoinRoomListener listenerWorld) {
         GameMessage m = new GameMessage(GAME_JOIN, gameID, -1);
+        for(RoomInfo in:roomInfo){
+            if(in.getRoomID()==gameID){
+                currentRoomSize=in.getMaxNumPlayers();
+            }
+        }
         try {
             new Thread(() -> {
                 Log.i(TAG, LOG_FUNC_RUN + "new thread on JoinRoom");
@@ -347,8 +379,8 @@ public class RISKApplication extends Application {
                     }
                 }
             }).start();
-        }catch (Exception e){
-            Log.e(TAG,e.toString());
+        } catch (Exception e) {
+            Log.e(TAG, e.toString());
         }
     }
 
@@ -376,11 +408,11 @@ public class RISKApplication extends Application {
     /**
      * Used to construct a move order
      */
-    public static MoveOrder buildMoveOrder(String src,String des,int num, String job ){
-        HashMap<String,Integer> dict=new HashMap<>();
-        dict.put(job,num);
-        Troop target=new Troop(dict,new TextPlayer(userName));
-        return new MoveOrder(src,des,target,MOVE_ACTION);
+    public static MoveOrder buildMoveOrder(String src, String des, int num, String job) {
+        HashMap<String, Integer> dict = new HashMap<>();
+        dict.put(job, num);
+        Troop target = new Troop(dict, new TextPlayer(userName));
+        return new MoveOrder(src, des, target, MOVE_ACTION);
     }
 
     /**
@@ -402,11 +434,11 @@ public class RISKApplication extends Application {
      * Used to construct an attack order
      */
 
-    public static AttackOrder buildAttackOrder(String src,String des,int num, String job ){
-        HashMap<String,Integer> dict=new HashMap<>();
-        dict.put(job,num);
-        Troop target=new Troop(dict,new TextPlayer(userName));
-        return new AttackOrder (src,des,target,ATTACK_ACTION);
+    public static AttackOrder buildAttackOrder(String src, String des, int num, String job) {
+        HashMap<String, Integer> dict = new HashMap<>();
+        dict.put(job, num);
+        Troop target = new Troop(dict, new TextPlayer(userName));
+        return new AttackOrder(src, des, target, ATTACK_ACTION);
     }
 
     /**
@@ -429,17 +461,17 @@ public class RISKApplication extends Application {
 
     public static UpgradeTroopOrder buildUpOrder(String srcName,
                                                  int levelBefore, int levelAfter,
-                                                 int nUnit){
-        return new UpgradeTroopOrder (srcName,levelBefore,levelAfter,nUnit);
+                                                 int nUnit) {
+        return new UpgradeTroopOrder(srcName, levelBefore, levelAfter, nUnit);
     }
 
     /**
      * Used to send a soldier level upgrade order
      */
-    public static String doSoliderUpgrade(UpgradeTroopOrder order, onResultListener listener){
+    public static String doSoliderUpgrade(UpgradeTroopOrder order, onResultListener listener) {
         try {
 
-            theWorld.upgradeTroop(order,userName);
+            theWorld.upgradeTroop(order, userName);
             send(order, listener);
         } catch (Exception e) {
             return e.getMessage();
@@ -453,7 +485,7 @@ public class RISKApplication extends Application {
      * Used to send an tech level upgrade order
      */
     public static String doOneUpgrade(onResultListener listener) {
-        UpgradeTechOrder order= new UpgradeTechOrder(1);
+        UpgradeTechOrder order = new UpgradeTechOrder(1);
         try {
             theWorld.upgradePlayerTechLevelBy1(userName);
             send(order, listener);
@@ -470,20 +502,23 @@ public class RISKApplication extends Application {
         sendReceiveHelper(order, listener, WORLD);
     }
 
-    public static boolean checkLost(){
+    public static boolean checkLost() {
         return theWorld.checkLost(userName);
     }
 
 
-    public static void stayInGame(onReceiveListener listener){
-        String message=null;
+    public static void stayInGame(onReceiveListener listener) {
+        String message = null;
         sendReceiveHelper(message, listener, WORLD);
     }
 
-    public static void exitGame(onResultListener listener){
-        send(EXIT_GAME_MESSAGE,listener);
+    public static void exitGame(onResultListener listener) {
+        send(EXIT_GAME_MESSAGE, listener);
     }
 
+    public static List<Territory> getEnemyTerritory(){
+        return theWorld.getTerritoriesNotOfPlayer(userName);
+    }
 
 
 }
