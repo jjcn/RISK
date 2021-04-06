@@ -22,7 +22,7 @@ public class Game {
     private CyclicBarrier barrier; // Barrier is only used in PlaceUnitsPhase
     public GameState gameState;
     PrintStream out;
-
+    public boolean waitingFLAG;
     public Game(int gameID, int maxNumUsers) {
         this(gameID,maxNumUsers,System.out);
     }
@@ -105,7 +105,9 @@ public class Game {
             return;
         }
         gameState.changAPlayerStateTo(u, PLAYER_STATE_SWITCH_OUT);
+        out.println("Game" + gameID + ": " + u.getUsername() + " switches out");
     }
+
     /*
      *  try to switch in a User: change player state as PLAYER_STATE_ACTION_PHASE
      *  It will wait until the gameState is in wait to update
@@ -117,6 +119,7 @@ public class Game {
         }
         while(!gameState.isWaitToUpdate()){}
         gameState.changAPlayerStateTo(u, PLAYER_STATE_ACTION_PHASE);
+        out.println("Game" + gameID + ": " + u.getUsername() + " switches in");
     }
 
     /*
