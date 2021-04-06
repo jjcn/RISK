@@ -88,6 +88,19 @@ public class GameState extends State{
         }
         return true;
     }
+    /*
+    * This checks if all players switch out
+    * runner will end automatically if all players Switch out
+    * */
+    public boolean isAllPlayersSwitchOut(){
+        for(PlayerState ps: playerStates){
+            if(!ps.isSwitchOut()){
+                return false;
+            }
+        }
+        return true;
+    }
+
 
     /*
     *
