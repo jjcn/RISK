@@ -421,9 +421,9 @@ public class RISKApplication extends Application {
      */
     public static String doOneMove(MoveOrder order, onResultListener listener) {
         try {
-
+            Log.i(TAG, LOG_FUNC_RUN + "Move starts");
             theWorld.moveTroop(order, userName);
-
+            Log.i(TAG, LOG_FUNC_RUN + "Move sucessfully");
             send(order, listener);
         } catch (Exception e) {
             return e.getMessage();

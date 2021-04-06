@@ -28,6 +28,10 @@ public class User {
         return this.userInfo.getUsername();
     }
 
+    public String getPassword(){
+        return this.userInfo.getPassword();
+    }
+
     /*
      * This checks if username and password fits this user
      * @return true if fits, false otherwise

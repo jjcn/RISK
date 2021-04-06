@@ -49,6 +49,7 @@ public class UpgradeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_upgrade);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         this.terrName = "";
         this.typeNameBefore = "";
         this.levelBefore = -1;
@@ -57,6 +58,8 @@ public class UpgradeActivity extends AppCompatActivity {
         this.nUnit = -1;
         this.levels = new HashMap<>();
         initMapping();
+
+        Log.e(TAG, "Upgrade Activity: set up sucessfully and will enter UI" );
         impUI();
     }
 

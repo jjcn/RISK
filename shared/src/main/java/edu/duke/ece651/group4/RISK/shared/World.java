@@ -530,7 +530,7 @@ public class World implements Serializable {
      * Consumes food resource.
      *
      * @param order      is the attack order.
-     * @param playerName is the player's name who committed this order.
+     * @param playerName is the name of the player who committed this order.
      */
     public void attackATerritory(AttackOrder order, String playerName) {
         Territory start = findTerritory(order.getSrcName());
@@ -544,7 +544,7 @@ public class World implements Serializable {
         // moves troop
         end.sendInEnemyTroop(start.sendOutTroop(troop));
         // consume food resource
-        playerInfos.get(playerName).consumeFood(calculateAttackConsumption(order));
+        getPlayerInfoByName(playerName).consumeFood(calculateAttackConsumption(order));
     }
 
     /**
@@ -552,7 +552,7 @@ public class World implements Serializable {
      * consumed.
      *
      * @param utOrder    is an UpgradeTroopOrder.
-     * @param playerName is the player's name who commited this order.
+     * @param playerName is the name of the player who committed this order.
      */
     public void upgradeTroop(UpgradeTroopOrder utOrder, String playerName) {
         Territory terr = findTerritory(utOrder.getSrcName());
@@ -563,7 +563,7 @@ public class World implements Serializable {
         PlayerInfo pInfo = getPlayerInfoByName(playerName);
         int remainder = terr.upgradeTroop(levelBefore, levelAfter, nUnit, pInfo.getTechQuantity());
         int consumption = pInfo.getTechQuantity() - remainder;
-        playerInfos.get(playerName).consumeTech(consumption);
+        getPlayerInfoByName(playerName).consumeTech(consumption);
     }
 
 
@@ -575,7 +575,7 @@ public class World implements Serializable {
      * @param playerName is a player's name.
      */
     public void upgradePlayerTechLevelBy1(String playerName) {
-        playerInfos.get(playerName).upgradeTechLevelBy1();
+        getPlayerInfoByName(playerName).upgradeTechLevelBy1();
     }
 
     /**
@@ -587,7 +587,7 @@ public class World implements Serializable {
      * @param playerName       is a player's name.
      */
     public void upgradePlayerTechLevelBy(UpgradeTechOrder upgradeTechOrder, String playerName) {
-        playerInfos.get(playerName).upgradeTechLevelBy(upgradeTechOrder.getNLevel());
+        getPlayerInfoByName(playerName).upgradeTechLevelBy(upgradeTechOrder.getNLevel());
     }
 
     /**

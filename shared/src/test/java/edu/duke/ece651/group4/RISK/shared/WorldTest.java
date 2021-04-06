@@ -347,6 +347,14 @@ public class WorldTest {
     }
 
     @Test
+    public void testAttackConsumption() {
+        World world = createWorldAndRegister(troopsSeparated);
+        AttackOrder atkOrder1 = new AttackOrder("Narnia", "Elantris", new Troop(1, green), 'A');
+        world.attackATerritory(atkOrder1, "green");
+        assertEquals(99, world.getPlayerInfoByName("green").getTechQuantity());
+    }
+
+    @Test
     public void testAttackNonExistTerritory() {
         World world = createWorldAndRegister(troopsSeparated);
         AttackOrder atk1 = new AttackOrder("Gondor", "No", new Troop(13, red), 'A');
