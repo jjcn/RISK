@@ -147,8 +147,12 @@ public class Game {
         return this.theWorld.isGameEnd();
     }
 
-
-
+    /*
+    * This checks if all players switch out.
+    * */
+    public boolean isAllPlayersSwitchOut(){
+        return gameState.isAllPlayersSwitchOut();
+    }
     synchronized protected void doDoneActionFor(User u){
         this.gameState.changAPlayerStateTo(u, PLAYER_STATE_END_ONE_TURN);
     }
