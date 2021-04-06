@@ -43,7 +43,18 @@ public class GameRunner extends Thread{
     @Override
     public void run(){
         out.println("Game" +game.getGameID()+" runner waits for all players to join");
-        while(!game.isFull()){} // wait all users to join to start the game
+        boolean exit = false;
+        while(exit){
+            if(game.isFull()){
+                out.println("Game" +game.getGameID()+" is FULL!!!!!!");
+                exit = true;
+            }
+            try {
+                TimeUnit.SECONDS.sleep(2);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        } // wait all users to join to start the game
 
         game.setUpGame();
         out.println("Game" +game.getGameID()+" runner finishes sets up");
