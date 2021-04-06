@@ -43,7 +43,9 @@ public class PlaceActivity extends AppCompatActivity {
 
     private void impUI() {
         instr = findViewById(R.id.placeInstru);
-        instr.append("You have total of "+"soldiers");
+        instr.append("You have total of "+PLACE_TOTAL+" soldiers.");
+        // mapIV = findViewById(R.id.worldFG);
+        // mapIV.setImageResource(MAPS.get(getCurrentRoomSize()));
 
         LinearLayout terrA = findViewById(R.id.terrA);
         LinearLayout terrB = findViewById(R.id.terrB);
