@@ -166,6 +166,7 @@ public class TurnActivity extends AppCompatActivity {
                 break;
             case UI_UPTECH:
                 upgradeTech();
+                break;
             case UI_DONE:
                 if (isWatch) {
                     showStayDialog();

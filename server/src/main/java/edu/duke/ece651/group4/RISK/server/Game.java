@@ -22,9 +22,13 @@ public class Game {
     private CyclicBarrier barrier; // Barrier is only used in PlaceUnitsPhase
     public GameState gameState;
     PrintStream out;
+<<<<<<< HEAD
     public Game(int gameID, int maxNumUsers) {
         this(gameID,maxNumUsers,System.out);
     }
+=======
+
+>>>>>>> 2710b1721dbdfcbe32182e1629949e180e948414
 
     public Game(int gameID, int maxNumUsers, PrintStream out) {
         this.gameID = gameID;
@@ -34,6 +38,11 @@ public class Game {
         this.barrier = new CyclicBarrier(maxNumUsers);
         this.gameState = new GameState();
         this.out = out;
+    }
+
+    public Game(int gameID, int maxNumUsers) {
+
+        this(gameID,  maxNumUsers,System.out);
     }
     /*
     * This gets the gameID

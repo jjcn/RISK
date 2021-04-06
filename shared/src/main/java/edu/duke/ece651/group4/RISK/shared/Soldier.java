@@ -6,18 +6,20 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import static edu.duke.ece651.group4.RISK.shared.Constant.*;
+
 public class Soldier implements Unit, Serializable {
     protected static final long serialVersionUID = 13L;
 
     private String jobName;
     private int level;
-    private final List<String> levelNames = 
-        Arrays.asList("Soldier LV0", "Soldier LV1", "Soldier LV2", "Soldier LV3",
-            "Soldier LV4", "Soldier LV5", "Soldier LV6");
-    private final List<Integer> levelCost = 
-        Arrays.asList(0, 3, 11, 30, 55, 90, 140); // cumulative cost from level 0
-    private final List<Integer> levelBonus = 
-        Arrays.asList(0, 1, 3, 5, 8, 11, 15);
+//    private final List<String> levelNames =
+//        Arrays.asList("Soldier LV0", "Soldier LV1", "Soldier LV2", "Soldier LV3",
+//            "Soldier LV4", "Soldier LV5", "Soldier LV6");
+//    private final List<Integer> levelCost =
+//        Arrays.asList(0, 3, 11, 30, 55, 90, 140); // cumulative cost from level 0
+//    private final List<Integer> levelBonus =
+//        Arrays.asList(0, 1, 3, 5, 8, 11, 15);
     private final Random dice;
 
     public Soldier() {
@@ -30,7 +32,7 @@ public class Soldier implements Unit, Serializable {
      * @param rand is the random seed.
      */
     public Soldier(Random rand) {
-        this.jobName = this.levelNames.get(0);
+        this.jobName = UNIT_NAMES.get(0);
         this.level = 0;
         this.dice = rand;
     }
@@ -50,22 +52,20 @@ public class Soldier implements Unit, Serializable {
         return this.level;
     }
 
-    public ArrayList<String> getLevelNames() {
-        return (ArrayList<String>) this.levelNames;
-    }
+
 
     public int getBonus() {
-        return this.levelBonus.get(this.level);
+        return UNIT_BONUS.get(this.level);
     }
 
     public void setLevel(int lv) {
         this.level = lv;
-        this.jobName = levelNames.get(lv);
+        this.jobName = UNIT_NAMES.get(lv);
     }
 
     public void setJob(String newJob) {
         this.jobName = newJob;
-        this.level = this.levelNames.indexOf(newJob);
+        this.level = UNIT_NAMES.indexOf(newJob);
     }
 
     /**
@@ -96,15 +96,17 @@ public class Soldier implements Unit, Serializable {
     public int upGrade(int targetLevel, int resource) {
         int cost = 0;
         int aim = targetLevel;
+//        ArrayList<Integer> levelCost= (ArrayList<Integer>)UNIT_COSTS ;
+//        ArrayList<String> levelNames=(ArrayList<String>) UNIT_NAMES;
         if (targetLevel < this.level) {
             throw new IllegalArgumentException("target level is lower than current level");
         }
 
-        if (targetLevel >= this.levelNames.size()) {
+        if (targetLevel >= UNIT_COSTS.size()) {
             throw new IllegalArgumentException("Target level exceed max level");
         }
-        
-        cost = this.levelCost.get(targetLevel) - this.levelCost.get(this.level);
+
+        cost = UNIT_COSTS.get(targetLevel) - UNIT_COSTS.get(this.level);
         if (cost > resource) {
             throw new IllegalArgumentException("No enough resources");
         }
