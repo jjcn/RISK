@@ -88,6 +88,7 @@ public class ClientThread extends Thread {
         out.println("This user signs up successfully");
         return null;
     }
+
     /*
      * Part1.2
      * This tries to let a user log in.
