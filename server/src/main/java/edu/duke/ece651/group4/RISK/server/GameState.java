@@ -42,6 +42,27 @@ public class GameState extends State{
         }
         return false;
     }
+    synchronized public boolean askUserWaiting(User u){
+        String username = u.getUsername();
+        for(PlayerState ps : playerStates){
+            if(ps.getUsername().equals(username)){
+                ps.setWaiting();
+                return true;
+            }
+        }
+        return false;
+    }
+    synchronized public boolean askUserDoneWaiting(User u){
+        String username = u.getUsername();
+        for(PlayerState ps : playerStates){
+            if(ps.getUsername().equals(username)){
+                ps.doneWaiting();
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     public String getAPlayerState(User u){
         String username = u.getUsername();
@@ -102,6 +123,20 @@ public class GameState extends State{
         return true;
     }
 
+    /*
+    * We need this to make sure every players are waiting before
+    * runner notify them all
+    * check if all players waits for notify from runner
+    * @return true if it is, false otherwise.
+    * */
+    public boolean isAllPlayersWaiting(){
+        for(PlayerState ps: playerStates){
+            if(!ps.isWaiting()){
+                return false;
+            }
+        }
+        return true;
+    }
 
     /*
     *

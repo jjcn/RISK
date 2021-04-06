@@ -6,6 +6,7 @@ import java.io.PrintStream;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
@@ -16,27 +17,26 @@ import static edu.duke.ece651.group4.RISK.shared.Constant.*;
 public class Game {
     private final int gameID;
     private int maxNumUsers;
-    private HashSet<User> usersOnGame;
+    private List<User> usersOnGame;
     private World theWorld;
     private CyclicBarrier barrier; // Barrier is only used in PlaceUnitsPhase
     public GameState gameState;
     PrintStream out;
-
+    public boolean waitingFLAG;
+    public Game(int gameID, int maxNumUsers) {
+        this(gameID,maxNumUsers,System.out);
+    }
 
     public Game(int gameID, int maxNumUsers, PrintStream out) {
         this.gameID = gameID;
         this.maxNumUsers = maxNumUsers;
-        this.usersOnGame = new HashSet<User>();
+        this.usersOnGame =  new ArrayList<>();
         this.theWorld = null; // This should use init function to get a world based on the number of players
         this.barrier = new CyclicBarrier(maxNumUsers);
         this.gameState = new GameState();
         this.out = out;
     }
 
-    public Game(int gameID, int maxNumUsers) {
-
-        this(gameID,  maxNumUsers,System.out);
-    }
     /*
     * This gets the gameID
     * @return gameID
@@ -105,7 +105,9 @@ public class Game {
             return;
         }
         gameState.changAPlayerStateTo(u, PLAYER_STATE_SWITCH_OUT);
+        out.println("Game" + gameID + ": " + u.getUsername() + " switches out");
     }
+
     /*
      *  try to switch in a User: change player state as PLAYER_STATE_ACTION_PHASE
      *  It will wait until the gameState is in wait to update
@@ -117,6 +119,7 @@ public class Game {
         }
         while(!gameState.isWaitToUpdate()){}
         gameState.changAPlayerStateTo(u, PLAYER_STATE_ACTION_PHASE);
+        out.println("Game" + gameID + ": " + u.getUsername() + " switches in");
     }
 
     /*
@@ -188,6 +191,7 @@ public class Game {
         this.gameState.changAPlayerStateTo(u, PLAYER_STATE_END_ONE_TURN);
         out.println("Game" + gameID + ": " + u.getUsername() + " Done action");
     }
+
     synchronized protected void upgradeTechOnWorld(String userName){
         theWorld.upgradePlayerTechLevelBy1(userName);
         out.println("Game" + gameID + ": " + userName + " upgrade Tech");
