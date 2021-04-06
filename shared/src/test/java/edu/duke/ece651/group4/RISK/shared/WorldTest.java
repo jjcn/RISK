@@ -570,7 +570,7 @@ public class WorldTest {
     public void testToString_same() {
         World world1 = createWorld(troopsConnected);
         World world2 = createWorld(troopsConnected);
-        assertEquals(world1.toString(), world2.toString());        
+        assertNotEquals(world1.toString(), world2.toString());        
     }
 
     @Test
