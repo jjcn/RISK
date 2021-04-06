@@ -75,7 +75,7 @@ public class TroopTest {
         assertEquals(receive.checkTroopSize(), 8);
         assertEquals(receive.checkUnitNum("Soldier LV0"), 6);
         assertEquals(receive.checkUnitNum("Soldier LV5"), 1);
-
+        System.out.println(receive.getSummary());
     }
     
     @Test
