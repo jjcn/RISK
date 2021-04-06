@@ -19,6 +19,13 @@ import java.util.Queue;
  * Also checks if the order is a move order.
  */
 public class MoveOrderChecker implements Serializable {
+    /**
+     * Auto-generated serial version UID
+     */
+    private static final long serialVersionUID = 5657955576529599357L;
+    /**
+     * Error messages
+     */
     protected final String NOT_MOVE_ORDER_MSG = "This is not a move order.";
     protected final String NOT_SAME_OWNER_MSG = 
         "Cannot move troop to %s, which belongs to another player.";
