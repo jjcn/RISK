@@ -32,6 +32,21 @@ public class TroopTest {
     }
 
     @Test
+    public void Test_real() {
+        Troop test = new Troop(5, new TextPlayer("test"));
+        HashMap<String, Integer> myDict = new HashMap<>();
+        myDict.put("Soldier LV0", 5);
+        Troop dem = new Troop(myDict, new TextPlayer("test"));
+        test.sendTroop(dem);
+        assertEquals(test.checkTroopSize(), 0);
+        assertThrows(new IllegalArgumentException().getClass(), () -> test.sendTroop(dem));
+
+
+    }
+
+
+
+    @Test
     public void Test_upGrade() {
         Troop test = new Troop(10, new TextPlayer("test"));
         assertEquals(test.checkUnitNum("Soldier LV0"), 10);
