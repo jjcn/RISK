@@ -21,15 +21,7 @@ public class Game {
     private CyclicBarrier barrier; // Barrier is only used in PlaceUnitsPhase
     public GameState gameState;
     PrintStream out;
-    public Game(int gameID, int maxNumUsers) {
-        this.gameID = gameID;
-        this.maxNumUsers = maxNumUsers;
-        this.usersOnGame = new HashSet<User>();
-        this.theWorld = null; // This should use init function to get a world based on the number of players
-        this.barrier = new CyclicBarrier(maxNumUsers);
-        this.gameState = new GameState();
-        this.out = System.out;
-    }
+
 
     public Game(int gameID, int maxNumUsers, PrintStream out) {
         this.gameID = gameID;
@@ -39,6 +31,11 @@ public class Game {
         this.barrier = new CyclicBarrier(maxNumUsers);
         this.gameState = new GameState();
         this.out = out;
+    }
+
+    public Game(int gameID, int maxNumUsers) {
+
+        this(gameID,  maxNumUsers,System.out);
     }
     /*
     * This gets the gameID
