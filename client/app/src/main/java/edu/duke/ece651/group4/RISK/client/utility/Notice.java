@@ -7,7 +7,7 @@ import android.widget.Toast;
 public class Notice {
         public static void showByToast(Activity activity, String instr) {
             activity.runOnUiThread(() -> {
-                        Toast toast = Toast.makeText(activity, instr, Toast.LENGTH_SHORT);
+                        Toast toast = Toast.makeText(activity, instr, Toast.LENGTH_LONG);
                         toast.setGravity(Gravity.CENTER, 0, 0);
                         toast.show();
                     }

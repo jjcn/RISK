@@ -22,14 +22,24 @@
             app:srcCompat="@android:drawable/ic_menu_mapmode"/>
 
     <TextView
+            android:id="@+id/instru"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/CHOOSE_SRC_INSTRU"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/world_image_view"
+            app:layout_constraintBottom_toTopOf="@id/srcText"
+            android:layout_marginBottom="@dimen/fragmentMargin"
+    />
+
+    <TextView
             android:id="@+id/srcText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/CHOOSE_SRC_INSTRU"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/world_image_view"
     />
 
     <Spinner
