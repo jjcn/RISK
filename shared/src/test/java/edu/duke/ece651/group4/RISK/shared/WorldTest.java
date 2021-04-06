@@ -398,6 +398,23 @@ public class WorldTest {
     } 
 
     @Test
+    public void testUpgradeTechLevelValid() {
+        World world = createWorldAndRegister(troopsSeparated);
+        assertEquals(1, world.getPlayerInfoByName("red").getTechLevel());
+        world.upgradePlayerTechLevelBy1("red");
+        assertEquals(2, world.getPlayerInfoByName("red").getTechLevel());
+    }
+
+    @Test
+    public void testUpgradeTechLevelNotEnoughResource() {
+        World world = createWorldAndRegister(troopsSeparated);
+        UpgradeTechOrder uTechOrder = new UpgradeTechOrder(5);
+        world.upgradePlayerTechLevelBy(uTechOrder, "red");
+        assertThrows(IllegalAccessException.class,
+                    () -> world.getPlayerInfoByName("red").getTechLevel());
+    }
+
+    @Test
     public void testDoAllBattles() {
         World world = createWorld(troopsSeparated);
         world.doAllBattles();
@@ -567,7 +584,7 @@ public class WorldTest {
     }
 
     @Test
-    public void testToString_same() {
+    public void testToString_same_world_and_troop() {
         World world1 = createWorld(troopsConnected);
         World world2 = createWorld(troopsConnected);
         assertNotEquals(world1.toString(), world2.toString());        
