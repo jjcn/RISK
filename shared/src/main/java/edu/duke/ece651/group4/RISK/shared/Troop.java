@@ -59,7 +59,15 @@ public class Troop implements Serializable {
     }
 
     public Troop(HashMap<String, Integer> myDict, Player owner) {
-        this.population = null;
+        this.population = new ArrayList<>();
+        for(String s:myDict.keySet()) {
+
+            for (int i = 0; i < myDict.get(s); i++) {
+                Soldier sol = new Soldier();
+                sol.setJob(s);
+                this.population.add(sol);
+            }
+        }
         this.owner = new TextPlayer(owner.getName());
         this.dict = myDict;
     }
@@ -122,17 +130,18 @@ public class Troop implements Serializable {
      * send a unit from troop
      */
     public Unit dispatchCertainUnit(String name) {
-        if (this.dict.get(name) == null) {
+        if (this.dict.get(name) == null||this.dict.get(name) == 0) {
             throw new IllegalArgumentException("No enough Unit at this level");
         }
         for (Unit u : this.population) {
-            if (u.getJobName() == name) {
+            if (u.getJobName().equals(name) ) {
                 this.dict.put(name, this.dict.get(name) - 1);
                 Unit target = u;
                 this.population.remove(u);
                 return target;
             }
         }
+
 
         return null;
     }
@@ -178,18 +187,32 @@ public class Troop implements Serializable {
         ArrayList<Unit> sub = new ArrayList<>();
         HashMap<String, Integer> subDict = target.getDict();
 
-        if (!this.checkSend(target)) {
-            throw new IllegalArgumentException("Target sending troop has invalid size");
-        }
+//        if (!this.checkSend(target)) {
+//            throw new IllegalArgumentException("Target sending troop has invalid size");
+//        }
 
         for (String s : subDict.keySet()) {
             int num = subDict.get(s);
             for (int i = 0; i < num; i++) {
-                sub.add(this.dispatchCertainUnit(s));
+//                try {
+                    Unit t=this.dispatchCertainUnit(s);
+//                    if(t==null){
+//                      throw new IllegalArgumentException("No enough Unit at this level " + s+"size "+this.population.size());
+//
+//                    }
+                    sub.add(t);
+//                }catch(Exception e){
+//                    throw new IllegalArgumentException("NULL at dispatch "+i);
+//                }
             }
         }
-
-        return new Troop(sub, subDict, this.owner);
+        Troop r=new Troop(sub, subDict, this.owner);
+//        for(Unit c:sub){
+//            if(c==null){
+//                throw new IllegalArgumentException("NULL happen when depart");
+//            }
+//        }
+        return r;
     }
 
     /**
@@ -205,8 +228,17 @@ public class Troop implements Serializable {
     public void receiveTroop(Troop subTroop) {
         while (subTroop.checkTroopSize() != 0) {
             Unit newMember = subTroop.dispatchUnit();
+//            try{
             this.receiveUnit(newMember);
+//            }catch(Exception e){
+//                throw new IllegalArgumentException("NULL at receive  "+subTroop.checkTroopSize());
+//            }
+//            try{
             subTroop.loseUnit(newMember);
+//            }catch(Exception e){
+//                throw new IllegalArgumentException("NULL at receive  "+subTroop.checkTroopSize());
+//            }
+
         }
     }
 
