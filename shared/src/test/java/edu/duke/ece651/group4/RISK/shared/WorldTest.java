@@ -409,9 +409,8 @@ public class WorldTest {
     public void testUpgradeTechLevelNotEnoughResource() {
         World world = createWorldAndRegister(troopsSeparated);
         UpgradeTechOrder uTechOrder = new UpgradeTechOrder(5);
-        world.upgradePlayerTechLevelBy(uTechOrder, "red");
         assertThrows(IllegalAccessException.class,
-                    () -> world.getPlayerInfoByName("red").getTechLevel());
+                    () -> world.upgradePlayerTechLevelBy(uTechOrder, "red"));
     }
 
     @Test

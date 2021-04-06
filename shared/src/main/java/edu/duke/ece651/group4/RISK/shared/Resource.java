@@ -62,7 +62,8 @@ public class Resource implements Serializable {
     public void consume(int consumption) {
         checkNonNegative(consumption);
         if (quantity - consumption < 0) {
-            throw new IllegalArgumentException(NEG_AFTER_CONSUME_MSG);
+            throw new IllegalArgumentException(
+                String.format(NEG_AFTER_CONSUME_MSG, name));
         } 
         quantity -= consumption;
     }
