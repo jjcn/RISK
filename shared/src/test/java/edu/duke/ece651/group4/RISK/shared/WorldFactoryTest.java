@@ -5,12 +5,32 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class WorldFactoryTest {
-    WorldFactory wf = new WorldFactory();
-
-    public List<Integer> calcAttributeSums(World world, String playerName) {
+	protected String arr[] = {"Alice", "Bob", "Cody", "Don", "Eve", 
+                            "Frank", "Gene", "Harry", "Ivan", "Jack",
+                            "Kelvin", "Lynn", "O", "Paul", "Quin",
+                            "R", "Starr", "T", "U", "V",
+                            "W", "X", "Y", "Z"};
+	protected List<String> names = Arrays.asList(arr);
+	
+    /**
+     * Creates a list with N player names.
+     * @param nPlayer is the number of player names.
+     * @return a list of player names.
+     */ 
+	protected List<String> createPlayerNames(int nPlayer) {
+		return names.subList(0, nPlayer);
+	}
+	
+	@Test
+	public void testCreatePlayerNames() {
+		assertEquals(3, createPlayerNames(3).size());
+	}
+	
+    protected List<Integer> calcAttributeSums(World world, String playerName) {
     	List<Integer> ans = new ArrayList<>();
     	int sumArea = 0;
         int sumFoodSpeed = 0;
@@ -26,59 +46,78 @@ public class WorldFactoryTest {
         return ans;
     }
     
-    @Test
-    public void testCreation() {
-        World world6 = wf.create6TerritoryWorld();
-        List<String> playerNames = new ArrayList<>();
-        playerNames.add("Alice");
-        playerNames.add("Bob");
-        wf.assignTerritories(world6, playerNames);
-        
-        assertEquals(2, world6.playerInfos.size());
-        
-        List<Integer> attributeSumsAlice = calcAttributeSums(world6, "Alice");
-        List<Integer> attributeSumsBob = calcAttributeSums(world6, "Bob");
-        assertEquals(attributeSumsAlice, attributeSumsBob);
-        
-        // visual display
-        System.out.println(world6.getPlayerInfoByName("Alice").toString());
-        System.out.println(world6.getPlayerInfoByName("Bob").toString());
-        
-        // visual display
-        for (Territory terr : world6.getAllTerritories()) {
-        	StringBuilder ans = new StringBuilder();
-        	ans.append(terr.getName() + ": "+ terr.getOwner().getName() + ", ");
-        	ans.append("area: " + terr.getArea() + ", ");
-        	ans.append("food speed: " + terr.getFoodSpeed() + ", ");
-        	ans.append("tech speed: " + terr.getTechSpeed() + ", ");
-        	System.out.println(ans.toString());
-        }
-        
-        
+    protected void assertEqualAttributeSums(World world, String p1Name, String p2Name) {
+        List<Integer> attributeSums1 = calcAttributeSums(world, p1Name);
+        List<Integer> attributeSums2 = calcAttributeSums(world, p2Name);
+        assertEquals(attributeSums1, attributeSums2);
     }
 
-    @Test
-    public void test_setupGame(){
-        int maxNumUsers = 2;
-        World theWorld = null;
+    protected World setupWorld(List<String> playerNames){
+        World world = null;
         WorldFactory factory = new WorldFactory();
-        switch(maxNumUsers){
+        switch(playerNames.size()){
             case 2:
+            	world = factory.create4TerritoryWorld();
+                break;
             case 3:
-                theWorld = factory.create6TerritoryWorld();
+            	world = factory.create6TerritoryWorld();
                 break;
             case 4:
-                theWorld = factory.create8TerritoryWorld();
+            	world = factory.create8TerritoryWorld();
                 break;
             case 5:
-                theWorld = factory.create10TerritoryWorld();
+            	world = factory.create10TerritoryWorld();
                 break;
             default:
                 break;
         }
-        ArrayList<String> usernames = new ArrayList<String>();
-        usernames.add("1");
-        usernames.add("2");
-        factory.assignTerritories(theWorld, usernames);
+        factory.assignTerritories(world, playerNames);
+        return world;
+    }
+    
+    /**
+     * World creation test helper:
+     * Creates a world that is has the size:
+     * 2 players -> 4 territories
+     * 3 players -> 6 territories
+     * 4 players -> 8 territories
+     * 5 players -> 10 territories
+     * And assign players a group of territories randomly 
+     * @param nPlayer is the number of players
+     */
+    protected void testCreationByNumPlayer(int nPlayer) {
+    	List<String> playerNames = createPlayerNames(nPlayer);
+    	World world = setupWorld(playerNames);
+    	// test number of player infos registered
+    	assertEquals(nPlayer, world.playerInfos.size());
+    	// test number of territories
+    	switch(nPlayer){
+        case 2:
+        	assertEquals(4, world.size());
+            break;
+        case 3:
+        	assertEquals(6, world.size());
+            break;
+        case 4:
+        	assertEquals(8, world.size());
+            break;
+        case 5:
+        	assertEquals(10, world.size());
+            break;
+        default:
+            break;
+    	}
+    	// test each player's territories has the same sum of each attribute
+    	for (int i = 0; i < nPlayer; i++) {
+    		assertEqualAttributeSums(world, playerNames.get(0), playerNames.get(i));
+    	}
+    }
+    
+    @Test
+    public void testCreateNPlayerWorld() {
+    	testCreationByNumPlayer(2);
+    	testCreationByNumPlayer(3);
+    	testCreationByNumPlayer(4);
+    	testCreationByNumPlayer(5);
     }
 }

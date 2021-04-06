@@ -118,7 +118,11 @@ public class PlayerInfoTest {
 		assertFalse(pInfo == clonePInfo);
 		assertEquals(pInfo, clonePInfo);
 		assertEquals(pInfo.playerName, clonePInfo.playerName);
-		assertEquals(pInfo.minTechLevel, pInfo.minTechLevel);
+		assertEquals(pInfo.techLevel, clonePInfo.techLevel);
+		assertEquals(pInfo.MIN_TECH_LEVEL, clonePInfo.MIN_TECH_LEVEL);
+		assertEquals(pInfo.MAX_TECH_LEVEL, clonePInfo.MAX_TECH_LEVEL);
+		assertEquals(pInfo.foodResource, clonePInfo.foodResource);
+		assertEquals(pInfo.techResource, clonePInfo.techResource);
 	}
 
 	@Test

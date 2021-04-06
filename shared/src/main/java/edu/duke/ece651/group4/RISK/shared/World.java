@@ -179,6 +179,14 @@ public class World implements Serializable {
     }
 
     /**
+     * Get the total number of players registered in the world.
+     * @return total number of players.
+     */
+    public int getNumPlayers() {
+        return playerInfos.size();
+    }
+
+    /**
      * Get all the territories in the world.
      * 
      * @return a list of all territories in the world.
@@ -351,7 +359,7 @@ public class World implements Serializable {
      */
     public void stationTroop(String terrName, Troop troop) {
         Territory terr = findTerritory(terrName);
-        terr.initializeTerritory(troop.checkTroopSize(), troop.getOwner());
+        terr.setOwnerTroop(troop.checkTroopSize(), troop.getOwner());
     }
 
     /**
@@ -362,7 +370,7 @@ public class World implements Serializable {
      */
     public void stationTroop(String terrName, int population) {
         Territory terr = findTerritory(terrName);
-        terr.initializeTerritory(population, terr.getOwner());
+        terr.setOwnerTroop(population, terr.getOwner());
     }
 
     /**
@@ -598,6 +606,20 @@ public class World implements Serializable {
     }
 
     /**
+     * Requirement: At the end of turn, all players gain resources from the
+     * territories he owns.
+     */
+    public void allPlayersGainResources() {
+        for (PlayerInfo pInfo : playerInfos.values()) {
+            String playerName = pInfo.getName();
+            for (Territory terr : getTerritoriesOfPlayer(playerName)) {
+                pInfo.gainFood(terr.getFoodSpeed());
+                pInfo.gainTech(terr.getTechSpeed());
+            }
+        }
+    }
+
+    /**
      * Add unit to all territories.
      * 
      * Requirement: At the end of every turn, add a level 0 unit to every territory.
@@ -613,23 +635,11 @@ public class World implements Serializable {
         }
     }
 
-    /**
-     * Requirement: At the end of turn, all players gain resources from the
-     * territories he owns.
-     */
-    public void allPlayersGainResources() {
-        for (PlayerInfo pInfo : playerInfos.values()) {
-            String playerName = pInfo.getName();
-            for (Territory terr : getTerritoriesOfPlayer(playerName)) {
-                pInfo.gainFood(terr.getFoodSpeed());
-                pInfo.gainTech(terr.getTechSpeed());
-            }
-        }
-    }
 
     /**
-     * Add level 0 unit to a territory.
-     * 
+     * Add level 0 units to a territory.
+     * @param playerName is the name of the player who commits this action.
+     * @param terrName is the name of the territory.
      * @param num is the number of level 0 units added to this territory.
      */
     public void addUnitToATerritory(String playerName, String terrName, int num) {
@@ -773,6 +783,9 @@ public class World implements Serializable {
         }
     }
 
+    /**
+     * Calls Territory & PlayerInfo toString function
+     */
     @Override
     public String toString() {
         StringBuilder ans = new StringBuilder();

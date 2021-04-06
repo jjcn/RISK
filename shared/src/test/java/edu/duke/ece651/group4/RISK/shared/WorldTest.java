@@ -149,12 +149,26 @@ public class WorldTest {
     }
 
     @Test
+    public void testGetNumPlayers() {
+        World world = new World();
+        assertEquals(0, world.getNumPlayers());
+        world.registerPlayer("red");
+        assertEquals(1, world.getNumPlayers());
+    }
+
+    @Test
     public void testSetRandom() {
         World world = createWorldSimple();
         Random seed = new Random(0);
 
         world.setRandom("1", seed);
         world.setRandom(new Territory("2"), seed);
+    }
+
+    @Test
+    public void testGetReport() {
+        World world = new World();
+        assertEquals("", world.getReport());
     }
 
     @Test
@@ -204,6 +218,26 @@ public class WorldTest {
         assertFalse(world.checkIfAdjacent("2", "3"));
         assertFalse(world.checkIfAdjacent("2", "4"));
         assertTrue(world.checkIfAdjacent("3", "4"));
+    }
+
+    @Test
+    public void testRegisterPlayer() {
+        World world = new World();
+        world.registerPlayer(redInfo);
+        assertNotNull(world.getPlayerInfoByName("red"));
+        PlayerInfo pInfo = world.getPlayerInfoByName("red");
+        assertEquals("red", pInfo.getName());
+        assertEquals(100, pInfo.getFoodQuantity());
+        assertEquals(100, pInfo.getTechQuantity());
+    }
+
+    @Test
+    public void testGetPlayerInfoByName() {
+        World world = new World();
+        world.registerPlayer(redInfo);
+        assertNotNull(world.getPlayerInfoByName("red"));
+        assertThrows(IllegalArgumentException.class,
+                    () -> world.getPlayerInfoByName("blue"));
     }
 
     @Test
@@ -364,6 +398,22 @@ public class WorldTest {
     } 
 
     @Test
+    public void testUpgradeTechLevelValid() {
+        World world = createWorldAndRegister(troopsSeparated);
+        assertEquals(1, world.getPlayerInfoByName("red").getTechLevel());
+        world.upgradePlayerTechLevelBy1("red");
+        assertEquals(2, world.getPlayerInfoByName("red").getTechLevel());
+    }
+
+    @Test
+    public void testUpgradeTechLevelNotEnoughResource() {
+        World world = createWorldAndRegister(troopsSeparated);
+        UpgradeTechOrder uTechOrder = new UpgradeTechOrder(5);
+        assertThrows(IllegalArgumentException.class,
+                    () -> world.upgradePlayerTechLevelBy(uTechOrder, "red"));
+    }
+
+    @Test
     public void testDoAllBattles() {
         World world = createWorld(troopsSeparated);
         world.doAllBattles();
@@ -410,7 +460,20 @@ public class WorldTest {
     	redList.add(new Territory("Gondor"));
     	redList.add(new Territory("Mordor"));
     	redList.add(new Territory("Hogwarts"));
-    	assertEquals(redList, world.getTerritoriesOfPlayer(red));
+    	assertEquals(redList, world.getTerritoriesOfPlayer("red"));
+    }
+
+    @Test
+    public void testGetTerritoriesNotOfPlayer() {
+    	World world = createWorld(troopsConnected);
+    	
+    	List<Territory> redList = new ArrayList<>();
+        String NotRednames[] =
+        "Narnia, Midkemia, Oz, Scadrial, Elantris, Roshar".split(", ");
+        for (String name : NotRednames) {
+            redList.add(new Territory(name));
+        }
+    	assertEquals(redList, world.getTerritoriesNotOfPlayer("red"));
     }
 
     @Test
@@ -474,6 +537,59 @@ public class WorldTest {
                     
     }
 
+    /**
+     * initialize attributes of territory:
+     * 1. area
+     * 2. food speed
+     * 3. tech speed
+     * 4. owner
+     */
+    protected void initTerrAttributes(
+                World world, String terrName,
+                int area, int foodYield, int techYield, 
+                String playerName) {
+        world.findTerritory(terrName).setArea(area);
+        world.findTerritory(terrName).setFoodSpeed(foodYield);
+        world.findTerritory(terrName).setTechSpeed(techYield);
+        world.findTerritory(terrName).setOwnerTroop(0, new TextPlayer(playerName));
+    }
+
+    @Test
+    public void testAllPlayersGainResources() {
+        World world = createWorldSimple();
+        // initialize resource attributes and owners
+        initTerrAttributes(world, "1", 0, 1, 1, "p1"); 
+        initTerrAttributes(world, "2", 0, 2, 2, "p2"); 
+        // register player infos
+        PlayerInfo p1 = new PlayerInfo("p1", 0, 0);
+        PlayerInfo p2 = new PlayerInfo("p2", 0, 0);
+        world.registerPlayer(p1);
+        world.registerPlayer(p2);
+        // all players gain resource from their territories
+        world.allPlayersGainResources();
+
+        PlayerInfo p1AfterGain = world.getPlayerInfoByName("p1");
+        PlayerInfo p2AfterGain = world.getPlayerInfoByName("p2");
+        assertEquals(1, p1AfterGain.getFoodQuantity());
+        assertEquals(1, p1AfterGain.getTechQuantity());
+        assertEquals(2, p2AfterGain.getFoodQuantity());
+        assertEquals(2, p2AfterGain.getTechQuantity());
+    }
+
+    @Test
+    public void testAddUnitToATerritory() {
+        World world = createWorldSimple();
+        // initialize resource attributes and owners
+        initTerrAttributes(world, "1", 0, 1, 1, "p1"); 
+        initTerrAttributes(world, "2", 0, 2, 2, "p2"); 
+
+        assertEquals(0, world.findTerritory("1").checkPopulation());
+        world.addUnitToATerritory("p1", "1", 1);
+        assertEquals(1, world.findTerritory("1").checkPopulation());
+        assertThrows(IllegalArgumentException.class, 
+                    () -> world.addUnitToATerritory("p1", "2", 1));
+    }
+
     @Test
     public void testCheckLost() {
         World world1 = createWorld(troopsConnected);
@@ -520,10 +636,29 @@ public class WorldTest {
     }
 
     @Test
-    public void testToString() {
+    public void testToString_same_world_and_troop() {
+        World world1 = createWorld(troopsConnected);
+        World world2 = createWorld(troopsConnected);
+        assertNotEquals(world1.toString(), world2.toString());        
+    }
+
+    @Test
+    public void testToString_different_troops() {
         World world1 = createWorld(troopsConnected);
         World world2 = createWorld(troopsSamePlayer);
-        assertNotEquals(world1.toString(), world2.toString());
+        assertNotEquals(world1.toString(), world2.toString());        
+    }
+
+    @Test
+    public void testToString_different_players() {
+        World world1 = createWorld();
+        world1.registerPlayer("red");
+        world1.registerPlayer("blue");
+
+        World world2 = createWorld();
+        world2.registerPlayer("red");
+
+        assertNotEquals(world1.toString(), world2.toString());        
     }
 
     @Test
