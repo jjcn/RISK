@@ -55,13 +55,18 @@ public class TurnActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_turn);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
         actionType = UI_MOVE; // default: move
         isWatch = false;
         waitDG = new WaitDialog(TurnActivity.this);
+        Log.i(TAG,LOG_CREATE_SUCCESS+"start0");
         impUI();
+        Log.i(TAG,LOG_CREATE_SUCCESS+"start2");
         updateAfterTurn();
+        Log.i(TAG,LOG_CREATE_SUCCESS+"end");
     }
 
     /**
@@ -101,11 +106,17 @@ public class TurnActivity extends AppCompatActivity {
         userInfoTV = findViewById(R.id.playerInfo);
         noticeInfoRC = findViewById(R.id.noticeInfo);
         mapIV = findViewById(R.id.world_image_view);
+
+        Log.i(TAG,LOG_CREATE_SUCCESS+"start1"+getCurrentRoomSize()+MAPS.get(getCurrentRoomSize()));
+        Log.i(TAG,LOG_CREATE_SUCCESS+"start1"+MAPS.get(1));
         mapIV.setImageResource(MAPS.get(getCurrentRoomSize()));
+
+        Log.i(TAG,LOG_CREATE_SUCCESS+"start1-2");
         impActionSpinner();
         impWorldInfoRC();
         impNoticeInfoRC();
         impCommitBT();
+        Log.i(TAG,LOG_CREATE_SUCCESS+"start1-3");
         userInfoTV.setText(getPlayerInfo());
     }
 
