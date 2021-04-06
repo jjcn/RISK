@@ -33,17 +33,18 @@ public class BasicOrderActivity extends AppCompatActivity {
     }
 
     private void impUI() {
-        List<Territory> terrChoices = getMyTerritory();
+        List<Territory> myTerrs = getMyTerritory();
+
         Spinner srcChoices = findViewById(R.id.terrSrc);
-        SpinnerAdapter srcAdapter = new ArrayAdapter<>(BasicOrderActivity.this, R.layout.item_choice, terrChoices);
+        SpinnerAdapter srcAdapter = new ArrayAdapter<>(BasicOrderActivity.this, R.layout.item_choice, myTerrs);
         srcChoices.setAdapter(srcAdapter);
 
         Spinner desChoices = findViewById(R.id.terrDes);
-        SpinnerAdapter desAdapter = new ArrayAdapter<>(BasicOrderActivity.this, R.layout.item_choice, terrChoices);
+        SpinnerAdapter desAdapter = new ArrayAdapter<>(BasicOrderActivity.this, R.layout.item_choice, myTerrs);
         desChoices.setAdapter(desAdapter);
 
         Spinner typeChoices = findViewById(R.id.soldierType);
-        SpinnerAdapter typeAdapter = new ArrayAdapter<>(BasicOrderActivity.this, R.layout.item_choice, terrChoices);
+        SpinnerAdapter typeAdapter = new ArrayAdapter<>(BasicOrderActivity.this, R.layout.item_choice, myTerrs);
         typeChoices.setAdapter(typeAdapter);
 
         Button commitBT = findViewById(R.id.commit_button);

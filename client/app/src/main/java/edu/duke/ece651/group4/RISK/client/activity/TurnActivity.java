@@ -145,13 +145,8 @@ public class TurnActivity extends AppCompatActivity {
                 // nothing yet
             }
         });
-            /*
-            chooseActionSP.setOnItemClickListener((parent, view, position, id) -> {
-                actionType = actionAdapter.getItem(position);
-                impCommit();
-            });
-            */
     }
+
     private void impCommit() {
         // commitBT.setClickable(false);
         Intent intent = new Intent();
@@ -160,12 +155,14 @@ public class TurnActivity extends AppCompatActivity {
             case UI_ATK:
                 intent.setComponent(new ComponentName(TurnActivity.this, BasicOrderActivity.class));
                 intent.putExtra("actionType", actionType);
+                startActivity(intent);
                 break;
             case UI_UPTROOP:
                 intent.setComponent(new ComponentName(TurnActivity.this, UpgradeActivity.class));
                 break;
             case UI_UPTECH:
                 upgradeTech();
+                break;
             case UI_DONE:
                 if (isWatch) {
                     showStayDialog();
