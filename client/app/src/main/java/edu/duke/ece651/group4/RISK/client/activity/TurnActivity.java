@@ -164,6 +164,7 @@ public class TurnActivity extends AppCompatActivity {
                 break;
             case UI_UPTROOP:
                 intent.setComponent(new ComponentName(TurnActivity.this, UpgradeActivity.class));
+                startActivity(intent);
                 break;
             case UI_UPTECH:
                 upgradeTech();
