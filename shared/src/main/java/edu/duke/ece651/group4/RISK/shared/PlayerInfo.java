@@ -19,8 +19,8 @@ public class PlayerInfo implements Serializable {
     /**
      * Tech level constraints
      */
-    protected final int minTechLevel; // minimum tech level
-    protected final int maxTechLevel; // max tech level a player can reach
+    protected final int MIN_TECH_LEVEL; // minimum tech level
+    protected final int MAX_TECH_LEVEL; // max tech level a player can reach
 
     /**
      * Cumulative costs of upgrading from tech level 1 to N.
@@ -50,8 +50,8 @@ public class PlayerInfo implements Serializable {
             FoodResource foodResource, TechResource techResource) {
         this.playerName = playerName;
         this.techLevel = techLevel;
-        this.minTechLevel = minTechLevel;
-        this.maxTechLevel = maxTechLevel;
+        this.MIN_TECH_LEVEL = minTechLevel;
+        this.MAX_TECH_LEVEL = maxTechLevel;
         this.foodResource = foodResource;
         this.techResource = techResource;
     }
@@ -85,7 +85,7 @@ public class PlayerInfo implements Serializable {
 
     public PlayerInfo clone() {
         return new PlayerInfo(playerName, techLevel, 
-                            minTechLevel, maxTechLevel, 
+                            MIN_TECH_LEVEL, MAX_TECH_LEVEL, 
                             new FoodResource(foodResource.getQuantity()), 
                             new TechResource(techResource.getQuantity()));
     }
@@ -162,11 +162,11 @@ public class PlayerInfo implements Serializable {
         int techLevelAfterMod = techLevel + i;
         String explanation_msg = String.format(TECHLEVEL_INVALID_MODIFY_MSG, 
                                             playerName, i, techLevelAfterMod); 
-        if (techLevelAfterMod < minTechLevel) {
+        if (techLevelAfterMod < MIN_TECH_LEVEL) {
             String underflow_msg = "which is below the minimum tech level a player can have.";
             throw new IllegalArgumentException(explanation_msg + underflow_msg);
         }
-        else if(techLevelAfterMod > maxTechLevel) {
+        else if(techLevelAfterMod > MAX_TECH_LEVEL) {
             String overflow_msg = "which is beyond the maximum tech level a player can have.";
             throw new IllegalArgumentException(explanation_msg + overflow_msg);
         } else {
@@ -206,5 +206,16 @@ public class PlayerInfo implements Serializable {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder ans = new StringBuilder();
+        ans.append(String.format("%s's player info:\n", playerName));
+        ans.append(String.format("current tech level: %d, ", techLevel));
+        ans.append(String.format("max tech level: %d\n", MAX_TECH_LEVEL));
+        ans.append(foodResource.toString() + "\n");
+        ans.append(techResource.toString() + "\n");
+        return ans.toString();
     }
 }

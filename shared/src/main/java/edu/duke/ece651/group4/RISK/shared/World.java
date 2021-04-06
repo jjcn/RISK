@@ -179,6 +179,14 @@ public class World implements Serializable {
     }
 
     /**
+     * Get the total number of players registered in the world.
+     * @return total number of players.
+     */
+    public int getNumPlayers() {
+        return playerInfos.size();
+    }
+
+    /**
      * Get all the territories in the world.
      * 
      * @return a list of all territories in the world.
