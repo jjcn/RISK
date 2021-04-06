@@ -36,6 +36,7 @@ public class GameRunner extends Thread{
     protected void notifyAllUsers(){
         synchronized(game){
             while(!game.gameState.isAllPlayersWaiting()){}
+
             game.notifyAll(); // notify all players to start send world and do placement
         }
     }

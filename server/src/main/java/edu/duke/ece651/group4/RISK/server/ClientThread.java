@@ -287,6 +287,8 @@ public class ClientThread extends Thread {
         doActionPhaseOneTurn();
         out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " wait for runner update the world");
         while(!gameOnGoing.gameState.isDoneUpdateGame()){}
+        out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " knows world is updated");
+
         waitNotifyFromRunner();
         updatePlayerStateOneTurn();
     }
