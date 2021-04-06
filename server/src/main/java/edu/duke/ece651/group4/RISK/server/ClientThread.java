@@ -267,6 +267,7 @@ public class ClientThread extends Thread {
         // wait all players to finish placeUnits
         gameOnGoing.barrierWait();
         gameOnGoing.gameState.setDonePlaceUnits(); // if user joins back, he does not need to do place unit phase
+
     }
 
 
@@ -280,6 +281,7 @@ public class ClientThread extends Thread {
      * Run Game for one turn
      * */
     protected void tryRunGameOneTurn() {
+        out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " action phase");
         if(gameOnGoing == null){
             return;
         }
