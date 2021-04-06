@@ -147,7 +147,6 @@ public class RoomActivity extends AppCompatActivity {
     private void impCreateBT() {
         createBT.setOnClickListener(v -> {
             createBT.setClickable(false);
-            // TODO: choose number dialog
             chooseNumUser();
             // int numUser = TEST_NUM_USER;
             Log.i(TAG, LOG_FUNC_RUN + "before create game.");
@@ -155,13 +154,11 @@ public class RoomActivity extends AppCompatActivity {
     }
 
     private void chooseNumUser() {
-        Log.i(TAG, LOG_FUNC_RUN + "imp chooseNumUser");
         AlertDialog.Builder builder = new AlertDialog.Builder(RoomActivity.this);
         builder.setTitle(CHOOSE_MAP);
         final String[] numbers = new String[]{"2", "3", "4", "5"};
         builder.setItems(numbers, (dialog, which) -> {
             numUser = Integer.parseInt(numbers[which]);
-            Log.i(TAG, LOG_FUNC_RUN + "from" + numbers[which] + "to " + numUser);
             create();
         });
         builder.show();

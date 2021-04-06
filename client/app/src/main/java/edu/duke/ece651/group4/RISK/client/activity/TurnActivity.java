@@ -155,6 +155,7 @@ public class TurnActivity extends AppCompatActivity {
                         startActivity(intent);
                         break;
                     case UI_UPTECH:
+                        // showConfirmDialog();
                         upgradeTech();
                         break;
                     case UI_DONE:
@@ -163,6 +164,8 @@ public class TurnActivity extends AppCompatActivity {
                         }
                         waitNextTurn();
                         break;
+                    default:
+                        throw new IllegalStateException("Unexpected value: " + actionType);
                 }
                 commitBT.setClickable(true);
             }

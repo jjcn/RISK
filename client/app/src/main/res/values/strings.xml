@@ -17,7 +17,7 @@
     <string name="FRESHROOM">fresh</string>
     <string name="WAIT">Waiting for other players</string>
     <string name="INITPLACE">"Please input number of soldiers you want to place in each territory: "</string>
-    <string name="PLACE_INSTRU">You want to place in</string>
+    <string name="PLACE_INSTRU">You want to place in territory </string>
     <string name="CHOOSE_INSTRU">"Please input the number you want: "</string>
     <string name="INPUT_NUM_INSTRU">"Please input the number "</string>
     <string name="SWITCH_OUT">SWITCH</string>
