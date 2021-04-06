@@ -58,7 +58,9 @@ public class GameRunner extends Thread{
             game.gameState.setActivePlayersStateToUpdating();
             out.println("Game runner set all active players updating state");
             notifyAllUsers(); // notify all players to enter updating state
+            out.println("Game runner notifies all players");
             while(!game.gameState.isAllPlayersDoneUpdatingState()){} // wait until all players finish updating their state
+            out.println("Game runner knows all players are done updating");
             if(game.isEndGame() || game.gameState.isAllPlayersSwitchOut()){
                 game.gameState.setGameDead();
                 out.println("Game runner ends, set this game dead");

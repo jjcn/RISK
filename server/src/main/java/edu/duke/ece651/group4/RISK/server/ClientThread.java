@@ -62,7 +62,6 @@ public class ClientThread extends Thread {
             String action = logMessage.getAction();
 
             if(action.equals(LOG_SIGNIN) ){
-
                 String resIn = tryLogIn(logMessage.getUsername(), logMessage.getPassword());
                 this.theClient.sendObject(resIn);
                 if(resIn == null){
@@ -330,6 +329,10 @@ public class ClientThread extends Thread {
         else if(gameOnGoing.isUserLose(ownerUser)){
             out.println("Game" + gameOnGoing.getGameID() + ": Checking Phase :  " + ownerUser.getUsername() + " loses");
             gameOnGoing.gameState.changAPlayerStateTo(ownerUser, PLAYER_STATE_LOSE);
+        }
+        else if(gameOnGoing.isEndGame()){
+            out.println("Game" + gameOnGoing.getGameID() + ": Checking Phase :  game END!!!! and winner is " + gameOnGoing.getTheWorld().getWinner() );
+            gameOnGoing = null;
         }
         else{
             out.println("Game" + gameOnGoing.getGameID() + ": Checking Phase :  " + ownerUser.getUsername() + " go back to do action");

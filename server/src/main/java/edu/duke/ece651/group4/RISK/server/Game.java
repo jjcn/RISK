@@ -153,9 +153,7 @@ public class Game {
     public boolean isAllPlayersSwitchOut(){
         return gameState.isAllPlayersSwitchOut();
     }
-    synchronized protected void doDoneActionFor(User u){
-        this.gameState.changAPlayerStateTo(u, PLAYER_STATE_END_ONE_TURN);
-    }
+
 
 
     /*
@@ -176,7 +174,9 @@ public class Game {
         theWorld.upgradeTroop(upgradeOrder, userName);
 
     }
-
+    synchronized protected void doDoneActionFor(User u){
+        this.gameState.changAPlayerStateTo(u, PLAYER_STATE_END_ONE_TURN);
+    }
     synchronized protected void upgradeTechOnWorld(String userName){
         theWorld.upgradePlayerTechLevelBy1(userName);
     }
