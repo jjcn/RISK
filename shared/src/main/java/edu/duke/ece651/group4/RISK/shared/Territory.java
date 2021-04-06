@@ -151,7 +151,7 @@ public class Territory implements Serializable {
      * @param subTroop shows the number of unit send out from territory
      */
     public Troop sendOutTroop(Troop subTroop) {
-        return this.ownerTroop.sendTroop(subTroop.checkTroopSize());
+        return this.ownerTroop.sendTroop(subTroop);
     }
 
     /**
