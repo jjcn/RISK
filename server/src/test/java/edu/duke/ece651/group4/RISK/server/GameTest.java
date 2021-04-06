@@ -97,7 +97,6 @@ class GameTest {
         String strFromServer = (String) clientSocket.recvObject();
         assertEquals(strFromServer, "Copy that, this is server");
         clientSocket.sendObject(w);
-
         clientSocket.close();
     }
 }
