@@ -272,10 +272,24 @@ public class WorldTest {
 
     @Test
     public void testMoveTroopValid() {
-        World world = createWorldAndRegister(troopsSeparated);
-        // Valid
-        MoveOrder move1 = new MoveOrder("Gondor", "Mordor", new Troop(1, red), 'm');
+        World world = createWorldAndRegister(troopsConnected);
+
+        MoveOrder move1 = new MoveOrder("Gondor", "Hogwarts",
+                new Troop(2, red), 'M');
         assertDoesNotThrow(() -> world.moveTroop(move1, "red"));
+        assertEquals(13 - 2, world.findTerritory("Gondor").checkPopulation());
+        assertEquals(3 + 2, world.findTerritory("Hogwarts").checkPopulation());
+        assertEquals(100 - 2 * (13 + 14 + 3),
+                world.getPlayerInfoByName("red").getFoodQuantity());
+
+        // choose the shortest path
+        MoveOrder move2 = new MoveOrder("Roshar", "Scadrial",
+                new Troop(2, blue), 'M');
+        assertDoesNotThrow(() -> world.moveTroop(move2, "blue"));
+        assertEquals(3 - 2, world.findTerritory("Roshar").checkPopulation());
+        assertEquals(5 + 2, world.findTerritory("Scadrial").checkPopulation());
+        assertEquals(100 - 2 * (5 + 3),
+                world.getPlayerInfoByName("blue").getFoodQuantity());
     }
 
     @Test
@@ -347,11 +361,39 @@ public class WorldTest {
     }
 
     @Test
-    public void testAttackConsumption() {
+    public void testAttackConsumptionValid() {
         World world = createWorldAndRegister(troopsSeparated);
-        AttackOrder atkOrder1 = new AttackOrder("Narnia", "Elantris", new Troop(1, green), 'A');
+
+        AttackOrder atkOrder1 = new AttackOrder("Narnia", "Elantris",
+                new Troop(1, green), 'A');
         world.attackATerritory(atkOrder1, "green");
-        assertEquals(99, world.getPlayerInfoByName("green").getTechQuantity());
+        assertEquals(10 - 1, world.findTerritory("Narnia").checkPopulation());
+        /*for (PlayerInfo pInfo : world.playerInfos.values()) {
+            System.out.println(pInfo.toString());
+        }*/
+        assertEquals(100 - 1, world.getPlayerInfoByName("green").getFoodQuantity());
+
+        AttackOrder atkOrder2 = new AttackOrder("Oz", "Mordor",
+                new Troop(8, green), 'A');
+        world.attackATerritory(atkOrder2, "green");
+        assertEquals(8 - 8, world.findTerritory("Oz").checkPopulation());
+        /*for (PlayerInfo pInfo : world.playerInfos.values()) {
+            System.out.println(pInfo.toString());
+        }*/
+        assertEquals(100 - 1 - 8, world.getPlayerInfoByName("green").getFoodQuantity());
+    }
+
+    @Test
+    public void testAttackNotEnoughFood() {
+        World world = createWorldAndRegister(troopsSeparated);
+        world.getPlayerInfoByName("green").consumeFood(100); // now 0 food for green
+        assertEquals(0, world.getPlayerInfoByName("green").getFoodQuantity());
+
+        AttackOrder atkOrder1 = new AttackOrder("Narnia", "Elantris",
+                new Troop(1, green), 'A');
+        assertThrows(IllegalArgumentException.class,
+                () -> world.attackATerritory(atkOrder1, "green"));
+
     }
 
     @Test
