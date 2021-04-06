@@ -340,7 +340,9 @@ public class ClientThread extends Thread {
         try {
             synchronized (gameOnGoing){
                 out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " wait for runner's notify");
+                gameOnGoing.gameState.askUserWaiting(ownerUser);
                 gameOnGoing.wait();
+                gameOnGoing.gameState.askUserDoneWaiting(ownerUser);
                 out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " get notify from runner");
             }
         } catch (InterruptedException e) {
