@@ -236,7 +236,8 @@ public class WorldTest {
         World world = new World();
         world.registerPlayer(redInfo);
         assertNotNull(world.getPlayerInfoByName("red"));
-        assertNull(world.getPlayerInfoByName("blue"));
+        assertThrows(IllegalArgumentException.class,
+                    () -> world.getPlayerInfoByName("blue"));
     }
 
     @Test
@@ -443,7 +444,20 @@ public class WorldTest {
     	redList.add(new Territory("Gondor"));
     	redList.add(new Territory("Mordor"));
     	redList.add(new Territory("Hogwarts"));
-    	assertEquals(redList, world.getTerritoriesOfPlayer(red));
+    	assertEquals(redList, world.getTerritoriesOfPlayer("red"));
+    }
+
+    @Test
+    public void testGetTerritoriesNotOfPlayer() {
+    	World world = createWorld(troopsConnected);
+    	
+    	List<Territory> redList = new ArrayList<>();
+        String NotRednames[] =
+        "Narnia, Midkemia, Oz, Scadrial, Elantris, Roshar".split(", ");
+        for (String name : NotRednames) {
+            redList.add(new Territory(name));
+        }
+    	assertEquals(redList, world.getTerritoriesNotOfPlayer("red"));
     }
 
     @Test
