@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import edu.duke.ece651.group4.RISK.client.R;
 import edu.duke.ece651.group4.RISK.client.adapter.RoomAdapter;
+import edu.duke.ece651.group4.RISK.client.listener.onJoinRoomListener;
 import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
 import edu.duke.ece651.group4.RISK.shared.RoomInfo;
 import edu.duke.ece651.group4.RISK.shared.World;
@@ -122,29 +123,29 @@ public class RoomActivity extends AppCompatActivity {
                                 }
                             },
 
-                            new onReceiveListener() { // wait for game starting
+                            new onJoinRoomListener() { // wait for game starting
                                 @Override
-                                public void onSuccess(Object o) {
+                                public void onJoinNew() {
                                     Log.i(TAG, LOG_FUNC_RUN + "try to receive world");
-                                    if (o instanceof World) {  // receive a world, start the game
-                                        runOnUiThread(() -> {
-                                            waitDG.cancel();
-                                            Intent gameIntent = new Intent(RoomActivity.this, PlaceActivity.class);
-                                            showByToast(RoomActivity.this, SUCCESS_START);
-                                            startActivity(gameIntent);
-                                            finish();
-                                        });
-                                    } else {
-                                        // showByToast(RoomActivity.this, result);
-                                        Log.e(TAG, LOG_FUNC_RUN + "not World type");
-                                        createBT.setClickable(true);
-                                        return;
-                                    }
+                                    // receive a world, start the game
+                                    runOnUiThread(() -> {
+                                        waitDG.cancel();
+                                        Intent gameIntent = new Intent(RoomActivity.this, PlaceActivity.class);
+                                        showByToast(RoomActivity.this, SUCCESS_START);
+                                        startActivity(gameIntent);
+                                        finish();
+                                    });
                                 }
 
                                 @Override
-                                public void onFailure(String errMsg) {
-                                    Log.e(TAG, "join room:receive world: " + errMsg);
+                                public void onBack() {
+                                    runOnUiThread(() -> {
+                                        waitDG.cancel();
+                                        Intent gameIntent = new Intent(RoomActivity.this, TurnActivity.class);
+                                        showByToast(RoomActivity.this, SUCCESS_START);
+                                        startActivity(gameIntent);
+                                        finish();
+                                    });
                                 }
                             });
                 }

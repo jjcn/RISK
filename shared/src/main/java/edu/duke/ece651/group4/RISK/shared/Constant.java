@@ -29,13 +29,6 @@ public class Constant {
     public static final String INVALID_SIGNUP = "This username is already used by others.";
 
 
-    // Action:
-    public static final String ACTION_MOVE = "ActionMove";
-    public static final String ACTION_DONE = "ActionDone";
-    public static final String ACTION_ATK = "ActionAttack";
-    public static final String ACTION_UPGRADE = "ActionUpgrade";
-    public static final String ACTION_EXIT =  "ActionSwitchOut";
-
     //Game:
     public static final String GAME_CREATE = "GameCreate";
     public static final String GAME_JOIN = "GameJoin";
