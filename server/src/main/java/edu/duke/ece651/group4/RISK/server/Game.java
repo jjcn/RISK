@@ -272,6 +272,7 @@ public class Game {
             case 1:
             case 2:
                 this.theWorld = factory.create4TerritoryWorld();
+                break;
             case 3:
                 this.theWorld = factory.create6TerritoryWorld();
                 break;
