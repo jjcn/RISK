@@ -23,7 +23,7 @@
             android:id="@+id/srcText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="World Map"
+            android:text="Send from:"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -42,7 +42,7 @@
             android:id="@+id/destText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="World Map"
+            android:text="Send to:"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -61,7 +61,7 @@
             android:id="@+id/desText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="World Map"
+            android:text="Which level of unit?"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -85,11 +85,10 @@
             android:id="@+id/numUnit"/>
 
     <Button
-            android:id="@+id/commit_button"
-            android:text="@string/COMMIT"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-    />
+        android:id="@+id/commit_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/COMMIT" />
 
 </LinearLayout>
