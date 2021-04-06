@@ -11,6 +11,8 @@ public class Constant {
     public static final String PLACEMENT_DONE = "All players have done their placements";
     public static final String WAIT = "Waiting for other players";
     public static final String TURN_END = "All players have commit their actions";
+    public static final String LOSE_MSG = "Sorry, you lose~";
+    public static final String STAY_INSTR = "Do you want to stay in this room?";
 
     public static final String UI_MOVE = "Move";
     public static final String UI_DONE = "Done";

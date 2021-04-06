@@ -1,6 +1,7 @@
 package edu.duke.ece651.group4.RISK.client.activity;
 
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
@@ -8,6 +9,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.recyclerview.widget.RecyclerView;
@@ -45,7 +47,7 @@ public class TurnActivity extends AppCompatActivity {
     private TextView userInfoTV;
 
     private String actionType;
-    private boolean isWatch = false; // turn to true after lose game.
+    private boolean isWatch; // turn to true after lose game.
     private WaitDialog waitDG;
 
     @Override
@@ -55,6 +57,7 @@ public class TurnActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         actionType = UI_MOVE; // default: move
+        isWatch = false;
         waitDG = new WaitDialog(TurnActivity.this);
         impUI();
     }
@@ -104,16 +107,15 @@ public class TurnActivity extends AppCompatActivity {
 
     private void impNoticeInfoRC() {
         List<String> worldInfo = getWorldInfo();
-        worldInfoAdapter = new ArrayAdapter<>(TurnActivity.this, R.layout.item_choice, worldInfo);
-        worldInfoRC.setAdapter(worldInfoAdapter);
+        noticesAdapter = new ArrayAdapter<>(TurnActivity.this, R.layout.item_choice, worldInfo);
+        noticeInfoRC.setAdapter(noticesAdapter);
     }
 
     private void impSwitchBT() {
-        switchBT.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent joinIntent = new Intent(TurnActivity.this,RoomActivity.class);
-            }
+        switchBT.setOnClickListener(v -> {
+            Intent joinIntent = new Intent(TurnActivity.this, RoomActivity.class);
+            startActivity(joinIntent);
+            finish();
         });
     }
 
@@ -121,12 +123,9 @@ public class TurnActivity extends AppCompatActivity {
         List<String> actions = new ArrayList<>(Arrays.asList(UI_MOVE, UI_ATK, UI_UPTECH, UI_UPTROOP, UI_DONE));
         actionAdapter = new ArrayAdapter<>(TurnActivity.this, R.layout.item_choice, actions);
         chooseActionSP.setAdapter(actionAdapter);
-        chooseActionSP.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                actionType = actionAdapter.getItem(position);
-                impCommit();
-            }
+        chooseActionSP.setOnItemClickListener((parent, view, position, id) -> {
+            actionType = actionAdapter.getItem(position);
+            impCommit();
         });
     }
 
@@ -145,8 +144,25 @@ public class TurnActivity extends AppCompatActivity {
             case UI_UPTECH:
                 upgradeTech();
             case UI_DONE:
+                if (isWatch) {
+                    showStayDialog();
+                }
                 waitNextTurn();
         }
+    }
+
+    private void showStayDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(TurnActivity.this);
+        builder.setTitle(LOSE_MSG);
+        builder.setMessage(STAY_INSTR);
+        builder.setPositiveButton("Yes", (dialog, which) -> {
+            waitNextTurn();
+        });
+        builder.setNegativeButton("No", (dialog, which) -> {
+            Intent joinGame = new Intent(TurnActivity.this, RoomActivity.class);
+            startActivity(joinGame);
+            finish();
+        });
     }
 
     private void upgradeTech() {
@@ -170,10 +186,26 @@ public class TurnActivity extends AppCompatActivity {
             @Override
             public void onSuccess(Object o) {
                 if (o instanceof World) {
-                    World newWorld = (World) o;
-                    updateAfterTurn(newWorld);
-                    waitDG.cancel();
-                    showByToast(TurnActivity.this, TURN_END);
+                    World world = (World) o;
+                    if (world.isGameEnd()) {
+                        runOnUiThread(() -> {
+                            showByToast(TurnActivity.this, world.getWinner() + "wins the game!");
+                            Intent joinGame = new Intent(TurnActivity.this, RoomActivity.class);
+                            startActivity(joinGame);
+                            finish();
+                        });
+                    }
+                    isWatch = ((World) o).checkLost(getUserName());
+                    if (isWatch) {
+                        actionType = UI_DONE;
+                        runOnUiThread(() -> {
+                            impCommit();
+                        });
+                    } else {
+                        World newWorld = (World) o;
+                        updateAfterTurn(newWorld);
+                        showByToast(TurnActivity.this, TURN_END);
+                    }
                 } else {
                     this.onFailure("receive not a World");
                 }
@@ -186,7 +218,6 @@ public class TurnActivity extends AppCompatActivity {
         });
     }
 
-
     private void updateAfterTurn(World world) {
         runOnUiThread(() -> {
             if (isWatch) {
@@ -194,6 +225,7 @@ public class TurnActivity extends AppCompatActivity {
                 userInfoTV.setVisibility(View.GONE);
             }
             userInfoTV.setText(getPlayerInfo());
+            waitDG.cancel();
         });
     }
 }
