@@ -1,9 +1,6 @@
 package edu.duke.ece651.group4.RISK.server;
 
-import edu.duke.ece651.group4.RISK.shared.Client;
-import edu.duke.ece651.group4.RISK.shared.UpgradeTroopOrder;
-import edu.duke.ece651.group4.RISK.shared.World;
-import edu.duke.ece651.group4.RISK.shared.WorldFactory;
+import edu.duke.ece651.group4.RISK.shared.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -78,15 +75,37 @@ class GameTest {
         g.setUpGame();
         World w = g.getTheWorld();
         User u = new User(1,"???","1");
+        User u0 = new User(1,"user0","1");
         assertEquals(g.isUserLose(u),true);
         assertEquals(g.isEndGame(),false);
+
         assertThrows(new IllegalArgumentException().getClass(), () ->g.upgradeTechOnWorld("user0"));
         UpgradeTroopOrder uo=new UpgradeTroopOrder("A",0,1,0);
         g.upgradeTroopOnWorld(uo, "user0");
 
+        UpgradeTechOrder ut=new UpgradeTechOrder(0);
+        g.tryUpdateActionOnWorld(uo,u0);
+        assertThrows(new IllegalArgumentException().getClass(), () ->g.tryUpdateActionOnWorld(ut,u0));
+
+        PlaceOrder p=new PlaceOrder("A",new Troop(10,new TextPlayer("user0")));
+        g.placeUnitsOnWorld(p);
+        g.tryUpdateActionOnWorld(p,u0);
+
+        MoveOrder m=new MoveOrder("A","B",new Troop(1,new TextPlayer("user0")),'M');
+        assertThrows(new IllegalArgumentException().getClass(),() ->g.doMoveOnWorld(m,"user0"));
+        assertThrows(new IllegalArgumentException().getClass(),() ->g.tryUpdateActionOnWorld(m,u0));
 
 
+        AttackOrder a=new AttackOrder("A","C",new Troop(1,new TextPlayer("user0")),'A');
+        assertThrows(new java.lang.ClassCastException().getClass(),() ->g.doMoveOnWorld(a,"user0"));
+        assertThrows(new java.lang.IllegalArgumentException().getClass(),()  ->g.tryUpdateActionOnWorld(a,u0));
 
+        BasicOrder d=new BasicOrder(null,null,null,'D');
+        g.doDoneActionFor(u0);
+        g.tryUpdateActionOnWorld(d,u0);
+
+        g.updateGameAfterOneTurn();
+        
         new Thread( ()-> {
             try{
                 Socket s = hostSocket.accept();
