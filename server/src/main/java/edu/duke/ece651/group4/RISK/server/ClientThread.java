@@ -18,25 +18,19 @@ import static edu.duke.ece651.group4.RISK.server.ServerConstant.*;
 import static edu.duke.ece651.group4.RISK.shared.Constant.*;
 
 public class ClientThread extends Thread {
-    HashSet<Game> games;
-    HashSet<User> users;
+    List<Game> games;
+    List<User> users;
     Client theClient;
     User ownerUser;
     Game gameOnGoing;
     AtomicInteger globalID;
     PrintStream out;
 
-    public ClientThread(HashSet<Game> games, HashSet<User> users, Client theClient, AtomicInteger globalID) {
-        this.games = games;
-        this.users = users;
-        this.theClient = theClient;
-        this.ownerUser = null;
-        this.globalID = globalID;
-        this.out = System.out;
-        this.gameOnGoing = null;
+    public ClientThread(List<Game> games, List<User> users, Client theClient, AtomicInteger globalID) {
+        this(games,users,theClient,globalID,System.out);
     }
 
-    public ClientThread(HashSet<Game> games, HashSet<User> users, Client theClient, AtomicInteger globalID,PrintStream out) {
+    public ClientThread(List<Game> games, List<User> users, Client theClient, AtomicInteger globalID,PrintStream out) {
         this.games = games;
         this.users = users;
         this.theClient = theClient;
@@ -45,6 +39,7 @@ public class ClientThread extends Thread {
         this.out = out;
         this.gameOnGoing = null;
     }
+
 
     /*
      * Part1 user
@@ -213,6 +208,11 @@ public class ClientThread extends Thread {
         return null;
     }
 
+    /*
+    * This finds a game bases on a gameID
+    * @param gameID
+    * @return the game of that ID or null if not found
+    * */
     protected Game findGame(int gameID){
         if(gameID < 0){return null;}
         for(Game g : games){
@@ -226,6 +226,7 @@ public class ClientThread extends Thread {
     /*
      * Part2.3
      * send all gameInfo to a client
+     * @return a arrayList<RoomInfo> that will be sent to this client
      * */
     protected ArrayList<RoomInfo> getAllGameInfo(){
         out.println(ownerUser.getUsername() + " push refresh button and the number of games now: " + games.size());
