@@ -195,12 +195,12 @@ public class Troop implements Serializable {
             int num = subDict.get(s);
             for (int i = 0; i < num; i++) {
 //                try {
+
                 Unit t=this.dispatchCertainUnit(s);
-//                    if(t==null){
-//                      throw new IllegalArgumentException("No enough Unit at this level " + s+"size "+this.population.size());
-//
-//                    }
+
+
                 sub.add(t);
+
 //                }catch(Exception e){
 //                    throw new IllegalArgumentException("NULL at dispatch "+i);
 //                }
