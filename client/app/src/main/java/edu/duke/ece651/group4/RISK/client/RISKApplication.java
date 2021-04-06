@@ -343,7 +343,7 @@ public class RISKApplication extends Application {
     public static void JoinGame(int gameID, onReceiveListener listenerString, onJoinRoomListener listenerWorld) {
         GameMessage m = new GameMessage(GAME_JOIN, gameID, -1);
         for(RoomInfo in:roomInfo){
-            if(in.getRoomID()==gameID){
+            if(in.getRoomID() == gameID){
                 currentRoomSize=in.getMaxNumPlayers();
             }
         }
@@ -389,6 +389,7 @@ public class RISKApplication extends Application {
      */
     public static void createGame(int playerNum, onReceiveListener listenerString, onReceiveListener listenerWorld) {
         GameMessage m = new GameMessage(GAME_CREATE, -1, playerNum);
+        currentRoomSize = playerNum;
         createGameHelper(m, listenerString, listenerWorld);
     }
 
