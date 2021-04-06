@@ -12,6 +12,8 @@ import java.util.Set;
 import java.util.stream.IntStream;
 import java.io.Serializable;
 
+import static edu.duke.ece651.group4.RISK.shared.Constant.PLACEMENT_DONE;
+
 /**
  * This class models the world which constitutes a certain number of territories
  * connected with each other.
@@ -358,6 +360,7 @@ public class World implements Serializable {
      * @param troop    is a Troop object.
      */
     public void stationTroop(String terrName, Troop troop) {
+        this.report=PLACEMENT_DONE;
         Territory terr = findTerritory(terrName);
         terr.setOwnerTroop(troop.checkTroopSize(), troop.getOwner());
     }
@@ -369,6 +372,7 @@ public class World implements Serializable {
      * @param population is the population of the troop.
      */
     public void stationTroop(String terrName, int population) {
+        this.report=PLACEMENT_DONE;
         Territory terr = findTerritory(terrName);
         terr.setOwnerTroop(population, terr.getOwner());
     }

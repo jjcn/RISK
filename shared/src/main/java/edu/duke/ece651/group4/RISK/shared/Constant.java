@@ -36,7 +36,7 @@ public class Constant {
     public static final String GAME_EXIT = "GameExit";
     //invalid
     public static final String INVALID_CREATE = "Invalid: the number of players should be between 2 and 5 inclusive.";
-    public static final String INVALID_JOIN = "Invalid join: you are not in this game or you already joined it!";
+    public static final String INVALID_JOIN = "Invalid join: you are not in this game!";
 
     //soldier information
     public static  final List<String> UNIT_NAMES = Arrays.asList("Soldier LV0","Soldier LV1",

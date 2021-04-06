@@ -87,8 +87,25 @@ public class RISKApplication extends Application {
     /**
      * @return list of all my territory
      */
-    public static List<Territory> getMyTerritory() {
-        return theWorld.getTerritoriesOfPlayer(new TextPlayer(userName));
+    public static List<String> getMyTerrNames() {
+        return transferToNames(theWorld.getTerritoriesOfPlayer(new TextPlayer(userName)));
+    }
+
+    /**
+     *
+     * @return list of enemy territory
+     */
+    public static List<String> getEnemyTerrNames(){
+        return transferToNames(theWorld.getTerritoriesNotOfPlayer(userName));
+    }
+
+    // helper function
+    private static List<String> transferToNames(List<Territory> list){
+        List<String> names = new ArrayList<>();
+        for(Territory item: list){
+            names.add(item.getName());
+        }
+        return names;
     }
 
     /**
