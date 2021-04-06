@@ -9,6 +9,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashSet;
 
+import static edu.duke.ece651.group4.RISK.shared.Constant.SWITCH_OUT_ACTION;
 import static org.junit.jupiter.api.Assertions.*;
 
 class GameTest {
@@ -100,12 +101,16 @@ class GameTest {
         assertThrows(new java.lang.ClassCastException().getClass(),() ->g.doMoveOnWorld(a,"user0"));
         assertThrows(new java.lang.IllegalArgumentException().getClass(),()  ->g.tryUpdateActionOnWorld(a,u0));
 
+
+
         BasicOrder d=new BasicOrder(null,null,null,'D');
         g.doDoneActionFor(u0);
         g.tryUpdateActionOnWorld(d,u0);
 
+        BasicOrder eorder=new BasicOrder(null,null,null,SWITCH_OUT_ACTION);
+        g.tryUpdateActionOnWorld(eorder,u0);
         g.updateGameAfterOneTurn();
-        
+
         new Thread( ()-> {
             try{
                 Socket s = hostSocket.accept();
