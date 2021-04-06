@@ -25,7 +25,7 @@
             android:id="@+id/srcText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Send from:"
+            android:text="@string/CHOOSE_SRC_INSTRU"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -35,7 +35,7 @@
     <Spinner
             android:id="@+id/terrSrc"
             android:layout_width="match_parent"
-            android:layout_height="45dp"
+            android:layout_height="wrap_content"
             android:prompt="@string/CHOOSE_SRC_INSTRU"
             android:spinnerMode="dialog"
     />
@@ -44,7 +44,7 @@
             android:id="@+id/destText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Send to:"
+            android:text="@string/CHOOSE_DES_INSTRU"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -54,7 +54,7 @@
     <Spinner
             android:id="@+id/terrDes"
             android:layout_width="match_parent"
-            android:layout_height="45dp"
+            android:layout_height="wrap_content"
             android:prompt="@string/CHOOSE_DES_INSTRU"
             android:spinnerMode="dialog"
     />
@@ -73,7 +73,7 @@
     <Spinner
             android:id="@+id/soldierType"
             android:layout_width="match_parent"
-            android:layout_height="45dp"
+            android:layout_height="wrap_content"
             android:prompt="@string/CHOOSE_TYPE_INSTRU"
             android:spinnerMode="dialog"
             app:layout_constraintBottom_toBottomOf="parent"

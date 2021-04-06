@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Button;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -158,6 +159,7 @@ public class RoomActivity extends AppCompatActivity {
         createBT.setOnClickListener(v -> {
             createBT.setClickable(false);
             // TODO: choose number dialog
+            chooseNumUser();
             int numUser = TEST_NUM_USER;
             Log.i(TAG, LOG_FUNC_RUN + "before create game.");
             createGame(numUser,
@@ -210,5 +212,10 @@ public class RoomActivity extends AppCompatActivity {
                         }
                     });
         });
+    }
+
+    private void chooseNumUser() {
+       // AlertDialog chooseNumDG = new AlertDialog();
+
     }
 }
