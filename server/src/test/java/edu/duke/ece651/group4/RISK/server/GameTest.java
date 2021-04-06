@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashSet;
 
 import static edu.duke.ece651.group4.RISK.shared.Constant.SWITCH_OUT_ACTION;
@@ -97,7 +98,6 @@ class GameTest {
 
         MoveOrder m=new MoveOrder("A","B",new Troop(1,new TextPlayer("user0")),'M');
         assertThrows(new java.lang.IllegalArgumentException().getClass(), () -> g.doMoveOnWorld(m,"user0"));
-        //assertThrows(new java.lang.IllegalArgumentException().getClass(), () -> g.doMoveOnWorld(m,"user0"));
         assertThrows(new java.lang.IllegalArgumentException().getClass(), () -> g.tryUpdateActionOnWorld(m,u0));
 
 

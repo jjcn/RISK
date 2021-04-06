@@ -59,7 +59,7 @@ public class Troop implements Serializable {
     }
 
     public Troop(HashMap<String, Integer> myDict, Player owner) {
-        this.population = null;
+        this.population = new ArrayList<>();
         this.owner = new TextPlayer(owner.getName());
         this.dict = myDict;
     }

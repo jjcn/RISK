@@ -117,6 +117,15 @@ task resolveDependencies {
    }
 }
 
+/*
+task copyJarToClient(type: Copy) {
+    doLast {
+        from file("$buildDir/shared/build/libs/shared-1.1.jar")
+        into file("$buildDir/client/app/libs")
+    }
+}
+*/
+
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
