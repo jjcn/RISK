@@ -119,16 +119,39 @@ public class TurnActivity extends AppCompatActivity {
         });
     }
 
+//    private void impActionSpinner() {
+//        List<String> actions = new ArrayList<>(Arrays.asList(UI_MOVE, UI_ATK, UI_UPTECH, UI_UPTROOP, UI_DONE));
+//        actionAdapter = new ArrayAdapter<>(TurnActivity.this, R.layout.item_choice, actions);
+//        chooseActionSP.setAdapter(actionAdapter);
+////        chooseActionSP.setOnItemClickListener((parent, view, position, id) -> {
+//        chooseActionSP.setOnItemSelectedListener((parent, view, position, id) -> {
+//            actionType = actionAdapter.getItem(position);
+//            impCommit();
+//        });
+//    }
     private void impActionSpinner() {
         List<String> actions = new ArrayList<>(Arrays.asList(UI_MOVE, UI_ATK, UI_UPTECH, UI_UPTROOP, UI_DONE));
         actionAdapter = new ArrayAdapter<>(TurnActivity.this, R.layout.item_choice, actions);
         chooseActionSP.setAdapter(actionAdapter);
-        chooseActionSP.setOnItemClickListener((parent, view, position, id) -> {
-            actionType = actionAdapter.getItem(position);
-            impCommit();
-        });
-    }
+        chooseActionSP.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                actionType = actionAdapter.getItem(position);
+                impCommit();
+            }
 
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // nothing
+            }
+        });
+            /*
+            chooseActionSP.setOnItemClickListener((parent, view, position, id) -> {
+                actionType = actionAdapter.getItem(position);
+                impCommit();
+            });
+            */
+    }
     private void impCommit() {
         // commitBT.setClickable(false);
         Intent intent = new Intent();
