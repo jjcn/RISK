@@ -44,7 +44,7 @@ public class GameRunner extends Thread{
     public void run(){
         out.println("Game" +game.getGameID()+" runner waits for all players to join");
         boolean exit = false;
-        while(exit){
+        while(!exit){
             if(game.isFull()){
                 out.println("Game" +game.getGameID()+" is FULL!!!!!!");
                 exit = true;
