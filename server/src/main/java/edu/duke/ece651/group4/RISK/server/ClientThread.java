@@ -303,6 +303,7 @@ public class ClientThread extends Thread {
         boolean exit = false;
         while(!exit){
             Order order = (Order) this.theClient.recvObject();
+            out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " has a order: " + order.getActionName());
             exit = gameOnGoing.tryUpdateActionOnWorld(order,ownerUser);
         }
     }
