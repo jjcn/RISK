@@ -51,4 +51,6 @@ public class Constant {
     public static final char UPTECH_ACTION='T';
     public static final char SWITCH_OUT_ACTION='E';
 
+    public static final String PLACEMENT_DONE="Placement Done\n";
+
 }

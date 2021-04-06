@@ -484,6 +484,9 @@ public class RISKApplication extends Application {
         send(EXIT_GAME_MESSAGE,listener);
     }
 
+    public static List<Territory> getEnemyTerritory(){
+        return theWorld.getTerritoriesNotOfPlayer(userName);
+    }
 
 
 }
