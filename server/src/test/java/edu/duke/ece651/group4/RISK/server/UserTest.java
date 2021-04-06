@@ -13,6 +13,7 @@ class UserTest {
         assertEquals(true,u0.checkUsername("user0"));
         assertEquals(false,u0.checkUsername("user1"));
         assertEquals(false,u0.checkUsernamePassword("user1", "1"));
+        assertEquals(false,u0.checkUsernamePassword(null, "1"));
         assertEquals(false,u0.checkUsernamePassword("user0", "123"));
         assertEquals(true,u0.checkUsernamePassword("user0", "1"));
     }

@@ -5,13 +5,12 @@ import java.util.HashSet;
 
 public class User {
     UserInfo userInfo;
-    HashSet<Game> activeGames;
+
     /*
      * This construct the User
      * */
     public User(UserInfo userInfo){
         this.userInfo = userInfo;
-        activeGames = new HashSet<Game>();
     }
 
     /*
@@ -55,7 +54,4 @@ public class User {
         return true;
     }
 
-    public void addAGame(){
-
-    }
 }

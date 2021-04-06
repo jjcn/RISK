@@ -8,6 +8,7 @@ import android.widget.EditText;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import edu.duke.ece651.group4.RISK.client.R;
+import edu.duke.ece651.group4.RISK.client.RISKApplication;
 import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
 import edu.duke.ece651.group4.RISK.shared.*;
 
@@ -45,10 +46,10 @@ public class PlaceActivity extends AppCompatActivity {
         commitBT.setOnClickListener(v -> {
             commitBT.setClickable(false);
 
-            List<Territory> myTerr = getMyTerritory();
-            terrAETInput.append(myTerr.get(0).getName());
-            terrBETInput.append(myTerr.get(1).getName());
-            terrCETInput.append(myTerr.get(2).getName());
+            List<String> myTerrNames = RISKApplication.getMyTerrNames();
+            terrAETInput.append(myTerrNames.get(0));
+            terrBETInput.append(myTerrNames.get(1));
+            terrCETInput.append(myTerrNames.get(2));
             // check total number
             numTerrA = Integer.parseInt(String.valueOf(terrAETInput.getText()));
             numTerrB = Integer.parseInt(String.valueOf(terrBETInput.getText()));
@@ -57,9 +58,9 @@ public class PlaceActivity extends AppCompatActivity {
 
             if(total == PLACE_TOTAL){
                 List<PlaceOrder> placements = new ArrayList<>();
-                placements.add(new PlaceOrder(myTerr.get(0).getName(),new Troop(numTerrA,new TextPlayer(getUserName()))));
-                placements.add(new PlaceOrder(myTerr.get(1).getName(),new Troop(numTerrB,new TextPlayer(getUserName()))));
-                placements.add(new PlaceOrder(myTerr.get(2).getName(),new Troop(numTerrC,new TextPlayer(getUserName()))));
+                placements.add(new PlaceOrder(myTerrNames.get(0), new Troop(numTerrA,new TextPlayer(getUserName()))));
+                placements.add(new PlaceOrder(myTerrNames.get(0),new Troop(numTerrB,new TextPlayer(getUserName()))));
+                placements.add(new PlaceOrder(myTerrNames.get(0),new Troop(numTerrC,new TextPlayer(getUserName()))));
 
                 doPlacement(placements, new onReceiveListener() {
                     @Override

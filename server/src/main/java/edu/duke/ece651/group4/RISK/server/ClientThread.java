@@ -18,25 +18,19 @@ import static edu.duke.ece651.group4.RISK.server.ServerConstant.*;
 import static edu.duke.ece651.group4.RISK.shared.Constant.*;
 
 public class ClientThread extends Thread {
-    HashSet<Game> games;
-    HashSet<User> users;
+    List<Game> games;
+    List<User> users;
     Client theClient;
     User ownerUser;
     Game gameOnGoing;
     AtomicInteger globalID;
     PrintStream out;
 
-    public ClientThread(HashSet<Game> games, HashSet<User> users, Client theClient, AtomicInteger globalID) {
-        this.games = games;
-        this.users = users;
-        this.theClient = theClient;
-        this.ownerUser = null;
-        this.globalID = globalID;
-        this.out = System.out;
-        this.gameOnGoing = null;
+    public ClientThread(List<Game> games, List<User> users, Client theClient, AtomicInteger globalID) {
+        this(games,users,theClient,globalID,System.out);
     }
 
-    public ClientThread(HashSet<Game> games, HashSet<User> users, Client theClient, AtomicInteger globalID,PrintStream out) {
+    public ClientThread(List<Game> games, List<User> users, Client theClient, AtomicInteger globalID,PrintStream out) {
         this.games = games;
         this.users = users;
         this.theClient = theClient;
@@ -45,6 +39,7 @@ public class ClientThread extends Thread {
         this.out = out;
         this.gameOnGoing = null;
     }
+
 
     /*
      * Part1 user
@@ -130,7 +125,6 @@ public class ClientThread extends Thread {
             GameMessage gameMessage = (GameMessage) this.theClient.recvObject();
             String action = gameMessage.getAction();
             Object res = null;
-
             out.println(ownerUser.getUsername() + " get " + action);
             switch(action) {
                 case GAME_CREATE:
@@ -140,7 +134,7 @@ public class ClientThread extends Thread {
                     res = tryJoinAGame(gameMessage);
                     break;
                 case GAME_REFRESH:
-                    out.println("Will send a room info to players");
+//                    out.println("Will send a room info to players");
                     res = getAllGameInfo();
                     break;
                 case GAME_EXIT:
@@ -191,11 +185,11 @@ public class ClientThread extends Thread {
         if(res != null){return res;}
         if(!gameToJoin.isFull()){
             gameToJoin.addUser(ownerUser); // this is synchronized function
-            out.println(ownerUser.getUsername() + " joins a new game " + gameToJoin.getGameID());
+//            out.println(ownerUser.getUsername() + " joins a new game " + gameToJoin.getGameID());
         }
         else{
             gameToJoin.switchInUser(ownerUser); // this is synchronized function
-            out.println(ownerUser.getUsername() + " switches in  game " + gameToJoin.getGameID() + " AGAIN");
+//            out.println(ownerUser.getUsername() + " switches in  game " + gameToJoin.getGameID() + " AGAIN");
         }
         gameOnGoing = gameToJoin;
         out.println(gameOnGoing.getGameID() + " has " + gameOnGoing.getUserNames().size() );
@@ -213,6 +207,11 @@ public class ClientThread extends Thread {
         return null;
     }
 
+    /*
+    * This finds a game bases on a gameID
+    * @param gameID
+    * @return the game of that ID or null if not found
+    * */
     protected Game findGame(int gameID){
         if(gameID < 0){return null;}
         for(Game g : games){
@@ -226,13 +225,14 @@ public class ClientThread extends Thread {
     /*
      * Part2.3
      * send all gameInfo to a client
+     * @return a arrayList<RoomInfo> that will be sent to this client
      * */
     protected ArrayList<RoomInfo> getAllGameInfo(){
         out.println(ownerUser.getUsername() + " push refresh button and the number of games now: " + games.size());
         ArrayList<RoomInfo> roomsInfo = new ArrayList<RoomInfo>();
         for(Game g : games){
             if(g.gameState.isAlive()){
-                out.println("Game"+ g.getGameID() + " is active and should be shown in room list");
+//                out.println("Game"+ g.getGameID() + " is active and should be shown in room list");
                 roomsInfo.add(createARoomInfo(g));
             }
         }
@@ -253,7 +253,7 @@ public class ClientThread extends Thread {
             return;
         }
         // wait all players to join and runner to set up the game
-        waitNotifyFromRunner();
+        waitNotifyFromRunner(); // This is to make sure runner notify all after all waits
         // send the world info
         this.theClient.sendObject(gameOnGoing.getTheWorld());
         out.println("Game" + gameOnGoing.getGameID() + ": send world to " + ownerUser.getUsername() + " wait for orders" );
@@ -266,6 +266,7 @@ public class ClientThread extends Thread {
         // wait all players to finish placeUnits
         gameOnGoing.barrierWait();
         gameOnGoing.gameState.setDonePlaceUnits(); // if user joins back, he does not need to do place unit phase
+
     }
 
 
@@ -279,12 +280,15 @@ public class ClientThread extends Thread {
      * Run Game for one turn
      * */
     protected void tryRunGameOneTurn() {
+        out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " action phase");
         if(gameOnGoing == null){
             return;
         }
         doActionPhaseOneTurn();
         out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " wait for runner update the world");
         while(!gameOnGoing.gameState.isDoneUpdateGame()){}
+        out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " knows world is updated");
+
         waitNotifyFromRunner();
         updatePlayerStateOneTurn();
     }
@@ -335,10 +339,14 @@ public class ClientThread extends Thread {
      * This waits for notify from runner
      * */
     public void waitNotifyFromRunner(){
+        out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " enter wait notify from runner");
         try {
+
             synchronized (gameOnGoing){
                 out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " wait for runner's notify");
+                gameOnGoing.gameState.askUserWaiting(ownerUser);
                 gameOnGoing.wait();
+                gameOnGoing.gameState.askUserDoneWaiting(ownerUser);
                 out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " get notify from runner");
             }
         } catch (InterruptedException e) {

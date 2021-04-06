@@ -34,18 +34,12 @@ public class GameRunner extends Thread{
      *       1.35 game end  check and go back to the while loop
      * */
     protected void notifyAllUsers(){
+        while(!game.gameState.isAllPlayersWaiting()){} // This is to make sure runner notify all after all waits
         synchronized(game){
             game.notifyAll(); // notify all players to start send world and do placement
         }
     }
 
-    protected void sleepForSeconds(int time){
-        try {
-            TimeUnit.SECONDS.sleep(time);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
     @Override
     public void run(){
         out.println("Game runner waits for all players to join");
@@ -65,7 +59,7 @@ public class GameRunner extends Thread{
             game.gameState.updateStateTo(GAME_STATE_DONE_UPDATE);
             game.gameState.setActivePlayersStateToUpdating();
             out.println("Game runner set all active players updating state");
-            sleepForSeconds(2);
+
             notifyAllUsers(); // notify all players to enter updating state
             out.println("Game runner notifies all players");
             while(!game.gameState.isAllPlayersDoneUpdatingState()){} // wait until all players finish updating their state

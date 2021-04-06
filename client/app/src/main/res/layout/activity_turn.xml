@@ -9,7 +9,8 @@
         android:layout_marginEnd="@dimen/fragmentMargin"
         android:layout_marginTop="@dimen/fragmentMargin"
         android:layout_marginBottom="@dimen/fragmentMargin"
-        tools:context=".activity.TurnActivity">
+        tools:context=".activity.TurnActivity"
+>
 
     <TextView
             android:id="@+id/mapText"
@@ -19,72 +20,98 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/world_image_view"
+            app:layout_constraintBottom_toTopOf="@id/hguide1"
     />
 
     <ImageView
             android:id="@+id/world_image_view"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/mapText"
-            app:srcCompat="@android:drawable/ic_menu_mapmode"/>
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/hguide1"
+            app:srcCompat="@android:drawable/ic_menu_mapmode"
+            android:layout_height="0dp"/>
 
     <ListView
             android:id="@+id/terrInfo"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
             android:background="@drawable/border"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/world_image_view"
-            app:layout_constraintBottom_toTopOf="@id/noticeInfo"/>
+            app:layout_constraintTop_toTopOf="@id/hguide1"
+            app:layout_constraintBottom_toBottomOf="@id/hguide2" android:layout_height="0dp">
+    </ListView>
 
     <ListView
             android:id="@+id/noticeInfo"
-            android:layout_width="300dp"
-            android:layout_height="150dp"
             android:background="@drawable/border"
             android:text="Instructions info"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/playerInfo"
-            app:layout_constraintTop_toBottomOf="@id/terrInfo"
-            app:layout_constraintBottom_toTopOf="@id/switchOut"
-    />
+            app:layout_constraintEnd_toEndOf="@id/vguide1"
+            app:layout_constraintTop_toBottomOf="@id/hguide2"
+            app:layout_constraintBottom_toTopOf="@id/hguide3"
+            android:layout_height="0dp" android:layout_width="0dp"/>
 
     <TextView
             android:id="@+id/playerInfo"
-            android:layout_width="90dp" android:layout_height="150dp"
             android:background="@drawable/border"
+            app:layout_constraintStart_toStartOf="@id/vguide1"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/noticeInfo"
-            app:layout_constraintTop_toTopOf="@id/noticeInfo"
+            app:layout_constraintTop_toBottomOf="@id/hguide2"
+            app:layout_constraintBottom_toTopOf="@id/hguide3"
             android:text="@string/PLAYERINFO"
-            app:layout_constraintBottom_toBottomOf="@id/noticeInfo"
-    />
+            android:layout_height="0dp" android:layout_width="0dp"/>
 
     <Spinner
             android:id="@+id/actions_spinner"
-            android:layout_width="300dp"
-            android:layout_height="45dp"
             android:prompt="@string/CHOOSE_ACTION_INSTRU"
             android:spinnerMode="dialog"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/noticeInfo"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/switchOut"
-    />
+            android:layout_marginStart="@dimen/fragmentMargin"
+            android:layout_marginEnd="@dimen/fragmentMargin"
+            app:layout_constraintEnd_toStartOf="@id/vguide1"
+            android:layout_height="0dp" android:layout_width="0dp"/>
 
     <Button
-            android:id="@+id/switchOut"
+            android:id="@+id/commitBT"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="@string/SWITCH_OUT"
-            app:layout_constraintStart_toEndOf="@id/actions_spinner"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/noticeInfo"
+            android:hint="@string/COMMIT"
+            app:layout_constraintStart_toStartOf="@id/vguide1"
+            app:layout_constraintTop_toBottomOf="@id/hguide3"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
     />
+
+    <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/vguide1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.7"/>
+
+    <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/hguide1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.3"/>
+
+    <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/hguide2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.6"/>
+
+    <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/hguide3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.9"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
