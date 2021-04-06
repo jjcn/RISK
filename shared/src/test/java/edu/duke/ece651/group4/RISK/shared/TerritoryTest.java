@@ -51,7 +51,7 @@ class TerritoryTest {
 
         test.sendInEnemyTroop(new Troop(2, p2, new Random(0)));
         test.sendInEnemyTroop(new Troop(1, p3, new Random(0)));
-        test.doBattles();
+        System.out.println(test.doBattles());
 
 
         assertEquals(test.getOwner().getName(), "p1");
