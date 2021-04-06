@@ -187,31 +187,31 @@ public class Troop implements Serializable {
         ArrayList<Unit> sub = new ArrayList<>();
         HashMap<String, Integer> subDict = target.getDict();
 
-        if (!this.checkSend(target)) {
-            throw new IllegalArgumentException("Target sending troop has invalid size");
-        }
+//        if (!this.checkSend(target)) {
+//            throw new IllegalArgumentException("Target sending troop has invalid size");
+//        }
 
         for (String s : subDict.keySet()) {
             int num = subDict.get(s);
             for (int i = 0; i < num; i++) {
-                try {
-                    Unit t=this.dispatchCertainUnit(s);
-                    if(t==null){
-                        throw new IllegalArgumentException("No enough Unit at this level " + s+"size "+this.population.size());
-
-                    }
-                    sub.add(t);
-                }catch(Exception e){
-                    throw new IllegalArgumentException("NULL at dispatch "+i);
-                }
+//                try {
+                Unit t=this.dispatchCertainUnit(s);
+//                    if(t==null){
+//                      throw new IllegalArgumentException("No enough Unit at this level " + s+"size "+this.population.size());
+//
+//                    }
+                sub.add(t);
+//                }catch(Exception e){
+//                    throw new IllegalArgumentException("NULL at dispatch "+i);
+//                }
             }
         }
         Troop r=new Troop(sub, subDict, this.owner);
-        for(Unit c:sub){
-            if(c==null){
-                throw new IllegalArgumentException("NULL happen when depart");
-            }
-        }
+//        for(Unit c:sub){
+//            if(c==null){
+//                throw new IllegalArgumentException("NULL happen when depart");
+//            }
+//        }
         return r;
     }
 
@@ -228,16 +228,16 @@ public class Troop implements Serializable {
     public void receiveTroop(Troop subTroop) {
         while (subTroop.checkTroopSize() != 0) {
             Unit newMember = subTroop.dispatchUnit();
-            try{
-                this.receiveUnit(newMember);
-            }catch(Exception e){
-                throw new IllegalArgumentException("NULL at receive  "+subTroop.checkTroopSize());
-            }
-            try{
-                subTroop.loseUnit(newMember);
-            }catch(Exception e){
-                throw new IllegalArgumentException("NULL at receive  "+subTroop.checkTroopSize());
-            }
+//            try{
+            this.receiveUnit(newMember);
+//            }catch(Exception e){
+//                throw new IllegalArgumentException("NULL at receive  "+subTroop.checkTroopSize());
+//            }
+//            try{
+            subTroop.loseUnit(newMember);
+//            }catch(Exception e){
+//                throw new IllegalArgumentException("NULL at receive  "+subTroop.checkTroopSize());
+//            }
 
         }
     }

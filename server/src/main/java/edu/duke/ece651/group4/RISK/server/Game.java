@@ -213,6 +213,7 @@ public class Game {
     synchronized protected void doMoveOnWorld(Order order, String userName){
         MoveOrder moveOrder = (MoveOrder) order;
         try{
+            out.println(moveOrder.getActTroop().getSummary());
             this.theWorld.moveTroop(moveOrder, userName);
             out.println(moveOrder.getActionName() +"Troop size:" + moveOrder.getActTroop().checkTroopSize() + "from " + moveOrder.getSrcName() + " to " + moveOrder.getDesName());
             out.println(this.theWorld.findTerritory(moveOrder.getSrcName()).getInfo() );
