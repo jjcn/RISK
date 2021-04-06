@@ -24,7 +24,14 @@
     <string name="CHOOSE_ACTION_INSTRU">Choose action here</string>
     <string name="PLAYERINFO">Player Information:\n</string>
     <string name="COMMIT">COMMIT</string>
+    <string name="CONFIRM">CONFIRM</string>
     <string name="CHOOSE_SRC_INSTRU">"You want to send from: "</string>
     <string name="CHOOSE_DES_INSTRU">You want to send troop to:</string>
     <string name="CHOOSE_TYPE_INSTRU">"Choose the type of soldier: "</string>
+
+    <string name="UPGRADE_TERR_PROMPT">"Upgrade soldiers on which territory?"</string>
+    <string name="UPGRADE_CHOOSE_TERR_INSTRU">"Choose a territory to upgrade soldiers on it: "</string>
+    <string name="UPGRADE_TYPE_BEFORE_PROMPT">"Which type of soldier would you like to upgrade?"</string>
+    <string name="UPGRADE_TYPE_AFTER_PROMPT">"To which level?"</string>
+
 </resources>

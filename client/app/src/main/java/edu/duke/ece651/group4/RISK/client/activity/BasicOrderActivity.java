@@ -40,9 +40,11 @@ public class BasicOrderActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_basic_order);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         worldImageView = (ImageView) findViewById(R.id.world_image_view);
-        worldImageView.setImageResource(R.drawable.terrs6);
+        // worldImageView.setImageResource(R.drawable.terrs6); //TODO: hard coded now
 
         srcName = "";
         desName = "";
@@ -51,8 +53,7 @@ public class BasicOrderActivity extends AppCompatActivity {
         actionType = getIntent().getStringExtra(EXTRA_ACTION_TYPE);
 
         String actionType = getIntent().getStringExtra("actionType");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        
         impUI();
     }
 
@@ -70,6 +71,7 @@ public class BasicOrderActivity extends AppCompatActivity {
         List<String> myTerrNames = getMyTerrNames();
         List<String> enemyTerrNames = getEnemyTerrNames();
 
+        // source terr spinner
         srcSpinner = findViewById(R.id.terrSrc);
         SpinnerAdapter srcAdapter = new ArrayAdapter<>(
                 BasicOrderActivity.this,
@@ -86,6 +88,7 @@ public class BasicOrderActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {}
         });
 
+        // des terr spinner
         desSpinner = findViewById(R.id.terrDes);
         if(actionType.equals(UI_MOVE)) {
             desAdapter = new ArrayAdapter<>(
@@ -109,6 +112,7 @@ public class BasicOrderActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {}
         });
 
+        // typeNames spinner
         List<String> typeNames = getLevelNames();
         typeSpinner = findViewById(R.id.soldierType);
         SpinnerAdapter typeAdapter = new ArrayAdapter<>(
@@ -130,6 +134,7 @@ public class BasicOrderActivity extends AppCompatActivity {
 
         commitBT = findViewById(R.id.commit_button);
         commitBT.setOnClickListener(v -> {
+            assert(nUnitET.getText().toString() != null);
             nUnit = Integer.parseInt(nUnitET.getText().toString());
             Log.d(TAG, "User selected: from " + srcName + " to " + desName
                    + " move " + nUnit + " " + typeName);

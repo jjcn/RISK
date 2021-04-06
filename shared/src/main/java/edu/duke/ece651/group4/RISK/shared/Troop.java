@@ -195,12 +195,8 @@ public class Troop implements Serializable {
             int num = subDict.get(s);
             for (int i = 0; i < num; i++) {
 //                try {
-
                 Unit t=this.dispatchCertainUnit(s);
-
-
                 sub.add(t);
-
 //                }catch(Exception e){
 //                    throw new IllegalArgumentException("NULL at dispatch "+i);
 //                }
