@@ -13,9 +13,7 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static edu.duke.ece651.group4.RISK.shared.Constant.SOCKET_PORT;
@@ -23,22 +21,18 @@ import static edu.duke.ece651.group4.RISK.shared.Constant.SOCKET_PORT;
 
 public class HostApp implements Runnable {
     ServerSocket hostSocket;
-    List<Game> games;
-    List<User> users;
+    HashSet<Game> games;
+    HashSet<User> users;
     AtomicInteger globalID;
     final PrintStream out;
-    boolean test_mode;
-    public HostApp(ServerSocket s, boolean test_mode){
+    public HostApp(ServerSocket s){
         this.hostSocket = s;
-        games = new ArrayList<Game>();
-        users = new ArrayList<User>();
+        games = new HashSet<Game>();
+        users = new HashSet<User>();
         this.globalID = new AtomicInteger(0);
         this.out = System.out;
-        this.test_mode = test_mode;
     }
-    public HostApp(ServerSocket s){
-        this(s,false);
-    }
+
 
 
     /*
@@ -51,20 +45,18 @@ public class HostApp implements Runnable {
      *  */
 
     public void acceptConnection(){
-        while(true) {
-            try {
-                Socket s = hostSocket.accept();
-                Client theClient = new Client(s);
-                ClientThread theThread = new ClientThread(games, users,theClient,globalID,out);
-                out.println("A client joined.");
-                theThread.start();
-                if(test_mode){
-                    return;
+            while(true) {
+                try {
+                    Socket s = hostSocket.accept();
+                    Client theClient = new Client(s);
+                    ClientThread theThread = new ClientThread(games, users,theClient,globalID,out);
+                    out.println("A client joined.");
+                    theThread.start();
+                }catch(IOException e){
+                    out.println("HostApp: Issue with acceptConnection.");
                 }
-            }catch(IOException e){
-                out.println("HostApp: Issue with acceptConnection.");
             }
-        }
+
     }
 
     public void run() {
