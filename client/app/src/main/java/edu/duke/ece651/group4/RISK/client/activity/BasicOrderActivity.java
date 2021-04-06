@@ -2,6 +2,7 @@ package edu.duke.ece651.group4.RISK.client.activity;
 
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ public class BasicOrderActivity extends AppCompatActivity {
 
     private static final String EXTRA_ACTION_TYPE = "actionType"; // intent extra key
 
+    private ImageView worldImageView;
     private Spinner srcSpinner;
     private Spinner desSpinner;
     private Spinner typeSpinner;
@@ -34,11 +36,13 @@ public class BasicOrderActivity extends AppCompatActivity {
     private Button commitBT;
     private SpinnerAdapter desAdapter;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_basic_order);
+
+        worldImageView = (ImageView) findViewById(R.id.world_image_view);
+        worldImageView.setImageResource(R.drawable.terrs6);
 
         srcName = "";
         desName = "";
@@ -72,7 +76,15 @@ public class BasicOrderActivity extends AppCompatActivity {
                 R.layout.item_choice,
                 myTerrNames);
         srcSpinner.setAdapter(srcAdapter);
+        srcSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                srcName = (String) srcAdapter.getItem(position);
+            }
 
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
 
         desSpinner = findViewById(R.id.terrDes);
         if(actionType.equals(UI_MOVE)) {
@@ -87,6 +99,15 @@ public class BasicOrderActivity extends AppCompatActivity {
                     enemyTerrNames);
         }
         desSpinner.setAdapter(desAdapter);
+        desSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                desName = (String) desAdapter.getItem(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
 
         List<String> typeNames = getLevelNames();
         typeSpinner = findViewById(R.id.soldierType);
@@ -95,27 +116,23 @@ public class BasicOrderActivity extends AppCompatActivity {
                 R.layout.item_choice,
                 typeNames);
         typeSpinner.setAdapter(typeAdapter);
+        typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                typeName = (String) typeAdapter.getItem(position);
+            }
 
-        nUnitET = findViewById(R.id.numUnit);
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
+        nUnitET = findViewById(R.id.numUnit).findViewById(R.id.inputNum);
 
         commitBT = findViewById(R.id.commit_button);
         commitBT.setOnClickListener(v -> {
-            srcSpinner.setOnItemClickListener((parent, view, position, id) -> {
-                srcName = (String) srcAdapter.getItem(position);
-            });
-            desSpinner.setOnItemClickListener((parent, view, position, id) -> {
-                desName = (String) desAdapter.getItem(position);
-            });
-            typeSpinner.setOnItemClickListener((parent, view, position, id) -> {
-                typeName = (String) typeAdapter.getItem(position);
-            });
-
             nUnit = Integer.parseInt(nUnitET.getText().toString());
-
-            if (actionType.equals(UI_ATK)) {
-                buildAttackOrder(srcName, desName, nUnit, typeName);
-            }
-
+            Log.d(TAG, "User selected: from " + srcName + " to " + desName
+                   + " move " + nUnit + " " + typeName);
             String result = null;
             if (actionType.equals(UI_MOVE)) {
                 result = doOneMove(buildMoveOrder(srcName, desName, nUnit, typeName),
@@ -152,4 +169,5 @@ public class BasicOrderActivity extends AppCompatActivity {
         });
 
     }
+
 }

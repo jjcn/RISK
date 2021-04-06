@@ -45,6 +45,7 @@ public class TurnActivity extends AppCompatActivity {
     private ListView noticeInfoRC;
     private ArrayAdapter<String> noticesAdapter;
     private TextView userInfoTV;
+    private ImageView mapIV;
 
     private String actionType;
     private boolean isWatch; // turn to true after lose game.
@@ -60,10 +61,11 @@ public class TurnActivity extends AppCompatActivity {
         isWatch = false;
         waitDG = new WaitDialog(TurnActivity.this);
         impUI();
+        updateAfterTurn();
     }
 
     /**
-     * overwrite the functions
+     * overwrite the functions to have switch room and back and menu button.
      *
      */
     @Override
@@ -98,6 +100,8 @@ public class TurnActivity extends AppCompatActivity {
         worldInfoRC = findViewById(R.id.terrInfo);
         userInfoTV = findViewById(R.id.playerInfo);
         noticeInfoRC = findViewById(R.id.noticeInfo);
+        mapIV = findViewById(R.id.world_image_view);
+        mapIV.setImageResource(MAPS.get(getCurrentRoomSize()));
         impActionSpinner();
         impWorldInfoRC();
         impNoticeInfoRC();
@@ -129,9 +133,7 @@ public class TurnActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // nothing
-            }
+            public void onNothingSelected(AdapterView<?> parent) {}
         });
     }
 
@@ -154,7 +156,6 @@ public class TurnActivity extends AppCompatActivity {
                         break;
                     case UI_UPTECH:
                         upgradeTech();
-                        actionAdapter.remove(UI_UPTECH); // can only upgrade once in one turn
                         break;
                     case UI_DONE:
                         if (isWatch) {
@@ -180,6 +181,7 @@ public class TurnActivity extends AppCompatActivity {
             startActivity(joinGame);
             finish();
         });
+        builder.show();
     }
 
     private void upgradeTech() {
@@ -187,6 +189,7 @@ public class TurnActivity extends AppCompatActivity {
             @Override
             public void onSuccess() {
                 userInfoTV.setText(getPlayerInfo());
+                actionAdapter.remove(UI_UPTECH); // can only upgrade once in one turn
             }
 
             @Override
