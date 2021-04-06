@@ -49,7 +49,7 @@ public class LoginActivity extends AppCompatActivity {
                     runOnUiThread(() -> {
                         if (result == null) { //match
                             Intent roomIntent = new Intent(LoginActivity.this, RoomActivity.class);
-                            logInButton.setClickable(false);
+                            logInButton.setClickable(true);
                             startActivity(roomIntent);
                         } else {
                             showByToast(LoginActivity.this, result);// show account err message
