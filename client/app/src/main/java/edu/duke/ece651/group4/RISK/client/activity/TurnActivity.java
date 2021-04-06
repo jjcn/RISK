@@ -7,20 +7,24 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.Spinner;
+import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.recyclerview.widget.RecyclerView;
 import edu.duke.ece651.group4.RISK.client.R;
 import edu.duke.ece651.group4.RISK.client.adapter.WorldInfoAdapter;
 import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
+import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
 import edu.duke.ece651.group4.RISK.shared.BasicOrder;
 import edu.duke.ece651.group4.RISK.shared.Constant;
 import edu.duke.ece651.group4.RISK.shared.World;
 
-import static edu.duke.ece651.group4.RISK.client.RISKApplication.doDone;
-import static edu.duke.ece651.group4.RISK.client.RISKApplication.getWorld;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static edu.duke.ece651.group4.RISK.client.Constant.*;
+import static edu.duke.ece651.group4.RISK.client.RISKApplication.*;
 import static edu.duke.ece651.group4.RISK.client.utility.Notice.showByToast;
 import static edu.duke.ece651.group4.RISK.shared.Constant.*;
 
@@ -28,13 +32,20 @@ import static edu.duke.ece651.group4.RISK.shared.Constant.*;
  * implement game with text input
  */
 public class TurnActivity extends AppCompatActivity {
-private final String TAG = this.getClass().getSimpleName();
+    private final String TAG = this.getClass().getSimpleName();
+
+    // TODO:expendable list view
+    private Button switchBT;
+    private ListView worldInfoRC;
+    private ArrayAdapter<String> worldInfoAdapter;
     private Spinner chooseActionSP;
-    private Button commitBT;
-    private RecyclerView worldInfoRC;
-    private WorldInfoAdapter worldInfoAdapter;
-    private String actionType; // default: move
-    private boolean activeStatus = true; // turn to false after lose game.
+    private ArrayAdapter<String> actionAdapter;
+    private ListView noticeInfoRC;
+    private ArrayAdapter<String> noticesAdapter;
+    private TextView userInfoTV;
+
+    private String actionType;
+    private boolean isWatch = false; // turn to true after lose game.
     private WaitDialog waitDG;
 
     @Override
@@ -43,11 +54,9 @@ private final String TAG = this.getClass().getSimpleName();
         setContentView(R.layout.activity_turn);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        actionType = ACTION_MOVE;
+        actionType = UI_MOVE; // default: move
+        waitDG = new WaitDialog(TurnActivity.this);
         impUI();
-
-        //TODO: initialize the information after player join the game.
-        // initAll();
     }
 
     @Override
@@ -58,9 +67,10 @@ private final String TAG = this.getClass().getSimpleName();
                 return true;
             //TODO: switch rooms
             case R.id.menu_rooms:
+                // waitDG.show();
                 return true;
             case R.id.menu_devinfo:
-                showByToast(TurnActivity.this, "Group4 in ECE651\n The best TA in the world: Kewei Xia");
+                showByToast(TurnActivity.this, COLOR_EGG);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -76,51 +86,99 @@ private final String TAG = this.getClass().getSimpleName();
 
     private void impUI() {
         chooseActionSP = findViewById(R.id.actions_spinner);
-        commitBT = findViewById(R.id.chooseAction);
+        switchBT = findViewById(R.id.switchOut);
         worldInfoRC = findViewById(R.id.terrInfo);
-        impCommitBT();
+        userInfoTV = findViewById(R.id.playerInfo);
+        noticeInfoRC = findViewById(R.id.noticeInfo);
         impActionSpinner();
+        impWorldInfoRC();
+        impNoticeInfoRC();
+        impSwitchBT();
+    }
+
+    private void impWorldInfoRC() {
+        List<String> worldInfo = getWorldInfo();
+        worldInfoAdapter = new ArrayAdapter<>(TurnActivity.this, R.layout.item_choice, worldInfo);
+        worldInfoRC.setAdapter(worldInfoAdapter);
+    }
+
+    private void impNoticeInfoRC() {
+        List<String> worldInfo = getWorldInfo();
+        worldInfoAdapter = new ArrayAdapter<>(TurnActivity.this, R.layout.item_choice, worldInfo);
+        worldInfoRC.setAdapter(worldInfoAdapter);
+    }
+
+    private void impSwitchBT() {
+        switchBT.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent joinIntent = new Intent(TurnActivity.this,RoomActivity.class);
+            }
+        });
     }
 
     private void impActionSpinner() {
-
-
+        List<String> actions = new ArrayList<>(Arrays.asList(UI_MOVE, UI_ATK, UI_UPTECH, UI_UPTROOP, UI_DONE));
+        actionAdapter = new ArrayAdapter<>(TurnActivity.this, R.layout.item_choice, actions);
+        chooseActionSP.setAdapter(actionAdapter);
+        chooseActionSP.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                actionType = actionAdapter.getItem(position);
+                impCommit();
+            }
+        });
     }
 
-    private void impCommitBT() {
-        commitBT.setOnClickListener(v -> {
-            // commitBT.setClickable(false);
-            Intent intent = new Intent();
-            switch(actionType){
-//                case MOVE_ACTION:
-//                    intent.setComponent(new ComponentName(TurnActivity.this,BasicOrderActivity.class));
-//                case ATTACK_ACTION:
-//                    intent.setComponent(new ComponentName(TurnActivity.this,BasicOrderActivity.class));
-//                    intent.putExtra("actionType",actionType);
-//                    break;
-//                case UPTROOP_ACTION: //TODO:upgrade tech or soldier
-//                    intent.setComponent(new ComponentName(TurnActivity.this,UpgradeActivity.class));
-//                    break;
-//                case UPTECH_ACTION:
-//                case DONE_ACTION:
-//                    waitNextTurn();
+    private void impCommit() {
+        // commitBT.setClickable(false);
+        Intent intent = new Intent();
+        switch (actionType) {
+            case UI_MOVE:
+            case UI_ATK:
+                intent.setComponent(new ComponentName(TurnActivity.this, BasicOrderActivity.class));
+                intent.putExtra("actionType", actionType);
+                break;
+            case UI_UPTROOP:
+                intent.setComponent(new ComponentName(TurnActivity.this, UpgradeActivity.class));
+                break;
+            case UI_UPTECH:
+                upgradeTech();
+            case UI_DONE:
+                waitNextTurn();
+        }
+    }
+
+    private void upgradeTech() {
+        doTechUpgrade(new onResultListener() {
+            @Override
+            public void onSuccess() {
+                userInfoTV.setText(getPlayerInfo());
+            }
+
+            @Override
+            public void onFailure(String errMsg) {
+                Log.e(TAG, errMsg);
             }
         });
     }
 
     // TODO: alert to confirm
     private void waitNextTurn() {
-        commitBT.setClickable(false);
         waitDG.show();
         doDone(new BasicOrder(null, null, null, 'D'), new onReceiveListener() {
             @Override
             public void onSuccess(Object o) {
                 if (o instanceof World) {
-
+                    World newWorld = (World) o;
+                    updateAfterTurn(newWorld);
+                    waitDG.cancel();
+                    showByToast(TurnActivity.this, TURN_END);
                 } else {
                     this.onFailure("receive not a World");
                 }
             }
+
             @Override
             public void onFailure(String errMsg) {
                 Log.e(TAG, "login: " + errMsg);
@@ -129,36 +187,13 @@ private final String TAG = this.getClass().getSimpleName();
     }
 
 
-    // TODO:
-    private void updateAfterTurn() {
+    private void updateAfterTurn(World world) {
         runOnUiThread(() -> {
-            if (activeStatus) { // playing game
-                updateForWatch();
-            } else { // lose game
-
+            if (isWatch) {
+                chooseActionSP.setVisibility(View.GONE);
+                userInfoTV.setVisibility(View.GONE);
             }
+            userInfoTV.setText(getPlayerInfo());
         });
     }
-
-    // TODO
-    private void updateForWatch() {
-        commitBT.setVisibility(View.GONE);
-        chooseActionSP.setVisibility(View.GONE);
-
-    }
-
-    private void updateTerrInfo() {
-        worldInfoAdapter = new WorldInfoAdapter(getWorld());
-        // worldInfoAdapter
-    }
-
-    private void updatePlayerInfo() {
-
-    }
-
-    private void updateNotice() {
-
-    }
-
-
 }
