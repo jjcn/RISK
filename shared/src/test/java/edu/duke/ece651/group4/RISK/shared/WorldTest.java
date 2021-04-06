@@ -149,12 +149,26 @@ public class WorldTest {
     }
 
     @Test
+    public void testGetNumPlayers() {
+        World world = new World();
+        assertEquals(0, world.getNumPlayers());
+        world.registerPlayer("red");
+        assertEquals(1, world.getNumPlayers());
+    }
+
+    @Test
     public void testSetRandom() {
         World world = createWorldSimple();
         Random seed = new Random(0);
 
         world.setRandom("1", seed);
         world.setRandom(new Territory("2"), seed);
+    }
+
+    @Test
+    public void testGetReport() {
+        World world = new World();
+        assertEquals("", world.getReport());
     }
 
     @Test
@@ -204,6 +218,25 @@ public class WorldTest {
         assertFalse(world.checkIfAdjacent("2", "3"));
         assertFalse(world.checkIfAdjacent("2", "4"));
         assertTrue(world.checkIfAdjacent("3", "4"));
+    }
+
+    @Test
+    public void testRegisterPlayer() {
+        World world = new World();
+        world.registerPlayer(redInfo);
+        assertNotNull(world.getPlayerInfoByName("red"));
+        PlayerInfo pInfo = world.getPlayerInfoByName("red");
+        assertEquals("red", pInfo.getName());
+        assertEquals(100, pInfo.getFoodQuantity());
+        assertEquals(100, pInfo.getTechQuantity());
+    }
+
+    @Test
+    public void testGetPlayerInfoByName() {
+        World world = new World();
+        world.registerPlayer(redInfo);
+        assertNotNull(world.getPlayerInfoByName("red"));
+        assertNull(world.getPlayerInfoByName("blue"));
     }
 
     @Test
@@ -520,10 +553,29 @@ public class WorldTest {
     }
 
     @Test
-    public void testToString() {
+    public void testToString_same() {
+        World world1 = createWorld(troopsConnected);
+        World world2 = createWorld(troopsConnected);
+        assertEquals(world1.toString(), world2.toString());        
+    }
+
+    @Test
+    public void testToString_different_troops() {
         World world1 = createWorld(troopsConnected);
         World world2 = createWorld(troopsSamePlayer);
-        assertNotEquals(world1.toString(), world2.toString());
+        assertNotEquals(world1.toString(), world2.toString());        
+    }
+
+    @Test
+    public void testToString_different_players() {
+        World world1 = createWorld();
+        world1.registerPlayer("red");
+        world1.registerPlayer("blue");
+
+        World world2 = createWorld();
+        world2.registerPlayer("red");
+
+        assertNotEquals(world1.toString(), world2.toString());        
     }
 
     @Test

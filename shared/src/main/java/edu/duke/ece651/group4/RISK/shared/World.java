@@ -781,6 +781,9 @@ public class World implements Serializable {
         }
     }
 
+    /**
+     * Calls Territory & PlayerInfo toString function
+     */
     @Override
     public String toString() {
         StringBuilder ans = new StringBuilder();
