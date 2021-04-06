@@ -287,6 +287,8 @@ public class ClientThread extends Thread {
         doActionPhaseOneTurn();
         out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " wait for runner update the world");
         while(!gameOnGoing.gameState.isDoneUpdateGame()){}
+        out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " knows world is updated");
+
         waitNotifyFromRunner();
         updatePlayerStateOneTurn();
     }
@@ -337,7 +339,9 @@ public class ClientThread extends Thread {
      * This waits for notify from runner
      * */
     public void waitNotifyFromRunner(){
+        out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " enter wait notify from runner");
         try {
+
             synchronized (gameOnGoing){
                 out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " wait for runner's notify");
                 gameOnGoing.gameState.askUserWaiting(ownerUser);
