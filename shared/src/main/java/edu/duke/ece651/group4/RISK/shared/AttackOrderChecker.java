@@ -14,6 +14,10 @@ import java.io.Serializable;
  */
 public class AttackOrderChecker implements Serializable {
     /**
+     * Auto-generated serial version UID
+     */
+    private static final long serialVersionUID = -6158171671409577899L;
+    /**
      * Error messages
      */
     protected final String NOT_ATTACK_ORDER_MSG = "This is not an attack order.";

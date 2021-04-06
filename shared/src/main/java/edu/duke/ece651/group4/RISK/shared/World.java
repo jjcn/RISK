@@ -16,8 +16,12 @@ import java.io.Serializable;
  * This class models the world which constitutes a certain number of territories
  * connected with each other.
  * 
- * Maintains territories in a graph structure; an order checker that checks
- * validity of basic orders; a random seed.
+ * Maintains:
+ * 1. territories in a graph structure; 
+ * 2. Info of all players in the world;
+ * 3. a war report that stores the result of battles happened on one turn.
+ * 4. an order checker that checks validity of move & attack orders;
+ * 5. a random seed.
  */
 public class World implements Serializable {
     /**
@@ -40,6 +44,10 @@ public class World implements Serializable {
      */
     protected Map<String, PlayerInfo> playerInfos;
     /**
+     * Battle report
+     */
+    protected String report;
+    /**
      * Order checker
      */
     protected final OrderChecker orderChecker;
@@ -47,10 +55,7 @@ public class World implements Serializable {
      * Random seed to use with random division of territories.
      */
     protected final Random rnd;
-    /**
-     * Battle report
-     */
-    protected String report;
+    
 
     /**
      * Construct a default world with an empty graph.
@@ -116,7 +121,7 @@ public class World implements Serializable {
         this(new Graph<Territory>(), new Random());
 
         for (int i = 1; i <= numTerrs; i++) {
-            addTerritory(new Territory(String.format("%c", 'a' + i)));
+            addTerritory(new Territory(String.format("%c", 'A' + i)));
         }
         territories.addRandomEdges(numTerrs, new Random());
     }
@@ -222,6 +227,15 @@ public class World implements Serializable {
         findTerritory(terrName).setRandom(seed);
     }
 
+    
+    /**
+     * Get battle report.
+     * @return A report of all battles happened in one turn.
+     */
+    public String getReport() {
+        return report;
+    }
+
     protected void setReport(String report) {
         this.report = report;
     }
@@ -257,7 +271,7 @@ public class World implements Serializable {
     }
 
     /**
-     * Register a player and his/her info in the world.
+     * Register a player and a default info in the world.
      * 
      * @param playerName is the player's name.
      */
@@ -330,25 +344,6 @@ public class World implements Serializable {
     }
 
     /**
-     * Try upgrade a player's tech level by 1.
-     * 
-     * @param playerName is a player's name.
-     */
-    public void upgradePlayerTechLevelBy1(String playerName) {
-        playerInfos.get(playerName).upgradeTechLevelBy1();
-    }
-
-    /**
-     * Try upgrade a player's tech level using an upgrade tech order.
-     * 
-     * @param upgradeTechOrder is an upgrade tech order
-     * @param playerName is a player's name.
-     */
-    public void upgradePlayerTechLevelBy(UpgradeTechOrder upgradeTechOrder, String playerName) {
-        playerInfos.get(playerName).upgradeTechLevelBy(upgradeTechOrder.getNLevel());
-    }
-
-    /**
      * Station troop to a territory.
      * 
      * @param terrName is the territory name.
@@ -370,8 +365,15 @@ public class World implements Serializable {
         terr.initializeTerritory(population, terr.getOwner());
     }
 
-    public int calculateShortestPath(String start, String end) {
-        return calculateShortestPath(findTerritory(start), findTerritory(end));
+    /**
+     * Overloaded function to Calculates the shortest path length between 2 vertices.
+     * 
+     * @param startName
+     * @param endName
+     * @return
+     */
+    protected int calculateShortestPath(String startName, String endName) {
+        return calculateShortestPath(findTerritory(startName), findTerritory(endName));
     }
 
     /**
@@ -381,7 +383,7 @@ public class World implements Serializable {
      * @param end   is the ending vertex.
      * @return length of the shortest path .
      */
-    public int calculateShortestPath(Territory start, Territory end) {
+    protected int calculateShortestPath(Territory start, Territory end) {
         String NOT_REACHABLE_MSG = "Cannot reach from start to end.";
         /*
          * shortest distances from start to all vertices
@@ -473,9 +475,21 @@ public class World implements Serializable {
     }
 
     /**
+     * Calculate the quantity of resources consumed by an attack order. An attack
+     * order costs 1 "food" resource per unit attacking.
+     * 
+     * @param order is the attack order.
+     * @return quantity of consumed resources.
+     */
+    protected int calculateAttackConsumption(AttackOrder order) {
+        return order.getActTroop().size();
+    }
+
+    /**
      * Moves a troop to a different a territory. Owner of the troop is not checked.
      * Also checks if the troop size is valid to send from the starting territory.
-     * The function does NOT consume food resource.
+     * 
+     * Consumes food resource.
      * 
      * @param order      is a move order.
      * @param playerName is the player's name who commited this order.
@@ -499,21 +513,11 @@ public class World implements Serializable {
     }
 
     /**
-     * Calculate the quantity of resources consumed by an attack order. An attack
-     * order costs 1 "food" resource per unit attacking.
-     * 
-     * @param order is the attack order.
-     * @return quantity of consumed resources.
-     */
-    protected int calculateAttackConsumption(AttackOrder order) {
-        return order.getActTroop().size();
-    }
-
-    /**
      * Sends a troop to a territory with different owner, in order to engage in
      * battle on that territory. Also checks if the troop size is valid to send from
-     * the starting territory. The function does NOT consume food resource in this
-     * function.
+     * the starting territory.
+     *  
+     * Consumes food resource.
      * 
      * @param order      is the attack order.
      * @param playerName is the player's name who commited this order.
@@ -553,6 +557,30 @@ public class World implements Serializable {
         int remainder = terr.upgradeTroop(levelBefore, levelAfter, nUnit, pInfo.getTechQuantity());
         int consumption = pInfo.getTechQuantity() - remainder;
         pInfo.consumeTech(consumption);
+    }
+
+    
+    /**
+     * Try upgrade a player's tech level by 1.
+     * 
+     * Consumes tech resource.
+     * 
+     * @param playerName is a player's name.
+     */
+    public void upgradePlayerTechLevelBy1(String playerName) {
+        playerInfos.get(playerName).upgradeTechLevelBy1();
+    }
+
+    /**
+     * Try upgrade a player's tech level using an upgrade tech order.
+     * 
+     * Consumes tech resource.
+     * 
+     * @param upgradeTechOrder is an upgrade tech order
+     * @param playerName is a player's name.
+     */
+    public void upgradePlayerTechLevelBy(UpgradeTechOrder upgradeTechOrder, String playerName) {
+        playerInfos.get(playerName).upgradeTechLevelBy(upgradeTechOrder.getNLevel());
     }
 
     /**
