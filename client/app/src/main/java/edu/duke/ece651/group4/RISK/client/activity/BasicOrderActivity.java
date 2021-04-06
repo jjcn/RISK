@@ -1,7 +1,7 @@
 package edu.duke.ece651.group4.RISK.client.activity;
 
 import android.util.Log;
-import android.view.View;
+import android.view.MenuItem;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,8 +12,8 @@ import edu.duke.ece651.group4.RISK.shared.Territory;
 import java.util.ArrayList;
 import java.util.List;
 
-import static edu.duke.ece651.group4.RISK.client.Constant.UI_MOVE;
 import static edu.duke.ece651.group4.RISK.client.Constant.UI_ATK;
+import static edu.duke.ece651.group4.RISK.client.Constant.UI_MOVE;
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.*;
 import static edu.duke.ece651.group4.RISK.client.utility.Notice.showByToast;
 
@@ -32,6 +32,8 @@ public class BasicOrderActivity extends AppCompatActivity {
     private Spinner typeSpinner;
     private EditText nUnitET;
     private Button commitBT;
+    private SpinnerAdapter desAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,15 +46,25 @@ public class BasicOrderActivity extends AppCompatActivity {
         nUnit = -1;
         actionType = getIntent().getStringExtra(EXTRA_ACTION_TYPE);
 
+        String actionType = getIntent().getStringExtra("actionType");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         impUI();
     }
 
-    private void impUI() {
-        List<Territory> myTerrs = getMyTerritory();
-        List<String> myTerrNames = new ArrayList<>();
-        for (Territory terr : myTerrs) {
-            myTerrNames.add(terr.getName());
+    // back button at toolbar
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
         }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void impUI() {
+        List<String> myTerrNames = getMyTerrNames();
+        List<String> enemyTerrNames = getEnemyTerrNames();
 
         srcSpinner = findViewById(R.id.terrSrc);
         SpinnerAdapter srcAdapter = new ArrayAdapter<>(
@@ -61,11 +73,19 @@ public class BasicOrderActivity extends AppCompatActivity {
                 myTerrNames);
         srcSpinner.setAdapter(srcAdapter);
 
+
         desSpinner = findViewById(R.id.terrDes);
-        SpinnerAdapter desAdapter = new ArrayAdapter<>(
-                BasicOrderActivity.this,
-                R.layout.item_choice,
-                myTerrNames);
+        if(actionType.equals(UI_MOVE)) {
+            desAdapter = new ArrayAdapter<>(
+                    BasicOrderActivity.this,
+                    R.layout.item_choice,
+                    myTerrNames);
+        }else {
+            desAdapter = new ArrayAdapter<>(
+                    BasicOrderActivity.this,
+                    R.layout.item_choice,
+                    enemyTerrNames);
+        }
         desSpinner.setAdapter(desAdapter);
 
         List<String> typeNames = getLevelNames();

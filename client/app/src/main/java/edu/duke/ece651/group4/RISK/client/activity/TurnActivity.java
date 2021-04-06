@@ -62,6 +62,10 @@ public class TurnActivity extends AppCompatActivity {
         impUI();
     }
 
+    /**
+     * overwrite the functions
+     *
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -98,6 +102,7 @@ public class TurnActivity extends AppCompatActivity {
         impWorldInfoRC();
         impNoticeInfoRC();
         impCommitBT();
+        userInfoTV.setText(getPlayerInfo());
     }
 
     private void impWorldInfoRC() {
@@ -107,8 +112,8 @@ public class TurnActivity extends AppCompatActivity {
     }
 
     private void impNoticeInfoRC() {
-        List<String> worldInfo = getWorldInfo();
-        noticesAdapter = new ArrayAdapter<>(TurnActivity.this, R.layout.item_choice, worldInfo);
+        List<String> noticeInfo = new ArrayList<>();
+        noticesAdapter = new ArrayAdapter<>(TurnActivity.this, R.layout.item_choice, noticeInfo);
         noticeInfoRC.setAdapter(noticesAdapter);
     }
 
@@ -129,31 +134,38 @@ public class TurnActivity extends AppCompatActivity {
             }
         });
     }
+
     private void impCommitBT() {
-        commitBT.setClickable(false);
-        Intent intent = new Intent();
-        switch (actionType) {
-            case UI_MOVE:
-            case UI_ATK:
-                intent.setComponent(new ComponentName(TurnActivity.this, BasicOrderActivity.class));
-                intent.putExtra("actionType", actionType);
-                startActivity(intent);
-                break;
-            case UI_UPTROOP:
-                intent.setComponent(new ComponentName(TurnActivity.this, UpgradeActivity.class));
-                startActivity(intent);
-                break;
-            case UI_UPTECH:
-                upgradeTech();
-                break;
-            case UI_DONE:
-                if (isWatch) {
-                    showStayDialog();
+        commitBT.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                commitBT.setClickable(false);
+                Intent intent = new Intent();
+                switch (actionType) {
+                    case UI_MOVE:
+                    case UI_ATK:
+                        intent.setComponent(new ComponentName(TurnActivity.this, BasicOrderActivity.class));
+                        intent.putExtra("actionType", actionType);
+                        startActivity(intent);
+                        break;
+                    case UI_UPTROOP:
+                        intent.setComponent(new ComponentName(TurnActivity.this, UpgradeActivity.class));
+                        startActivity(intent);
+                        break;
+                    case UI_UPTECH:
+                        upgradeTech();
+                        actionAdapter.remove(UI_UPTECH); // can only upgrade once in one turn
+                        break;
+                    case UI_DONE:
+                        if (isWatch) {
+                            showStayDialog();
+                        }
+                        waitNextTurn();
+                        break;
                 }
-                waitNextTurn();
-                break;
-        }
-        commitBT.setClickable(true);
+                commitBT.setClickable(true);
+            }
+        });
     }
 
     private void showStayDialog() {
@@ -229,6 +241,8 @@ public class TurnActivity extends AppCompatActivity {
                 userInfoTV.setVisibility(View.GONE);
             }
             userInfoTV.setText(getPlayerInfo());
+            noticesAdapter.notifyDataSetChanged();
+            worldInfoAdapter.notifyDataSetChanged();
             waitDG.cancel();
         });
     }
