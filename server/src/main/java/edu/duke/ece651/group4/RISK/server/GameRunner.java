@@ -21,6 +21,7 @@ public class GameRunner extends Thread{
         this.game = g;
         out = System.out;
     }
+
     /*
      * Run the game
      *   1.1 wait for all users join
@@ -50,7 +51,7 @@ public class GameRunner extends Thread{
                 exit = true;
             }
             try {
-                TimeUnit.SECONDS.sleep(2);
+                TimeUnit.SECONDS.sleep(1);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
