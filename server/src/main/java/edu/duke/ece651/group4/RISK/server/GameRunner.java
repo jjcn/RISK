@@ -1,6 +1,7 @@
 package edu.duke.ece651.group4.RISK.server;
 
 import java.io.PrintStream;
+import java.util.concurrent.TimeUnit;
 
 import static edu.duke.ece651.group4.RISK.server.ServerConstant.GAME_STATE_DONE_UPDATE;
 import static edu.duke.ece651.group4.RISK.server.ServerConstant.GAME_STATE_WAIT_TO_UPDATE;
@@ -38,6 +39,13 @@ public class GameRunner extends Thread{
         }
     }
 
+    protected void sleepForSeconds(int time){
+        try {
+            TimeUnit.SECONDS.sleep(time);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
     @Override
     public void run(){
         out.println("Game runner waits for all players to join");
@@ -57,6 +65,7 @@ public class GameRunner extends Thread{
             game.gameState.updateStateTo(GAME_STATE_DONE_UPDATE);
             game.gameState.setActivePlayersStateToUpdating();
             out.println("Game runner set all active players updating state");
+            sleepForSeconds(2);
             notifyAllUsers(); // notify all players to enter updating state
             out.println("Game runner notifies all players");
             while(!game.gameState.isAllPlayersDoneUpdatingState()){} // wait until all players finish updating their state
