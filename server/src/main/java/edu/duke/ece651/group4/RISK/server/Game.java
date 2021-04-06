@@ -201,7 +201,43 @@ public class Game {
         this.theWorld.doAllBattles();
     }
 
-
+    /*
+     * This function is used to update world with any order received from the Client
+     * @param order is the order from client
+     * @param u is the User who ask for this order
+     * @return exit is the boolean value to check if exit this this action phase
+     * */
+    synchronized protected boolean tryUpdateActionOnWorld(Order order, User u){
+        String userName = u.getUsername();
+        Character action = order.getActionName();
+        boolean exit = false;
+        switch(action){
+            case ATTACK_ACTION:
+                doAttackOnWorld(order, userName);
+                break;
+            case MOVE_ACTION:
+                doMoveOnWorld(order,userName);
+                break;
+            case UPTECH_ACTION:
+                upgradeTechOnWorld(userName);
+                break;
+            case UPTROOP_ACTION:
+                upgradeTroopOnWorld(order, userName);
+                break;
+            case DONE_ACTION:
+                doDoneActionFor(u);
+                exit = true;
+                break;
+            case SWITCH_OUT_ACTION:
+                switchOutUser(u);
+                exit = true;
+                break;
+            default:
+                exit = true; // when user lose the game, server will receive null from client
+                break;
+        }
+        return exit;
+    }
     /*
     *  Those functions below is for gameRunner
     *
@@ -213,6 +249,7 @@ public class Game {
         switch(this.maxNumUsers){
             case 1:
             case 2:
+                this.theWorld = factory.create4TerritoryWorld();
             case 3:
                 this.theWorld = factory.create6TerritoryWorld();
                 break;
@@ -225,7 +262,6 @@ public class Game {
             default:
                 break;
         }
-
         factory.assignTerritories(this.theWorld, getUserNames());
     }
 

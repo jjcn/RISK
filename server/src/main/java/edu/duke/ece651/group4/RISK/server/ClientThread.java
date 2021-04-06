@@ -308,46 +308,11 @@ public class ClientThread extends Thread {
         boolean exit = false;
         while(!exit){
             Order order = (Order) this.theClient.recvObject();
-            exit = tryUpdateActionOnWorld(order,ownerUser);
+            exit = gameOnGoing.tryUpdateActionOnWorld(order,ownerUser);
         }
         out.println("Game" + gameOnGoing.getGameID() + ": Action Phase :  " + ownerUser.getUsername() + "finish action phase");
     }
-    /*
-     * This function is used to update world with any order received from the Client
-     * @param order is the order from client
-     * @param u is the User who ask for this order
-     * @return exit is the boolean value to check if exit this this action phase
-     * */
-    synchronized protected boolean tryUpdateActionOnWorld(Order order, User u){
-        String userName = u.getUsername();
-        Character action = order.getActionName();
-        boolean exit = false;
-        switch(action){
-            case ATTACK_ACTION:
-                gameOnGoing.doAttackOnWorld(order, userName);
-                break;
-            case MOVE_ACTION:
-                gameOnGoing.doMoveOnWorld(order,userName);
-                break;
-            case UPTECH_ACTION:
-                gameOnGoing.upgradeTechOnWorld(userName);
-                break;
-            case UPTROOP_ACTION:
-                gameOnGoing.upgradeTroopOnWorld(order, userName);
-                break;
-            case DONE_ACTION:
-                gameOnGoing.doDoneActionFor(u);
-                exit = true;
-                break;
-            case SWITCH_OUT_ACTION:
-                gameOnGoing.switchOutUser(u);
-                exit = true;
-                break;
-            default:
-                break;
-        }
-        return exit;
-    }
+
     /*
      * 4.2 action phase
      * This mainly update the player state after one turn

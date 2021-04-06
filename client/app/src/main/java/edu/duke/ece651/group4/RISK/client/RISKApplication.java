@@ -1,21 +1,22 @@
 package edu.duke.ece651.group4.RISK.client;
 
-import android.app.Application;
-import android.util.Log;
-import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
-import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
-import edu.duke.ece651.group4.RISK.shared.*;
-import edu.duke.ece651.group4.RISK.shared.message.GameMessage;
-import edu.duke.ece651.group4.RISK.shared.message.LogMessage;
+        import android.app.Application;
+        import android.util.Log;
+        import edu.duke.ece651.group4.RISK.client.listener.onJoinRoomListener;
+        import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
+        import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
+        import edu.duke.ece651.group4.RISK.shared.*;
+        import edu.duke.ece651.group4.RISK.shared.message.GameMessage;
+        import edu.duke.ece651.group4.RISK.shared.message.LogMessage;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+        import java.io.IOException;
+        import java.util.ArrayList;
+        import java.util.HashMap;
+        import java.util.List;
+        import java.util.Random;
 
-import static edu.duke.ece651.group4.RISK.client.Constant.*;
-import static edu.duke.ece651.group4.RISK.shared.Constant.*;
+        import static edu.duke.ece651.group4.RISK.client.Constant.*;
+        import static edu.duke.ece651.group4.RISK.shared.Constant.*;
 
 public class RISKApplication extends Application {
     private static final String TAG = RISKApplication.class.getSimpleName();
@@ -312,10 +313,43 @@ public class RISKApplication extends Application {
     /**
      * Used to send join a game in the list of rooms
      */
-    public static void JoinGame(int gameID, onReceiveListener listenerString, onReceiveListener listenerWorld) {
+    public static void JoinGame(int gameID, onReceiveListener listenerString, onJoinRoomListener listenerWorld) {
         GameMessage m = new GameMessage(GAME_JOIN, gameID, -1);
-        createGameHelper(m, listenerString, listenerWorld);
-//        sendReceiveHelper(gameID,listener,WORLD);
+        try {
+            new Thread(() -> {
+                Log.i(TAG, LOG_FUNC_RUN + "new thread on JoinRoom");
+                Object receivedString = null;
+                try {
+                    playerClient.sendObject(m);
+                    receivedString = playerClient.recvObject();
+                    listenerString.onSuccess(receivedString);
+                } catch (Exception e) {
+                    Log.e(TAG, e.toString());
+                    listenerString.onFailure(e.toString());
+                }
+                if (receivedString == null) {
+                    try {
+                        Object receivedWorld = playerClient.recvObject();
+                        if (receivedWorld instanceof World) {
+                            Log.i(TAG, LOG_FUNC_RUN + "World received");
+                            theWorld = (World) receivedWorld;
+                            String report = theWorld.getReport();
+                            if(report == "") { //new game
+                                listenerWorld.onJoinNew();
+                            }else{
+                                listenerWorld.onBack();
+                            }
+                        } else {
+                            Log.i(TAG, LOG_FUNC_RUN + "not World received");
+                        }
+                    } catch (Exception e) {
+                        Log.e(TAG, e.toString());
+                    }
+                }
+            }).start();
+        }catch (Exception e){
+            Log.e(TAG,e.toString());
+        }
     }
 
     /**

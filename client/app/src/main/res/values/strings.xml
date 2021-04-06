@@ -20,7 +20,11 @@
     <string name="PLACE_INSTRU">You want to place in</string>
     <string name="CHOOSE_INSTRU">"Please input the number you want: "</string>
     <string name="INPUT_NUM_INSTRU">"Please input the number "</string>
-    <string name="COMMIT">COMMIT</string>
+    <string name="SWITCH_OUT">SWITCH</string>
     <string name="CHOOSE_ACTION_INSTRU">Choose action here</string>
     <string name="PLAYERINFO">Player Information:\n</string>
+    <string name="COMMIT">COMMIT</string>
+    <string name="CHOOSE_SRC_INSTRU">"You want to send from: "</string>
+    <string name="CHOOSE_DES_INSTRU">You want to send troop to:</string>
+    <string name="CHOOSE_TYPE_INSTRU">"Choose the type of soldier: "</string>
 </resources>
