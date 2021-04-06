@@ -62,7 +62,6 @@ public class ClientThread extends Thread {
             String action = logMessage.getAction();
 
             if(action.equals(LOG_SIGNIN) ){
-
                 String resIn = tryLogIn(logMessage.getUsername(), logMessage.getPassword());
                 this.theClient.sendObject(resIn);
                 if(resIn == null){
@@ -173,7 +172,7 @@ public class ClientThread extends Thread {
         GameRunner gameRunner = new GameRunner(gameOnGoing,out);
         gameOnGoing.addUser(ownerUser);
         gameRunner.start();
-        out.println(ownerUser.getUsername() + " creates a game" + gameOnGoing.getGameID() + "successfully and the number of the game support is " + gameOnGoing.getMaxNumUsers());
+        out.println(ownerUser.getUsername() + " creates a game" + gameOnGoing.getGameID() + " successfully and the number of the game support is " + gameOnGoing.getMaxNumUsers());
         return null;
     }
 
@@ -199,9 +198,7 @@ public class ClientThread extends Thread {
             out.println(ownerUser.getUsername() + " switches in  game " + gameToJoin.getGameID() + " AGAIN");
         }
         gameOnGoing = gameToJoin;
-//        this.theClient.sendObject(gameOnGoing.getTheWorld()); // send world to user
         out.println(gameOnGoing.getGameID() + " has " + gameOnGoing.getUserNames().size() );
-        out.println(gameOnGoing.getGameID()  + "is full? :" + gameOnGoing.isFull());
         return null;
     }
 
@@ -235,6 +232,7 @@ public class ClientThread extends Thread {
         ArrayList<RoomInfo> roomsInfo = new ArrayList<RoomInfo>();
         for(Game g : games){
             if(g.gameState.isAlive()){
+                out.println("Game"+ g.getGameID() + " is active and should be shown in room list");
                 roomsInfo.add(createARoomInfo(g));
             }
         }
@@ -245,26 +243,20 @@ public class ClientThread extends Thread {
     }
 
 
-
-
     /*
      * Part3
      * place units for a new game
      * */
     protected void tryPlaceUnits(){
+        out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " Place Units Phase");
         if(gameOnGoing.gameState.isDonePlaceUnits()){
             return;
         }
-        out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " wait to place units");
         // wait all players to join and runner to set up the game
         waitNotifyFromRunner();
-        out.println("Game" + gameOnGoing.getGameID() + ": "+ ownerUser.getUsername()+ ": get notify from runner");
         // send the world info
         this.theClient.sendObject(gameOnGoing.getTheWorld());
-        if(gameOnGoing.getTheWorld() != null){
-            out.println("This world is not null");
-        }
-        out.println("Game" + gameOnGoing.getGameID() + ": send world to" + ownerUser.getUsername() + "wait for orders" );
+        out.println("Game" + gameOnGoing.getGameID() + ": send world to " + ownerUser.getUsername() + " wait for orders" );
         // start to place Units
         List<PlaceOrder> placeOrders = (List<PlaceOrder> )this.theClient.recvObject();
         for(PlaceOrder p: placeOrders){
@@ -273,7 +265,7 @@ public class ClientThread extends Thread {
         out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " finishes placing units and wait for others");
         // wait all players to finish placeUnits
         gameOnGoing.barrierWait();
-        gameOnGoing.gameState.setDonePlaceUnits();
+        gameOnGoing.gameState.setDonePlaceUnits(); // if user joins back, he does not need to do place unit phase
     }
 
 
@@ -293,7 +285,6 @@ public class ClientThread extends Thread {
         doActionPhaseOneTurn();
         out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " wait for runner update the world");
         while(!gameOnGoing.gameState.isDoneUpdateGame()){}
-        out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " wait for runner set updating state");
         waitNotifyFromRunner();
         updatePlayerStateOneTurn();
     }
@@ -304,13 +295,11 @@ public class ClientThread extends Thread {
     * */
     protected void doActionPhaseOneTurn(){
         this.theClient.sendObject(gameOnGoing.getTheWorld());
-        out.println("Game" + gameOnGoing.getGameID() + ": Action Phase :  " + ownerUser.getUsername() + " get the world to do action phase");
         boolean exit = false;
         while(!exit){
             Order order = (Order) this.theClient.recvObject();
             exit = gameOnGoing.tryUpdateActionOnWorld(order,ownerUser);
         }
-        out.println("Game" + gameOnGoing.getGameID() + ": Action Phase :  " + ownerUser.getUsername() + "finish action phase");
     }
 
     /*
@@ -331,6 +320,11 @@ public class ClientThread extends Thread {
             out.println("Game" + gameOnGoing.getGameID() + ": Checking Phase :  " + ownerUser.getUsername() + " loses");
             gameOnGoing.gameState.changAPlayerStateTo(ownerUser, PLAYER_STATE_LOSE);
         }
+        else if(gameOnGoing.isEndGame()){
+            out.println("Game" + gameOnGoing.getGameID() + ": Checking Phase :  game END!!!! and winner is " + gameOnGoing.getTheWorld().getWinner() );
+            gameOnGoing.switchOutUser(ownerUser);
+            gameOnGoing = null;
+        }
         else{
             out.println("Game" + gameOnGoing.getGameID() + ": Checking Phase :  " + ownerUser.getUsername() + " go back to do action");
             gameOnGoing.gameState.changAPlayerStateTo(ownerUser, PLAYER_STATE_ACTION_PHASE);
@@ -343,7 +337,9 @@ public class ClientThread extends Thread {
     public void waitNotifyFromRunner(){
         try {
             synchronized (gameOnGoing){
+                out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " wait for runner's notify");
                 gameOnGoing.wait();
+                out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " get notify from runner");
             }
         } catch (InterruptedException e) {
             e.printStackTrace();

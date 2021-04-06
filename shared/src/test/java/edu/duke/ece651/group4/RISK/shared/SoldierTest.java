@@ -3,6 +3,7 @@ package edu.duke.ece651.group4.RISK.shared;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.EOFException;
+import java.util.ArrayList;
 import java.util.Random;
 import org.junit.jupiter.api.Test;
 
