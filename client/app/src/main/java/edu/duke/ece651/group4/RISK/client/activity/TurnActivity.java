@@ -50,6 +50,8 @@ public class TurnActivity extends AppCompatActivity {
     private boolean isWatch; // turn to true after lose game.
     private WaitDialog waitDG;
 
+    private static final String EXTRA_ACTION_TYPE = "actionType"; // intent extra key
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -146,12 +148,6 @@ public class TurnActivity extends AppCompatActivity {
                 // nothing
             }
         });
-            /*
-            chooseActionSP.setOnItemClickListener((parent, view, position, id) -> {
-                actionType = actionAdapter.getItem(position);
-                impCommit();
-            });
-            */
     }
     private void impCommit() {
         // commitBT.setClickable(false);
@@ -160,7 +156,7 @@ public class TurnActivity extends AppCompatActivity {
             case UI_MOVE:
             case UI_ATK:
                 intent.setComponent(new ComponentName(TurnActivity.this, BasicOrderActivity.class));
-                intent.putExtra("actionType", actionType);
+                intent.putExtra(EXTRA_ACTION_TYPE, actionType);
                 startActivity(intent);
                 break;
             case UI_UPTROOP:

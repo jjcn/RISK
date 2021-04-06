@@ -1,6 +1,7 @@
 package edu.duke.ece651.group4.RISK.client.activity;
 
 import android.util.Log;
+import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,25 +12,38 @@ import edu.duke.ece651.group4.RISK.shared.Territory;
 import java.util.ArrayList;
 import java.util.List;
 
+import static edu.duke.ece651.group4.RISK.client.Constant.UI_MOVE;
+import static edu.duke.ece651.group4.RISK.client.Constant.UI_ATK;
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.*;
 import static edu.duke.ece651.group4.RISK.client.utility.Notice.showByToast;
 
 public class BasicOrderActivity extends AppCompatActivity {
     private final String TAG = this.getClass().getSimpleName();
-    private String src; // source territory name
-    private String des; // destination territory name
-    private String type; // unit type name
-    private int num; // number of units in action
+    private String srcName; // source territory name
+    private String desName; // destination territory name
+    private String typeName; // unit type name
+    private int nUnit; // number of units in action
+    private String actionType; // type of action, move or attack
+
+    private static final String EXTRA_ACTION_TYPE = "actionType"; // intent extra key
+
+    private Spinner srcSpinner;
+    private Spinner desSpinner;
+    private Spinner typeSpinner;
+    private EditText nUnitET;
+    private Button commitBT;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_basic_order);
 
-        src = "";
-        des = "";
-        type = "";
-        num = -1;
+        srcName = "";
+        desName = "";
+        typeName = "";
+        nUnit = -1;
+        actionType = getIntent().getStringExtra(EXTRA_ACTION_TYPE);
+
         impUI();
     }
 
@@ -40,46 +54,82 @@ public class BasicOrderActivity extends AppCompatActivity {
             myTerrNames.add(terr.getName());
         }
 
-        Spinner srcChoices = findViewById(R.id.terrSrc);
-        SpinnerAdapter srcAdapter = new ArrayAdapter<>(BasicOrderActivity.this, R.layout.item_choice, myTerrNames);
-        srcChoices.setAdapter(srcAdapter);
+        srcSpinner = findViewById(R.id.terrSrc);
+        SpinnerAdapter srcAdapter = new ArrayAdapter<>(
+                BasicOrderActivity.this,
+                R.layout.item_choice,
+                myTerrNames);
+        srcSpinner.setAdapter(srcAdapter);
 
-        Spinner desChoices = findViewById(R.id.terrDes);
-        SpinnerAdapter desAdapter = new ArrayAdapter<>(BasicOrderActivity.this, R.layout.item_choice, myTerrNames);
-        desChoices.setAdapter(desAdapter);
+        desSpinner = findViewById(R.id.terrDes);
+        SpinnerAdapter desAdapter = new ArrayAdapter<>(
+                BasicOrderActivity.this,
+                R.layout.item_choice,
+                myTerrNames);
+        desSpinner.setAdapter(desAdapter);
 
-        Spinner typeChoices = findViewById(R.id.soldierType);
-        SpinnerAdapter typeAdapter = new ArrayAdapter<>(BasicOrderActivity.this, R.layout.item_choice, myTerrNames);
-        typeChoices.setAdapter(typeAdapter);
+        List<String> typeNames = getLevelNames();
+        typeSpinner = findViewById(R.id.soldierType);
+        SpinnerAdapter typeAdapter = new ArrayAdapter<>(
+                BasicOrderActivity.this,
+                R.layout.item_choice,
+                typeNames);
+        typeSpinner.setAdapter(typeAdapter);
 
-        Button commitBT = findViewById(R.id.commit_button);
-        commitBT.setOnClickListener(v->{
-            srcChoices.setOnItemClickListener((parent, view, position, id) -> {
-                src = (String) srcAdapter.getItem(position);
+        nUnitET = findViewById(R.id.numUnit);
+
+        commitBT = findViewById(R.id.commit_button);
+        commitBT.setOnClickListener(v -> {
+            srcSpinner.setOnItemClickListener((parent, view, position, id) -> {
+                srcName = (String) srcAdapter.getItem(position);
             });
-            desChoices.setOnItemClickListener((parent, view, position, id) -> {
-                des = (String) desAdapter.getItem(position);
+            desSpinner.setOnItemClickListener((parent, view, position, id) -> {
+                desName = (String) desAdapter.getItem(position);
             });
-            typeChoices.setOnItemClickListener((parent, view, position, id) -> {
-                type = (String) typeAdapter.getItem(position);
+            typeSpinner.setOnItemClickListener((parent, view, position, id) -> {
+                typeName = (String) typeAdapter.getItem(position);
             });
 
-            EditText numIn = findViewById(R.id.numUnit);
-            num = Integer.parseInt(numIn.toString());
+            nUnit = Integer.parseInt(nUnitET.getText().toString());
 
-            String result = doOneMove(buildMoveOrder(src, des, num, type), new onResultListener() {
-                @Override
-                public void onSuccess() { }
-                @Override
-                public void onFailure(String errMsg) {
-                    Log.e(TAG,errMsg);
-                }
-            });
-            if(result == null){
+            if (actionType.equals(UI_ATK)) {
+                buildAttackOrder(srcName, desName, nUnit, typeName);
+            }
+
+            String result = null;
+            if (actionType.equals(UI_MOVE)) {
+                result = doOneMove(buildMoveOrder(srcName, desName, nUnit, typeName),
+                        new onResultListener() {
+                            @Override
+                            public void onSuccess() {
+                            }
+
+                            @Override
+                            public void onFailure(String errMsg) {
+                                Log.e(TAG, errMsg);
+                            }
+                        });
+            }
+            else if (actionType.equals(UI_ATK)) {
+                result = doOneAttack(buildAttackOrder(srcName, desName, nUnit, typeName),
+                        new onResultListener() {
+                            @Override
+                            public void onSuccess() {
+                            }
+
+                            @Override
+                            public void onFailure(String errMsg) {
+                                Log.e(TAG, errMsg);
+                            }
+                        });
+            }
+
+            if (result == null) {
                 finish();
-            }else{
-                showByToast(this,result);
+            } else {
+                showByToast(this, result);
             }
         });
+
     }
 }
