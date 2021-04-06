@@ -133,6 +133,7 @@ public class TurnActivity extends AppCompatActivity {
         List<String> actions = new ArrayList<>(Arrays.asList(UI_MOVE, UI_ATK, UI_UPTECH, UI_UPTROOP, UI_DONE));
         actionAdapter = new ArrayAdapter<>(TurnActivity.this, R.layout.item_choice, actions);
         chooseActionSP.setAdapter(actionAdapter);
+        chooseActionSP.setSelection(0, false);
         chooseActionSP.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

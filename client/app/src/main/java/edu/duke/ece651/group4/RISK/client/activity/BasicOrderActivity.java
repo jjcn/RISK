@@ -8,6 +8,7 @@ import edu.duke.ece651.group4.RISK.client.R;
 import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
 import edu.duke.ece651.group4.RISK.shared.Territory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.*;
@@ -15,10 +16,10 @@ import static edu.duke.ece651.group4.RISK.client.utility.Notice.showByToast;
 
 public class BasicOrderActivity extends AppCompatActivity {
     private final String TAG = this.getClass().getSimpleName();
-    private String src;
-    private String des;
-    private int num;
-    private String type;
+    private String src; // source territory name
+    private String des; // destination territory name
+    private String type; // unit type name
+    private int num; // number of units in action
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,17 +34,22 @@ public class BasicOrderActivity extends AppCompatActivity {
     }
 
     private void impUI() {
-        List<Territory> terrChoices = getMyTerritory();
+        List<Territory> myTerrs = getMyTerritory();
+        List<String> myTerrNames = new ArrayList<>();
+        for (Territory terr : myTerrs) {
+            myTerrNames.add(terr.getName());
+        }
+
         Spinner srcChoices = findViewById(R.id.terrSrc);
-        SpinnerAdapter srcAdapter = new ArrayAdapter<>(BasicOrderActivity.this, R.layout.item_choice, terrChoices);
+        SpinnerAdapter srcAdapter = new ArrayAdapter<>(BasicOrderActivity.this, R.layout.item_choice, myTerrNames);
         srcChoices.setAdapter(srcAdapter);
 
         Spinner desChoices = findViewById(R.id.terrDes);
-        SpinnerAdapter desAdapter = new ArrayAdapter<>(BasicOrderActivity.this, R.layout.item_choice, terrChoices);
+        SpinnerAdapter desAdapter = new ArrayAdapter<>(BasicOrderActivity.this, R.layout.item_choice, myTerrNames);
         desChoices.setAdapter(desAdapter);
 
         Spinner typeChoices = findViewById(R.id.soldierType);
-        SpinnerAdapter typeAdapter = new ArrayAdapter<>(BasicOrderActivity.this, R.layout.item_choice, terrChoices);
+        SpinnerAdapter typeAdapter = new ArrayAdapter<>(BasicOrderActivity.this, R.layout.item_choice, myTerrNames);
         typeChoices.setAdapter(typeAdapter);
 
         Button commitBT = findViewById(R.id.commit_button);
