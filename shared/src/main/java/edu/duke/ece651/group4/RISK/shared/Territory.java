@@ -211,8 +211,11 @@ public class Territory implements Serializable {
 
             String enemy = enemyPlayers.get(diceResult);
             report.append(
-                    "Enemy " + enemy + " fight with " + this.getOwner().getName() + " on " + this.getName() + " \n");
+                    "Enemy " + enemy + " attack " + this.getOwner().getName() + " on " + this.getName() + " \n");
+
             Troop enemyTroop = this.enemyOnTerritory.get(enemy);
+            report.append(enemyTroop.getSummary());
+            report.append(this.ownerTroop.getSummary());
             doOneBattle(enemyTroop);
             enemyPlayers.remove(diceResult);
             report.append(this.getOwner().getName() + " wins the fight and owns " + this.getName() + " \n");

@@ -28,6 +28,8 @@ class GameTest {
         for(int i = 0; i < numUser; i++){
             User u = new User(i,"user" + i,"1234");
             g.addUser(u);
+            World t=new World(4);
+
         }
         return g;
     }
@@ -163,4 +165,6 @@ class GameTest {
 
 
     }
+
+
 }

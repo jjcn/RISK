@@ -327,4 +327,13 @@ public class Troop implements Serializable {
         return target;
     }
 
+    public String getSummary(){
+        StringBuilder report = new StringBuilder();
+        report.append("Troop of "+this.owner.getName()+" with :\n");
+        for(String s:this.dict.keySet()){
+            report.append(s+" : "+dict.get(s)+"\n");
+        }
+        return report.toString();
+    }
+
 }
