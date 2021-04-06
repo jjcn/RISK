@@ -6,6 +6,9 @@ import java.io.Serializable;
  * A resource, can be gained or consumed.
  */
 public class Resource implements Serializable {
+    /**
+     * Auto-generated serial version UID
+     */
     protected static final long serialVersionUID = 10L;
     /**
      * Name of the resource.
@@ -20,12 +23,12 @@ public class Resource implements Serializable {
     /**
      * Error mesages
      */
-    final String NEG_MSG = String.format(
-        "Error: %s resource's gain and consume input value shall be non-negative.",
-        name);
-    final String NEG_AFTER_CONSUME_MSG = String.format(
-        "Error: %s resource's quantity will be negative after this consumption.",
-        name);
+    final String NEG_MSG = 
+        "Error: %s resource's gain and consume input value shall be non-negative.";
+
+    final String NEG_AFTER_CONSUME_MSG =
+        "Error: quantity of %s resource will be negative after this consumption.";
+       
 
     public Resource(String name) {
         this(name, 0);
@@ -62,7 +65,8 @@ public class Resource implements Serializable {
     public void consume(int consumption) {
         checkNonNegative(consumption);
         if (quantity - consumption < 0) {
-            throw new IllegalArgumentException(NEG_AFTER_CONSUME_MSG);
+            throw new IllegalArgumentException(
+                String.format(NEG_AFTER_CONSUME_MSG, name));
         } 
         quantity -= consumption;
     }

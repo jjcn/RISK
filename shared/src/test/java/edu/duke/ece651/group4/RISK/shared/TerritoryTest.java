@@ -13,7 +13,7 @@ class TerritoryTest {
     void Test_sendTroop() throws IOException {
         Player p1 = new TextPlayer(null, null, "p1");
         Territory test= new Territory("test");
-        test.initializeTerritory(5,p1);
+        test.setOwnerTroop(5,p1);
         test.sendInTroop(new Troop(5,p1));
         assertEquals(test.checkPopulation(),10);
         test.sendOutTroop(new Troop(4,p1));
@@ -27,7 +27,7 @@ class TerritoryTest {
     void Test_addUnit() {
         Player p1 = new TextPlayer(null, null, "p1");
         Territory test= new Territory("test");
-        test.initializeTerritory(5,p1);
+        test.setOwnerTroop(5,p1);
         test.addUnit(5);
         assertEquals(test.checkPopulation(),10);
     }
@@ -36,7 +36,7 @@ class TerritoryTest {
     void Test_initializeTerritory() {
         Territory test= new Territory("test");
         Player p1 = new TextPlayer(null, null, "p1");
-        test.initializeTerritory(5,p1);
+        test.setOwnerTroop(5,p1);
         assertEquals(test.checkPopulation(),5);
     }
 
