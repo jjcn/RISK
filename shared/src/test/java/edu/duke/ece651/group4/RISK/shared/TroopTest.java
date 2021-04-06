@@ -1,5 +1,6 @@
 package edu.duke.ece651.group4.RISK.shared;
 
+import static edu.duke.ece651.group4.RISK.shared.Constant.UNIT_NAMES;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
@@ -134,9 +135,19 @@ public class TroopTest {
     @Test
     public void Test_clone() {
         Random rnd = new Random(0);
-        Troop test = new Troop(4, new TextPlayer("test"), rnd);
+        Troop test = new Troop(5, new TextPlayer("test"), rnd);
         Troop clone = test.clone();
         assertEquals(test.checkTroopSize(), clone.checkTroopSize());
+
+
+        test.dispatchCertainUnit(UNIT_NAMES.get(0));
+        test.dispatchCertainUnit(UNIT_NAMES.get(0));
+        test.dispatchCertainUnit(UNIT_NAMES.get(0));
+        test.dispatchCertainUnit(UNIT_NAMES.get(0));
+        test.dispatchCertainUnit(UNIT_NAMES.get(0));
+
+
+
     }
     
 }
