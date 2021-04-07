@@ -331,7 +331,7 @@ public class ClientThread extends Thread {
      * else, change state to PLAYER_STATE_ACTION_PHASE
      * */
     protected void updatePlayerStateOneTurn(){
-        this.theClient.sendObject(gameOnGoing.getTheWorld()); // send world to client after runner finishes one turn
+        // send world to client after runner finishes one turn
         //Go back to Games Page (Part2)
         if(gameOnGoing.gameState.getAPlayerState(ownerUser).equals(PLAYER_STATE_SWITCH_OUT)){
             out.println("Game" + gameOnGoing.getGameID() + ": Checking Phase :  " + ownerUser.getUsername() + " Switches Out");

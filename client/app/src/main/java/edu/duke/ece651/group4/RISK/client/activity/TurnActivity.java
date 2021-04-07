@@ -301,8 +301,7 @@ public class TurnActivity extends AppCompatActivity {
                     worldInfo.clear();
                     worldInfo.addAll(getWorldInfo());
                     worldInfoAdapter.notifyDataSetChanged();
-                    waitDG.dismiss();
-                    commitBT.setClickable(true);
+                    waitDG.cancel();
                     refreshGS.setRefreshing(false);
                 }
         );
