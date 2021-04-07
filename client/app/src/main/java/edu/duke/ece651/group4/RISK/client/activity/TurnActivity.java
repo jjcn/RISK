@@ -179,31 +179,42 @@ public class TurnActivity extends AppCompatActivity {
                 case UI_ATK:
                     intent.setComponent(new ComponentName(TurnActivity.this, BasicOrderActivity.class));
                     bundle.putSerializable("actionType", actionType);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
                     break;
                 case UI_UPTROOP:
                     intent.setComponent(new ComponentName(TurnActivity.this, UpgradeActivity.class));
+                    startActivity(intent);
                     break;
                 case UI_UPTECH:
-                    // showConfirmDialog();
                     upgradeTech();
                     break;
                 case UI_DONE:
                     if (isWatch) {
                         showStayDialog();
                     }
-                    waitNextTurn();
+                    showConfirmDialog();
                     break;
                 default:
                     throw new IllegalStateException("Unexpected value: " + actionType);
             }
-            Log.i(TAG, LOG_FUNC_RUN + "after action activity");
-            intent.putExtras(bundle);
             commitBT.setClickable(true);
-            startActivity(intent);
-            Log.i(TAG, LOG_FUNC_RUN + "before refresh");
             updateAfterTurn();
         });
     }
+
+    private void showConfirmDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(TurnActivity.this);
+        builder.setTitle(CONFIRM);
+        builder.setMessage(CONFIRM_ACTION);
+        builder.setPositiveButton("Yes", (dialog, which) -> {
+            waitNextTurn();
+        });
+        builder.setNegativeButton("No", (dialog, which) -> {
+        });
+        builder.show();
+    }
+
 
     private void showStayDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(TurnActivity.this);

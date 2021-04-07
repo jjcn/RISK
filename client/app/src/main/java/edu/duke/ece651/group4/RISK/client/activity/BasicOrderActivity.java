@@ -35,9 +35,6 @@ public class BasicOrderActivity extends AppCompatActivity {
     private Button commitBT;
     private SpinnerAdapter desAdapter;
 
-//    private ArrayAdapter<String> worldInfoAdapter;
-//    private ArrayAdapter<String> noticesAdapter;
-//    private TextView userInfoTV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,9 +56,6 @@ public class BasicOrderActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null){
             actionType = bundle.getString(EXTRA_ACTION_TYPE);
-//            userInfoTV = (TextView) bundle.getSerializable(USER_INFO_TV);
-//            noticesAdapter = (ArrayAdapter<String>) bundle.getSerializable(NOTICE_ADP);
-//            worldInfoAdapter = (ArrayAdapter<String>) bundle.getSerializable(WORLD_INFO_ADP);
         }
 
         String actionType = getIntent().getStringExtra("actionType");

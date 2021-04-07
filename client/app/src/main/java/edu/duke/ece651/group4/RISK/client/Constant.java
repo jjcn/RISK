@@ -27,6 +27,8 @@ public class Constant {
     public static final String TURN_END = "All players have commit their actions";
     public static final String LOSE_MSG = "Sorry, you lose~";
     public static final String STAY_INSTR = "Do you want to stay in this room?";
+    public static final String CONFIRM = "Do you want to finish this turn?";
+    public static final String CONFIRM_ACTION = "(You cannot perform action this turn if choose yes.)";
 
     public static final String UI_MOVE = "Move";
     public static final String UI_DONE = "Done";
