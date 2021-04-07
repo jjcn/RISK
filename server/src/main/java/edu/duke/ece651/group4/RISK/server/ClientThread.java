@@ -289,19 +289,19 @@ public class ClientThread extends Thread {
         }
         doActionPhaseOneTurn();
         out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " wait for runner update the world");
-//        boolean exit = false;
-//        while(!exit){
-//            if(!gameOnGoing.gameState.isDoneUpdateGame()){
-//                exit = true;
-//            }
-//            try {
-//                TimeUnit.SECONDS.sleep(1);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
+        boolean exit = false;
+        while(!exit){
+            if(!gameOnGoing.gameState.isDoneUpdateGame()){
+                exit = true;
+            }
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
 
-        while(!gameOnGoing.gameState.isDoneUpdateGame()){gameOnGoing.waitTime(1);}
+//        while(!gameOnGoing.gameState.isDoneUpdateGame()){gameOnGoing.waitTime(1);}
         out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " knows world is updated");
 
         waitNotifyFromRunner();
@@ -331,7 +331,6 @@ public class ClientThread extends Thread {
      * else, change state to PLAYER_STATE_ACTION_PHASE
      * */
     protected void updatePlayerStateOneTurn(){
-        // send world to client after runner finishes one turn
         //Go back to Games Page (Part2)
         if(gameOnGoing.gameState.getAPlayerState(ownerUser).equals(PLAYER_STATE_SWITCH_OUT)){
             out.println("Game" + gameOnGoing.getGameID() + ": Checking Phase :  " + ownerUser.getUsername() + " Switches Out");
