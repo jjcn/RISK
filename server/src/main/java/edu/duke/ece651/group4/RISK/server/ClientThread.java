@@ -312,9 +312,10 @@ public class ClientThread extends Thread {
     * This does action phase for one turn
     * */
     protected void doActionPhaseOneTurn(){
-        this.theClient.sendObject(gameOnGoing.getTheWorld());
+
         boolean exit = false;
         while(!exit){
+            this.theClient.sendObject(gameOnGoing.getTheWorld());
             Order order = (Order) this.theClient.recvObject();
             out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " has a order: " + order.getActionName());
             exit = gameOnGoing.tryUpdateActionOnWorld(order,ownerUser);
