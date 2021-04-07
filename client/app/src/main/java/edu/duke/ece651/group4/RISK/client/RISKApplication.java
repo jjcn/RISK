@@ -481,7 +481,7 @@ public class RISKApplication extends Application {
      */
     public static String doSoliderUpgrade(UpgradeTroopOrder order, onResultListener listener) {
         try {
-            UpgradeTroopOrder tmp=new UpgradeTroopOrder(order.getSrcName(),order.getLevelBefore(),order.getLevelAfter(),UPTROOP_ACTION);
+            UpgradeTroopOrder tmp=new UpgradeTroopOrder(order.getSrcName(),order.getLevelBefore(),order.getLevelAfter(),order.getNUnit());
             theWorld.upgradeTroop(order, userName);
             send(tmp, listener);
         } catch (Exception e) {
