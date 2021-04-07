@@ -491,7 +491,6 @@ public class RISKApplication extends Application {
     }
 
 
-
     /**
      * Used to send an tech level upgrade order
      */

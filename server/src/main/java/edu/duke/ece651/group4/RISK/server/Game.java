@@ -185,6 +185,7 @@ public class Game {
     synchronized protected void upgradeTroopOnWorld(Order order, String userName){
         UpgradeTroopOrder upgradeOrder = (UpgradeTroopOrder) order;
         try{
+            out.println(upgradeOrder.getActionName()+" upgrade from " + upgradeOrder.getLevelBefore() + " to " + upgradeOrder.getLevelAfter());
             theWorld.upgradeTroop(upgradeOrder, userName);
             out.println(upgradeOrder.getActionName()+upgradeOrder.getLevelAfter());
         } catch (Exception e) {
@@ -242,6 +243,8 @@ public class Game {
     * */
     public void updateGameAfterOneTurn(){
         this.theWorld.doAllBattles();
+        this.theWorld.allPlayersGainResources();
+        this.theWorld.addUnitToAll(1);
     }
 
     /*

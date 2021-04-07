@@ -157,7 +157,7 @@ public class RoomActivity extends AppCompatActivity {
         final String[] numbers = new String[]{"2", "3", "4", "5"};
         builder.setItems(numbers, (dialog, which) -> {
             numUser = Integer.parseInt(numbers[which]);
-            numUser = 1;
+            // numUser = 1;
             create();
         });
         builder.show();
