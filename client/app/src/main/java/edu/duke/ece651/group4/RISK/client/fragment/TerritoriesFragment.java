@@ -4,14 +4,21 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.ScrollView;
 
 import androidx.fragment.app.Fragment;
 import edu.duke.ece651.group4.RISK.client.R;
+import edu.duke.ece651.group4.RISK.client.activity.TurnActivity;
+
+import java.util.List;
+
+import static edu.duke.ece651.group4.RISK.client.RISKApplication.getWorldInfo;
 
 public class TerritoriesFragment extends Fragment {
-    private ScrollView mTerritoriesScrollView;
+    private ListView mTerritoriesListView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -21,9 +28,11 @@ public class TerritoriesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_territories, container, false);
+        mTerritoriesListView = v.findViewById(R.id.territories_list_view);
 
-        mTerritoriesScrollView = v.findViewById(R.id.territories_scroll_view);
-
+        List<String> worldInfo = getWorldInfo();
+        ArrayAdapter<String> worldInfoAdapter = new ArrayAdapter<>(getActivity(), R.layout.item_choice, worldInfo);
+        mTerritoriesListView.setAdapter(worldInfoAdapter);
         return v;
     }
 }

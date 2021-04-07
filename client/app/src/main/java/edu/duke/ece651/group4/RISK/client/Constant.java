@@ -35,6 +35,10 @@ public class Constant {
     public static final String UI_UPTECH = "Upgrade Max tech";
     public static final String UI_SWITCH_OUT = "SwitchOut";
 
+    public static final String USER_INFO_TV = "userInfoTV";
+    public static final String NOTICE_ADP = "noticeAdapter";
+    public static final String WORLD_INFO_ADP= "worldInfoAdapter";
+
     //**************check receive type***************//
     public static final String WORLD = "world";
     public static final String ROOMS = "roomInfo";
