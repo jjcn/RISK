@@ -50,7 +50,7 @@ public class TurnActivity extends AppCompatActivity {
     private List<String> worldInfo;
     private List<String> noticeInfo;
 
-
+    private int nTurn; // current turn number
     private String actionType;
     private boolean isWatch; // turn to true after lose game.
     private WaitDialog waitDG;
@@ -63,6 +63,7 @@ public class TurnActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
+        nTurn = 1;
         actionType = UI_MOVE; // default: move
         isWatch = false;
         waitDG = new WaitDialog(TurnActivity.this);
@@ -262,7 +263,7 @@ public class TurnActivity extends AppCompatActivity {
                             finish();
                         });
                     }
-                    isWatch = ((World) o).checkLost(getUserName());
+                    isWatch = world.checkLost(getUserName());
                     if (isWatch) {
                         actionType = UI_DONE;
                         runOnUiThread(() -> {
@@ -293,12 +294,15 @@ public class TurnActivity extends AppCompatActivity {
                     Log.i(TAG, LOG_FUNC_RUN + "call update after turn");
                     userInfoTV.setText(getPlayerInfo());
                     noticeInfo.clear();
+                    noticeInfo.add("Turn " + nTurn);
+                    nTurn++;
                     noticeInfo.add(getWorld().getReport());
                     noticesAdapter.notifyDataSetChanged();
                     worldInfo.clear();
                     worldInfo.addAll(getWorldInfo());
                     worldInfoAdapter.notifyDataSetChanged();
-                    waitDG.cancel();
+                    waitDG.dismiss();
+                    commitBT.setClickable(true);
                     refreshGS.setRefreshing(false);
                 }
         );
