@@ -3,15 +3,16 @@ package edu.duke.ece651.group4.RISK.client;
 import java.util.HashMap;
 
 public class Constant {
+    //*************CONSTANTS FOR DEBUG************//
+    public static final boolean DEBUG_MODE = false;
+    public static final boolean SINGLE_TEST = false;
+    public static final int TEST_NUM_USER = 1;
+
     //**************CONSTANTS FOR LOG***************//
     public static final String LOG_CREATE_FAIL = "///////////**** Fail onCreate ****///////////";
     public static final String LOG_CREATE_SUCCESS = "//////////Success onCreate///////////";
     public static final String LOG_FUNC_FAIL = "///////////**** Function Exception ****/////////";
     public static final String LOG_FUNC_RUN = "//////////// Function running ///////////";
-
-    //*************CONSTANTS FOR DEBUG************//
-    public static final boolean DEBUG_MODE = true;
-    public static final int TEST_NUM_USER = 1;
 
     //*************FOR USAGE IN CODE**************//
     public static final String SUCCESS_SIGNUP = "Sign up a new account successfully";

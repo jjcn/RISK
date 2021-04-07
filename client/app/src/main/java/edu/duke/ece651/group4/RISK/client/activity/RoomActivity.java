@@ -146,7 +146,9 @@ public class RoomActivity extends AppCompatActivity {
         createBT.setOnClickListener(v -> {
             createBT.setClickable(false);
             chooseNumUser();
-            // int numUser = TEST_NUM_USER;
+            if(SINGLE_TEST) {
+                numUser = TEST_NUM_USER;
+            }
             Log.i(TAG, LOG_FUNC_RUN + "before create game.");
         });
     }
