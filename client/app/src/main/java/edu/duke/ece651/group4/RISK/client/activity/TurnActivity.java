@@ -44,12 +44,13 @@ public class TurnActivity extends AppCompatActivity {
     private ArrayAdapter<String> actionAdapter;
     private ListView noticeInfoRC;
     private ArrayAdapter<String> noticesAdapter;
-    private TextView userInfoTV;
+    private ListView userInfoTV;
+    private ArrayAdapter<String> userInfoAdapter;
     private ImageView mapIV;
     private SwipeRefreshLayout refreshGS;
     private List<String> worldInfo;
     private List<String> noticeInfo;
-
+    private List<String> userInfo;
 
     private String actionType;
     private boolean isWatch; // turn to true after lose game.
@@ -128,9 +129,15 @@ public class TurnActivity extends AppCompatActivity {
         impActionSpinner();
         impWorldInfoRC();
         impNoticeInfoRC();
+        impUserInfoRC();
         impCommitBT();
         impSwipeFresh();
-        userInfoTV.setText(getPlayerInfo());
+    }
+
+    private void impUserInfoRC() {
+        userInfo = getWorldInfo();
+        userInfoAdapter = new ArrayAdapter<>(TurnActivity.this, R.layout.item_choice, userInfo);
+        worldInfoRC.setAdapter(worldInfoAdapter);
     }
 
     private void impSwipeFresh() {
@@ -173,7 +180,7 @@ public class TurnActivity extends AppCompatActivity {
             Intent intent = new Intent();
             Bundle bundle = new Bundle();
 
-            Log.i(TAG, LOG_FUNC_RUN + "commitBT");
+            Log.e(TAG, LOG_FUNC_RUN + "commitBT");
             switch (actionType) {
                 case UI_MOVE:
                 case UI_ATK:
@@ -190,6 +197,7 @@ public class TurnActivity extends AppCompatActivity {
                     upgradeTech();
                     break;
                 case UI_DONE:
+                    Log.i(TAG,LOG_FUNC_RUN+"iswatch"+isWatch);
                     if (isWatch) {
                         showStayDialog();
                     }
@@ -204,10 +212,12 @@ public class TurnActivity extends AppCompatActivity {
     }
 
     private void showConfirmDialog() {
+        Log.i(TAG,LOG_FUNC_RUN+"enter confirm");
         AlertDialog.Builder builder = new AlertDialog.Builder(TurnActivity.this);
         builder.setTitle(CONFIRM);
         builder.setMessage(CONFIRM_ACTION);
         builder.setPositiveButton("Yes", (dialog, which) -> {
+            Log.i(TAG,LOG_FUNC_RUN+"click yes");
             waitNextTurn();
         });
         builder.setNegativeButton("No", (dialog, which) -> {
@@ -235,7 +245,9 @@ public class TurnActivity extends AppCompatActivity {
         doOneUpgrade(new onResultListener() {
             @Override
             public void onSuccess() {
-                userInfoTV.setText(getPlayerInfo());
+                userInfo.clear();
+                userInfo.add(getPlayerInfo());
+                userInfoAdapter.notifyDataSetChanged();
                 actionAdapter.remove(UI_UPTECH); // can only upgrade once in one turn
             }
 
@@ -248,12 +260,16 @@ public class TurnActivity extends AppCompatActivity {
 
     // TODO: alert to confirm
     private void waitNextTurn() {
+        Log.i(TAG,LOG_FUNC_RUN+"enter wait next");
         waitDG.show();
+        commitBT.setClickable(false);
+        Log.i(TAG,LOG_FUNC_RUN+"finish wait");
         doDone(new BasicOrder(null, null, null, 'D'), new onReceiveListener() {
             @Override
             public void onSuccess(Object o) {
                 if (o instanceof World) {
                     World world = (World) o;
+                    Log.i(TAG,LOG_FUNC_RUN+"world received");
                     if (world.isGameEnd()) {
                         runOnUiThread(() -> {
                             showByToast(TurnActivity.this, world.getWinner() + "wins the game!");
@@ -262,7 +278,7 @@ public class TurnActivity extends AppCompatActivity {
                             finish();
                         });
                     }
-                    isWatch = ((World) o).checkLost(getUserName());
+                    isWatch = world.checkLost(getUserName());
                     if (isWatch) {
                         actionType = UI_DONE;
                         runOnUiThread(() -> {
@@ -291,14 +307,17 @@ public class TurnActivity extends AppCompatActivity {
                         userInfoTV.setVisibility(View.GONE);
                     }
                     Log.i(TAG, LOG_FUNC_RUN + "call update after turn");
-                    userInfoTV.setText(getPlayerInfo());
+                    noticeInfo.clear();
+                    noticeInfo.add(getPlayerInfo());
                     noticeInfo.clear();
                     noticeInfo.add(getWorld().getReport());
                     noticesAdapter.notifyDataSetChanged();
                     worldInfo.clear();
                     worldInfo.addAll(getWorldInfo());
                     worldInfoAdapter.notifyDataSetChanged();
-                    waitDG.cancel();
+            Log.i(TAG,LOG_FUNC_RUN+"start dismiss");
+                    waitDG.dismiss();
+                    commitBT.setClickable(true);
                     refreshGS.setRefreshing(false);
                 }
         );
