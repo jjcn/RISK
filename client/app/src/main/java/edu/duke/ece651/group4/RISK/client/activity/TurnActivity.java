@@ -50,10 +50,11 @@ public class TurnActivity extends AppCompatActivity {
     private List<String> worldInfo;
     private List<String> noticeInfo;
 
-    private int nTurn; // current turn number
     private String actionType;
     private boolean isWatch; // turn to true after lose game.
     private WaitDialog waitDG;
+
+    List<String> actions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +64,7 @@ public class TurnActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-        nTurn = 1;
+        actions = new ArrayList<>(Arrays.asList(UI_MOVE, UI_ATK, UI_UPTECH, UI_UPTROOP, UI_DONE));
         actionType = UI_MOVE; // default: move
         isWatch = false;
         waitDG = new WaitDialog(TurnActivity.this);
@@ -152,7 +153,6 @@ public class TurnActivity extends AppCompatActivity {
     }
 
     private void impActionSpinner() {
-        List<String> actions = new ArrayList<>(Arrays.asList(UI_MOVE, UI_ATK, UI_UPTECH, UI_UPTROOP, UI_DONE));
         actionAdapter = new ArrayAdapter<>(TurnActivity.this, R.layout.item_choice, actions);
         chooseActionSP.setAdapter(actionAdapter);
         chooseActionSP.setSelection(0, false);
@@ -294,8 +294,6 @@ public class TurnActivity extends AppCompatActivity {
                     Log.i(TAG, LOG_FUNC_RUN + "call update after turn");
                     userInfoTV.setText(getPlayerInfo());
                     noticeInfo.clear();
-                    noticeInfo.add("Turn " + nTurn);
-                    nTurn++;
                     noticeInfo.add(getWorld().getReport());
                     noticesAdapter.notifyDataSetChanged();
                     worldInfo.clear();

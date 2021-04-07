@@ -448,11 +448,19 @@ public class WorldTest {
     } 
 
     @Test
-    public void testUpgradeTechLevelValid() {
+    public void testUpgradeTechLevel() {
         World world = createWorldAndRegister(troopsSeparated);
         assertEquals(1, world.getPlayerInfoByName("red").getTechLevel());
         world.upgradePlayerTechLevelBy1("red");
         assertEquals(2, world.getPlayerInfoByName("red").getTechLevel());
+    }
+
+    @Test
+    public void testUpgradeTechLevelExceedMax() {
+        World world = createWorldAndRegister(troopsSeparated);
+        world.registerPlayer(new PlayerInfo("test", 99999, 99999));
+        assertThrows(IllegalArgumentException.class,
+                () -> world.upgradePlayerTechLevelBy(new UpgradeTechOrder(6),"test"));
     }
 
     @Test
