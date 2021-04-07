@@ -28,6 +28,8 @@ public class RISKApplication extends Application {
     static ArrayList<RoomInfo> roomInfo;
     static String userName;
     static int currentRoomSize;
+    static UpgradeTechOrder techOrder;
+    static onResultListener techListener;
 
 
     @Override
@@ -44,6 +46,8 @@ public class RISKApplication extends Application {
         this.theWorld = null;
         this.totalPopulation = 15;
         this.rnd = new Random();
+        this.techOrder=null;
+        this.techListener=null;
         this.roomInfo = new ArrayList<>();
         this.userName=null;
         this.currentRoomSize=0;
@@ -423,6 +427,8 @@ public class RISKApplication extends Application {
 
             MoveOrder tmp=new MoveOrder(order.getSrcName(),order.getDesName(),order.getActTroop().clone(),MOVE_ACTION);
             theWorld.moveTroop(order, userName);
+            Log.e(TAG, theWorld.findTerritory(order.getSrcName()).getInfo());
+            Log.e(TAG, theWorld.findTerritory(order.getDesName()).getInfo());
 
             send(tmp, listener);
         } catch (Exception e) {
@@ -486,13 +492,15 @@ public class RISKApplication extends Application {
      * Used to send an tech level upgrade order
      */
     public static String doOneUpgrade(onResultListener listener) {
-        UpgradeTechOrder order = new UpgradeTechOrder(1);
-        try {
-            theWorld.upgradePlayerTechLevelBy1(userName);
-            send(order, listener);
-        } catch (Exception e) {
-            return e.getMessage();
-        }
+        techOrder=new UpgradeTechOrder(1);
+        techListener=listener;
+//        UpgradeTechOrder order =
+//        try {
+//            theWorld.upgradePlayerTechLevelBy1(userName);
+//            send(order, listener);
+//        } catch (Exception e) {
+//            return e.getMessage();
+//        }
         return null;
     }
 
@@ -500,7 +508,17 @@ public class RISKApplication extends Application {
      * Used to send an done order
      */
     public static void doDone(Order order, onReceiveListener listener) {
+        if(techOrder!=null){
+           try {
+            theWorld.upgradePlayerTechLevelBy1(userName);
+            send(techOrder, techListener);
+            } catch (Exception e) {
+               Log.e(TAG, e.getMessage());
+            }
+        }
         sendReceiveHelper(order, listener, WORLD);
+        techOrder=null;
+        techListener=null;
     }
 
     public static boolean checkLost() {
