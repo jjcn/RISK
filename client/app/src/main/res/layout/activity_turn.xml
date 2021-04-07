@@ -62,7 +62,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/hguide2" />
 
-    <TextView
+    <ListView
             android:id="@+id/playerInfo"
             android:background="@drawable/border"
             app:layout_constraintStart_toStartOf="@id/vguide1"

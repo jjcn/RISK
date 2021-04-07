@@ -1,5 +1,6 @@
 package edu.duke.ece651.group4.RISK.client.activity;
 
+import android.text.Editable;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -134,9 +135,16 @@ public class UpgradeActivity extends AppCompatActivity {
         // commit button
         Button commitBT = findViewById(R.id.commit_button);
         commitBT.setOnClickListener(v -> {
-            nUnit = Integer.parseInt(nUnitET.getText().toString());
 
-            Log.d(TAG, String.format("User selected: upgrade %d units from \"%s\" to \"%s\".",
+            Editable text = nUnitET.getText();
+            if(text == null){
+                return;
+            }else if(text.toString()==""){
+                showByToast(UpgradeActivity.this,"Please input the number.");
+                return;
+            }
+            nUnit = Integer.parseInt(text.toString());
+            Log.d(TAG, String.format("User selected: upgrade %d units from \"%s\" to \"%d\".",
                     nUnit, typeNameBefore, typeNameAfter));
             Log.d(TAG, String.format("Upgrade order to be created: upgrade %d units from LV%d to LV%d.",
                     nUnit, levels.get(typeNameBefore), levels.get(typeNameAfter)));
