@@ -33,15 +33,23 @@
             app:srcCompat="@drawable/terrs4"
             android:layout_height="0dp"/>
 
-    <ListView
-            android:id="@+id/terrInfo"
-            android:layout_width="match_parent"
-            android:background="@drawable/border"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/refreshInfo"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/hguide1"
-            app:layout_constraintBottom_toBottomOf="@id/hguide2" android:layout_height="0dp">
-    </ListView>
+            app:layout_constraintBottom_toBottomOf="@id/hguide2" android:layout_height="0dp"
+            android:layout_width="0dp">
+
+        <ListView
+                android:id="@+id/terrInfo"
+                android:layout_width="match_parent"
+                android:background="@drawable/border"
+                 android:layout_height="0dp">
+        </ListView>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
     <ListView
             android:id="@+id/noticeInfo"

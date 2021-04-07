@@ -1,16 +1,21 @@
 package edu.duke.ece651.group4.RISK.client.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.Toast;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import edu.duke.ece651.group4.RISK.client.R;
 import edu.duke.ece651.group4.RISK.client.adapter.RoomAdapter;
+import edu.duke.ece651.group4.RISK.client.listener.onJoinRoomListener;
 import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
 import edu.duke.ece651.group4.RISK.shared.RoomInfo;
 import edu.duke.ece651.group4.RISK.shared.World;
@@ -26,8 +31,11 @@ public class RoomActivity extends AppCompatActivity {
     private final static String TAG = RoomActivity.class.getSimpleName();
 
     private Button createBT;
+    private RecyclerView roomsRC;
     private RoomAdapter roomsAdapt;
     private SwipeRefreshLayout refreshGS;
+    private WaitDialog waitDG;
+    private int numUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +43,10 @@ public class RoomActivity extends AppCompatActivity {
         setContentView(R.layout.activity_room);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        waitDG = new WaitDialog(RoomActivity.this);
+        numUser = 0;
         impUI();
+        Log.i(TAG, LOG_CREATE_SUCCESS);
     }
 
     // back button return to login page kill current one
@@ -49,13 +60,17 @@ public class RoomActivity extends AppCompatActivity {
     }
 
     private void impUI() {
+        createBT = findViewById(R.id.createButton);
+        roomsRC = findViewById(R.id.roomList);
+        refreshGS = findViewById(R.id.refresh);
+
         impCreateBT();
         impRoomList();
         impSwipeFresh();
     }
 
+
     private void impSwipeFresh() {
-        refreshGS = findViewById(R.id.refresh);
         refreshGS.setOnRefreshListener(this::refreshRoom);
     }
 
@@ -63,7 +78,6 @@ public class RoomActivity extends AppCompatActivity {
         refreshGameInfo(new onReceiveListener() {
             @Override
             public void onSuccess(Object o) {
-                Log.i(TAG,LOG_FUNC_RUN+"refresh success");
                 if (o instanceof List) {
                     List<RoomInfo> rooms = (List<RoomInfo>) o;
                     roomsAdapt.setRooms(rooms);
@@ -74,131 +88,134 @@ public class RoomActivity extends AppCompatActivity {
             public void onFailure(String errMsg) {
             }
         });
-        Log.i(TAG,LOG_FUNC_RUN+"after refresh");
-        refreshGS.setRefreshing(false);
-    }
-
-    // for debugging
-    private void pseudoRefreshGameInfo() {
-        ArrayList<String> l = new ArrayList<>();
-        l.add("refresh test");
-        RoomInfo t1 = new RoomInfo(1,l , 2);
-        List<RoomInfo> rooms = new ArrayList<>();
-        rooms.add(t1);
-
-        roomsAdapt.setRooms(rooms);
-        Log.i(TAG, LOG_FUNC_RUN + rooms.size());
         refreshGS.setRefreshing(false);
     }
 
     private void impRoomList() {
-        RecyclerView roomsRC = findViewById(R.id.roomList);
         roomsAdapt = new RoomAdapter();
         roomsAdapt.setItemClickListener(position -> { // user click on one item in the room list.
-            int ID = roomsAdapt.getRoomId(position);
-            runOnUiThread(() -> {
-                        JoinGame(ID, new onReceiveListener() {  // check if the room can add a user
-                                    @Override
-                                    public void onSuccess(Object o) {
-                                        if (o instanceof String) {   // error message if can not join
-                                            String result = (String) o;
-                                            showByToast(RoomActivity.this, result);// show creating err message
-                                            return;
-                                        } else { // null if successfully join, show a dialog and disable further action before game start
-                                            showByToast(RoomActivity.this, SUCCESS_JOIN);
-                                            WaitDialog waitDG = new WaitDialog(RoomActivity.this);
+                    int ID = roomsAdapt.getRoomId(position);
+                    JoinGame(ID, new onReceiveListener() {  // check if the room can add a user
+                                @Override
+                                public void onSuccess(Object o) {
+                                    if (o instanceof String) {   // error message if can not join
+                                        String result = (String) o;
+                                        showByToast(RoomActivity.this, result);// show creating err message
+                                        return;
+                                    } else { // null if successfully join, show a dialog and disable further action before game start
+                                        showByToast(RoomActivity.this, SUCCESS_JOIN);
+                                        runOnUiThread(() -> {
                                             waitDG.show();
-                                        }
+                                        });
                                     }
+                                }
 
-                                    @Override
-                                    public void onFailure(String errMsg) {
-                                        Log.e(TAG, "join room:try join: " + errMsg);
-                                    }
-                                },
-                                new onReceiveListener() {
-                                    @Override
-                                    public void onSuccess(Object o) {
-                                        if (o instanceof World) {
-                                            runOnUiThread(() -> {
-                                                Intent gameIntent = new Intent(RoomActivity.this, PlaceActivity.class);
-                                                showByToast(RoomActivity.this, SUCCESS_JOIN);
-                                                startActivity(gameIntent);
-                                                finish();
-                                            });
-                                        } else {
-                                            // showByToast(RoomActivity.this, result);
-                                            createBT.setClickable(false);
-                                            return;
-                                        }
-                                    }
+                                @Override
+                                public void onFailure(String errMsg) {
+                                    Log.e(TAG, "join room:try join: " + errMsg);
+                                }
+                            },
 
-                                    @Override
-                                    public void onFailure(String errMsg) {
-                                        Log.e(TAG, "join room:receive world: " + errMsg);
-                                    }
-                                });
-                    }
-            );
-        });
+                            new onJoinRoomListener() { // wait for game starting
+                                @Override
+                                public void onJoinNew() {
+                                    // receive a world, start the game
+                                    runOnUiThread(() -> {
+                                        enterNewGame();
+                                    });
+                                }
+
+                                @Override
+                                public void onBack() {
+                                    runOnUiThread(() -> {
+                                        waitDG.cancel();
+                                        Intent gameIntent = new Intent(RoomActivity.this, TurnActivity.class);
+                                        showByToast(RoomActivity.this, SUCCESS_START);
+                                        startActivity(gameIntent);
+                                        finish();
+                                    });
+                                }
+                            });
+                }
+        );
         roomsRC.setLayoutManager(new LinearLayoutManager(this));
-        // roomsRC.setHasFixedSize(true);
         roomsRC.setAdapter(roomsAdapt);
     }
 
     private void impCreateBT() {
-        createBT = findViewById(R.id.createButton);
         createBT.setOnClickListener(v -> {
             createBT.setClickable(false);
-            // TODO: choose number diag
-<<<<<<< HEAD
-            int numUser = 1;
-            runOnUiThread(() -> {
-=======
-            int numUser = 2;
->>>>>>> e16df52883a4cb64508dca2c5cf4b30241b5df0c
-                createGame(numUser,
-                        new onReceiveListener() {
-                            @Override
-                            public void onSuccess(Object o) { // receive a String if creating game failed.
-                                if (o instanceof String) {
-                                    String result = (String) o;
-                                    showByToast(RoomActivity.this, result);// show creating err message
-                                    createBT.setClickable(true);
-                                    return;
-                                } else {
-                                    showByToast(RoomActivity.this, SUCCESS_CREATE);
-                                    runOnUiThread(() -> {
-                                        WaitDialog waitDG = new WaitDialog(RoomActivity.this);
-                                        waitDG.show();
-                                    });
-                                }
-                            }
+            chooseNumUser();
+            // int numUser = TEST_NUM_USER;
+            Log.i(TAG, LOG_FUNC_RUN + "before create game.");
+        });
+    }
 
-                            @Override
-                            public void onFailure(String errMsg) {
-                                Log.e(TAG, "create room:try create game: " + errMsg);
-                            }
-                        },
+    private void chooseNumUser() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(RoomActivity.this);
+        builder.setTitle(CHOOSE_MAP);
+        final String[] numbers = new String[]{"2", "3", "4", "5"};
+        builder.setItems(numbers, (dialog, which) -> {
+            numUser = Integer.parseInt(numbers[which]);
+            numUser = 1;
+            create();
+        });
+        builder.show();
+    }
 
-                        new onReceiveListener() { // receive a World if successfully join created game otherwise null
-                            @Override
-                            public void onSuccess(Object o) {
-                                if (o instanceof World) {
-                                    runOnUiThread(() -> {
-                                        showByToast(RoomActivity.this, SUCCESS_JOIN);
-                                        Intent placeIntent = new Intent(RoomActivity.this, PlaceActivity.class);
-                                        startActivity(placeIntent);
-                                        finish();
-                                    });
-                                }
-                            }
+    private void create() {
+        createGame(numUser,
+                new onReceiveListener() {
+                    @Override
+                    public void onSuccess(Object o) { // receive a String if creating game failed.
+                        Log.i(TAG, LOG_FUNC_RUN + "check create valid");
+                        if (o instanceof String) {
+                            Log.i(TAG, LOG_FUNC_RUN + "not create a game");
+                            String result = (String) o;
+                            showByToast(RoomActivity.this, result);// show creating err message
+                            createBT.setClickable(true);
+                            return;
+                        } else {
+                            Log.i(TAG, LOG_FUNC_RUN + "wait for other players");
+                            showByToast(RoomActivity.this, SUCCESS_CREATE);
+                            runOnUiThread(() -> {
+                                waitDG.show();
+                            });
+                        }
+                    }
 
-                            @Override
-                            public void onFailure(String errMsg) {
-                                Log.e(TAG, "create room:receive world: " + errMsg);
-                            }
-                        });
-            });
+                    @Override
+                    public void onFailure(String errMsg) {
+                        Log.e(TAG, "create room:try create game: " + errMsg);
+                    }
+                },
+
+                new onReceiveListener() { // receive a World if successfully join created game otherwise null
+                    @Override
+                    public void onSuccess(Object o) {
+                        Log.i(TAG, LOG_FUNC_RUN + "should receive World");
+                        if (o instanceof World) {
+                            Log.i(TAG, LOG_FUNC_RUN + "receive a World");
+                            enterNewGame();
+                        } else {
+                            Log.i(TAG, LOG_FUNC_FAIL + "receive not World");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(String errMsg) {
+                        Log.e(TAG, "create room:receive world: " + errMsg);
+                    }
+                });
+    }
+
+    private void enterNewGame() {
+        runOnUiThread(() -> {
+            waitDG.cancel();
+            showByToast(RoomActivity.this, SUCCESS_START);
+            Intent placeIntent = new Intent(RoomActivity.this, PlaceActivity.class);
+            startActivity(placeIntent);
+            finish();
+        });
     }
 }

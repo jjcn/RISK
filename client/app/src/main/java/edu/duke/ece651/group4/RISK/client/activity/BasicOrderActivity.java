@@ -1,20 +1,19 @@
 package edu.duke.ece651.group4.RISK.client.activity;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.text.Editable;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
-import android.os.Bundle;
 import edu.duke.ece651.group4.RISK.client.R;
 import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
-import edu.duke.ece651.group4.RISK.shared.Territory;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static edu.duke.ece651.group4.RISK.client.Constant.UI_ATK;
-import static edu.duke.ece651.group4.RISK.client.Constant.UI_MOVE;
+import static edu.duke.ece651.group4.RISK.client.Constant.*;
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.*;
 import static edu.duke.ece651.group4.RISK.client.utility.Notice.showByToast;
 
@@ -36,24 +35,38 @@ public class BasicOrderActivity extends AppCompatActivity {
     private Button commitBT;
     private SpinnerAdapter desAdapter;
 
+//    private ArrayAdapter<String> worldInfoAdapter;
+//    private ArrayAdapter<String> noticesAdapter;
+//    private TextView userInfoTV;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_basic_order);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        if(getSupportActionBar()!=null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
 
-        worldImageView = (ImageView) findViewById(R.id.world_image_view);
-        // worldImageView.setImageResource(R.drawable.terrs6); //TODO: hard coded now
+        worldImageView = findViewById(R.id.world_image_view);
+        worldImageView.setImageResource(MAPS.get(getCurrentRoomSize()));
 
         srcName = "";
         desName = "";
         typeName = "";
         nUnit = -1;
-        actionType = getIntent().getStringExtra(EXTRA_ACTION_TYPE);
+
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null){
+            actionType = bundle.getString(EXTRA_ACTION_TYPE);
+//            userInfoTV = (TextView) bundle.getSerializable(USER_INFO_TV);
+//            noticesAdapter = (ArrayAdapter<String>) bundle.getSerializable(NOTICE_ADP);
+//            worldInfoAdapter = (ArrayAdapter<String>) bundle.getSerializable(WORLD_INFO_ADP);
+        }
 
         String actionType = getIntent().getStringExtra("actionType");
-        
+
+        Log.i(TAG, LOG_FUNC_RUN + "ACT TYPE" + actionType);
         impUI();
     }
 
@@ -85,17 +98,18 @@ public class BasicOrderActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
 
         // des terr spinner
         desSpinner = findViewById(R.id.terrDes);
-        if(actionType.equals(UI_MOVE)) {
+        if (actionType.equals(UI_MOVE)) {
             desAdapter = new ArrayAdapter<>(
                     BasicOrderActivity.this,
                     R.layout.item_choice,
                     myTerrNames);
-        }else {
+        } else {
             desAdapter = new ArrayAdapter<>(
                     BasicOrderActivity.this,
                     R.layout.item_choice,
@@ -109,7 +123,8 @@ public class BasicOrderActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
 
         // typeNames spinner
@@ -127,23 +142,27 @@ public class BasicOrderActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
 
-        nUnitET = findViewById(R.id.numUnit).findViewById(R.id.inputNum);
+        nUnitET = findViewById(R.id.numUnit);
 
         commitBT = findViewById(R.id.commit_button);
         commitBT.setOnClickListener(v -> {
-            assert(nUnitET.getText().toString() != null);
-            nUnit = Integer.parseInt(nUnitET.getText().toString());
-            Log.d(TAG, "User selected: from " + srcName + " to " + desName
-                   + " move " + nUnit + " " + typeName);
+            Editable text = nUnitET.getText();
+            assert(text.toString() != null);
+
+            nUnit = Integer.parseInt(text.toString());
+            Log.d(TAG, LOG_FUNC_RUN + "User selected: from " + srcName + " to " + desName
+                    + " move " + nUnit + " " + typeName);
             String result = "";
             if (actionType.equals(UI_MOVE)) {
                 result = doOneMove(buildMoveOrder(srcName, desName, nUnit, typeName),
                         new onResultListener() {
                             @Override
                             public void onSuccess() {
+                               // update();
                             }
 
                             @Override
@@ -151,12 +170,12 @@ public class BasicOrderActivity extends AppCompatActivity {
                                 Log.e(TAG, errMsg);
                             }
                         });
-            }
-            else if (actionType.equals(UI_ATK)) {
+            } else if (actionType.equals(UI_ATK)) {
                 result = doOneAttack(buildAttackOrder(srcName, desName, nUnit, typeName),
                         new onResultListener() {
                             @Override
                             public void onSuccess() {
+                                // update();
                             }
 
                             @Override
@@ -175,4 +194,9 @@ public class BasicOrderActivity extends AppCompatActivity {
 
     }
 
+//    private void update(){
+//        userInfoTV.setText(getPlayerInfo());
+//        noticesAdapter.notifyDataSetChanged();
+//        worldInfoAdapter.notifyDataSetChanged();
+//    }
 }
