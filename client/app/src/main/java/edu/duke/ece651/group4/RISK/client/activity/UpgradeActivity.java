@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static edu.duke.ece651.group4.RISK.client.Constant.MAPS;
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.*;
 import static edu.duke.ece651.group4.RISK.client.utility.Notice.showByToast;
 import static edu.duke.ece651.group4.RISK.shared.Constant.UNIT_NAMES;
@@ -71,6 +72,9 @@ public class UpgradeActivity extends AppCompatActivity {
     }
 
     private void impUI() {
+        worldImageView = findViewById(R.id.world_image_view);
+        worldImageView.setImageResource(MAPS.get(getCurrentRoomSize()));
+        
         // territory spinner
         List<String> myTerrNames = getMyTerrNames();
 

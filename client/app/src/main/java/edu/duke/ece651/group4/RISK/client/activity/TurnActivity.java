@@ -44,18 +44,19 @@ public class TurnActivity extends AppCompatActivity {
     private ArrayAdapter<String> actionAdapter;
     private ListView noticeInfoRC;
     private ArrayAdapter<String> noticesAdapter;
-    private ListView userInfoTV;
+    private ListView userInfoRC;
     private ArrayAdapter<String> userInfoAdapter;
     private ImageView mapIV;
     private SwipeRefreshLayout refreshGS;
     private List<String> worldInfo;
     private List<String> noticeInfo;
-
     private List<String> userInfo;
 
     private String actionType;
     private boolean isWatch; // turn to true after lose game.
     private WaitDialog waitDG;
+
+    List<String> actions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +66,7 @@ public class TurnActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-
+        actions = new ArrayList<>(Arrays.asList(UI_MOVE, UI_ATK, UI_UPTECH, UI_UPTROOP, UI_DONE));
         actionType = UI_MOVE; // default: move
         isWatch = false;
         waitDG = new WaitDialog(TurnActivity.this);
@@ -121,7 +122,7 @@ public class TurnActivity extends AppCompatActivity {
         chooseActionSP = findViewById(R.id.actions_spinner);
         commitBT = findViewById(R.id.commitBT);
         worldInfoRC = findViewById(R.id.terrInfo);
-        userInfoTV = findViewById(R.id.playerInfo);
+        userInfoRC = findViewById(R.id.playerInfo);
         noticeInfoRC = findViewById(R.id.noticeInfo);
         mapIV = findViewById(R.id.world_image_view);
         refreshGS = findViewById(R.id.refreshInfo);
@@ -137,9 +138,10 @@ public class TurnActivity extends AppCompatActivity {
     }
 
     private void impUserInfoRC() {
-        userInfo = getWorldInfo();
+        userInfo = new ArrayList<>();
+        userInfo.add(getPlayerInfo());
         userInfoAdapter = new ArrayAdapter<>(TurnActivity.this, R.layout.item_choice, userInfo);
-        worldInfoRC.setAdapter(worldInfoAdapter);
+        userInfoRC.setAdapter(userInfoAdapter);
     }
 
     private void impSwipeFresh() {
@@ -306,7 +308,7 @@ public class TurnActivity extends AppCompatActivity {
         runOnUiThread(() -> {
                     if (isWatch) {
                         chooseActionSP.setVisibility(View.GONE);
-                        userInfoTV.setVisibility(View.GONE);
+                        userInfoRC.setVisibility(View.GONE);
                     }
                     Log.i(TAG, LOG_FUNC_RUN + "call update after turn");
                     noticeInfo.clear();
