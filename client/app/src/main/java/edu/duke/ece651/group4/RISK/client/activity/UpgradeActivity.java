@@ -135,6 +135,7 @@ public class UpgradeActivity extends AppCompatActivity {
         // commit button
         Button commitBT = findViewById(R.id.commit_button);
         commitBT.setOnClickListener(v -> {
+
             Editable text = nUnitET.getText();
             if(text == null){
                 return;

@@ -52,14 +52,15 @@
 
 
     <ListView
-            android:id="@+id/noticeInfo"
-            android:background="@drawable/border"
-            android:text="Instructions info"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="@id/vguide1"
-            app:layout_constraintTop_toBottomOf="@id/hguide2"
-            app:layout_constraintBottom_toTopOf="@id/hguide3"
-            android:layout_height="0dp" android:layout_width="0dp"/>
+        android:id="@+id/noticeInfo"
+        android:layout_width="303dp"
+        android:layout_height="256dp"
+        android:background="@drawable/border"
+        android:text="Instructions info"
+        app:layout_constraintBottom_toTopOf="@id/hguide3"
+        app:layout_constraintEnd_toEndOf="@id/vguide1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/hguide2" />
 
     <ListView
             android:id="@+id/playerInfo"
@@ -87,7 +88,7 @@
             android:id="@+id/commitBT"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="@string/COMMIT"
+            android:hint="@string/CONFIRM"
             app:layout_constraintStart_toStartOf="@id/vguide1"
             app:layout_constraintTop_toBottomOf="@id/hguide3"
             app:layout_constraintBottom_toBottomOf="parent"

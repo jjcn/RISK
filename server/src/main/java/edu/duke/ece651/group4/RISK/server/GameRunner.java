@@ -41,6 +41,7 @@ public class GameRunner extends Thread{
         }
     }
 
+
     @Override
     public void run(){
         out.println("Game" +game.getGameID()+" runner waits for all players to join");
@@ -55,7 +56,10 @@ public class GameRunner extends Thread{
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        } // wait all users to join to start the game
+        }
+//        while(!game.isFull()){game.waitTime(1);}
+        out.println("Game" +game.getGameID()+" is FULL!!!!!!");
+        // wait all users to join to start the game
 
         game.setUpGame();
         out.println("Game" +game.getGameID()+" runner finishes sets up");
@@ -70,13 +74,9 @@ public class GameRunner extends Thread{
                 if(game.gameState.isAllPlayersDoneOneTurn()){
                     exit2 = true;
                 }
-                try {
-                    TimeUnit.SECONDS.sleep(1);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
 
+            }
+//            while(!game.gameState.isAllPlayersDoneOneTurn()){game.waitTime(1);}
             //Update the game
             game.updateGameAfterOneTurn();
             game.gameState.updateStateTo(GAME_STATE_DONE_UPDATE);
@@ -97,6 +97,9 @@ public class GameRunner extends Thread{
                     e.printStackTrace();
                 }
             }
+//            while(!game.gameState.isAllPlayersDoneUpdatingState()){
+//                game.waitTime(1);
+//            }
             // wait until all players finish updating their state
 
 

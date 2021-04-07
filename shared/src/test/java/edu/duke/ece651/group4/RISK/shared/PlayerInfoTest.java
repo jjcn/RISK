@@ -32,7 +32,7 @@ public class PlayerInfoTest {
 		assertEquals(1, pInfo.getTechLevel());
 		
 		PlayerInfo rich = new PlayerInfo("rich", 999, 999);
-		rich.upgradeTechLevelBy1();
+		rich.upgradeTechLevelBy(1);
 		assertEquals(2, rich.getTechLevel());
 	}
 
@@ -78,12 +78,12 @@ public class PlayerInfoTest {
 		assertEquals(pInfo.techLevel, 1);
 		// try modify to -1
 		assertThrows(IllegalArgumentException.class,
-					() -> pInfo.modifyTechLevelBy(-2));
+					() -> pInfo.upgradeTechLevelBy(-2));
 		// try modify to 7
 		assertThrows(IllegalArgumentException.class,
-					() -> pInfo.modifyTechLevelBy(6));
+					() -> pInfo.upgradeTechLevelBy(6));
 		// upgrade tech level by 1
-		pInfo.upgradeTechLevelBy1();
+		pInfo.upgradeTechLevelBy(1);
 		assertEquals(2, pInfo.techLevel);
 		// upgrade tech level by 2
 		pInfo.upgradeTechLevelBy(2);
@@ -95,7 +95,7 @@ public class PlayerInfoTest {
 		PlayerInfo pInfo = new PlayerInfo("A", 0, 0);
 		assertEquals(pInfo.techLevel, 1);
 		assertThrows(IllegalArgumentException.class, 
-					() -> pInfo.upgradeTechLevelBy1());
+					() -> pInfo.consumeResourceOfTechUpgrade(1));
 		assertEquals(pInfo.techLevel, 1);
 	}
 

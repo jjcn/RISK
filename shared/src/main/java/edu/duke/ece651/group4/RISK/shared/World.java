@@ -488,14 +488,12 @@ public class World implements Serializable {
     }
 
     /**
-     * Calculate the quantity of resources consumed by an attack order. An attack
-     * order costs 1 "food" resource per unit attacking.
-     *
-     * @param order is the attack order.
-     * @return quantity of consumed resources.
+     * A player consume food resources of a move.
+     * @param order      is the move order.
+     * @param playerName is the name of the player who committed this order.
      */
-    protected int calculateAttackConsumption(AttackOrder order) {
-        return order.getActTroop().size();
+    public void consumeResourceOfMove(MoveOrder order, String playerName) {
+        getPlayerInfoByName(playerName).consumeFood(calculateMoveConsumption(order));
     }
 
     /**
@@ -507,7 +505,7 @@ public class World implements Serializable {
      * @param order      is a move order.
      * @param playerName is the player's name who commited this order.
      */
-    public void moveTroop(MoveOrder order, String playerName) {
+    public void moveTroop(MoveOrder order, String playerName) { // TODO: coupled upgrade and resource consumption
         Territory start = findTerritory(order.getSrcName());
         Territory end = findTerritory(order.getDesName());
         Troop troop = order.getActTroop();
@@ -516,10 +514,30 @@ public class World implements Serializable {
         if (errorMsg != null) {
             throw new IllegalArgumentException(errorMsg);
         }
+        // also check if player has enough food
+        consumeResourceOfMove(order, playerName);
         // moves troop
         end.sendInTroop(start.sendOutTroop(troop));
-        // consume food resource
-        playerInfos.get(playerName).consumeFood(calculateMoveConsumption(order));
+    }
+
+    /**
+     * Calculate the quantity of resources consumed by an attack order. An attack
+     * order costs 1 "food" resource per unit attacking.
+     *
+     * @param order is the attack order.
+     * @return quantity of consumed resources.
+     */
+    protected int calculateAttackConsumption(AttackOrder order) {
+        return order.getActTroop().size();
+    }
+
+    /**
+     * A player consume food resources of an attack.
+     * @param order      is the attack order.
+     * @param playerName is the name of the player who committed this order.
+     */
+    public void consumeResourceOfAttack(AttackOrder order, String playerName) {
+        getPlayerInfoByName(playerName).consumeFood(calculateAttackConsumption(order));
     }
 
     /**
@@ -527,12 +545,11 @@ public class World implements Serializable {
      * battle on that territory. Also checks if the troop size is valid to send from
      * the starting territory.
      * <p>
-     * Consumes food resource.
      *
      * @param order      is the attack order.
      * @param playerName is the name of the player who committed this order.
      */
-    public void attackATerritory(AttackOrder order, String playerName) {
+    public void attackATerritory(AttackOrder order, String playerName) { // TODO: coupled upgrade and resource consumption
         Territory start = findTerritory(order.getSrcName());
         Territory end = findTerritory(order.getDesName());
         Troop troop = order.getActTroop();
@@ -541,14 +558,14 @@ public class World implements Serializable {
         if (errorMsg != null) {
             throw new IllegalArgumentException(errorMsg);
         }
+        // also check if player has enough food
+        consumeResourceOfAttack(order, playerName);
         // moves troop
         end.sendInEnemyTroop(start.sendOutTroop(troop));
-        // consume food resource
-        getPlayerInfoByName(playerName).consumeFood(calculateAttackConsumption(order));
     }
 
     /**
-     * Trys to upgrade troop on a territory. If successful, tech resource will be
+     * Try to upgrade troop on a territory. If successful, tech resource will be
      * consumed.
      *
      * @param utOrder    is an UpgradeTroopOrder.
@@ -556,16 +573,40 @@ public class World implements Serializable {
      */
     public void upgradeTroop(UpgradeTroopOrder utOrder, String playerName) {
         Territory terr = findTerritory(utOrder.getSrcName());
-        int levelBefore = utOrder.getLevelBefore();
-        int levelAfter = utOrder.getLevelAfter();
-        int nUnit = utOrder.getNUnit();
-        // consume tech resource
         PlayerInfo pInfo = getPlayerInfoByName(playerName);
-        int remainder = terr.upgradeTroop(levelBefore, levelAfter, nUnit, pInfo.getTechQuantity());
-        int consumption = pInfo.getTechQuantity() - remainder;
-        getPlayerInfoByName(playerName).consumeTech(consumption);
+        if (utOrder.getLevelAfter() > pInfo.techLevel) {
+            throw new IllegalArgumentException("Cannot upgrade beyond your tech level.");
+        }
+        try {
+            int remainder = terr.upgradeTroop(utOrder, pInfo.getTechQuantity());
+            int consumption = pInfo.getTechQuantity() - remainder;
+            getPlayerInfoByName(playerName).consumeTech(consumption); // TODO: coupled upgrade and consumption
+        } catch (IllegalArgumentException iae) {
+            throw iae;
+        }
     }
 
+    /**
+     * Consumes tech resource of an upgrade tech order.
+     * @param upgradeTechOrder
+     * @param playerName
+     */
+    public void consumeResourceOfPlayerTechUpgrade(UpgradeTechOrder upgradeTechOrder, String playerName) {
+        getPlayerInfoByName(playerName).consumeResourceOfTechUpgrade(upgradeTechOrder.getNLevel());
+    }
+
+    /**
+     * Try upgrade a player's tech level using an upgrade tech order.
+     * <p>
+     * Consumes tech resource.
+     *
+     * @param uTechOrder is an upgrade tech order
+     * @param playerName is a player's name.
+     */
+    public void upgradePlayerTechLevelBy(UpgradeTechOrder uTechOrder, String playerName) {
+        consumeResourceOfPlayerTechUpgrade(uTechOrder, playerName);
+        getPlayerInfoByName(playerName).upgradeTechLevelBy(uTechOrder.getNLevel());
+    }
 
     /**
      * Try upgrade a player's tech level by 1.
@@ -575,19 +616,7 @@ public class World implements Serializable {
      * @param playerName is a player's name.
      */
     public void upgradePlayerTechLevelBy1(String playerName) {
-        getPlayerInfoByName(playerName).upgradeTechLevelBy1();
-    }
-
-    /**
-     * Try upgrade a player's tech level using an upgrade tech order.
-     * <p>
-     * Consumes tech resource.
-     *
-     * @param upgradeTechOrder is an upgrade tech order
-     * @param playerName       is a player's name.
-     */
-    public void upgradePlayerTechLevelBy(UpgradeTechOrder upgradeTechOrder, String playerName) {
-        getPlayerInfoByName(playerName).upgradeTechLevelBy(upgradeTechOrder.getNLevel());
+        upgradePlayerTechLevelBy(new UpgradeTechOrder(1), playerName);
     }
 
     /**
