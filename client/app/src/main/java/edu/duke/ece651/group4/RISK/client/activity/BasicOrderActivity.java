@@ -145,8 +145,12 @@ public class BasicOrderActivity extends AppCompatActivity {
         commitBT = findViewById(R.id.commit_button);
         commitBT.setOnClickListener(v -> {
             Editable text = nUnitET.getText();
-            assert(text.toString() != null);
-
+            if(text == null){
+                return;
+            }else if(text.toString()==""){
+                showByToast(BasicOrderActivity.this,"Please input number.");
+                return;
+            }
             nUnit = Integer.parseInt(text.toString());
             Log.d(TAG, LOG_FUNC_RUN + "User selected: from " + srcName + " to " + desName
                     + " move " + nUnit + " " + typeName);

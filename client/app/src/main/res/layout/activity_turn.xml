@@ -61,7 +61,7 @@
             app:layout_constraintBottom_toTopOf="@id/hguide3"
             android:layout_height="0dp" android:layout_width="0dp"/>
 
-    <TextView
+    <ListView
             android:id="@+id/playerInfo"
             android:background="@drawable/border"
             app:layout_constraintStart_toStartOf="@id/vguide1"
