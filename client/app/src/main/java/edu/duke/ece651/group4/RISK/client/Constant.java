@@ -10,7 +10,7 @@ public class Constant {
     public static final String LOG_FUNC_RUN = "//////////// Function running ///////////";
 
     //*************CONSTANTS FOR DEBUG************//
-    public static final boolean DEBUG_MODE = true;
+    public static final boolean DEBUG_MODE = false;
     public static final int TEST_NUM_USER = 1;
 
     //*************FOR USAGE IN CODE**************//
