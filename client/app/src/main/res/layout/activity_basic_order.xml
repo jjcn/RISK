@@ -70,7 +70,7 @@
             app:layout_constraintBottom_toBottomOf="@id/hguide3"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="@id/vguide1"
-    />
+           />
 
     <Spinner
             android:id="@+id/terrSrc"
@@ -81,7 +81,8 @@
             app:layout_constraintTop_toBottomOf="@id/hguide2"
             app:layout_constraintStart_toStartOf="@id/vguide1"
             app:layout_constraintEnd_toEndOf="parent"
-    />
+            android:textAlignment="center"
+            android:gravity="center_horizontal"/>
 
     <TextView
             android:id="@+id/destText"
@@ -103,7 +104,8 @@
             app:layout_constraintStart_toEndOf="@id/vguide1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/hguide3"
-    />
+            android:textAlignment="center"
+            android:gravity="center_horizontal"/>
 
     <TextView
             android:id="@+id/levText"
@@ -125,7 +127,8 @@
             app:layout_constraintStart_toStartOf="@id/vguide1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/hguide4"
-    />
+            android:textAlignment="center"
+            android:gravity="center_horizontal"/>
 
     <TextView
             android:id="@+id/ma_num_TV"
@@ -144,8 +147,7 @@
               android:layout_width="50dp"
               app:layout_constraintStart_toStartOf="@id/vguide1"
               app:layout_constraintEnd_toEndOf="parent"
-              app:layout_constraintTop_toBottomOf="@id/hguide5"
-    />
+              app:layout_constraintTop_toBottomOf="@id/hguide5"/>
 
     <Button
             android:id="@+id/commit_button"

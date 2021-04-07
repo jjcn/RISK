@@ -285,20 +285,23 @@ public class TurnActivity extends AppCompatActivity {
     }
 
     private void updateAfterTurn() {
-        if (isWatch) {
-            chooseActionSP.setVisibility(View.GONE);
-            userInfoTV.setVisibility(View.GONE);
-        }
-        Log.i(TAG, LOG_FUNC_RUN + "call update after turn");
-        userInfoTV.setText(getPlayerInfo());
-        noticeInfo.clear();
-        noticeInfo.add(getWorld().getReport());
-        noticesAdapter.notifyDataSetChanged();
-        worldInfo.clear();
-        worldInfo.addAll(getWorldInfo());
-        worldInfoAdapter.notifyDataSetChanged();
-        waitDG.cancel();
-        refreshGS.setRefreshing(false);
+        runOnUiThread(() -> {
+                    if (isWatch) {
+                        chooseActionSP.setVisibility(View.GONE);
+                        userInfoTV.setVisibility(View.GONE);
+                    }
+                    Log.i(TAG, LOG_FUNC_RUN + "call update after turn");
+                    userInfoTV.setText(getPlayerInfo());
+                    noticeInfo.clear();
+                    noticeInfo.add(getWorld().getReport());
+                    noticesAdapter.notifyDataSetChanged();
+                    worldInfo.clear();
+                    worldInfo.addAll(getWorldInfo());
+                    worldInfoAdapter.notifyDataSetChanged();
+                    waitDG.cancel();
+                    refreshGS.setRefreshing(false);
+                }
+        );
     }
 
     @Override

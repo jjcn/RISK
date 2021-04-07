@@ -16,6 +16,7 @@
               android:inputType="number"
               android:layout_width="50dp"
               android:id="@+id/inputNum"
-    />
+              android:textAlignment="center"
+              android:gravity="center_horizontal"/>
 
 </LinearLayout>
