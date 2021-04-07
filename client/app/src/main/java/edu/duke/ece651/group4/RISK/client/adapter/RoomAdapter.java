@@ -55,7 +55,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         }
 
         holder.roomIDView.setText("Room ID: "+idNum); //append();
-        holder.usersView.setText("Players: "+usersInfo+"(need " + totalUserNum + "in total)"); //append();
+        holder.usersView.setText("Players: "+usersInfo+" (need " + totalUserNum + " in total)"); //append();
         if (itemListener != null) {
             holder.itemView.setOnClickListener(v -> {
                 itemListener.onItemClick(position);
