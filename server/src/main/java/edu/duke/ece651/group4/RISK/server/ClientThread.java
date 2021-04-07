@@ -289,18 +289,19 @@ public class ClientThread extends Thread {
         }
         doActionPhaseOneTurn();
         out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " wait for runner update the world");
-        boolean exit = false;
-        while(!exit){
-            if(!gameOnGoing.gameState.isDoneUpdateGame()){
-                exit = true;
-            }
-            try {
-                TimeUnit.SECONDS.sleep(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+//        boolean exit = false;
+//        while(!exit){
+//            if(!gameOnGoing.gameState.isDoneUpdateGame()){
+//                exit = true;
+//            }
+//            try {
+//                TimeUnit.SECONDS.sleep(1);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
 
+        while(!gameOnGoing.gameState.isDoneUpdateGame()){gameOnGoing.waitTime(1);}
         out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " knows world is updated");
 
         waitNotifyFromRunner();
@@ -312,7 +313,6 @@ public class ClientThread extends Thread {
     * This does action phase for one turn
     * */
     protected void doActionPhaseOneTurn(){
-
         boolean exit = false;
         while(!exit){
             this.theClient.sendObject(gameOnGoing.getTheWorld());

@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.TimeUnit;
 
 import static edu.duke.ece651.group4.RISK.server.ServerConstant.*;
 import static edu.duke.ece651.group4.RISK.shared.Constant.*;
@@ -312,4 +313,12 @@ public class Game {
         factory.assignTerritories(this.theWorld, getUserNames());
     }
 
+
+    public void waitTime(int t){
+        try {
+            TimeUnit.SECONDS.sleep(t);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 }

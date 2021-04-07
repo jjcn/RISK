@@ -41,21 +41,25 @@ public class GameRunner extends Thread{
         }
     }
 
+
     @Override
     public void run(){
         out.println("Game" +game.getGameID()+" runner waits for all players to join");
-        boolean exit = false;
-        while(!exit){
-            if(game.isFull()){
-                out.println("Game" +game.getGameID()+" is FULL!!!!!!");
-                exit = true;
-            }
-            try {
-                TimeUnit.SECONDS.sleep(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        } // wait all users to join to start the game
+//        boolean exit = false;
+//        while(!exit){
+//            if(game.isFull()){
+//                out.println("Game" +game.getGameID()+" is FULL!!!!!!");
+//                exit = true;
+//            }
+//            try {
+//                TimeUnit.SECONDS.sleep(1);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
+        while(!game.isFull()){game.waitTime(1);}
+        out.println("Game" +game.getGameID()+" is FULL!!!!!!");
+        // wait all users to join to start the game
 
         game.setUpGame();
         out.println("Game" +game.getGameID()+" runner finishes sets up");
@@ -65,18 +69,14 @@ public class GameRunner extends Thread{
         out.println("Game" +game.getGameID()+" runner notifies all players");
         //ActionPhase
         while(true){
-            boolean exit2 = false;
-            while(!exit2){
-                if(game.gameState.isAllPlayersDoneOneTurn()){
-                    exit2 = true;
-                }
-                try {
-                    TimeUnit.SECONDS.sleep(1);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
+//            boolean exit2 = false;
+//            while(!exit2){
+//                if(game.gameState.isAllPlayersDoneOneTurn()){
+//                    exit2 = true;
+//                }
+//
+//            }
+            while(!game.gameState.isAllPlayersDoneOneTurn()){game.waitTime(1);}
             //Update the game
             game.updateGameAfterOneTurn();
             game.gameState.updateStateTo(GAME_STATE_DONE_UPDATE);
@@ -86,16 +86,19 @@ public class GameRunner extends Thread{
             notifyAllUsers(); // notify all players to enter updating state
             out.println("Game" +game.getGameID()+" runner notifies all players");
 
-            boolean exit3 = false;
-            while(!exit3){
-                if(game.gameState.isAllPlayersDoneUpdatingState()){
-                    exit3 = true;
-                }
-                try {
-                    TimeUnit.SECONDS.sleep(1);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+//            boolean exit3 = false;
+//            while(!exit3){
+//                if(game.gameState.isAllPlayersDoneUpdatingState()){
+//                    exit3 = true;
+//                }
+//                try {
+//                    TimeUnit.SECONDS.sleep(1);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+            while(!game.gameState.isAllPlayersDoneUpdatingState()){
+                game.waitTime(1);
             }
             // wait until all players finish updating their state
 
