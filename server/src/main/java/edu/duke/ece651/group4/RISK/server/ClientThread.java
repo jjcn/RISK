@@ -12,6 +12,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static edu.duke.ece651.group4.RISK.server.ServerConstant.*;
@@ -288,7 +289,18 @@ public class ClientThread extends Thread {
         }
         doActionPhaseOneTurn();
         out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " wait for runner update the world");
-        while(!gameOnGoing.gameState.isDoneUpdateGame()){}
+        boolean exit = false;
+        while(!exit){
+            if(!gameOnGoing.gameState.isDoneUpdateGame()){
+                exit = true;
+            }
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
         out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " knows world is updated");
 
         waitNotifyFromRunner();
