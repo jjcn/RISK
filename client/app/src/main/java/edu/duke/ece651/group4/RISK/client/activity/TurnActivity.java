@@ -50,12 +50,12 @@ public class TurnActivity extends AppCompatActivity {
     private SwipeRefreshLayout refreshGS;
     private List<String> worldInfo;
     private List<String> noticeInfo;
-
     private List<String> userInfo;
-
     private String actionType;
     private boolean isWatch; // turn to true after lose game.
     private WaitDialog waitDG;
+
+    List<String> actions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +65,7 @@ public class TurnActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-
+        actions = new ArrayList<>(Arrays.asList(UI_MOVE, UI_ATK, UI_UPTECH, UI_UPTROOP, UI_DONE));
         actionType = UI_MOVE; // default: move
         isWatch = false;
         waitDG = new WaitDialog(TurnActivity.this);
