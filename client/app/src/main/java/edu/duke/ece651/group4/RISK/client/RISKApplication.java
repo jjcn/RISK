@@ -323,7 +323,6 @@ public class RISKApplication extends Application {
                         Log.i(TAG, LOG_FUNC_RUN + "World received");
                         theWorld = (World) receivedWorld;
                         listenerWorld.onSuccess(receivedWorld);
-                        Log.i(TAG, LOG_FUNC_RUN + theWorld.getAllTerritories().size());
                     } else {
                         Log.i(TAG, LOG_FUNC_RUN + "not World received");
                     }
@@ -389,7 +388,6 @@ public class RISKApplication extends Application {
      * Used to send create a new game room
      */
     public static void createGame(int playerNum, onReceiveListener listenerString, onReceiveListener listenerWorld) {
-        Log.i(TAG,LOG_FUNC_RUN+"player num"+playerNum);
         GameMessage m = new GameMessage(GAME_CREATE, -1, playerNum);
         currentRoomSize = playerNum;
         createGameHelper(m, listenerString, listenerWorld);
@@ -426,8 +424,6 @@ public class RISKApplication extends Application {
 
             MoveOrder tmp=new MoveOrder(order.getSrcName(),order.getDesName(),order.getActTroop().clone(),MOVE_ACTION);
             theWorld.moveTroop(order, userName);
-            Log.e(TAG, LOG_FUNC_RUN+theWorld.findTerritory(order.getSrcName()).getInfo());
-            Log.e(TAG, LOG_FUNC_RUN+theWorld.findTerritory(order.getDesName()).getInfo());
 
             send(tmp, listener);
         } catch (Exception e) {
@@ -435,16 +431,6 @@ public class RISKApplication extends Application {
         }
         return null;
     }
-
-    //    public static String doOneMove(MoveOrder order, onResultListener listener) {
-//        try {
-//            theWorld.moveTroop(order, userName);
-//            send(order, listener);
-//        } catch (Exception e) {
-//            return e.getMessage();
-//        }
-//        return null;
-//    }
 
     /**
      * Used to construct an attack order
@@ -462,9 +448,9 @@ public class RISKApplication extends Application {
      */
     public static String doOneAttack(AttackOrder order, onResultListener listener) {
         try {
-
+            AttackOrder tmp=new AttackOrder(order.getSrcName(),order.getDesName(),order.getActTroop().clone(),ATTACK_ACTION);
             theWorld.attackATerritory(order, userName);
-            send(order, listener);
+            send(tmp, listener);
         } catch (Exception e) {
             return e.getMessage();
         }
@@ -486,9 +472,9 @@ public class RISKApplication extends Application {
      */
     public static String doSoliderUpgrade(UpgradeTroopOrder order, onResultListener listener) {
         try {
-
+            UpgradeTroopOrder tmp=new UpgradeTroopOrder(order.getSrcName(),order.getLevelBefore(),order.getLevelAfter(),UPTROOP_ACTION);
             theWorld.upgradeTroop(order, userName);
-            send(order, listener);
+            send(tmp, listener);
         } catch (Exception e) {
             return e.getMessage();
         }
