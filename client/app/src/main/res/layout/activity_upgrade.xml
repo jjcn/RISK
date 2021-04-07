@@ -81,6 +81,7 @@
             android:layout_height="wrap_content"
             android:spinnerMode="dialog"
             app:layout_constraintTop_toBottomOf="@id/hguide2"
+            app:layout_constraintBottom_toBottomOf="@id/hguide3"
             app:layout_constraintStart_toStartOf="@id/vguide1"
             app:layout_constraintEnd_toEndOf="parent"
             android:textAlignment="center"
@@ -109,6 +110,7 @@
             app:layout_constraintStart_toEndOf="@id/vguide1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/hguide3"
+            app:layout_constraintBottom_toBottomOf="@id/hguide4"
             android:textAlignment="center"
             android:gravity="center_horizontal"/>
 
@@ -133,6 +135,7 @@
             app:layout_constraintStart_toStartOf="@id/vguide1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/hguide4"
+            app:layout_constraintBottom_toBottomOf="@id/hguide5"
             android:textAlignment="center"
             android:gravity="center_horizontal"/>
 
