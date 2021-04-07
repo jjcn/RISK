@@ -57,7 +57,8 @@ public class Constant {
             put(3, R.drawable.terrs6);
             put(4, R.drawable.terrs8);
             put(5, R.drawable.terrs10);
-            put(1,R.drawable.terrtest);
+            put(1, R.drawable.terrtest);
+            put(0, R.drawable.terrtest);
         }
     };
 
