@@ -316,6 +316,7 @@ public class ClientThread extends Thread {
         boolean exit = false;
         while(!exit){
             this.theClient.sendObject(gameOnGoing.getTheWorld());
+            out.println("Game" + gameOnGoing.getGameID() + ": send world to " + ownerUser.getUsername() + " wait for orders" );
             Order order = (Order) this.theClient.recvObject();
             out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " has a order: " + order.getActionName());
             exit = gameOnGoing.tryUpdateActionOnWorld(order,ownerUser);
