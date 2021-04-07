@@ -74,7 +74,7 @@ public class Troop implements Serializable {
 
     /**
      * Get the number of units in a troop.
-     * 
+     *
      * @return size of a troop.
      */
     public int size() {
@@ -83,7 +83,7 @@ public class Troop implements Serializable {
 
     /**
      * Do battle between two troops
-     * 
+     *
      * @param enemy shows the enemy troop attack in
      */
     public Troop combat(Troop enemy) {
@@ -195,12 +195,8 @@ public class Troop implements Serializable {
             int num = subDict.get(s);
             for (int i = 0; i < num; i++) {
 //                try {
-                    Unit t=this.dispatchCertainUnit(s);
-//                    if(t==null){
-//                      throw new IllegalArgumentException("No enough Unit at this level " + s+"size "+this.population.size());
-//
-//                    }
-                    sub.add(t);
+                Unit t=this.dispatchCertainUnit(s);
+                sub.add(t);
 //                }catch(Exception e){
 //                    throw new IllegalArgumentException("NULL at dispatch "+i);
 //                }
@@ -277,8 +273,8 @@ public class Troop implements Serializable {
     }
 
     public int updateUnit(int levelBefore, int levelUp, int num, int resource) {
-    	String from = String.format("Soldier LV%d", levelBefore); // TODO: this is hardcoded
-    	return updateUnit(from, levelUp, num, resource);
+        String from = String.format("Soldier LV%d", levelBefore); // TODO: this is hardcoded
+        return updateUnit(from, levelUp, num, resource);
     }
 
     public int updateUnit(String from, int levelUp, int num, int resource) {
@@ -296,9 +292,9 @@ public class Troop implements Serializable {
 
                 this.dict.put(from, this.dict.get(from) - 1);
 
-                int newNum = this.dict.get(target.getJobName()) == null 
-                            ? 1 
-                            : this.dict.get(target.getJobName()) + 1;
+                int newNum = this.dict.get(target.getJobName()) == null
+                        ? 1
+                        : this.dict.get(target.getJobName()) + 1;
 
                 this.dict.put(target.getJobName(), newNum);
 

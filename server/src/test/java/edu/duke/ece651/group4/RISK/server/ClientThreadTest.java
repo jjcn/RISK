@@ -3,6 +3,7 @@ package edu.duke.ece651.group4.RISK.server;
 import edu.duke.ece651.group4.RISK.shared.*;
 import edu.duke.ece651.group4.RISK.shared.message.GameMessage;
 import edu.duke.ece651.group4.RISK.shared.message.LogMessage;
+import org.checkerframework.checker.units.qual.C;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static edu.duke.ece651.group4.RISK.server.ServerConstant.PLAYER_STATE_SWITCH_OUT;
@@ -26,132 +28,21 @@ class ClientThreadTest {
     private final static int TIME = 500;
     private final static int PORT = 7777;
     static ServerSocket hostSocket;
+    static String hostname = "localhost";
     Client theClient;
-    World theWorld;
-//    @BeforeAll
-//    public void setUpAll() throws InterruptedException {
-//        new Thread(() -> {
-//            try {
-//                hostSocket = new ServerSocket(PORT);// initialize the server
-//            } catch (IOException ignored) {
-//            }
-//        }).start();
-//        // pause to give the server some time to setup
-//        Thread.sleep(TIME);
-//    }
-//
-//
-//    private World createWorld(){
-//        Player p1 = new TextPlayer("Player0");
-//        Player p2 = new TextPlayer("p2");
-//        World world = new World(4);
-//        world.stationTroop("1",new Troop(5,p1));
-//        world.stationTroop("2",new Troop(5,p1));
-//        world.stationTroop("3",new Troop(5,p2));
-//        world.stationTroop("4",new Troop(5,p2));
-//        world.addConnection("1","3");
-////        world.stationTroop("4",new Troop(5,p2));
-////        world.stationTroop("5",new Troop(5,p2));
-//        return world;
-//    }
-//
-//    private ClientThread createAClientThread() throws IOException {
-//        this.theWorld = createWorld();
-//        int PlayerID = 0;
-//        int playerNum = 1;
-//        HashMap<Integer, List<Territory>> groups=(HashMap<Integer, List<Territory>>) theWorld.divideTerritories(playerNum);
-//        PlayerState playerState = new PlayerState("Ready");
-//        HostState hostState = new HostState("ready");
-//        hostState.updateWarReport("warreport");
-//        int numOfPlayers = 1;
-//        String playerName = "Player0";
-//        CyclicBarrier barrier = new CyclicBarrier(numOfPlayers); ;
-//        hostState.addOnePlayerState(playerState);
-//        ClientThread theThread = new ClientThread(this.theWorld.clone(),playerName, PlayerID, barrier, playerState,
-//                this.theClient, hostState,groups.get(PlayerID));
-//        return theThread;
-//    }
-//
-//    private BasicOrder createBasicOrder(String src, String des, char act, Player p){
-//        BasicOrder m = new BasicOrder(src,
-//                des,new Troop(1,p),
-//                act);
-//        return m;
-//    }
-//    @Test
-//    public void test_sendObjectsToClient() throws IOException, InterruptedException {
-//        new Thread(() -> {
-//            try {
-//                Socket socket = hostSocket.accept();
-//                this.theClient = new Client(socket);
-//            } catch (IOException ignored) {
-//            }
-//        }).start();
-//        Thread.sleep(TIME);
-//        new Thread(() -> {
-//            try {
-//                Client playerClient = new Client("localhost", String.valueOf(PORT));
-//                World worldRecv = (World) playerClient.recvObject();
-//
-//                String name = (String) playerClient.recvObject();
-//                String warReport = (String) playerClient.recvObject();
-//                List<Territory> g = (List<Territory>)playerClient.recvObject();
-//                assertEquals(worldRecv, this.theWorld);
-//                assertEquals(warReport, "warreport");
-//                assertEquals(name, "Player0");
-//                assertNotNull(g);
-//                playerClient.close();
-//            } catch (IOException | ClassNotFoundException ignored) {
-//            }
-//        }).start();
-//        Thread.sleep(TIME);
-//        //Test ClientThread send
-//        ClientThread clientThread = createAClientThread();
-//        clientThread.sendWorldToClient();
-//        clientThread.sendPlayerNameToClient();
-//        clientThread.sendWarReportToClient();
-//        clientThread.sendInitTerritory();
-//        assertEquals(clientThread.isPlayerLost(), false);
-//        assertEquals(clientThread.isGameEnd(), false);
-//        //Test ClientThread Update the world
-//        clientThread.updateActionOnWorld(createBasicOrder("1","2",'M', new TextPlayer("Player0")));
-//        System.out.println("ClientThreadTest : update the move");
-//        clientThread.updateActionOnWorld(createBasicOrder("1","3",'A', new TextPlayer("Player0")));
-//        System.out.println("ClientThreadTest : update the attack");
-//        theClient.close();
-//    }
-//
-//    @AfterAll
-//    public void shutDown() throws IOException {
-//        hostSocket.close();
-//        System.out.println("close server");
-//    }
+//    World theWorld;
+    @BeforeAll
+    public void setUpAll() throws InterruptedException {
+        new Thread(() -> {
+            try {
+                hostSocket = new ServerSocket(PORT);// initialize the server
+            } catch (IOException ignored) {
+            }
+        }).start();
+        // pause to give the server some time to setup
+        Thread.sleep(TIME);
+    }
 
-//    @Test
-//    public void test_connection() throws IOException {
-//        Client clientSocket = new Client("localhost",SOCKET_PORT); //vcm-18527.vm.duke.edu// new Client("",9999); //new Client("localhost",SOCKET_PORT);
-//        String name = "wx";
-//        String pwd = "123";
-//        clientSocket.sendObject(new LogMessage(LOG_SIGNUP, name,pwd));
-//        System.out.println("send signup");
-//        String res = (String) clientSocket.recvObject();
-//        System.out.println("rec feedback");
-//        assertEquals(null,res);
-//
-////        clientSocket.sendObject(new LogMessage(LOG_SIGNUP, name,pwd));
-////        System.out.println("send signup");
-////        res = (String) clientSocket.recvObject();
-////        System.out.println("rec feedback");
-////        assertEquals(null,res);
-//
-//        clientSocket.sendObject(new LogMessage(LOG_SIGNIN, name,pwd));
-//        System.out.println("send login");
-//        res = (String) clientSocket.recvObject();
-//        System.out.println("rec feedback");
-//        assertEquals(null,res);
-//
-//    }
-//
     public static List<User> createUsers(int num){
         List<User> users = new ArrayList<User>();
         for(int i = 0; i < num; i++){
@@ -263,27 +154,119 @@ class ClientThreadTest {
     }
 
 
+    private void simulateOneClientCreate(User u, Client theClient){
+        Object res = null;
+        //logIn
+        theClient.sendObject(new LogMessage(LOG_SIGNIN,u.getUsername(),u.getPassword()));
+        assertEquals(null,theClient.recvObject());
+        //Game
+        theClient.sendObject(new GameMessage(GAME_CREATE,-1,2));
+        assertEquals(null,theClient.recvObject());
 
+        //Place Units
+        World theWorld = (World) theClient.recvObject();
+        assertEquals(true, theWorld instanceof World);
+        assertEquals(true, theWorld != null);
+        List<Order> placeOrders = makePlaceOrders(theWorld,u);
+        theClient.sendObject(placeOrders);
 
-    /*
-    * This should be tested later
-    * */
-    @Test
-    public void test_tryPlaceUnits(){
-
-
-
+        //Start Do Action Phase
+        theWorld = (World) theClient.recvObject();
+        assertEquals(true, theWorld instanceof World);
+        assertEquals(true, theWorld != null);
+        BasicOrder bp = new BasicOrder(null,null,null,SWITCH_OUT_ACTION);
+        theClient.sendObject(bp);
     }
 
-    /*
-     *
-     * */
-    @Test
-    public void test_tryRunGameOneTurn(){
+    private void simulateOneClientJoin(User u, Client theClient){
+        Object res = null;
+        //logIn
+        theClient.sendObject(new LogMessage(LOG_SIGNIN,u.getUsername(),u.getPassword()));
+        assertEquals(null,theClient.recvObject());
+        //Game
+        theClient.sendObject(new GameMessage(GAME_JOIN,1,2));
+        assertEquals(null,theClient.recvObject());
 
+        //Place Units
+        World theWorld = (World) theClient.recvObject();
+        assertEquals(true, theWorld instanceof World);
+        assertEquals(true, theWorld != null);
+        List<Order> placeOrders = makePlaceOrders(theWorld,u);
+        theClient.sendObject(placeOrders);
 
-
+        //Start Do Action Phase
+        theWorld = (World) theClient.recvObject();
+        assertEquals(true, theWorld instanceof World);
+        assertEquals(true, theWorld != null);
+        BasicOrder bp = new BasicOrder(null,null,null,SWITCH_OUT_ACTION);
+        theClient.sendObject(bp);
     }
-
+    private List<Order> makePlaceOrders(World theWorld, User u){
+        List<Territory> terrs = theWorld.getTerritoriesOfPlayer(u.getUsername());
+        List<Order>  placeOrders = new ArrayList<>();
+        int total = 15;
+        for(Territory t: terrs){
+            PlaceOrder p =new PlaceOrder(t.getName(),new Troop(total,new TextPlayer(u.getUsername())));
+            total = 0;
+            placeOrders.add(p);
+        }
+        return placeOrders;
+    }
+//    @Test
+//    public void test_wholeProcess(){
+//        List<User> users =  createUsers(2);
+//        List<Game> games = createGames(1, 2);
+//        new Thread(() -> {
+//            try {
+//                Socket socket = hostSocket.accept();
+//                this.theClient = new Client(socket);
+//                ClientThread ct = new ClientThread(games, users,null, new AtomicInteger(0));
+//                ct.start();
+//            } catch (IOException ignored) {
+//            }
+//        }).start();
+//
+//        new Thread(() -> {
+//            try {
+//                Client theClient = new Client(hostname, PORT);
+//                simulateOneClientCreate(users.get(0),theClient);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }).start();
+//
+//        new Thread(() -> {
+//            try {
+//                Client theClient = new Client(hostname, PORT);
+////                synchronized (games) {
+////                    games.notify();
+////                }
+//                simulateOneClientCreate(users.get(0),theClient);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }).start();
+//
+//        new Thread(() -> {
+//            try {
+////                synchronized (games){
+////                    try {
+////                        games.wait();
+////                    } catch (InterruptedException e) {
+////                        e.printStackTrace();
+////                    }
+////                }
+//                try {
+//                    TimeUnit.SECONDS.sleep(5);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//                Client theClient = new Client(hostname, PORT);
+//                simulateOneClientJoin(users.get(1),theClient);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }).start();
+//    }
 
 }

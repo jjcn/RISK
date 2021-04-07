@@ -9,7 +9,6 @@
         android:layout_marginEnd="@dimen/fragmentMargin"
         tools:context=".activity.BasicOrderActivity" android:orientation="vertical">
 
-
     <ImageView
             android:id="@+id/world_image_view"
             android:layout_width="match_parent"
@@ -20,10 +19,10 @@
             app:srcCompat="@android:drawable/ic_menu_mapmode"/>
 
     <TextView
-            android:id="@+id/terrText"
+            android:id="@+id/terr_prompt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="World Map"
+            android:text="@string/UPGRADE_TERR_PROMPT"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -31,7 +30,7 @@
     />
 
     <Spinner
-            android:id="@+id/terrChoices"
+            android:id="@+id/terr_choices"
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:prompt="@string/CHOOSE_SRC_INSTRU"
@@ -39,10 +38,10 @@
     />
 
     <TextView
-            android:id="@+id/unitToText"
+            android:id="@+id/unit_before_prompt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="World Map"
+            android:text="@string/UPGRADE_TYPE_BEFORE_PROMPT"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -50,18 +49,18 @@
     />
 
     <Spinner
-            android:id="@+id/unitChoices"
+            android:id="@+id/unit_before_choices"
             android:layout_width="match_parent"
             android:layout_height="45dp"
-            android:prompt="@string/CHOOSE_DES_INSTRU"
+            android:prompt="@string/CHOOSE_TYPE_INSTRU"
             android:spinnerMode="dialog"
     />
 
     <TextView
-            android:id="@+id/unitFromText"
+            android:id="@+id/unit_after_prompt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="World Map"
+            android:text="@string/UPGRADE_TYPE_AFTER_PROMPT"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -69,7 +68,7 @@
     />
 
     <Spinner
-            android:id="@+id/unitChoices2"
+            android:id="@+id/unit_after_choices"
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:prompt="@string/CHOOSE_TYPE_INSTRU"
