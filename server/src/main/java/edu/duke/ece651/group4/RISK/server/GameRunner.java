@@ -65,7 +65,18 @@ public class GameRunner extends Thread{
         out.println("Game" +game.getGameID()+" runner notifies all players");
         //ActionPhase
         while(true){
-            while(!game.gameState.isAllPlayersDoneOneTurn()){} // wait until all players finish updating their turn
+            boolean exit2 = false;
+            while(!exit2){
+                if(game.gameState.isAllPlayersDoneOneTurn()){
+                    exit2 = true;
+                }
+                try {
+                    TimeUnit.SECONDS.sleep(1);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
             //Update the game
             game.updateGameAfterOneTurn();
             game.gameState.updateStateTo(GAME_STATE_DONE_UPDATE);
@@ -74,7 +85,21 @@ public class GameRunner extends Thread{
 
             notifyAllUsers(); // notify all players to enter updating state
             out.println("Game" +game.getGameID()+" runner notifies all players");
-            while(!game.gameState.isAllPlayersDoneUpdatingState()){} // wait until all players finish updating their state
+
+            boolean exit3 = false;
+            while(!exit3){
+                if(game.gameState.isAllPlayersDoneUpdatingState()){
+                    exit3 = true;
+                }
+                try {
+                    TimeUnit.SECONDS.sleep(1);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            // wait until all players finish updating their state
+
+
             out.println("Game" +game.getGameID()+" runner knows all players are done updating");
             if(game.isEndGame() || game.gameState.isAllPlayersSwitchOut()){
                 game.gameState.setGameDead();
