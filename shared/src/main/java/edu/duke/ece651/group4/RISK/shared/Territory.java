@@ -261,6 +261,13 @@ public class Territory implements Serializable {
         return ownerTroop.updateUnit(levelBefore, levelUp, nUnit, nResource);
     }
 
+    public int upgradeTroop(UpgradeTroopOrder utOrder, int nTech) {
+        int levelBefore = utOrder.getLevelBefore();
+        int levelAfter = utOrder.getLevelAfter();
+        int nUnit = utOrder.getNUnit();
+        return upgradeTroop(levelBefore, levelAfter, nUnit, nTech);
+    }
+
     public String getInfo(){
         StringBuilder report = new StringBuilder();
         report.append("Owner : "+this.getOwner().getName()+"\n");

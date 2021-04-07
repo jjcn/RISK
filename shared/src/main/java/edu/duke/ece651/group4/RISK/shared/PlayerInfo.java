@@ -137,48 +137,44 @@ public class PlayerInfo implements Serializable {
     public void consumeTech(int consumption) {
         techResource.consume(consumption);
     }
-    
-    /**
-     * Upgrades player's tech level by 1.
-     */
-    public void upgradeTechLevelBy1() {
-        modifyTechLevelBy(1);
-    }
 
     /**
-     * Upgrades player's tech level by a certain number.
-     */
-    public void upgradeTechLevelBy(int n) {
-        modifyTechLevelBy(n);
-    }
-
-    /**
-     * Modify player's tech level by a number i.
-     * 
-     * @param i is the number to add to tech level. 
+     * Upgrade player's tech level by a number n.
+     *
+     * @param n is the number to add to tech level.
      *          Can be positive, 0, or negative.
      */
-    protected void modifyTechLevelBy(int i) {
-        int techLevelAfterMod = techLevel + i;
-        String explanation_msg = String.format(TECHLEVEL_INVALID_MODIFY_MSG, 
-                                            playerName, i, techLevelAfterMod); 
+    public void upgradeTechLevelBy(int n) {
+        int techLevelAfterMod = techLevel + n;
+        String explanation_msg = String.format(TECHLEVEL_INVALID_MODIFY_MSG,
+                playerName, n, techLevelAfterMod);
         if (techLevelAfterMod < MIN_TECH_LEVEL) {
             String underflow_msg = "which is below the minimum tech level a player can have.";
             throw new IllegalArgumentException(explanation_msg + underflow_msg);
         }
-        else if(techLevelAfterMod > MAX_TECH_LEVEL) {
+        else if (techLevelAfterMod > MAX_TECH_LEVEL) {
             String overflow_msg = "which is beyond the maximum tech level a player can have.";
             throw new IllegalArgumentException(explanation_msg + overflow_msg);
         } else {
-            try {
-                int consumption = calcUpgradeTechLevelConsumption(techLevel, techLevelAfterMod);
-                consumeTech(consumption);
-                techLevel += i;
-            } catch (IllegalArgumentException iae) {
-                String err_msg = iae.getMessage() + "\n" + 
-                		String.format(FAILURE_TECH_LEVEL_UPGRADE_MSG, playerName);
-                throw new IllegalArgumentException(err_msg);
-            }
+            techLevel = techLevelAfterMod;
+        }
+    }
+
+    /**
+     * Consumes resource of a tech upgrade by a number n.
+     *
+     * @param n is the number to add to tech level.
+     *          Can be positive, 0, or negative.
+     */
+    public void consumeResourceOfTechUpgrade(int n) {
+        int techLevelAfterMod = techLevel + n;
+        try {
+            int consumption = calcUpgradeTechLevelConsumption(techLevel, techLevelAfterMod);
+            consumeTech(consumption);
+        } catch (IllegalArgumentException iae) {
+            String err_msg = iae.getMessage() + "\n" +
+                    String.format(FAILURE_TECH_LEVEL_UPGRADE_MSG, playerName);
+            throw new IllegalArgumentException(err_msg);
         }
     }
 
