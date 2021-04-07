@@ -314,8 +314,12 @@ public class ClientThread extends Thread {
     * */
     protected void doActionPhaseOneTurn(){
         boolean exit = false;
+        boolean start = true;
         while(!exit){
-            this.theClient.sendObject(gameOnGoing.getTheWorld());
+            if(start){
+                this.theClient.sendObject(gameOnGoing.getTheWorld());
+                start = false;
+            }
             out.println("Game" + gameOnGoing.getGameID() + ": send world to " + ownerUser.getUsername() + " wait for orders" );
             Order order = (Order) this.theClient.recvObject();
             out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " has a order: " + order.getActionName());
