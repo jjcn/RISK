@@ -33,8 +33,8 @@
     <include layout="@layout/item_input_num"
              android:id="@+id/terrB"/>
 
-    <include layout="@layout/item_input_num"
-             android:id="@+id/terrC"/>
+<!--    <include layout="@layout/item_input_num"-->
+<!--             android:id="@+id/terrC"/>-->
 
     <Button
             android:id="@+id/buttonCommitPlace"

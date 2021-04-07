@@ -44,24 +44,20 @@ public class PlaceActivity extends AppCompatActivity {
     private void impUI() {
         instr = findViewById(R.id.placeInstru);
         instr.append("You have total of "+PLACE_TOTAL+" soldiers.");
-        // mapIV = findViewById(R.id.worldFG);
-        // mapIV.setImageResource(MAPS.get(getCurrentRoomSize()));
+        mapIV = findViewById(R.id.worldFG).findViewById(R.id.world_image_view);
+        mapIV.setImageResource(MAPS.get(getCurrentRoomSize()));
 
         LinearLayout terrA = findViewById(R.id.terrA);
         LinearLayout terrB = findViewById(R.id.terrB);
-        LinearLayout terrC = findViewById(R.id.terrC);
 
         EditText terrAETInput = terrA.findViewById(R.id.inputNum);
         EditText terrBETInput = terrB.findViewById(R.id.inputNum);
-        EditText terrCETInput = terrC.findViewById(R.id.inputNum);
 
         List<Territory> myTerr = getMyTerritory();
         TextView terrATV = terrA.findViewById(R.id.placeinstrTV);
         terrATV.append(myTerr.get(0).getName());
         TextView terrBTV = terrB.findViewById(R.id.placeinstrTV);
         terrBTV.append(myTerr.get(1).getName());
-        TextView terrCTV = terrC.findViewById(R.id.placeinstrTV);
-        terrCTV.append(myTerr.get(2).getName());
 
         Button commitBT = findViewById(R.id.buttonCommitPlace);
         commitBT.setOnClickListener(v -> {
@@ -70,14 +66,12 @@ public class PlaceActivity extends AppCompatActivity {
             // check total number
             numTerrA = Integer.parseInt(String.valueOf(terrAETInput.getText()));
             numTerrB = Integer.parseInt(String.valueOf(terrBETInput.getText()));
-            numTerrC = Integer.parseInt(String.valueOf(terrCETInput.getText()));
-            int total = numTerrA+numTerrB+numTerrC;
+            int total = numTerrA+numTerrB;
 
             if(total == PLACE_TOTAL){
                 List<PlaceOrder> placements = new ArrayList<>();
                 placements.add(new PlaceOrder(myTerr.get(0).getName(),new Troop(numTerrA,new TextPlayer(getUserName()))));
                 placements.add(new PlaceOrder(myTerr.get(1).getName(),new Troop(numTerrB,new TextPlayer(getUserName()))));
-                placements.add(new PlaceOrder(myTerr.get(2).getName(),new Troop(numTerrC,new TextPlayer(getUserName()))));
 
                 doPlacement(placements, new onReceiveListener() {
                     @Override
