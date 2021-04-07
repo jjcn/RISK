@@ -301,6 +301,7 @@ public class ClientThread extends Thread {
             }
         }
 
+//        while(!gameOnGoing.gameState.isDoneUpdateGame()){gameOnGoing.waitTime(1);}
         out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " knows world is updated");
 
         waitNotifyFromRunner();
@@ -312,10 +313,13 @@ public class ClientThread extends Thread {
     * This does action phase for one turn
     * */
     protected void doActionPhaseOneTurn(){
-
         boolean exit = false;
+        boolean start = true;
         while(!exit){
-            this.theClient.sendObject(gameOnGoing.getTheWorld());
+            if(start){
+                this.theClient.sendObject(gameOnGoing.getTheWorld());
+                start = false;
+            }
             out.println("Game" + gameOnGoing.getGameID() + ": send world to " + ownerUser.getUsername() + " wait for orders" );
             Order order = (Order) this.theClient.recvObject();
             out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " has a order: " + order.getActionName());
@@ -331,7 +335,6 @@ public class ClientThread extends Thread {
      * else, change state to PLAYER_STATE_ACTION_PHASE
      * */
     protected void updatePlayerStateOneTurn(){
-        // send world to client after runner finishes one turn
         //Go back to Games Page (Part2)
         if(gameOnGoing.gameState.getAPlayerState(ownerUser).equals(PLAYER_STATE_SWITCH_OUT)){
             out.println("Game" + gameOnGoing.getGameID() + ": Checking Phase :  " + ownerUser.getUsername() + " Switches Out");
