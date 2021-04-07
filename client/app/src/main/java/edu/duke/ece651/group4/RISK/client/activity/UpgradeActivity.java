@@ -136,11 +136,12 @@ public class UpgradeActivity extends AppCompatActivity {
         commitBT.setOnClickListener(v -> {
             nUnit = Integer.parseInt(nUnitET.getText().toString());
 
-            Log.d(TAG, String.format("User selected: upgrade %d units from \"%s\" to \"%d\".",
-                    nUnit, typeNameBefore, typeNameAfter));
-            Log.d(TAG, String.format("Upgrade order to be created: upgrade %d units from LV%d to LV%d.",
-                    nUnit, levels.get(typeNameBefore), levels.get(typeNameAfter)));
-
+//            Log.d(TAG, String.format("User selected: upgrade %d units from \"%s\" to \"%d\".",
+//                    nUnit, typeNameBefore, typeNameAfter));
+            Log.d(TAG, "User selected: upgrade " + nUnit + " units from " +typeNameBefore + " to " + typeNameAfter);
+//            Log.d(TAG, String.format("Upgrade order to be created: upgrade %d units from LV%d to LV%d.",
+//                    nUnit, levels.get(typeNameBefore), levels.get(typeNameAfter)));
+            Log.d(TAG, "Upgrade order to be created: upgrade " + nUnit +  "units from LV"+ levels.get(typeNameBefore) +" to LV" +levels.get(typeNameAfter));
             // TODO: need mapping from levelNames -> level integer, hard-coded for now
             String result = doSoliderUpgrade(
                     buildUpOrder(terrName,
