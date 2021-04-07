@@ -243,6 +243,7 @@ public class Game {
     public void updateGameAfterOneTurn(){
         this.theWorld.doAllBattles();
         this.theWorld.allPlayersGainResources();
+        this.theWorld.addUnitToAll(1);
     }
 
     /*
