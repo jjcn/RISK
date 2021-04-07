@@ -162,7 +162,6 @@ public class BasicOrderActivity extends AppCompatActivity {
                         new onResultListener() {
                             @Override
                             public void onSuccess() {
-                               // update();
                             }
 
                             @Override
@@ -175,7 +174,6 @@ public class BasicOrderActivity extends AppCompatActivity {
                         new onResultListener() {
                             @Override
                             public void onSuccess() {
-                                // update();
                             }
 
                             @Override
@@ -193,10 +191,4 @@ public class BasicOrderActivity extends AppCompatActivity {
         });
 
     }
-
-//    private void update(){
-//        userInfoTV.setText(getPlayerInfo());
-//        noticesAdapter.notifyDataSetChanged();
-//        worldInfoAdapter.notifyDataSetChanged();
-//    }
 }

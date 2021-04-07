@@ -179,15 +179,9 @@ public class TurnActivity extends AppCompatActivity {
                 case UI_ATK:
                     intent.setComponent(new ComponentName(TurnActivity.this, BasicOrderActivity.class));
                     bundle.putSerializable("actionType", actionType);
-//                    bundle.putSerializable(USER_INFO_TV, (Serializable) userInfoTV);
-//                    bundle.putSerializable(NOTICE_ADP, (Serializable) noticesAdapter);
-//                    bundle.putSerializable(WORLD_INFO_ADP, (Serializable) worldInfoAdapter);
                     break;
                 case UI_UPTROOP:
                     intent.setComponent(new ComponentName(TurnActivity.this, UpgradeActivity.class));
-//                    bundle.putSerializable(USER_INFO_TV, (Serializable) userInfoTV);
-//                    bundle.putSerializable(NOTICE_ADP, (Serializable) noticesAdapter);
-//                    bundle.putSerializable(WORLD_INFO_ADP, (Serializable) worldInfoAdapter);
                     break;
                 case UI_UPTECH:
                     // showConfirmDialog();
@@ -286,6 +280,7 @@ public class TurnActivity extends AppCompatActivity {
         }
         Log.i(TAG, LOG_FUNC_RUN + "call update after turn");
         userInfoTV.setText(getPlayerInfo());
+        noticeInfo.clear();
         noticeInfo.add(getWorld().getReport());
         noticesAdapter.notifyDataSetChanged();
         worldInfo.clear();
@@ -297,7 +292,6 @@ public class TurnActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        // TODO Auto-generated method stub
         Log.i(TAG, LOG_FUNC_RUN + "call on resume");
         super.onResume();
         updateAfterTurn();
