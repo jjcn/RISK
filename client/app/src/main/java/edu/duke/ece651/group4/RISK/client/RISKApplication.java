@@ -31,7 +31,6 @@ public class RISKApplication extends Application {
     static UpgradeTechOrder techOrder;
     static onResultListener techListener;
 
-
     @Override
     public void onCreate() {
         super.onCreate();

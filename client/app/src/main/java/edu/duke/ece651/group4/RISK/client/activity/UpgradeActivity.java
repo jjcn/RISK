@@ -24,9 +24,7 @@ public class UpgradeActivity extends AppCompatActivity {
     private final String TAG = this.getClass().getSimpleName();
     private String terrName;
     private String typeNameBefore;
-    private int levelBefore;
     private String typeNameAfter;
-    private int levelAfter;
     private int nUnit;
 
     private ImageView worldImageView;
@@ -53,14 +51,12 @@ public class UpgradeActivity extends AppCompatActivity {
 
         this.terrName = "";
         this.typeNameBefore = "";
-        this.levelBefore = -1;
         this.typeNameAfter = "";
-        this.levelAfter = -1;
         this.nUnit = -1;
         this.levels = new HashMap<>();
         initMapping();
 
-        Log.e(TAG, "Upgrade Activity: set up sucessfully and will enter UI" );
+        Log.e(TAG, "Upgrade Activity: set up successfully and will enter UI" );
         impUI();
     }
 
@@ -144,7 +140,7 @@ public class UpgradeActivity extends AppCompatActivity {
                 return;
             }
             nUnit = Integer.parseInt(text.toString());
-            Log.d(TAG, String.format("User selected: upgrade %d units from \"%s\" to \"%d\".",
+            Log.d(TAG, String.format("User selected: upgrade %d units from \"%s\" to \"%s\".",
                     nUnit, typeNameBefore, typeNameAfter));
             Log.d(TAG, String.format("Upgrade order to be created: upgrade %d units from LV%d to LV%d.",
                     nUnit, levels.get(typeNameBefore), levels.get(typeNameAfter)));
