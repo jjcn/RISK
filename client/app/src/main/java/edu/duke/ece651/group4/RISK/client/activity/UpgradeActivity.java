@@ -136,7 +136,7 @@ public class UpgradeActivity extends AppCompatActivity {
         commitBT.setOnClickListener(v -> {
             nUnit = Integer.parseInt(nUnitET.getText().toString());
 
-            Log.d(TAG, String.format("User selected: upgrade %d units from \"%s\" to \"%d\".",
+            Log.d(TAG, String.format("User selected: upgrade %d units from \"%s\" to \"%s\".",
                     nUnit, typeNameBefore, typeNameAfter));
             Log.d(TAG, String.format("Upgrade order to be created: upgrade %d units from LV%d to LV%d.",
                     nUnit, levels.get(typeNameBefore), levels.get(typeNameAfter)));
