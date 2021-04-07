@@ -257,6 +257,7 @@ public class Game {
     synchronized protected boolean tryUpdateActionOnWorld(Order order, User u){
         String userName = u.getUsername();
         Character action = order.getActionName();
+        out.println("Game" + gameID + ": " + userName +  "  "+ action);
         boolean exit = false;
         switch(action){
             case ATTACK_ACTION:
@@ -281,6 +282,7 @@ public class Game {
                 break;
             default:
                 exit = true; // when user lose the game, server will receive null from client
+                out.println("Recv a unknown");
                 break;
         }
         return exit;
