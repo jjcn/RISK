@@ -242,6 +242,7 @@ public class Game {
     * */
     public void updateGameAfterOneTurn(){
         this.theWorld.doAllBattles();
+        this.theWorld.allPlayersGainResources();
     }
 
     /*
