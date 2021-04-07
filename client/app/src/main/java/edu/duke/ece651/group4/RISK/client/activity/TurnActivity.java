@@ -252,7 +252,8 @@ public class TurnActivity extends AppCompatActivity {
                 userInfo.clear();
                 userInfo.add(getPlayerInfo());
                 userInfoAdapter.notifyDataSetChanged();
-                actionAdapter.remove(UI_UPTECH); // can only upgrade once in one turn
+                actions.remove(UI_UPTECH); // can only upgrade once in one turn
+                actionAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -313,7 +314,6 @@ public class TurnActivity extends AppCompatActivity {
                     Log.i(TAG, LOG_FUNC_RUN + "call update after turn");
                     noticeInfo.clear();
                     noticeInfo.add(getPlayerInfo());
-                    noticeInfo.clear();
                     noticeInfo.add(getWorld().getReport());
                     noticesAdapter.notifyDataSetChanged();
                     worldInfo.clear();
