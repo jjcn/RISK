@@ -26,7 +26,7 @@ public class PlayerInfo implements Serializable {
      * Cumulative costs of upgrading from tech level 1 to N.
      * Two 0's are put at the start for easy indexing by techLevel.
      */
-    protected static final int[] cumTechLevelUpgradeCosts = 
+    protected static final int[] CUM_TECH_LEVEL_UPGRADE_COSTS =
     {0, 0, 50, 125, 250, 450, 750}; // TODO: this is hardcoded for now, may put in a file?
 
     /**
@@ -186,9 +186,9 @@ public class PlayerInfo implements Serializable {
      */
     protected static int calcUpgradeTechLevelConsumption(int before, int after) {
         try {
-            return cumTechLevelUpgradeCosts[after] 
-                    - cumTechLevelUpgradeCosts[before];
-        } catch (IndexOutOfBoundsException ioobe) {
+            return CUM_TECH_LEVEL_UPGRADE_COSTS[after]
+                    - CUM_TECH_LEVEL_UPGRADE_COSTS[before];
+        } catch (IndexOutOfBoundsException e) {
             throw new IllegalArgumentException(INVALID_TECH_LEVEL_MSG);
         }
     }

@@ -456,6 +456,12 @@ public class WorldTest {
     }
 
     @Test
+    public void charAndCharacter() {
+        assertEquals('A', new Character('A'));
+        assertTrue('A' == new Character('A'));
+    }
+
+    @Test
     public void testUpgradeTechLevelExceedMax() {
         World world = createWorldAndRegister(troopsSeparated);
         world.registerPlayer(new PlayerInfo("test", 99999, 99999));
