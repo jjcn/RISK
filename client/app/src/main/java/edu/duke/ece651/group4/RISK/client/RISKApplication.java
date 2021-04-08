@@ -512,13 +512,17 @@ public class RISKApplication extends Application {
     public static void doDone(Order order, onReceiveListener listener) {
         if(techOrder!=null){
            try {
+               Log.d(TAG, "UPgade starts");
             theWorld.upgradePlayerTechLevelBy1(userName);
             send(techOrder, techListener);
+               Log.d(TAG, "UPgade send");
             } catch (Exception e) {
                Log.e(TAG, e.getMessage());
             }
         }
+        Log.d(TAG, "Done start");
         sendReceiveHelper(order, listener, WORLD);
+        Log.d(TAG, "Done end");
         techOrder=null;
         techListener=null;
     }

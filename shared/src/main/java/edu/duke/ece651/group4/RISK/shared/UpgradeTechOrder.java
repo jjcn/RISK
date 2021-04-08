@@ -3,6 +3,8 @@ package edu.duke.ece651.group4.RISK.shared;
 import java.io.Serializable;
 import java.util.NoSuchElementException;
 
+import static edu.duke.ece651.group4.RISK.shared.Constant.UPTECH_ACTION;
+
 /**
  * An order that upgrades a player's tech level.
  * @param nLevel is the number to add to a player's tech level.
@@ -25,7 +27,7 @@ public class UpgradeTechOrder implements Order, Serializable {
     private int nLevel;
 
     public UpgradeTechOrder(int nLevel) {
-        this.actionName = 'T';
+        this.actionName = UPTECH_ACTION;
         this.nLevel = nLevel;
     }
 
