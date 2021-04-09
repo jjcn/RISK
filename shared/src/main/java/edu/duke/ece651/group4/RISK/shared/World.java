@@ -9,6 +9,7 @@ import java.util.NoSuchElementException;
 
 import java.util.Random;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.io.Serializable;
 
@@ -309,6 +310,14 @@ public class World implements Serializable {
             throw new IllegalArgumentException(String.format(NO_PLAYERINFO_MSG, playerName));
         }
         return playerInfos.get(playerName);
+    }
+
+    /**
+     * Get all names of players that are still in the game (which means he hasn't lose)
+     * @return names of all players that are still in the game.
+     */
+    public Set<String> getAllPlayerNames() {
+        return playerInfos.keySet().stream().filter((name -> !checkLost(name))).collect(Collectors.toSet());
     }
 
     /**

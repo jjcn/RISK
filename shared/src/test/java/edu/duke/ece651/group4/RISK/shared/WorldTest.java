@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Random;
+import java.util.Set;
 
 public class WorldTest {
     /**
@@ -238,6 +239,14 @@ public class WorldTest {
         assertNotNull(world.getPlayerInfoByName("red"));
         assertThrows(IllegalArgumentException.class,
                     () -> world.getPlayerInfoByName("blue"));
+    }
+
+    @Test
+    public void testGetPlayerNames() {
+        World world = createWorldAndRegister(troopsSamePlayer);
+        Set<String> redSet = new HashSet<String>();
+        redSet.add("red");
+        assertEquals(redSet, world.getAllPlayerNames());
     }
 
     @Test
