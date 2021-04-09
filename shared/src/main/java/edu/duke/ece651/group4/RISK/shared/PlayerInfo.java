@@ -1,6 +1,7 @@
 package edu.duke.ece651.group4.RISK.shared;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,14 +32,16 @@ public class PlayerInfo implements Serializable {
     /**
      * A list of names of this player's allies.
      */
-    protected List<String> alliances;
+    protected List<String> allianceNames;
 
     protected PlayerInfo(String playerName, TechLevelInfo techLevelInfo,
-            FoodResource foodResource, TechResource techResource) {
+                         FoodResource foodResource, TechResource techResource,
+                         List<String> allianceNames) {
         this.playerName = playerName;
         this.techLevelInfo = techLevelInfo;
         this.foodResource = foodResource;
         this.techResource = techResource;
+        this.allianceNames = allianceNames;
     }
 
     /**
@@ -65,14 +68,19 @@ public class PlayerInfo implements Serializable {
      * @param nTech is the initial quantity of tech resource.
      */
     public PlayerInfo(String playerName, int nFood, int nTech) {
-        this(playerName, new TechLevelInfo(1), new FoodResource(nFood), new TechResource(nTech));
+        this(playerName, new TechLevelInfo(1),
+                new FoodResource(nFood), new TechResource(nTech),
+                new ArrayList<>());
     }
 
     public PlayerInfo clone() {
+        List<String> allianceNamesCopy = new ArrayList<>();
+        allianceNamesCopy.addAll(allianceNames);
         return new PlayerInfo(playerName,
                 new TechLevelInfo(techLevelInfo.getTechLevel()),
                 new FoodResource(foodResource.getQuantity()),
-                new TechResource(techResource.getQuantity()));
+                new TechResource(techResource.getQuantity()),
+                allianceNamesCopy);
     }
 
     public String getName() {
@@ -89,6 +97,10 @@ public class PlayerInfo implements Serializable {
 
     public int getTechQuantity() {
         return techResource.getQuantity();
+    }
+
+    public List<String> getAllianceNames() {
+        return allianceNames;
     }
 
     /**
