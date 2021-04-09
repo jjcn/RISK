@@ -15,19 +15,7 @@ public class PlayerInfo implements Serializable {
     /**
      * Player's current tech level
      */
-    protected int techLevel; // player's current tech level
-    /**
-     * Tech level constraints
-     */
-    protected final int MIN_TECH_LEVEL; // minimum tech level
-    protected final int MAX_TECH_LEVEL; // max tech level a player can reach
-
-    /**
-     * Cumulative costs of upgrading from tech level 1 to N.
-     * Two 0's are put at the start for easy indexing by techLevel.
-     */
-    protected static final int[] CUM_TECH_LEVEL_UPGRADE_COSTS =
-    {0, 0, 50, 125, 250, 450, 750}; // TODO: this is hardcoded for now, may put in a file?
+    protected TechLevelInfo techLevelInfo;
 
     /**
      * Player's food and tech resources.
@@ -38,20 +26,18 @@ public class PlayerInfo implements Serializable {
     /**
      * Error messages
      */
-    final static String TECHLEVEL_INVALID_MODIFY_MSG = 
+    protected static final String TECHLEVEL_INVALID_MODIFY_MSG =
     "Error: cannot modify the tech level of %s by %d.%n" +
     "The tech level after this modification will be %d,%n";
-    final static String FAILURE_TECH_LEVEL_UPGRADE_MSG = 
+    protected static final String FAILURE_TECH_LEVEL_UPGRADE_MSG =
     "Fails to upgrade %s's tech level.";
-    final static String INVALID_TECH_LEVEL_MSG =
+    protected static final String INVALID_TECH_LEVEL_MSG =
     "Specified tech level does not exist.";
 
-    protected PlayerInfo(String playerName, int techLevel, int minTechLevel, int maxTechLevel,
+    protected PlayerInfo(String playerName, TechLevelInfo techLevelInfo,
             FoodResource foodResource, TechResource techResource) {
         this.playerName = playerName;
-        this.techLevel = techLevel;
-        this.MIN_TECH_LEVEL = minTechLevel;
-        this.MAX_TECH_LEVEL = maxTechLevel;
+        this.techLevelInfo = techLevelInfo;
         this.foodResource = foodResource;
         this.techResource = techResource;
     }
@@ -80,14 +66,14 @@ public class PlayerInfo implements Serializable {
      * @param nTech is the initial quantity of tech resource.
      */
     public PlayerInfo(String playerName, int nFood, int nTech) {
-        this(playerName, 1, 0, 6, new FoodResource(nFood), new TechResource(nTech));
+        this(playerName, new TechLevelInfo(1), new FoodResource(nFood), new TechResource(nTech));
     }
 
     public PlayerInfo clone() {
-        return new PlayerInfo(playerName, techLevel, 
-                            MIN_TECH_LEVEL, MAX_TECH_LEVEL, 
-                            new FoodResource(foodResource.getQuantity()), 
-                            new TechResource(techResource.getQuantity()));
+        return new PlayerInfo(playerName,
+                new TechLevelInfo(techLevelInfo.getTechLevel()),
+                new FoodResource(foodResource.getQuantity()),
+                new TechResource(techResource.getQuantity()));
     }
 
     public String getName() {
@@ -95,7 +81,7 @@ public class PlayerInfo implements Serializable {
     }
 
     public int getTechLevel() {
-        return techLevel;
+        return techLevelInfo.getTechLevel();
     }
 
     public int getFoodQuantity() {
@@ -145,18 +131,12 @@ public class PlayerInfo implements Serializable {
      *          Can be positive, 0, or negative.
      */
     public void upgradeTechLevelBy(int n) {
+        int techLevel = techLevelInfo.getTechLevel();
         int techLevelAfterMod = techLevel + n;
-        String explanation_msg = String.format(TECHLEVEL_INVALID_MODIFY_MSG,
-                playerName, n, techLevelAfterMod);
-        if (techLevelAfterMod < MIN_TECH_LEVEL) {
-            String underflow_msg = "which is below the minimum tech level a player can have.";
-            throw new IllegalArgumentException(explanation_msg + underflow_msg);
-        }
-        else if (techLevelAfterMod > MAX_TECH_LEVEL) {
-            String overflow_msg = "which is beyond the maximum tech level a player can have.";
-            throw new IllegalArgumentException(explanation_msg + overflow_msg);
-        } else {
-            techLevel = techLevelAfterMod;
+        try {
+            techLevelInfo.upgradeTechLevelBy(n);
+        } catch (IllegalArgumentException e) {
+            throw e;
         }
     }
 
@@ -167,9 +147,10 @@ public class PlayerInfo implements Serializable {
      *          Can be positive, 0, or negative.
      */
     public void consumeResourceOfTechUpgrade(int n) {
+        int techLevel = techLevelInfo.getTechLevel();
         int techLevelAfterMod = techLevel + n;
         try {
-            int consumption = calcUpgradeTechLevelConsumption(techLevel, techLevelAfterMod);
+            int consumption = TechLevelInfo.calcConsumption(techLevel, techLevelAfterMod);
             consumeTech(consumption);
         } catch (IllegalArgumentException iae) {
             String err_msg = iae.getMessage() + "\n" +
@@ -178,28 +159,14 @@ public class PlayerInfo implements Serializable {
         }
     }
 
-    /**
-     * Calculate the tech resource consumption by an upgrade.
-     * @param before is the tech level before an upgrade.
-     * @param after is the tech level after an upgrade.
-     * @return quantity of tech resource consumed by this upgrade.
-     */
-    protected static int calcUpgradeTechLevelConsumption(int before, int after) {
-        try {
-            return CUM_TECH_LEVEL_UPGRADE_COSTS[after]
-                    - CUM_TECH_LEVEL_UPGRADE_COSTS[before];
-        } catch (IndexOutOfBoundsException e) {
-            throw new IllegalArgumentException(INVALID_TECH_LEVEL_MSG);
-        }
-    }
-
     @Override
-    public boolean equals(Object other) {
-        if (other != null && other.getClass().equals(getClass())) {
-            PlayerInfo otherPlayerInfo = (PlayerInfo) other;
-            return otherPlayerInfo.getName().equals(playerName) && otherPlayerInfo.getTechLevel() == getTechLevel()
-                    && otherPlayerInfo.getFoodQuantity() == getFoodQuantity()
-                    && otherPlayerInfo.getTechQuantity() == getTechQuantity();
+    public boolean equals(Object o) {
+        if (o != null && o.getClass().equals(getClass())) {
+            PlayerInfo otherPlayerInfo = (PlayerInfo) o;
+            return otherPlayerInfo.playerName.equals(playerName)
+                    && otherPlayerInfo.techLevelInfo.equals(techLevelInfo)
+                    && otherPlayerInfo.foodResource.equals(foodResource)
+                    && otherPlayerInfo.techResource.equals(techResource);
         } else {
             return false;
         }
@@ -209,8 +176,7 @@ public class PlayerInfo implements Serializable {
     public String toString() {
         StringBuilder ans = new StringBuilder();
         ans.append(String.format("%s's player info:\n", playerName));
-        ans.append(String.format("current tech level: %d, ", techLevel));
-        ans.append(String.format("max tech level: %d\n", MAX_TECH_LEVEL));
+        ans.append(String.format("current tech level Info: " + techLevelInfo.toString()));
         ans.append(foodResource.toString() + "\n");
         ans.append(techResource.toString() + "\n");
         return ans.toString();

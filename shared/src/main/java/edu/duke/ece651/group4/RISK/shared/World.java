@@ -572,7 +572,7 @@ public class World implements Serializable {
     public void upgradeTroop(UpgradeTroopOrder utOrder, String playerName) {
         Territory terr = findTerritory(utOrder.getSrcName());
         PlayerInfo pInfo = getPlayerInfoByName(playerName);
-        if (utOrder.getLevelAfter() > pInfo.techLevel) {
+        if (utOrder.getLevelAfter() > pInfo.techLevelInfo.getTechLevel()) {
             throw new IllegalArgumentException("Cannot upgrade beyond your tech level.");
         }
         try {
