@@ -1,12 +1,19 @@
 package edu.duke.ece651.group4.RISK.shared;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * This class records information that is player-specific. 
  * Allows modifying of tech level & resource quantities.
  */
 public class PlayerInfo implements Serializable {
+    /**
+     * Error messages
+     */
+    protected static final String FAILURE_TECH_LEVEL_UPGRADE_MSG =
+            "Fails to upgrade %s's tech level.";
+
     protected static final long serialVersionUID = 9L;
     /**
      * Player's name
@@ -16,23 +23,15 @@ public class PlayerInfo implements Serializable {
      * Player's current tech level
      */
     protected TechLevelInfo techLevelInfo;
-
     /**
      * Player's food and tech resources.
      */
     protected FoodResource foodResource;
     protected TechResource techResource;
-
     /**
-     * Error messages
+     * A list of names of this player's allies.
      */
-    protected static final String TECHLEVEL_INVALID_MODIFY_MSG =
-    "Error: cannot modify the tech level of %s by %d.%n" +
-    "The tech level after this modification will be %d,%n";
-    protected static final String FAILURE_TECH_LEVEL_UPGRADE_MSG =
-    "Fails to upgrade %s's tech level.";
-    protected static final String INVALID_TECH_LEVEL_MSG =
-    "Specified tech level does not exist.";
+    protected List<String> alliances;
 
     protected PlayerInfo(String playerName, TechLevelInfo techLevelInfo,
             FoodResource foodResource, TechResource techResource) {
@@ -54,7 +53,7 @@ public class PlayerInfo implements Serializable {
     }
 
     /**
-     * Create player info with the player's name, 
+     * Create a player info with the player's name,
      * and initialize the quantities of food & tech resource.
      * 
      * Player starts at tech level 1, 
@@ -130,14 +129,8 @@ public class PlayerInfo implements Serializable {
      * @param n is the number to add to tech level.
      *          Can be positive, 0, or negative.
      */
-    public void upgradeTechLevelBy(int n) {
-        int techLevel = techLevelInfo.getTechLevel();
-        int techLevelAfterMod = techLevel + n;
-        try {
-            techLevelInfo.upgradeTechLevelBy(n);
-        } catch (IllegalArgumentException e) {
-            throw e;
-        }
+    public void upgradeTechLevelBy(int n) throws IllegalArgumentException {
+        techLevelInfo.upgradeTechLevelBy(n);
     }
 
     /**
@@ -174,11 +167,9 @@ public class PlayerInfo implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder ans = new StringBuilder();
-        ans.append(String.format("%s's player info:\n", playerName));
-        ans.append(String.format("current tech level Info: " + techLevelInfo.toString()));
-        ans.append(foodResource.toString() + "\n");
-        ans.append(techResource.toString() + "\n");
-        return ans.toString();
+        return playerName + "'s player info:\n" +
+                "current tech level Info: " + techLevelInfo.toString() +
+                foodResource.toString() + "\n" +
+                techResource.toString() + "\n";
     }
 }
