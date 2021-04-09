@@ -186,7 +186,6 @@ public class RISKApplication extends Application {
                 listener.onSuccess(receivedO);
             } catch (Exception e) {
                 Log.e(TAG, LOG_FUNC_FAIL + e.toString());
-                listener.onFailure(e.toString());
             }
         }).start();
     }

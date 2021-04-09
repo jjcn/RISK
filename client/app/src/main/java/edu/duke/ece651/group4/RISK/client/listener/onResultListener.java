@@ -7,10 +7,10 @@ public interface onResultListener {
     /**
      * remote server received sent object
      */
+
     void onSuccess();
 
     /**
-     *
      * @param errMsg error message
      */
     void onFailure(String errMsg);

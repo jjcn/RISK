@@ -3,7 +3,6 @@ package edu.duke.ece651.group4.RISK.client.activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,13 +13,12 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import edu.duke.ece651.group4.RISK.client.R;
+import edu.duke.ece651.group4.RISK.client.fragment.WaitDialog;
 import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
 import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
 import edu.duke.ece651.group4.RISK.shared.BasicOrder;
-import edu.duke.ece651.group4.RISK.shared.RoomInfo;
 import edu.duke.ece651.group4.RISK.shared.World;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -28,6 +26,7 @@ import java.util.List;
 import static edu.duke.ece651.group4.RISK.client.Constant.*;
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.*;
 import static edu.duke.ece651.group4.RISK.client.utility.Notice.showByToast;
+import static edu.duke.ece651.group4.RISK.client.utility.Notice.showSelector;
 import static edu.duke.ece651.group4.RISK.shared.Constant.SWITCH_OUT_ACTION;
 
 /**
@@ -201,11 +200,16 @@ public class TurnActivity extends AppCompatActivity {
                     upgradeTech();
                     break;
                 case UI_DONE:
-                    Log.i(TAG,LOG_FUNC_RUN+"iswatch"+isWatch);
+                    Log.i(TAG, LOG_FUNC_RUN + "is watch" + isWatch);
                     if (isWatch) {
                         showStayDialog();
                     }
                     showConfirmDialog();
+                    break;
+                case UI_ALLIANCE:
+                    // TODO: 1. getUsername; 2.pass result to server
+                    String choice = showSelector(TurnActivity.this, getMyTerrNames());
+
                     break;
                 default:
                     throw new IllegalStateException("Unexpected value: " + actionType);
@@ -216,12 +220,12 @@ public class TurnActivity extends AppCompatActivity {
     }
 
     private void showConfirmDialog() {
-        Log.i(TAG,LOG_FUNC_RUN+"enter confirm");
+        Log.i(TAG, LOG_FUNC_RUN + "enter confirm");
         AlertDialog.Builder builder = new AlertDialog.Builder(TurnActivity.this);
         builder.setTitle(CONFIRM);
         builder.setMessage(CONFIRM_ACTION);
         builder.setPositiveButton("Yes", (dialog, which) -> {
-            Log.i(TAG,LOG_FUNC_RUN+"click yes");
+            Log.i(TAG, LOG_FUNC_RUN + "click yes");
             waitNextTurn();
         });
         builder.setNegativeButton("No", (dialog, which) -> {
@@ -232,16 +236,16 @@ public class TurnActivity extends AppCompatActivity {
 
     private void showStayDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(TurnActivity.this);
-        builder.setTitle(LOSE_MSG);
-        builder.setMessage(STAY_INSTR);
-        builder.setPositiveButton("Yes", (dialog, which) -> {
-            waitNextTurn();
-        });
-        builder.setNegativeButton("No", (dialog, which) -> {
-            Intent joinGame = new Intent(TurnActivity.this, RoomActivity.class);
-            startActivity(joinGame);
-            finish();
-        });
+        builder.setTitle(LOSE_MSG)
+                .setMessage(STAY_INSTR)
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    waitNextTurn();
+                })
+                .setNegativeButton("No", (dialog, which) -> {
+                    Intent joinGame = new Intent(TurnActivity.this, RoomActivity.class);
+                    startActivity(joinGame);
+                    finish();
+                });
         builder.show();
     }
 
@@ -265,16 +269,16 @@ public class TurnActivity extends AppCompatActivity {
 
     // TODO: alert to confirm
     private void waitNextTurn() {
-        Log.i(TAG,LOG_FUNC_RUN+"enter wait next");
+        Log.i(TAG, LOG_FUNC_RUN + "enter wait next");
         waitDG.show();
         commitBT.setClickable(false);
-        Log.i(TAG,LOG_FUNC_RUN+"finish wait");
+        Log.i(TAG, LOG_FUNC_RUN + "finish wait");
         doDone(new BasicOrder(null, null, null, 'D'), new onReceiveListener() {
             @Override
             public void onSuccess(Object o) {
                 if (o instanceof World) {
                     World world = (World) o;
-                    Log.i(TAG,LOG_FUNC_RUN+"world received");
+                    Log.i(TAG, LOG_FUNC_RUN + "world received");
                     if (world.isGameEnd()) {
                         runOnUiThread(() -> {
                             showByToast(TurnActivity.this, world.getWinner() + "wins the game!");
@@ -319,7 +323,7 @@ public class TurnActivity extends AppCompatActivity {
                     worldInfo.clear();
                     worldInfo.addAll(getWorldInfo());
                     worldInfoAdapter.notifyDataSetChanged();
-            Log.i(TAG,LOG_FUNC_RUN+"start dismiss");
+                    Log.i(TAG, LOG_FUNC_RUN + "start dismiss");
                     waitDG.dismiss();
                     commitBT.setClickable(true);
                     refreshGS.setRefreshing(false);
