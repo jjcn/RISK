@@ -58,7 +58,6 @@ public class World implements Serializable {
      */
     protected final Random rnd;
 
-
     /**
      * Construct a default world with an empty graph.
      */
@@ -313,16 +312,6 @@ public class World implements Serializable {
     }
 
     /**
-     * Overloaded function taking in a Player object.
-     *
-     * @param player
-     * @return
-     */
-    public List<Territory> getTerritoriesOfPlayer(Player player) {
-        return getTerritoriesOfPlayer(player.getName());
-    }
-
-    /**
      * Get a list of all territories owned by a player.
      *
      * @param playerName is a player's name.
@@ -427,7 +416,7 @@ public class World implements Serializable {
          * to the unvisited set.
          */
         while (unvisited.size() != 0) {
-            Territory current = getSmallestDistanceVertex(unvisited, distances);
+            Territory current = getSmallestDistanceTerr(unvisited, distances);
             unvisited.remove(current);
             for (Territory adjacent : getAdjacents(current)) {
                 if (!visited.contains(adjacent) && adjacent.getOwner().equals(start.getOwner())) {
@@ -446,15 +435,15 @@ public class World implements Serializable {
     }
 
     /**
-     * Find the smallest distance vertex.
-     *
-     * @param tovisit
-     * @return
+     * Find the smallest distance territory is a set.
+     * @param toVisit is a set of territories.
+     * @param distances is the distances from the staring territory.
+     * @return the smallest distance territory.
      */
-    protected Territory getSmallestDistanceVertex(Set<Territory> tovisit, Map<Territory, Integer> distances) {
+    protected Territory getSmallestDistanceTerr(Set<Territory> toVisit, Map<Territory, Integer> distances) {
         Territory smallestDistanceVertex = null;
         int lowestDistance = Integer.MAX_VALUE;
-        for (Territory vertex : tovisit) {
+        for (Territory vertex : toVisit) {
             int dist = distances.get(vertex);
             if (dist < lowestDistance) {
                 lowestDistance = dist;

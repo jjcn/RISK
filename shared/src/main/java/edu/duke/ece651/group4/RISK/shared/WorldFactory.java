@@ -45,21 +45,40 @@ public class WorldFactory implements Serializable {
         return ans;
     }
 
+    protected void assignArea(Map<Integer, List<Territory>> groups,
+                              int totalArea, Random seed) {
+        int nTerrs = groups.get(0).size();
+        groups.values().forEach(terrs -> {
+            List<Integer> areas = generateRandomFixedSumList(nTerrs, totalArea, seed);
+            IntStream.range(0, nTerrs).forEach(i -> terrs.get(i).setArea(areas.get(i)));
+        });
+    }
+
+    protected void assignFoodSpeed(Map<Integer, List<Territory>> groups,
+                              int totalFoodSpeed, Random seed) {
+        int nTerrs = groups.get(0).size();
+        groups.values().forEach(terrs -> {
+            List<Integer> foodSpeeds = generateRandomFixedSumList(nTerrs, totalFoodSpeed, seed);
+            IntStream.range(0, nTerrs).forEach(i -> terrs.get(i).setFoodSpeed(foodSpeeds.get(i)));
+        });
+    }
+
+    protected void assignTechSpeed(Map<Integer, List<Territory>> groups,
+                                   int totalTechSpeed, Random seed) {
+        int nTerrs = groups.get(0).size();
+        groups.values().forEach(terrs -> {
+            List<Integer> techSpeeds = generateRandomFixedSumList(nTerrs, totalTechSpeed, seed);
+            IntStream.range(0, nTerrs).forEach(i -> terrs.get(i).setTechSpeed(techSpeeds.get(i)));
+        });
+    }
+
     protected void assignRandomAttributes (
     		Map<Integer, List<Territory>> groups,
     		int totalArea, int totalFoodSpeed, int totalTechSpeed,
 			Random seed) {
-    	int nTerrs = groups.get(0).size();
-    	for (List<Territory> terrs : groups.values()) {
-    		List<Integer> areas = generateRandomFixedSumList(nTerrs, totalArea, seed);
-	        List<Integer> foodSpeeds = generateRandomFixedSumList(nTerrs, totalFoodSpeed, seed);
-	        List<Integer> techSpeeds = generateRandomFixedSumList(nTerrs, totalTechSpeed, seed);
-	        for (int i = 0; i < nTerrs; i++) {
-	        	terrs.get(i).setArea(areas.get(i));
-	        	terrs.get(i).setFoodSpeed(foodSpeeds.get(i));
-	        	terrs.get(i).setTechSpeed(techSpeeds.get(i));
-	        }
-    	}
+        assignArea(groups, totalArea, seed);
+    	assignFoodSpeed(groups, totalArea, seed);
+    	assignTechSpeed(groups, totalTechSpeed, seed);
     }
 
     /*
