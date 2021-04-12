@@ -13,7 +13,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import edu.duke.ece651.group4.RISK.client.R;
-import edu.duke.ece651.group4.RISK.client.fragment.WaitDialog;
+import edu.duke.ece651.group4.RISK.client.utility.WaitDialog;
 import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
 import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
 import edu.duke.ece651.group4.RISK.shared.BasicOrder;
@@ -104,9 +104,7 @@ public class TurnActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(String errMsg) {
-                Log.e(TAG, errMsg);
-            }
+            public void onFailure(String errMsg) { }  // merely send without return message
         });
     }
 
@@ -177,6 +175,7 @@ public class TurnActivity extends AppCompatActivity {
         });
     }
 
+    // TODO: alert to confirm actions.
     private void impCommitBT() {
         commitBT.setOnClickListener(v -> {
             commitBT.setClickable(false);
@@ -203,8 +202,9 @@ public class TurnActivity extends AppCompatActivity {
                     Log.i(TAG, LOG_FUNC_RUN + "is watch" + isWatch);
                     if (isWatch) {
                         showStayDialog();
+                    } else {
+                        showConfirmDialog();
                     }
-                    showConfirmDialog();
                     break;
                 case UI_ALLIANCE:
                     // TODO: 1. getUsername; 2.pass result to server
@@ -267,44 +267,36 @@ public class TurnActivity extends AppCompatActivity {
         });
     }
 
-    // TODO: alert to confirm
     private void waitNextTurn() {
-        Log.i(TAG, LOG_FUNC_RUN + "enter wait next");
-        waitDG.show();
+        if (!isWatch) {
+            waitDG.show();
+        }
         commitBT.setClickable(false);
-        Log.i(TAG, LOG_FUNC_RUN + "finish wait");
         doDone(new BasicOrder(null, null, null, 'D'), new onReceiveListener() {
             @Override
             public void onSuccess(Object o) {
-                if (o instanceof World) {
-                    World world = (World) o;
-                    Log.i(TAG, LOG_FUNC_RUN + "world received");
-                    if (world.isGameEnd()) {
-                        runOnUiThread(() -> {
-                            showByToast(TurnActivity.this, world.getWinner() + "wins the game!");
-                            Intent joinGame = new Intent(TurnActivity.this, RoomActivity.class);
-                            startActivity(joinGame);
-                            finish();
-                        });
-                    }
-                    isWatch = world.checkLost(getUserName());
-                    if (isWatch) {
-                        actionType = UI_DONE;
-                        runOnUiThread(() -> {
-                            commitBT.performClick();
-                        });
-                    } else {
-                        updateAfterTurn();
-                        showByToast(TurnActivity.this, TURN_END);
-                    }
+                World world = (World) o;
+                if (world.isGameEnd()) {
+                    showByToast(TurnActivity.this, world.getWinner() + " won the game!");
+                    Intent joinGame = new Intent(TurnActivity.this, RoomActivity.class);
+                    startActivity(joinGame);
+                    finish();
+                }
+                isWatch = world.checkLost(getUserName());
+                if (isWatch) {
+                    actionType = UI_DONE;
+                    runOnUiThread(() -> {
+                        commitBT.performClick();
+                    });
                 } else {
-                    this.onFailure("receive not a World");
+                    updateAfterTurn();
+                    showByToast(TurnActivity.this, TURN_END);
                 }
             }
 
             @Override
             public void onFailure(String errMsg) {
-                Log.e(TAG, "login: " + errMsg);
+                Log.e(TAG, LOG_FUNC_RUN + "Should not receive error message after done.");
             }
         });
     }
@@ -314,6 +306,7 @@ public class TurnActivity extends AppCompatActivity {
                     if (isWatch) {
                         chooseActionSP.setVisibility(View.GONE);
                         userInfoRC.setVisibility(View.GONE);
+                        commitBT.setVisibility(View.GONE);
                     }
                     Log.i(TAG, LOG_FUNC_RUN + "call update after turn");
                     noticeInfo.clear();

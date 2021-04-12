@@ -7,7 +7,6 @@ public interface onResultListener {
     /**
      * remote server received sent object
      */
-
     void onSuccess();
 
     /**

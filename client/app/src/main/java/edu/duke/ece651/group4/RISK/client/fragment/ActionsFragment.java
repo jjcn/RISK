@@ -24,13 +24,8 @@ public class ActionsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_actions, container, false);
-
         actionSpinner = v.findViewById(R.id.actions_spinner);
         commitButton = v.findViewById(R.id.commit_button);
-
-
         return v;
     }
-
-
 }

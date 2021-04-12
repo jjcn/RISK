@@ -32,12 +32,7 @@ public class Notice {
         final String[] chosen = new String[1];
         chosen[0] = "";
         builder.setTitle(R.string.CHOOSE_USER_INSTR)
-                .setSingleChoiceItems(adapter, 0, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        chosen[0] = choices.get(which);
-                    }
-                })
+                .setSingleChoiceItems(adapter, 0, (dialog, which) -> chosen[0] = choices.get(which))
                 .setPositiveButton("Confirm", (dialog, which) -> {
                 })
                 .setNegativeButton("Cancel", ((dialog, which) -> {

@@ -3,6 +3,7 @@ package edu.duke.ece651.group4.RISK.client;
 import java.util.HashMap;
 
 public class Constant {
+
     //*************CONSTANTS FOR DEBUG************//
     public static final boolean DEBUG_MODE = false;
     public static final boolean SINGLE_TEST = false;
@@ -24,7 +25,7 @@ public class Constant {
     public static final String PLACEMENT_MORE = "You have placed more soldiers than provided";
     public static final String PLACEMENT_LESS = "You have placed less soldiers";
     public static final String PLACEMENT_DONE = "All players have done their placements";
-    public static final String WAIT = "Waiting for other players";
+    public static final String WAIT_PLACEMENT = "Wait for other players to place...";
     public static final String TURN_END = "All players have commit their actions";
     public static final String LOSE_MSG = "Sorry, you lose~";
     public static final String STAY_INSTR = "Do you want to stay in this room?";
@@ -63,6 +64,5 @@ public class Constant {
             put(0, R.drawable.terrtest);
         }
     };
-
     public static final String COLOR_EGG = "Group4 in ECE651\n Special thanks to the best TA in the world: Kewei Xia \\^^/";
 }
