@@ -618,6 +618,26 @@ public class World implements Serializable {
     }
 
     /**
+     * Two players form an alliance.
+     * @param playerName1 is the name of a player.
+     * @param playerName2 is the name of another player.
+     */
+    public void formAlliance(String playerName1, String playerName2) {
+        playerInfos.get(playerName1).formAlliance(playerName2);
+        playerInfos.get(playerName2).formAlliance(playerName1);
+    }
+
+    /**
+     * Two players break from an alliance.
+     * @param playerName1 is the name of a player.
+     * @param playerName2 is the name of another player.
+     */
+    public void breakAlliance(String playerName1, String playerName2) {
+        playerInfos.get(playerName1).breakAlliance(playerName2);
+        playerInfos.get(playerName2).breakAlliance(playerName1);
+    }
+
+    /**
      * Iterate over all territories around the world, and do battles on them.
      *
      * @return A summary of battle info on all territories.

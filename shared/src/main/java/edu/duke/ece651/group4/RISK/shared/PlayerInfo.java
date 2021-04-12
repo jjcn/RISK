@@ -2,7 +2,9 @@ package edu.duke.ece651.group4.RISK.shared;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * This class records information that is player-specific. 
@@ -10,12 +12,19 @@ import java.util.List;
  */
 public class PlayerInfo implements Serializable {
     /**
+     * Auto generated serial version UID
+     */
+    protected static final long serialVersionUID = 9L;
+    /**
      * Error messages
      */
     protected static final String FAILURE_TECH_LEVEL_UPGRADE_MSG =
             "Fails to upgrade %s's tech level.";
+    protected static final String CANT_FORM_ALLIANCE_MSG =
+            "Cannot form alliance. %s and %s are already alliances.";
+    protected static final String CANT_BREAK_ALLIANCE_MSG =
+            "Cannot break alliance. %s and %s are not alliances.";
 
-    protected static final long serialVersionUID = 9L;
     /**
      * Player's name
      */
@@ -32,11 +41,11 @@ public class PlayerInfo implements Serializable {
     /**
      * A list of names of this player's allies.
      */
-    protected List<String> allianceNames;
+    protected Set<String> allianceNames;
 
     protected PlayerInfo(String playerName, TechLevelInfo techLevelInfo,
                          FoodResource foodResource, TechResource techResource,
-                         List<String> allianceNames) {
+                         Set<String> allianceNames) {
         this.playerName = playerName;
         this.techLevelInfo = techLevelInfo;
         this.foodResource = foodResource;
@@ -70,11 +79,11 @@ public class PlayerInfo implements Serializable {
     public PlayerInfo(String playerName, int nFood, int nTech) {
         this(playerName, new TechLevelInfo(1),
                 new FoodResource(nFood), new TechResource(nTech),
-                new ArrayList<>());
+                new HashSet<>());
     }
 
     public PlayerInfo clone() {
-        List<String> allianceNamesCopy = new ArrayList<>();
+        Set<String> allianceNamesCopy = new HashSet<>();
         allianceNamesCopy.addAll(allianceNames);
         return new PlayerInfo(playerName,
                 new TechLevelInfo(techLevelInfo.getTechLevel()),
@@ -99,7 +108,7 @@ public class PlayerInfo implements Serializable {
         return techResource.getQuantity();
     }
 
-    public List<String> getAllianceNames() {
+    public Set<String> getAllianceNames() {
         return allianceNames;
     }
 
@@ -161,6 +170,26 @@ public class PlayerInfo implements Serializable {
             String err_msg = iae.getMessage() + "\n" +
                     String.format(FAILURE_TECH_LEVEL_UPGRADE_MSG, playerName);
             throw new IllegalArgumentException(err_msg);
+        }
+    }
+
+    /**
+     * Form alliance with another player.
+     * @param otherName is the name of another player.
+     */
+    public void formAlliance(String otherName) {
+        if(!allianceNames.add(otherName)) {
+            throw new IllegalArgumentException(String.format(CANT_FORM_ALLIANCE_MSG, playerName, otherName));
+        }
+    }
+
+    /**
+     * Break alliance with another player.
+     * @param otherName is the name of another player.
+     */
+    public void breakAlliance(String otherName) {
+        if(!allianceNames.remove(otherName)) {
+            throw new IllegalArgumentException(String.format(CANT_FORM_ALLIANCE_MSG, playerName, otherName));
         }
     }
 
