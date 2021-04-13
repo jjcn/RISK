@@ -6,6 +6,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".activity.LoginActivity">
+
+
+    <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/hguide1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.55"/>
+
     <TextView
             android:text="@string/DEVINFO"
             android:layout_width="wrap_content"
@@ -22,11 +31,21 @@
             android:layout_height="wrap_content"
             android:text="@string/WELCOME"
             android:gravity="center"
-            app:layout_constraintBottom_toBottomOf="@id/editTextTextAccount"
+            app:layout_constraintBottom_toTopOf="@id/background"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
+    <ImageView
+            android:id="@+id/background"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/welcome"
+            app:layout_constraintBottom_toTopOf="@id/hguide1"
+            app:srcCompat="@drawable/background"
+    />
 
 
     <EditText
@@ -36,6 +55,7 @@
             android:ems="10"
             android:id="@+id/editTextTextAccount"
             android:hint="@string/USERNAME"
+            app:layout_constraintTop_toBottomOf="@id/hguide1"
             app:layout_constraintBottom_toTopOf="@id/editTextTextPassword"
             app:layout_constraintVertical_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
@@ -49,8 +69,8 @@
             android:ems="10"
             android:id="@+id/editTextTextPassword"
             android:hint="@string/PASSWORD"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/editTextTextAccount"
+            app:layout_constraintBottom_toTopOf="@id/buttonLogin"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
     />
@@ -76,5 +96,6 @@
             app:layout_constraintTop_toBottomOf="@id/editTextTextPassword"
             app:layout_constraintStart_toEndOf="@id/buttonSignUp"
             app:layout_constraintEnd_toEndOf="parent"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
