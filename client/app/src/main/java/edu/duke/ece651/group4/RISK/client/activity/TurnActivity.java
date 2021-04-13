@@ -35,7 +35,7 @@ import static edu.duke.ece651.group4.RISK.shared.Constant.SWITCH_OUT_ACTION;
 public class TurnActivity extends AppCompatActivity {
     private final String TAG = this.getClass().getSimpleName();
 
-    // TODO:expendable list view
+    // TODO--: expendable list view
     private Button commitBT;
     private ListView worldInfoRC;
     private ArrayAdapter<String> worldInfoAdapter;
@@ -95,17 +95,10 @@ public class TurnActivity extends AppCompatActivity {
     }
 
     private void switchOut() {
-        send(new BasicOrder(null, null, null, SWITCH_OUT_ACTION), new onResultListener() {
-            @Override
-            public void onSuccess() {
-                Intent joinIntent = new Intent(TurnActivity.this, RoomActivity.class);
-                startActivity(joinIntent);
-                finish();
-            }
-
-            @Override
-            public void onFailure(String errMsg) { }  // merely send without return message
-        });
+        exitGame();
+        Intent intent = new Intent(TurnActivity.this, RoomActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     @Override
@@ -207,9 +200,8 @@ public class TurnActivity extends AppCompatActivity {
                     }
                     break;
                 case UI_ALLIANCE:
-                    // TODO: 1. getUsername; 2.pass result to server
                     String choice = showSelector(TurnActivity.this, getMyTerrNames());
-
+                    requireAlliance(choice);
                     break;
                 default:
                     throw new IllegalStateException("Unexpected value: " + actionType);
@@ -242,9 +234,7 @@ public class TurnActivity extends AppCompatActivity {
                     waitNextTurn();
                 })
                 .setNegativeButton("No", (dialog, which) -> {
-                    Intent joinGame = new Intent(TurnActivity.this, RoomActivity.class);
-                    startActivity(joinGame);
-                    finish();
+                    exitGame();
                 });
         builder.show();
     }

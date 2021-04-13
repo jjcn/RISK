@@ -160,17 +160,16 @@ public class RISKApplication extends Application {
     /****************** send receive helper function *******************/
 
     /**
-     * To send objects to server. fail if exception is thrown.
+     * To send objects to server. onSuccess is called if no exception is called.
      * Android blocks direct send and receive.
      * new thread works parallel to the main thread (UI thread) thus objects should not be directly stored in Client.
      */
-    public synchronized static void send(Object toSendO, onResultListener listener) {
+    public synchronized static void send(Object toSendO) {
         new Thread(() -> {
             try {
                 playerClient.sendObject(toSendO);
-                listener.onSuccess();
             } catch (Exception e) {
-                Log.e(TAG, LOG_FUNC_FAIL + e.toString());
+                Log.e(TAG, LOG_FUNC_FAIL +"send function: " +e.toString());
             }
         }).start();
     }
@@ -390,13 +389,11 @@ public class RISKApplication extends Application {
     /**
      * Used to send a move order
      */
-    public static String doOneMove(MoveOrder order, onResultListener listener) {
+    public static String doOneMove(MoveOrder order) {
         try {
             MoveOrder tmp = new MoveOrder(order.getSrcName(), order.getDesName(), order.getActTroop().clone(), MOVE_ACTION);
             theWorld.moveTroop(order, userName);
-            Log.e(TAG, theWorld.findTerritory(order.getSrcName()).getInfo());
-            Log.e(TAG, theWorld.findTerritory(order.getDesName()).getInfo());
-            send(tmp, listener);
+            send(tmp);
         } catch (Exception e) {
             return e.getMessage();
         }
@@ -418,11 +415,11 @@ public class RISKApplication extends Application {
     /**
      * Used to send an attack order
      */
-    public static String doOneAttack(AttackOrder order, onResultListener listener) {
+    public static String doOneAttack(AttackOrder order) {
         try {
             AttackOrder tmp = new AttackOrder(order.getSrcName(), order.getDesName(), order.getActTroop().clone(), ATTACK_ACTION);
             theWorld.attackATerritory(order, userName);
-            send(tmp, listener);
+            send(tmp);
         } catch (Exception e) {
             return e.getMessage();
         }
@@ -442,11 +439,11 @@ public class RISKApplication extends Application {
     /**
      * Used to send a soldier level upgrade order
      */
-    public static String doSoliderUpgrade(UpgradeTroopOrder order, onResultListener listener) {
+    public static String doSoliderUpgrade(UpgradeTroopOrder order) {
         try {
             UpgradeTroopOrder tmp = new UpgradeTroopOrder(order.getSrcName(), order.getLevelBefore(), order.getLevelAfter(), order.getNUnit());
             theWorld.upgradeTroop(order, userName);
-            send(tmp, listener);
+            send(tmp);
         } catch (Exception e) {
             return e.getMessage();
         }
@@ -478,7 +475,7 @@ public class RISKApplication extends Application {
             try {
                 Log.d(TAG, "UPgrade starts");
                 theWorld.upgradePlayerTechLevelBy1(userName);
-                send(techOrder, techListener);
+                send(techOrder);
                 Log.d(TAG, "UPgrade send");
             } catch (Exception e) {
                 Log.e(TAG, e.getMessage());
@@ -493,17 +490,19 @@ public class RISKApplication extends Application {
 
 
     public static void stayInGame(onReceiveListener listener) {
-        String message = null;
-        sendAndReceiveWorld(message, listener);
+        sendAndReceiveWorld(null, listener);
     }
 
-    public static void exitGame(onResultListener listener) {
-        send(EXIT_GAME_MESSAGE, listener);
+    public static void exitGame() {
+        send(new BasicOrder(null, null, null, SWITCH_OUT_ACTION));
     }
 
     public static List<Territory> getEnemyTerritory() {
         return theWorld.getTerritoriesNotOfPlayer(userName);
     }
 
-
+    public static void requireAlliance(String allyName) {
+        Order allyOrder = new AllianceOrder(userName,allyName);
+        send(allyOrder);
+    }
 }
