@@ -28,7 +28,7 @@ public class RISKApplication extends Application {
     private static RoomInfo currentRoom;
     static String userName;
     static int currentRoomSize;
-    static UpgradeTechOrder techOrder;
+    static boolean updatedTech;
     private static Client chatClient;
 
     @Override
@@ -45,10 +45,10 @@ public class RISKApplication extends Application {
         }).start();
         this.theWorld = null;
         this.rnd = new Random();
-        this.techOrder = null;
         this.roomInfo = new ArrayList<>();
         this.userName = null;
         this.currentRoomSize = 0;
+        this.updatedTech=false;
         Log.i(TAG, LOG_CREATE_SUCCESS);
     }
 
@@ -456,15 +456,18 @@ public class RISKApplication extends Application {
      * Used to send an tech level upgrade order
      */
     public static String doOneUpgrade(onResultListener listener) {
-        if(techOrder != null){
+
+        if(updatedTech){
             return "You can only upgrade tech once in a turn.";
         }
+        UpgradeTechOrder techOrder = new UpgradeTechOrder(1);
         try {
-            theWorld.getPlayerInfoByName(userName).checkUpgradeTechLevelBy(1);
+            theWorld.doUpgradeTechResourceConsumption(techOrder,userName);
+            send(techOrder);
         } catch (Exception e) {
             return e.getMessage();
         }
-        techOrder = new UpgradeTechOrder(1);
+        updatedTech=true;
         return null;
     }
 
@@ -472,17 +475,10 @@ public class RISKApplication extends Application {
      * Used to send an done order
      */
     public static void doDone(Order order, onReceiveListener listener) {
-        if (techOrder != null) {
-            try {
-                send(techOrder);
-            } catch (Exception e) {
-                Log.e(TAG, e.getMessage());
-            }
-        }
         Log.d(TAG, "Done start");
         sendAndReceiveWorld(order,listener);
         Log.d(TAG, "Done end");
-        techOrder = null;
+        updatedTech=false;
     }
 
 
@@ -498,11 +494,15 @@ public class RISKApplication extends Application {
         return theWorld.getTerritoriesNotOfPlayer(userName);
     }
 
-    public static void requireAlliance(String allyName) {
-        Order allyOrder = new AllianceOrder(userName,allyName);
-        send(allyOrder);
-    }
+//    public static void requireAlliance(String allyName) {
+//        Order allyOrder = new AllianceOrder(userName,allyName);
+//        send(allyOrder);
+//    }
 
+
+   public static int getRoomId(){
+        return theWorld.getRoomID();
+   }
 
 
     /*************** function for chat **************/
