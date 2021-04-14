@@ -144,6 +144,10 @@ public class PlayerInfo implements Serializable {
         techResource.consume(consumption);
     }
 
+    public void checkUpgradeTechLevelBy(int n) {
+
+    }
+
     /**
      * Upgrade player's tech level by a number n.
      *

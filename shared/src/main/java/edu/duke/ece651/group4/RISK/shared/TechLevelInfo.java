@@ -39,16 +39,30 @@ public class TechLevelInfo {
         return techLevel;
     }
 
-    public void upgradeTechLevelBy(int n) throws IllegalArgumentException {
+    /**
+     * Check if a tech level upgrade is valid.
+     * @param n is the level to add onto current tech level.
+     * @throws IllegalArgumentException
+     */
+    public void checkUpgradeTechLevelBy(int n) throws IllegalArgumentException {
         int techLevelAfterMod = techLevel + n;
         try {
             checkTechLevelValidity(techLevelAfterMod);
-            techLevel = techLevelAfterMod;
         } catch (IllegalArgumentException e) {
             String explanation_msg =
                     String.format(TECHLEVEL_INVALID_MODIFY_MSG, n, techLevel, techLevelAfterMod);
             throw new IllegalArgumentException(explanation_msg + e.getMessage());
         }
+    }
+
+    /**
+     * Try upgrade the tech level by n.
+     * @param n is the level to add onto current tech level.
+     * @throws IllegalArgumentException
+     */
+    public void upgradeTechLevelBy(int n) throws IllegalArgumentException {
+        checkUpgradeTechLevelBy(n);
+        techLevel += n;
     }
 
     /**
@@ -66,6 +80,11 @@ public class TechLevelInfo {
         }
     }
 
+    /**
+     * Check if a tech level falls within the range of permitted tech level.
+     * @param techLevel is the tech level to check
+     * @throws IllegalArgumentException
+     */
     protected static void checkTechLevelValidity(int techLevel) throws IllegalArgumentException {
         if (techLevel < MIN_TECH_LEVEL) {
             String underflow_msg = "it is below the minimum tech level.";
