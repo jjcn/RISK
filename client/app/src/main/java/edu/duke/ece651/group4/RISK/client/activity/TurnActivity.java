@@ -27,7 +27,6 @@ import static edu.duke.ece651.group4.RISK.client.Constant.*;
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.*;
 import static edu.duke.ece651.group4.RISK.client.utility.Notice.showByToast;
 import static edu.duke.ece651.group4.RISK.client.utility.Notice.showSelector;
-import static edu.duke.ece651.group4.RISK.shared.Constant.SWITCH_OUT_ACTION;
 
 /**
  * implement game with text input
@@ -35,7 +34,7 @@ import static edu.duke.ece651.group4.RISK.shared.Constant.SWITCH_OUT_ACTION;
 public class TurnActivity extends AppCompatActivity {
     private final String TAG = this.getClass().getSimpleName();
 
-    // TODO:expendable list view
+    // TODO--: expendable list view
     private Button commitBT;
     private ListView worldInfoRC;
     private ArrayAdapter<String> worldInfoAdapter;
@@ -83,6 +82,8 @@ public class TurnActivity extends AppCompatActivity {
             case android.R.id.home:
                 onBackPressed();
                 return true;
+            case R.id.menu_chat:
+                goChat();
             case R.id.menu_rooms:
                 switchOut();
                 return true;
@@ -94,18 +95,16 @@ public class TurnActivity extends AppCompatActivity {
         }
     }
 
-    private void switchOut() {
-        send(new BasicOrder(null, null, null, SWITCH_OUT_ACTION), new onResultListener() {
-            @Override
-            public void onSuccess() {
-                Intent joinIntent = new Intent(TurnActivity.this, RoomActivity.class);
-                startActivity(joinIntent);
-                finish();
-            }
+    private void goChat() {
+        Intent intent = new Intent(TurnActivity.this,ChatActivity.class);
+        startActivity(intent);
+    }
 
-            @Override
-            public void onFailure(String errMsg) { }  // merely send without return message
-        });
+    private void switchOut() {
+        exitGame();
+        Intent intent = new Intent(TurnActivity.this, RoomActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     @Override
@@ -208,9 +207,8 @@ public class TurnActivity extends AppCompatActivity {
                     }
                     break;
                 case UI_ALLIANCE:
-                    // TODO: 1. getUsername; 2.pass result to server
                     String choice = showSelector(TurnActivity.this, getMyTerrNames());
-
+                    requireAlliance(choice);
                     break;
                 default:
                     throw new IllegalStateException("Unexpected value: " + actionType);
@@ -243,9 +241,7 @@ public class TurnActivity extends AppCompatActivity {
                     waitNextTurn();
                 })
                 .setNegativeButton("No", (dialog, which) -> {
-                    Intent joinGame = new Intent(TurnActivity.this, RoomActivity.class);
-                    startActivity(joinGame);
-                    finish();
+                    exitGame();
                 });
         builder.show();
     }
@@ -297,7 +293,7 @@ public class TurnActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(String errMsg) {
-                Log.e(TAG, LOG_FUNC_RUN + "Should not receive error message after done.");
+                Log.e(TAG, LOG_FUNC_RUN + "Should not receive error message_menu after done.");
             }
         });
     }

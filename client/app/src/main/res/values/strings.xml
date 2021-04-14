@@ -17,7 +17,7 @@
     <string name="FRESHROOM">fresh</string>
     <string name="WAIT">Waiting for other players</string>
     <string name="INITPLACE">"Please input number of soldiers you want to place in each territory: "</string>
-    <string name="PLACE_INSTRU">You want to place in territory </string>
+    <string name="PLACE_INSTRU">You want to place in territory</string>
     <string name="CHOOSE_INSTRU">"Please input the number you want: "</string>
     <string name="INPUT_NUM_INSTRU">"Please input the number of soldiers: "</string>
     <string name="SWITCH_OUT">SWITCH</string>
@@ -34,5 +34,6 @@
     <string name="UPGRADE_TYPE_BEFORE_PROMPT">"Which type of soldier \n would you like to upgrade?"</string>
     <string name="UPGRADE_TYPE_AFTER_PROMPT">"Upgrade to soldiers to: "</string>
     <string name="CHOOSE_USER_INSTR">Please choose the user you want to ally with</string>
+    <string name="hint_enter_a_message">Enter your message here</string>
 
 </resources>

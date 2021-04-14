@@ -114,7 +114,7 @@ public class RoomActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(String errMsg) {
-                    showByToast(RoomActivity.this, errMsg); // error message if can not join
+                    showByToast(RoomActivity.this, errMsg); // error message_menu if can not join
                     return;
                 }
             });

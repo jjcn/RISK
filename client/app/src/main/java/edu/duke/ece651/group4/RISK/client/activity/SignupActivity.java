@@ -98,7 +98,7 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     /**
-     * send name and password to remote server and receive message if signed up a new account.
+     * send name and password to remote server and receive message_menu if signed up a new account.
      * back to login activity if new account created.
      * remain in this activity if account exits or input empty name or password.
      */
@@ -126,7 +126,7 @@ public class SignupActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(String errMsg) {
-                    showByToast(SignupActivity.this, errMsg);// show account err message
+                    showByToast(SignupActivity.this, errMsg);// show account err message_menu
                     signupButton.setClickable(true);
                     return;
                 }

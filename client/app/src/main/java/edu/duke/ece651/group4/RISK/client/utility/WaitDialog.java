@@ -22,7 +22,7 @@ public class WaitDialog extends Dialog {
     }
 
     /**
-     * If want to change default waiting message.
+     * If want to change default waiting message_menu.
      */
     public WaitDialog(@NonNull Context context,String text) {
         super(context, R.style.Theme_AppCompat_Dialog);
