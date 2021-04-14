@@ -83,6 +83,8 @@ public class TurnActivity extends AppCompatActivity {
             case android.R.id.home:
                 onBackPressed();
                 return true;
+            case R.id.menu_chat:
+                goChat();
             case R.id.menu_rooms:
                 switchOut();
                 return true;
@@ -92,6 +94,11 @@ public class TurnActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void goChat() {
+        Intent intent = new Intent(TurnActivity.this,ChatActivity.class);
+        startActivity(intent);
     }
 
     private void switchOut() {

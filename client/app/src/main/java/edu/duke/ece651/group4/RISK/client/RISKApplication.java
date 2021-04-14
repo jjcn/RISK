@@ -24,12 +24,11 @@ public class RISKApplication extends Application {
     private static World theWorld;
     private int totalPopulation;
     private Random rnd;
-    static String response;
     static ArrayList<RoomInfo> roomInfo;
     static String userName;
     static int currentRoomSize;
     static UpgradeTechOrder techOrder;
-    static onResultListener techListener;
+    private static Client chatClient;
 
     @Override
     public void onCreate() {
@@ -37,6 +36,7 @@ public class RISKApplication extends Application {
         new Thread(() -> {
             try {
                 playerClient = new Client("vcm-18527.vm.duke.edu", SOCKET_PORT);
+                chatClient = new Client("vcm-18527.vm.duke.edu", SOCKET_PORT);
             } catch (IOException e) {
                 Log.e(TAG, LOG_CREATE_FAIL);
                 e.printStackTrace();
@@ -46,7 +46,6 @@ public class RISKApplication extends Application {
         this.totalPopulation = 15;
         this.rnd = new Random();
         this.techOrder = null;
-        this.techListener = null;
         this.roomInfo = new ArrayList<>();
         this.userName = null;
         this.currentRoomSize = 0;
@@ -455,15 +454,15 @@ public class RISKApplication extends Application {
      * Used to send an tech level upgrade order
      */
     public static String doOneUpgrade(onResultListener listener) {
+        if(techOrder != null){
+            return "You can only upgrade tech once in a turn.";
+        }
+        try {
+            // TODO: only check upgrade
+        } catch (Exception e) {
+            return e.getMessage();
+        }
         techOrder = new UpgradeTechOrder(1);
-        techListener = listener;
-//        UpgradeTechOrder order =
-//        try {
-//            theWorld.upgradePlayerTechLevelBy1(userName);
-//            send(order, listener);
-//        } catch (Exception e) {
-//            return e.getMessage();
-//        }
         return null;
     }
 
@@ -473,10 +472,7 @@ public class RISKApplication extends Application {
     public static void doDone(Order order, onReceiveListener listener) {
         if (techOrder != null) {
             try {
-                Log.d(TAG, "UPgrade starts");
-                theWorld.upgradePlayerTechLevelBy1(userName);
                 send(techOrder);
-                Log.d(TAG, "UPgrade send");
             } catch (Exception e) {
                 Log.e(TAG, e.getMessage());
             }
@@ -485,7 +481,6 @@ public class RISKApplication extends Application {
         sendAndReceiveWorld(order,listener);
         Log.d(TAG, "Done end");
         techOrder = null;
-        techListener = null;
     }
 
 
