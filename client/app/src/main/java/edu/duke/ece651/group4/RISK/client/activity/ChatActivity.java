@@ -43,7 +43,6 @@ public class ChatActivity extends AppCompatActivity implements DialogsListAdapte
     //TODO: chats: 1v1 & whole world
     private List getChats() {
         ArrayList<ChatDialog> chats = new ArrayList<>();
-
         ArrayList<String> allPlayerNames = getAllplayersName();
         chats.add(new ChatDialog(0, "Whole world", allPlayerNames , null, 0));
         for(int i=0;i<getCurrentRoomSize();i++){
