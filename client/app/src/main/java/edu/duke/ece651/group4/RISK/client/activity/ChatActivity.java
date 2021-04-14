@@ -2,16 +2,21 @@ package edu.duke.ece651.group4.RISK.client.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.stfalcon.chatkit.commons.models.IDialog;
 import com.stfalcon.chatkit.dialogs.DialogsList;
 import com.stfalcon.chatkit.dialogs.DialogsListAdapter;
+
 import edu.duke.ece651.group4.RISK.client.R;
 import edu.duke.ece651.group4.RISK.client.model.ChatDialog;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import static edu.duke.ece651.group4.RISK.client.RISKApplication.getCurrentRoomSize;
 
 public class ChatActivity extends AppCompatActivity implements DialogsListAdapter.OnDialogClickListener {
     private static final String TAG = ChatActivity.class.getSimpleName();
@@ -36,21 +41,20 @@ public class ChatActivity extends AppCompatActivity implements DialogsListAdapte
     //TODO++: chats: 1v1 & whole world
     private List getChats() {
         ArrayList<ChatDialog> chats = new ArrayList<>();
-        for(int i=0;i<getCurrentRoomSize();i++){
+        for (int i = 0; i < getCurrentRoomSize(); i++) {
             Calendar calendar = Calendar.getInstance();
-            calendar.add(Calendar.DAY_OF_MONTH,-(i*i));
-            calendar.add(Calendar.MINUTE,-(i*i));
-            chats.add(new ChatDialog(i,));
+            calendar.add(Calendar.DAY_OF_MONTH, -(i * i));
+            calendar.add(Calendar.MINUTE, -(i * i));
+            chats.add(new ChatDialog(i, ));
         }
         return chats;
-        return null;
     }
 
     @Override
     public void onDialogClick(IDialog dialog) {
-            //TODO--: pass in inchats players
-            Intent intent = new Intent(ChatActivity.this,MessageActivity.class);
-            startActivity(intent);
+        //TODO--: pass in inchats players
+        Intent intent = new Intent(ChatActivity.this, MessageActivity.class);
+        startActivity(intent);
     }
 
 //    //for example
