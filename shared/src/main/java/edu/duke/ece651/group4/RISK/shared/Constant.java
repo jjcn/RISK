@@ -19,6 +19,7 @@ public class Constant {
     public static final String MESS_LOG = "MessageLog";
     public static final String MESS_GAME = "MessageGame";
     public static final String MESS_ACTION = "MessageAction";
+    public static final String MESS_CHAT = "MessageChat";
 
     //Log:
     public static final String LOG_SIGNIN = "LogIn";
@@ -53,4 +54,6 @@ public class Constant {
 
     public static final String PLACEMENT_DONE="Placement Done\n";
 
+    //Chat
+    public static final int CHAT_PORT = 5678;
 }
