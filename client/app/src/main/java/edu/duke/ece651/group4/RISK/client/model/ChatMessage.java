@@ -55,4 +55,6 @@ public class ChatMessage implements IMessage {
     public void setChatID(int id){
         this.chatID = String.valueOf(id);
     }
+
+    public List<String> getTargets(){return targets;}
 }

@@ -1,23 +1,19 @@
 package edu.duke.ece651.group4.RISK.client.activity;
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ImageView;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import com.stfalcon.chatkit.commons.ImageLoader;
+import com.stfalcon.chatkit.commons.models.IDialog;
 import com.stfalcon.chatkit.dialogs.DialogsList;
 import com.stfalcon.chatkit.dialogs.DialogsListAdapter;
 import edu.duke.ece651.group4.RISK.client.R;
+import edu.duke.ece651.group4.RISK.client.model.ChatDialog;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import static edu.duke.ece651.group4.RISK.client.RISKApplication.getCurrentRoomSize;
-
-public class ChatActivity extends AppCompatActivity {
+public class ChatActivity extends AppCompatActivity implements DialogsListAdapter.OnDialogClickListener {
     private static final String TAG = ChatActivity.class.getSimpleName();
     private DialogsListAdapter chatListAdapter;
     private DialogsList chatList;
@@ -33,24 +29,28 @@ public class ChatActivity extends AppCompatActivity {
         chatList = findViewById(R.id.chatList);
         chatListAdapter = new DialogsListAdapter(R.layout.item_dialog, null);
         chatListAdapter.setItems(getChats());
-        chatListAdapter.setOnDialogClickListener(dialog -> {
-            Intent intent = new Intent(ChatActivity.this,MessageActivity.class);
-            startActivity(intent);
-        });
+        chatListAdapter.setOnDialogClickListener(this);
         chatList.setAdapter(chatListAdapter);
     }
 
+    //TODO++: chats: 1v1 & whole world
     private List getChats() {
-        // TODO
-//        ArrayList<chatDialog> chats = new ArrayList<>();
-//        for(int i=0;i<getCurrentRoomSize();i++){
-//            Calendar calendar = Calendar.getInstance();
-//            calendar.add(Calendar.DAY_OF_MONTH,-(i*i));
-//            calendar.add(Calendar.MINUTE,-(i*i));
-//            chats.add(new chatDialog(i,));
-//        }
-//        return chats;
+        ArrayList<ChatDialog> chats = new ArrayList<>();
+        for(int i=0;i<getCurrentRoomSize();i++){
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.DAY_OF_MONTH,-(i*i));
+            calendar.add(Calendar.MINUTE,-(i*i));
+            chats.add(new ChatDialog(i,));
+        }
+        return chats;
         return null;
+    }
+
+    @Override
+    public void onDialogClick(IDialog dialog) {
+            //TODO--: pass in inchats players
+            Intent intent = new Intent(ChatActivity.this,MessageActivity.class);
+            startActivity(intent);
     }
 
 //    //for example
