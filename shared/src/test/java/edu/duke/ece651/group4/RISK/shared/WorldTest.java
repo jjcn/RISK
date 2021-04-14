@@ -70,10 +70,11 @@ public class WorldTest {
     PrintStream out = null;
     Reader inputReader = null;
     Player green = new TextPlayer(out, inputReader, "green");
-    PlayerInfo greenInfo = new PlayerInfo(green.getName(), 100, 100);
     Player red = new TextPlayer(out, inputReader, "red");
-    PlayerInfo redInfo = new PlayerInfo(red.getName(), 100, 100);
     Player blue = new TextPlayer(out, inputReader, "blue");
+
+    PlayerInfo greenInfo = new PlayerInfo(green.getName(), 100, 100);
+    PlayerInfo redInfo = new PlayerInfo(red.getName(), 100, 100);
     PlayerInfo blueInfo = new PlayerInfo(blue.getName(), 100, 100);
 
     String names[] =

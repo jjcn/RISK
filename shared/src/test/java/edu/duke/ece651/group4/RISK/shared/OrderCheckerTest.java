@@ -23,6 +23,10 @@ public class OrderCheckerTest {
     Player red = new TextPlayer(out, inputReader, "red");
     Player blue = new TextPlayer(out, inputReader, "blue");
 
+    PlayerInfo greenInfo = new PlayerInfo(green.getName(), 100, 100);
+    PlayerInfo redInfo = new PlayerInfo(red.getName(), 100, 100);
+    PlayerInfo blueInfo = new PlayerInfo(blue.getName(), 100, 100);
+
     String names[] = 
             "Narnia, Midkemia, Oz, Gondor, Mordor, Hogwarts, Scadrial, Elantris, Roshar".split(", ");
     Troop troopsConnected[] = {new Troop(10, green), new Troop(12, green), new Troop(8, green),
@@ -43,8 +47,7 @@ public class OrderCheckerTest {
      * |/   / |  \ |
      * E------R----H
      * Can specify territory names and troops stationed on the territories.
-     * @param names is an array of territory names. 
-     * @param troops is the corresponding troops on these territories.
+     * @param troops is the corresponding troops on the territories.
      * @return a world object.
      */
     public World createWorld(Troop... troops) {
@@ -80,10 +83,10 @@ public class OrderCheckerTest {
         World world = createWorld(troopsConnected);
 
         BasicOrder order1 = new BasicOrder("Narnia", "Midkemia", new Troop(3, green), 'M');
-        assertEquals(null, oc.checkOrder(order1, world));
+        assertEquals(null, oc.checkOrder(order1, world, greenInfo));
 
         BasicOrder order2 = new BasicOrder("Narnia", "Oz", new Troop(3, green), 'M');
-        assertEquals(null, oc.checkOrder(order2, world));
+        assertEquals(null, oc.checkOrder(order2, world, greenInfo));
     }
 
     @Test
@@ -91,10 +94,10 @@ public class OrderCheckerTest {
         World world = createWorld(troopsConnected);
 
         BasicOrder order1 = new BasicOrder("Narnia", "Elantris", new Troop(3, green), 'A');
-        assertEquals(null, oc.checkOrder(order1, world));
+        assertEquals(null, oc.checkOrder(order1, world, greenInfo));
 
         BasicOrder order2 = new BasicOrder("Scadrial", "Mordor", new Troop(3, blue), 'A');
-        assertEquals(null, oc.checkOrder(order2, world));
+        assertEquals(null, oc.checkOrder(order2, world, blueInfo));
     }
 
 
@@ -105,16 +108,16 @@ public class OrderCheckerTest {
         BasicOrder order1_red = new BasicOrder("Narnia", "Midkemia", new Troop(3, red), 'M');
         BasicOrder order1_blue = new BasicOrder("Narnia", "Midkemia", new Troop(3, blue), 'M');
         assertEquals(String.format(NOT_YOUR_TROOP_MSG, "Narnia", "green"),
-                        oc.checkOrder(order1_red, world));
+                        oc.checkOrder(order1_red, world, redInfo));
         assertEquals(String.format(NOT_YOUR_TROOP_MSG, "Narnia", "green"), 
-                        oc.checkOrder(order1_blue, world));
+                        oc.checkOrder(order1_blue, world, blueInfo));
 
         BasicOrder order2_red = new BasicOrder("Scadrial", "Mordor", new Troop(3, red), 'A');
         BasicOrder order2_green = new BasicOrder("Scadrial", "Mordor", new Troop(3, green), 'A');
         assertEquals(String.format(NOT_YOUR_TROOP_MSG, "Scadrial", "blue"), 
-                        oc.checkOrder(order2_red, world));
+                        oc.checkOrder(order2_red, world, redInfo));
         assertEquals(String.format(NOT_YOUR_TROOP_MSG, "Scadrial", "blue"), 
-                        oc.checkOrder(order2_green, world));
+                        oc.checkOrder(order2_green, world, greenInfo));
     }
 
     @Test
@@ -125,13 +128,13 @@ public class OrderCheckerTest {
         assertEquals(String.format(NOT_ENOUGH_TROOP_MSG, 
                                     world.findTerritory("Narnia").checkPopulation(), 
                                     "Narnia", 11), 
-                    oc.checkOrder(order1, world));
+                    oc.checkOrder(order1, world, greenInfo));
 
         BasicOrder order2 = new BasicOrder("Scadrial", "Mordor", new Troop(6, blue), 'A');
         assertEquals(String.format(NOT_ENOUGH_TROOP_MSG, 
                                     world.findTerritory("Scadrial").checkPopulation(), 
                                     "Scadrial", 6), 
-                    oc.checkOrder(order2, world));
+                    oc.checkOrder(order2, world, blueInfo));
     }
 
     @Test
@@ -140,10 +143,10 @@ public class OrderCheckerTest {
 
         BasicOrder order1 = new BasicOrder("Narnia", "Midkemia", new Troop(3, green), 'J');
         assertEquals(String.format(UNKNOWN_BASIC_ORDER_TYPE, 'J'), 
-                        oc.checkOrder(order1, world));
+                        oc.checkOrder(order1, world, greenInfo));
 
         BasicOrder order2 = new BasicOrder("Narnia", "Midkemia", new Troop(3, green), 'q');
         assertEquals(String.format(UNKNOWN_BASIC_ORDER_TYPE, 'q'), 
-                        oc.checkOrder(order2, world));
+                        oc.checkOrder(order2, world, greenInfo));
     }
 }

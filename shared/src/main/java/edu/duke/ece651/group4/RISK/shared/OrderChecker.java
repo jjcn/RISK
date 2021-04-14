@@ -32,15 +32,15 @@ public class OrderChecker implements Serializable {
         aoc = new AttackOrderChecker();
         moc = new MoveOrderChecker();
     }
-
     /**
-     * Checks if an order is legal.
+     * Checks if a move or attack order is legal.
      * @param order is the order given
      * @param world is the world object
+     * @param pInfo is the info of the player who sends the order
      * @return null, if the order is legal;
      *         a String indicating the problem, if not.
      */
-    public String checkOrder(Order order, World world) { 
+    public String checkOrder(Order order, World world, PlayerInfo pInfo) {
         Territory start = world.findTerritory(order.getSrcName());
         // territory does not belong to the order sender
         if (!start.getOwner().equals(order.getActTroop().getOwner())) {
@@ -57,10 +57,10 @@ public class OrderChecker implements Serializable {
         }
         char orderType = Character.toUpperCase(order.getActionName());
         if (orderType == 'A') { 
-            return aoc.checkMyOrder(order, world);
+            return aoc.checkMyOrder(order, world, pInfo);
         }
         else if (orderType == 'M') {   
-            return moc.checkMyOrder(order, world);
+            return moc.checkMyOrder(order, world, pInfo);
         }
         // not Attack or Move
         return String.format(UNKNOWN_BASIC_ORDER_TYPE, order.getActionName());

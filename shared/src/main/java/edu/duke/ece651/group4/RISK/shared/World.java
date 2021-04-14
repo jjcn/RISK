@@ -501,14 +501,14 @@ public class World implements Serializable {
      * Consumes food resource.
      *
      * @param order      is a move order.
-     * @param playerName is the player's name who commited this order.
+     * @param playerName is the player's name who committed this order.
      */
     public void moveTroop(MoveOrder order, String playerName) { // TODO: coupled upgrade and resource consumption
         Territory start = findTerritory(order.getSrcName());
         Territory end = findTerritory(order.getDesName());
         Troop troop = order.getActTroop();
         // check error of move order
-        String errorMsg = orderChecker.checkOrder(order, this);
+        String errorMsg = orderChecker.checkOrder(order, this, getPlayerInfoByName(playerName));
         if (errorMsg != null) {
             throw new IllegalArgumentException(errorMsg);
         }
@@ -552,7 +552,7 @@ public class World implements Serializable {
         Territory end = findTerritory(order.getDesName());
         Troop troop = order.getActTroop();
         // check error of attack order
-        String errorMsg = orderChecker.checkOrder(order, this);
+        String errorMsg = orderChecker.checkOrder(order, this, getPlayerInfoByName(playerName));
         if (errorMsg != null) {
             throw new IllegalArgumentException(errorMsg);
         }
