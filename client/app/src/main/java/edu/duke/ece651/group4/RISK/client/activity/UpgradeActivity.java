@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static edu.duke.ece651.group4.RISK.client.Constant.MAPS;
+import static edu.duke.ece651.group4.RISK.client.Constant.LOG_CREATE_SUCCESS;
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.*;
 import static edu.duke.ece651.group4.RISK.client.utility.Notice.showByToast;
 import static edu.duke.ece651.group4.RISK.shared.Constant.UNIT_NAMES;
@@ -59,6 +59,7 @@ public class UpgradeActivity extends AppCompatActivity {
 
         Log.e(TAG, "Upgrade Activity: set up successfully and will enter UI" );
         impUI();
+        Log.i(TAG, LOG_CREATE_SUCCESS);
     }
 
     // back button at toolbar

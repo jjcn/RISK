@@ -84,9 +84,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
     public void setRooms(List<RoomInfo> rooms) {
         this.rooms.clear();
         this.rooms.addAll(rooms);
-        if(rooms != null) {
-            Log.i(TAG, LOG_FUNC_RUN + "setRoom called with size: " + rooms.size());
-        }else{
+        if(rooms == null) {
             Log.i(TAG, LOG_FUNC_RUN + "setRoom called with null");
         }
         notifyDataSetChanged();

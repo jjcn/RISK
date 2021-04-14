@@ -3,15 +3,17 @@ package edu.duke.ece651.group4.RISK.client;
 import java.util.HashMap;
 
 public class Constant {
+
+    //*************CONSTANTS FOR DEBUG************//
+    public static final boolean DEBUG_MODE = false;
+    public static final boolean SINGLE_TEST = false;
+    public static final int TEST_NUM_USER = 1;
+
     //**************CONSTANTS FOR LOG***************//
     public static final String LOG_CREATE_FAIL = "///////////**** Fail onCreate ****///////////";
     public static final String LOG_CREATE_SUCCESS = "//////////Success onCreate///////////";
     public static final String LOG_FUNC_FAIL = "///////////**** Function Exception ****/////////";
     public static final String LOG_FUNC_RUN = "//////////// Function running ///////////";
-
-    //*************CONSTANTS FOR DEBUG************//
-    public static final boolean DEBUG_MODE = false;
-    public static final int TEST_NUM_USER = 1;
 
     //*************FOR USAGE IN CODE**************//
     public static final String SUCCESS_SIGNUP = "Sign up a new account successfully";
@@ -23,7 +25,7 @@ public class Constant {
     public static final String PLACEMENT_MORE = "You have placed more soldiers than provided";
     public static final String PLACEMENT_LESS = "You have placed less soldiers";
     public static final String PLACEMENT_DONE = "All players have done their placements";
-    public static final String WAIT = "Waiting for other players";
+    public static final String WAIT_PLACEMENT = "Wait for other players to place...";
     public static final String TURN_END = "All players have commit their actions";
     public static final String LOSE_MSG = "Sorry, you lose~";
     public static final String STAY_INSTR = "Do you want to stay in this room?";
@@ -36,6 +38,7 @@ public class Constant {
     public static final String UI_UPTROOP = "Upgrade soldiers";
     public static final String UI_UPTECH = "Upgrade Max tech";
     public static final String UI_SWITCH_OUT = "SwitchOut";
+    public static final String UI_ALLIANCE = "Alliance";
 
     public static final String USER_INFO_TV = "userInfoTV";
     public static final String NOTICE_ADP = "noticeAdapter";
@@ -61,6 +64,5 @@ public class Constant {
             put(0, R.drawable.terrtest);
         }
     };
-
     public static final String COLOR_EGG = "Group4 in ECE651\n Special thanks to the best TA in the world: Kewei Xia \\^^/";
 }
