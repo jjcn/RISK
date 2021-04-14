@@ -10,7 +10,7 @@ public interface onResultListener {
     void onSuccess();
 
     /**
-     * @param errMsg error message
+     * @param errMsg error message_menu
      */
     void onFailure(String errMsg);
 }

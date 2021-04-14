@@ -48,7 +48,7 @@ public class Constant {
     public static final String WORLD = "world";
     public static final String ROOMS = "roomInfo";
     public static final String NAME = "name";
-    public static final String MESSAGE = "message";
+    public static final String MESSAGE = "message_menu";
     public static final String WRG_MESSAGE = "fail to create world";
     public static final String EXIT_GAME_MESSAGE = "Exit Game";
 

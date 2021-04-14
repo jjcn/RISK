@@ -1,4 +1,4 @@
-package edu.duke.ece651.group4.RISK.client.utility;
+package edu.duke.ece651.group4.RISK.client.fragment;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -22,7 +22,7 @@ public class WaitDialog extends Dialog {
     }
 
     /**
-     * If want to change default waiting message.
+     * If want to change default waiting message_menu.
      */
     public WaitDialog(@NonNull Context context,String text) {
         super(context, R.style.Theme_AppCompat_Dialog);
