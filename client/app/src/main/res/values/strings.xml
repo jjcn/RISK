@@ -34,5 +34,6 @@
     <string name="UPGRADE_TYPE_BEFORE_PROMPT">"Which type of soldier \n would you like to upgrade?"</string>
     <string name="UPGRADE_TYPE_AFTER_PROMPT">"Upgrade to soldiers to: "</string>
     <string name="CHOOSE_USER_INSTR">Please choose the user you want to ally with</string>
+    <string name="hint_enter_a_message">Enter your message here</string>
 
 </resources>

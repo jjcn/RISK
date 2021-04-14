@@ -13,7 +13,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import edu.duke.ece651.group4.RISK.client.R;
-import edu.duke.ece651.group4.RISK.client.utility.WaitDialog;
+import edu.duke.ece651.group4.RISK.client.fragment.WaitDialog;
 import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
 import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
 import edu.duke.ece651.group4.RISK.shared.BasicOrder;
@@ -27,7 +27,6 @@ import static edu.duke.ece651.group4.RISK.client.Constant.*;
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.*;
 import static edu.duke.ece651.group4.RISK.client.utility.Notice.showByToast;
 import static edu.duke.ece651.group4.RISK.client.utility.Notice.showSelector;
-import static edu.duke.ece651.group4.RISK.shared.Constant.SWITCH_OUT_ACTION;
 
 /**
  * implement game with text input
@@ -294,7 +293,7 @@ public class TurnActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(String errMsg) {
-                Log.e(TAG, LOG_FUNC_RUN + "Should not receive error message after done.");
+                Log.e(TAG, LOG_FUNC_RUN + "Should not receive error message_menu after done.");
             }
         });
     }

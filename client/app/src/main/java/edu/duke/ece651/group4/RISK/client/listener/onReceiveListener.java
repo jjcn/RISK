@@ -11,7 +11,7 @@ public interface onReceiveListener {
     void onSuccess(Object o);
 
     /**
-     * @param errMsg error message
+     * @param errMsg error message_menu
      */
     void onFailure(String errMsg);
 }

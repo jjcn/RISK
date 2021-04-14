@@ -7,7 +7,7 @@
 
     <item android:id="@+id/menu_rooms"
             android:title="Switch Room"
-          app:showAsAction="ifRoom"
+          app:showAsAction="never"
     />
 
     <item android:title="Develop Info"

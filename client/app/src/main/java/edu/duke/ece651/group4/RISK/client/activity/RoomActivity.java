@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import edu.duke.ece651.group4.RISK.client.R;
 import edu.duke.ece651.group4.RISK.client.adapter.RoomAdapter;
-import edu.duke.ece651.group4.RISK.client.utility.WaitDialog;
+import edu.duke.ece651.group4.RISK.client.fragment.WaitDialog;
 import edu.duke.ece651.group4.RISK.client.listener.onJoinRoomListener;
 import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
 import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
@@ -114,7 +114,7 @@ public class RoomActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(String errMsg) {
-                    showByToast(RoomActivity.this, errMsg); // error message if can not join
+                    showByToast(RoomActivity.this, errMsg); // error message_menu if can not join
                     return;
                 }
             });

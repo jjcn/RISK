@@ -5,6 +5,7 @@ import android.util.Log;
 import edu.duke.ece651.group4.RISK.client.listener.onJoinRoomListener;
 import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
 import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
+import edu.duke.ece651.group4.RISK.client.model.ChatMessage;
 import edu.duke.ece651.group4.RISK.shared.*;
 import edu.duke.ece651.group4.RISK.shared.message.GameMessage;
 import edu.duke.ece651.group4.RISK.shared.message.LogMessage;
@@ -22,9 +23,9 @@ public class RISKApplication extends Application {
     private static final String TAG = RISKApplication.class.getSimpleName();
     private static Client playerClient;
     private static World theWorld;
-    private int totalPopulation;
     private Random rnd;
     static ArrayList<RoomInfo> roomInfo;
+    private static RoomInfo currentRoom;
     static String userName;
     static int currentRoomSize;
     static UpgradeTechOrder techOrder;
@@ -43,7 +44,6 @@ public class RISKApplication extends Application {
             }
         }).start();
         this.theWorld = null;
-        this.totalPopulation = 15;
         this.rnd = new Random();
         this.techOrder = null;
         this.roomInfo = new ArrayList<>();
@@ -89,8 +89,10 @@ public class RISKApplication extends Application {
         return currentRoomSize;
     }
 
+    public static RoomInfo getCurrRoomInfo(){return currentRoom;}
+
     public static List<Territory> getMyTerritory() {
-        return theWorld.getTerritoriesOfPlayer(new TextPlayer(userName));
+        return theWorld.getTerritoriesOfPlayer(userName);
     }
 
     /**
@@ -104,7 +106,7 @@ public class RISKApplication extends Application {
      * @return list of all my territory
      */
     public static List<String> getMyTerrNames() {
-        return transferToNames(theWorld.getTerritoriesOfPlayer(new TextPlayer(userName)));
+        return transferToNames(theWorld.getTerritoriesOfPlayer(userName));
     }
 
     /**
@@ -304,14 +306,14 @@ public class RISKApplication extends Application {
     }
 
     /**
-     * Used to send join a game message in the list of rooms, receive null if success otherwise a String.
+     * Used to send join a game message_menu in the list of rooms, receive null if success otherwise a String.
      * on Success the waitGameStart function will be called to receive the upcoming World info.
      */
-    public static void JoinGame(int gameID, onResultListener listenerString) {
-        GameMessage m = new GameMessage(GAME_JOIN, gameID, -1);
-        for (RoomInfo in : roomInfo) {
-            if (in.getRoomID() == gameID) {
-                currentRoomSize = in.getMaxNumPlayers();
+    public static void JoinGame(int roomID, onResultListener listenerString) {
+        GameMessage m = new GameMessage(GAME_JOIN, roomID, -1);
+        for (RoomInfo room : roomInfo) {
+            if (room.getRoomID() == roomID) {
+                currentRoomSize = room.getMaxNumPlayers();
             }
         }
         new Thread(() -> {
@@ -458,7 +460,7 @@ public class RISKApplication extends Application {
             return "You can only upgrade tech once in a turn.";
         }
         try {
-            // TODO: only check upgrade
+            theWorld.getPlayerInfoByName(userName).checkUpgradeTechLevelBy(1);
         } catch (Exception e) {
             return e.getMessage();
         }
@@ -499,5 +501,17 @@ public class RISKApplication extends Application {
     public static void requireAlliance(String allyName) {
         Order allyOrder = new AllianceOrder(userName,allyName);
         send(allyOrder);
+    }
+
+
+
+    /*************** function for chat **************/
+
+    public static void sendOneMsg(ChatMessage message, onReceiveListener listener){
+
+    }
+
+    public static void getHistoryMsg(){
+
     }
 }
