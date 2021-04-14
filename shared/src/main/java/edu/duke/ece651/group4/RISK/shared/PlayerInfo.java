@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 /**
@@ -20,6 +21,8 @@ public class PlayerInfo implements Serializable {
      */
     protected static final String FAILURE_TECH_LEVEL_UPGRADE_MSG =
             "Fails to upgrade %s's tech level.";
+    protected static final String NOT_ENOUGH_RESOURCE_MSG =
+            "Not enough resources.";
     protected static final String CANT_FORM_ALLIANCE_MSG =
             "Cannot form alliance. %s and %s are already alliances.";
     protected static final String CANT_BREAK_ALLIANCE_MSG =
@@ -167,8 +170,8 @@ public class PlayerInfo implements Serializable {
     }
 
     /**
-     * Check if there is enough tech resource to consume after
-     * upgrading the player's tech level by a number n.
+     * Check if there is enough tech resource to consume to
+     * upgrade the player's tech level by a number N.
      * @param n is the number to add to player's tech level.
      *        Can be positive, 0, or negative.
      * @throws IllegalArgumentException
@@ -180,7 +183,7 @@ public class PlayerInfo implements Serializable {
             int consumption = TechLevelInfo.calcConsumption(techLevel, techLevelAfterMod);
             techResource.checkConsume(consumption);
         } catch (IllegalArgumentException e) {
-            String err_msg = e.getMessage() + "\n" +
+            String err_msg = NOT_ENOUGH_RESOURCE_MSG + "\n" +
                     String.format(FAILURE_TECH_LEVEL_UPGRADE_MSG, playerName);
             throw new IllegalArgumentException(err_msg);
         }
@@ -193,10 +196,10 @@ public class PlayerInfo implements Serializable {
      *          Can be positive, 0, or negative.
      */
     public void consumeResourceOfTechUpgrade(int n) {
+        checkResourceConsumptionOfTechUpgrade(n);
         int techLevel = techLevelInfo.getTechLevel();
         int techLevelAfterMod = techLevel + n;
         int consumption = TechLevelInfo.calcConsumption(techLevel, techLevelAfterMod);
-        checkResourceConsumptionOfTechUpgrade(consumption);
         consumeTech(consumption);
     }
 
@@ -216,7 +219,7 @@ public class PlayerInfo implements Serializable {
      */
     public void breakAlliance(String otherName) {
         if(!allianceNames.remove(otherName)) {
-            throw new IllegalArgumentException(String.format(CANT_FORM_ALLIANCE_MSG, playerName, otherName));
+            throw new IllegalArgumentException(String.format(CANT_BREAK_ALLIANCE_MSG, playerName, otherName));
         }
     }
 
