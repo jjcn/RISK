@@ -49,7 +49,7 @@ public class MessageActivity extends AppCompatActivity
         input.setInputListener(this);
     }
 
-    //TODO
+    //TODO:get history
     @Override
     protected void onStart() {
         super.onStart();
@@ -59,21 +59,21 @@ public class MessageActivity extends AppCompatActivity
 
     @Override
     public boolean onSubmit(CharSequence input) {
-        ChatPlayer user = new ChatPlayer(getCurrRoomInfo().getRoomID(), getUserName());
-        ChatMessage message = new ChatMessage(0, input.toString(), user);
-        sendOneMsg(message, new onReceiveListener() {
-            @Override
-            public void onSuccess(Object o) {
-                message.setChatID((int) o);
-            }
-
-            @Override
-            public void onFailure(String errMsg) {
-                Log.e(TAG, LOG_FUNC_RUN+"send message fail");
-                return;
-            }
-        });
-        msgAdapter.addToStart(message, true);
+//        ChatPlayer user = new ChatPlayer(getWorld().getRoomID(), getUserName());
+//        ChatMessage message = new ChatMessage(0, input.toString(), user);
+//        sendOneMsg(message, new onReceiveListener() {
+//            @Override
+//            public void onSuccess(Object o) {
+//                message.setChatID((int) o);
+//            }
+//
+//            @Override
+//            public void onFailure(String errMsg) {
+//                Log.e(TAG, LOG_FUNC_RUN+"send message fail");
+//                return;
+//            }
+//        });
+//        msgAdapter.addToStart(message, true);
         return true;
     }
 

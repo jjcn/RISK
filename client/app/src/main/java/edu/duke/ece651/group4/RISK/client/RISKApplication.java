@@ -37,7 +37,7 @@ public class RISKApplication extends Application {
         new Thread(() -> {
             try {
                 playerClient = new Client("vcm-18527.vm.duke.edu", SOCKET_PORT);
-                chatClient = new Client("vcm-18527.vm.duke.edu", SOCKET_PORT);
+                chatClient = new Client("vcm-18527.vm.duke.edu", CHAT_PORT);
             } catch (IOException e) {
                 Log.e(TAG, LOG_CREATE_FAIL);
                 e.printStackTrace();
@@ -89,7 +89,7 @@ public class RISKApplication extends Application {
         return currentRoomSize;
     }
 
-    public static RoomInfo getCurrRoomInfo(){return currentRoom;}
+//    public static RoomInfo getCurrRoomInfo(){return currentRoom;}
 
     public static List<Territory> getMyTerritory() {
         return theWorld.getTerritoriesOfPlayer(userName);
@@ -194,7 +194,7 @@ public class RISKApplication extends Application {
     /**
      * called when you want to send an object then receive null if success otherwise receive String explain why fail.
      */
-    public static void sendAndReceiveResult(Object toSendO, onResultListener listener) {
+    public synchronized static void sendAndReceiveResult(Object toSendO, onResultListener listener) {
         new Thread(() -> {
             Log.i(TAG, LOG_FUNC_RUN + "sendReceiveResult called");
             try {
@@ -216,7 +216,7 @@ public class RISKApplication extends Application {
     /**
      * called when you want to send an object then receive a World if success otherwise receive String explain why fail.
      */
-    public static void sendAndReceiveWorld(Object toSendO, onReceiveListener listener) {
+    public synchronized static void sendAndReceiveWorld(Object toSendO, onReceiveListener listener) {
         new Thread(() -> {
             Log.e(TAG, "sendReceiveAndReceiveWorld called");
             try {
@@ -241,7 +241,7 @@ public class RISKApplication extends Application {
      * called when you want to send an object then receive a List if success otherwise receive String explain why fail.
      * type: ROOM: receive a RoomInfo list for displaying of room activity.
      */
-    public static void sendAndReceiveList(Object toSendO, onReceiveListener listener, String type) {
+    public synchronized static void sendAndReceiveList(Object toSendO, onReceiveListener listener, String type) {
         new Thread(() -> {
             Log.e(TAG, "sendReceiveAndReceiveList called");
             try {

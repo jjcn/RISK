@@ -4,12 +4,14 @@ import com.stfalcon.chatkit.commons.models.IMessage;
 import com.stfalcon.chatkit.commons.models.IUser;
 
 import java.util.Date;
+import java.util.List;
 
 public class ChatMessage implements IMessage {
     private String chatID;
     private String text;
     private ChatPlayer user;
     private Date createdAt;
+    private List<String> targets; // want to talk to ---
 
     public ChatMessage(int id, String text, ChatPlayer user) {
         this(String.valueOf(id), text, user, new Date());
