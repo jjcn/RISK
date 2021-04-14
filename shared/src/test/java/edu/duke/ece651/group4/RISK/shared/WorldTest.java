@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Random;
+import java.util.Set;
 
 public class WorldTest {
     /**
@@ -69,10 +70,11 @@ public class WorldTest {
     PrintStream out = null;
     Reader inputReader = null;
     Player green = new TextPlayer(out, inputReader, "green");
-    PlayerInfo greenInfo = new PlayerInfo(green.getName(), 100, 100);
     Player red = new TextPlayer(out, inputReader, "red");
-    PlayerInfo redInfo = new PlayerInfo(red.getName(), 100, 100);
     Player blue = new TextPlayer(out, inputReader, "blue");
+
+    PlayerInfo greenInfo = new PlayerInfo(green.getName(), 100, 100);
+    PlayerInfo redInfo = new PlayerInfo(red.getName(), 100, 100);
     PlayerInfo blueInfo = new PlayerInfo(blue.getName(), 100, 100);
 
     String names[] =
@@ -241,6 +243,14 @@ public class WorldTest {
     }
 
     @Test
+    public void testGetPlayerNames() {
+        World world = createWorldAndRegister(troopsSamePlayer);
+        Set<String> redSet = new HashSet<String>();
+        redSet.add("red");
+        assertEquals(redSet, world.getAllPlayerNames());
+    }
+
+    @Test
     public void testStationTroop() {
         World world = createWorldSimple();
         world.stationTroop("1", new Troop(8, green));
@@ -272,10 +282,24 @@ public class WorldTest {
 
     @Test
     public void testMoveTroopValid() {
-        World world = createWorldAndRegister(troopsSeparated);
-        // Valid
-        MoveOrder move1 = new MoveOrder("Gondor", "Mordor", new Troop(1, red), 'm');
+        World world = createWorldAndRegister(troopsConnected);
+
+        MoveOrder move1 = new MoveOrder("Gondor", "Hogwarts",
+                new Troop(2, red), 'M');
         assertDoesNotThrow(() -> world.moveTroop(move1, "red"));
+        assertEquals(13 - 2, world.findTerritory("Gondor").checkPopulation());
+        assertEquals(3 + 2, world.findTerritory("Hogwarts").checkPopulation());
+        assertEquals(100 - 2 * (13 + 14 + 3),
+                world.getPlayerInfoByName("red").getFoodQuantity());
+
+        // choose the shortest path
+        MoveOrder move2 = new MoveOrder("Roshar", "Scadrial",
+                new Troop(2, blue), 'M');
+        assertDoesNotThrow(() -> world.moveTroop(move2, "blue"));
+        assertEquals(3 - 2, world.findTerritory("Roshar").checkPopulation());
+        assertEquals(5 + 2, world.findTerritory("Scadrial").checkPopulation());
+        assertEquals(100 - 2 * (5 + 3),
+                world.getPlayerInfoByName("blue").getFoodQuantity());
     }
 
     @Test
@@ -347,6 +371,42 @@ public class WorldTest {
     }
 
     @Test
+    public void testAttackConsumptionValid() {
+        World world = createWorldAndRegister(troopsSeparated);
+
+        AttackOrder atkOrder1 = new AttackOrder("Narnia", "Elantris",
+                new Troop(1, green), 'A');
+        world.attackATerritory(atkOrder1, "green");
+        assertEquals(10 - 1, world.findTerritory("Narnia").checkPopulation());
+        /*for (PlayerInfo pInfo : world.playerInfos.values()) {
+            System.out.println(pInfo.toString());
+        }*/
+        assertEquals(100 - 1, world.getPlayerInfoByName("green").getFoodQuantity());
+
+        AttackOrder atkOrder2 = new AttackOrder("Oz", "Mordor",
+                new Troop(8, green), 'A');
+        world.attackATerritory(atkOrder2, "green");
+        assertEquals(8 - 8, world.findTerritory("Oz").checkPopulation());
+        /*for (PlayerInfo pInfo : world.playerInfos.values()) {
+            System.out.println(pInfo.toString());
+        }*/
+        assertEquals(100 - 1 - 8, world.getPlayerInfoByName("green").getFoodQuantity());
+    }
+
+    @Test
+    public void testAttackNotEnoughFood() {
+        World world = createWorldAndRegister(troopsSeparated);
+        world.getPlayerInfoByName("green").consumeFood(100); // now 0 food for green
+        assertEquals(0, world.getPlayerInfoByName("green").getFoodQuantity());
+
+        AttackOrder atkOrder1 = new AttackOrder("Narnia", "Elantris",
+                new Troop(1, green), 'A');
+        assertThrows(IllegalArgumentException.class,
+                () -> world.attackATerritory(atkOrder1, "green"));
+
+    }
+
+    @Test
     public void testAttackNonExistTerritory() {
         World world = createWorldAndRegister(troopsSeparated);
         AttackOrder atk1 = new AttackOrder("Gondor", "No", new Troop(13, red), 'A');
@@ -398,11 +458,25 @@ public class WorldTest {
     } 
 
     @Test
-    public void testUpgradeTechLevelValid() {
+    public void testUpgradeTechLevel() {
         World world = createWorldAndRegister(troopsSeparated);
         assertEquals(1, world.getPlayerInfoByName("red").getTechLevel());
         world.upgradePlayerTechLevelBy1("red");
         assertEquals(2, world.getPlayerInfoByName("red").getTechLevel());
+    }
+
+    @Test
+    public void charAndCharacter() {
+        assertEquals('A', new Character('A'));
+        assertTrue('A' == new Character('A'));
+    }
+
+    @Test
+    public void testUpgradeTechLevelExceedMax() {
+        World world = createWorldAndRegister(troopsSeparated);
+        world.registerPlayer(new PlayerInfo("test", 99999, 99999));
+        assertThrows(IllegalArgumentException.class,
+                () -> world.upgradePlayerTechLevelBy(new UpgradeTechOrder(6),"test"));
     }
 
     @Test

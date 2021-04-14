@@ -39,10 +39,11 @@ public class MoveOrderChecker implements Serializable {
      * Checks if a move order is legal.
      * @param order is the order given.
      * @param world is the world object.
+     * @param pInfo is the info of the player who sends the order
      * @return null, if the order is legal;
      *         a String indicating the problem, if not.
      */
-    protected String checkMyOrder(Order order, World world) {
+    protected String checkMyOrder(Order order, World world, PlayerInfo pInfo) {
         if (Character.toUpperCase(order.getActionName()) == 'M') {
             Territory start = world.findTerritory(order.getSrcName());
             Territory end = world.findTerritory(order.getDesName());
@@ -64,7 +65,7 @@ public class MoveOrderChecker implements Serializable {
                         return null;
                     }
                     if (!visited.contains(adjacent)) {
-                        if (adjacent.getOwner().equals(owner)) {
+                        if (getPermittedOwnerNames(pInfo).contains(adjacent.getOwner().getName())) { // changed in evol3
                                 visited.add(adjacent);
                                 queue.add(adjacent);
                             }
@@ -76,5 +77,16 @@ public class MoveOrderChecker implements Serializable {
         // if not move order
         return NOT_MOVE_ORDER_MSG;
     }
-    
+
+    /**
+     * Get the names of players whose territories allow a player's troop to move through.
+     * @param pInfo is the player's info
+     * @return owner names of territories that allow a player's troop to move through.
+     */
+    protected Set<String> getPermittedOwnerNames(PlayerInfo pInfo) {
+        Set<String> ans = pInfo.getAllianceNames();
+        ans.add(pInfo.getName());
+        return ans;
+    }
+
 }

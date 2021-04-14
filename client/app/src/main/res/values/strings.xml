@@ -17,14 +17,21 @@
     <string name="FRESHROOM">fresh</string>
     <string name="WAIT">Waiting for other players</string>
     <string name="INITPLACE">"Please input number of soldiers you want to place in each territory: "</string>
-    <string name="PLACE_INSTRU">You want to place in</string>
+    <string name="PLACE_INSTRU">You want to place in territory </string>
     <string name="CHOOSE_INSTRU">"Please input the number you want: "</string>
-    <string name="INPUT_NUM_INSTRU">"Please input the number "</string>
+    <string name="INPUT_NUM_INSTRU">"Please input the number of soldiers: "</string>
     <string name="SWITCH_OUT">SWITCH</string>
     <string name="CHOOSE_ACTION_INSTRU">Choose action here</string>
     <string name="PLAYERINFO">Player Information:\n</string>
     <string name="COMMIT">COMMIT</string>
-    <string name="CHOOSE_SRC_INSTRU">"You want to send from: "</string>
-    <string name="CHOOSE_DES_INSTRU">You want to send troop to:</string>
+    <string name="CONFIRM">CONFIRM</string>
+    <string name="CHOOSE_SRC_INSTRU">"You want to send troop from territory: "</string>
+    <string name="CHOOSE_DES_INSTRU">You want to send troop to territory:</string>
     <string name="CHOOSE_TYPE_INSTRU">"Choose the type of soldier: "</string>
+
+    <string name="UPGRADE_TERR_PROMPT">"Upgrade soldiers on which territory?"</string>
+    <string name="UPGRADE_CHOOSE_TERR_INSTRU">"Choose the territory soldiers to upgraded on: "</string>
+    <string name="UPGRADE_TYPE_BEFORE_PROMPT">"Which type of soldier \n would you like to upgrade?"</string>
+    <string name="UPGRADE_TYPE_AFTER_PROMPT">"Upgrade to soldiers to: "</string>
+
 </resources>

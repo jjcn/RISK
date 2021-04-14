@@ -151,7 +151,7 @@ public class Territory implements Serializable {
      * @param subTroop shows the number of unit send out from territory
      */
     public Troop sendOutTroop(Troop subTroop) {
-        return this.ownerTroop.sendTroop(subTroop.checkTroopSize());
+        return this.ownerTroop.sendTroop(subTroop);
     }
 
     /**
@@ -211,8 +211,11 @@ public class Territory implements Serializable {
 
             String enemy = enemyPlayers.get(diceResult);
             report.append(
-                    "Enemy " + enemy + " fight with " + this.getOwner().getName() + " on " + this.getName() + " \n");
+                    "Enemy " + enemy + " attack " + this.getOwner().getName() + " on " + this.getName() + " \n");
+
             Troop enemyTroop = this.enemyOnTerritory.get(enemy);
+            report.append(enemyTroop.getSummary());
+            report.append(this.ownerTroop.getSummary());
             doOneBattle(enemyTroop);
             enemyPlayers.remove(diceResult);
             report.append(this.getOwner().getName() + " wins the fight and owns " + this.getName() + " \n");
@@ -256,6 +259,13 @@ public class Territory implements Serializable {
     public int upgradeTroop(int levelBefore, int levelAfter, int nUnit, int nResource) {
         int levelUp = levelAfter - levelBefore;
         return ownerTroop.updateUnit(levelBefore, levelUp, nUnit, nResource);
+    }
+
+    public int upgradeTroop(UpgradeTroopOrder utOrder, int nTech) {
+        int levelBefore = utOrder.getLevelBefore();
+        int levelAfter = utOrder.getLevelAfter();
+        int nUnit = utOrder.getNUnit();
+        return upgradeTroop(levelBefore, levelAfter, nUnit, nTech);
     }
 
     public String getInfo(){

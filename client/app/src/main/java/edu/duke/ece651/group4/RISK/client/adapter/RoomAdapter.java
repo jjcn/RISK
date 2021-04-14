@@ -48,15 +48,14 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         String idNum = Integer.toString(room.getRoomID());
         String totalUserNum = Integer.toString(room.getMaxNumPlayers());
         String usersInfo = "";
-        String sep = "";
+        String sep = " ";
         for (String userName : room.getUserNames()) {
-            usersInfo.concat(sep + userName);
+            usersInfo = usersInfo + sep + userName;
             sep = ", ";
         }
 
-        holder.roomIDView.setText(idNum); //append();
-        holder.usersView.setText(usersInfo); //append();
-        // holder.usersView.append("(need " + totalUserNum + "in total)");
+        holder.roomIDView.setText("Room ID: "+idNum); //append();
+        holder.usersView.setText("Players: "+usersInfo+" (need " + totalUserNum + " in total)"); //append();
         if (itemListener != null) {
             holder.itemView.setOnClickListener(v -> {
                 itemListener.onItemClick(position);
@@ -68,7 +67,6 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
     public int getItemCount() {
         return rooms.size();
     }
-
     // refer to the type of views used
     public static class RoomViewHolder extends RecyclerView.ViewHolder {
         TextView roomIDView;

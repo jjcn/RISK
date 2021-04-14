@@ -14,6 +14,7 @@ import static edu.duke.ece651.group4.RISK.server.ServerConstant.*;
  * */
 public class PlayerState extends State{
     final String username;
+    boolean isWaiting;
     /*
      * This construct a PlayerState
      * @param startState is the start state
@@ -21,8 +22,34 @@ public class PlayerState extends State{
     public PlayerState(String username){
         super(PLAYER_STATE_ACTION_PHASE);
         this.username = username;
+        isWaiting = false;
     }
 
+    /*
+    * This helps to make sure that runner notify all players after them waits
+    * */
+    public void setWaiting(){
+        isWaiting = true;
+    }
+    /*
+     * This helps to make sure that runner notify all players after them waits
+     * */
+    public void doneWaiting(){
+        isWaiting = false;
+    }
+
+    /*
+    * If a user switch out, no need to wait for runner
+    * checks if the user is waiting
+    * @return true if he is, false otherwise
+    * */
+    public boolean isWaiting(){
+        return isWaiting || isSwitchOut();
+    }
+    /*
+     *
+     * @return username of the user
+     * */
     public String getUsername(){
         return username;
     }
@@ -51,7 +78,9 @@ public class PlayerState extends State{
     * This is updating state where the players update's its own state.
     * */
     public boolean isUpdating(){return getState().equals(PLAYER_STATE_UPDATING);}
-
+    /*
+     * This checks if a user is still active which also means that user does not switchOut
+     * */
     public boolean isActive(){
         return !isSwitchOut();
     }

@@ -45,21 +45,40 @@ public class WorldFactory implements Serializable {
         return ans;
     }
 
+    protected void assignArea(Map<Integer, List<Territory>> groups,
+                              int totalArea, Random seed) {
+        int nTerrs = groups.get(0).size();
+        groups.values().forEach(terrs -> {
+            List<Integer> areas = generateRandomFixedSumList(nTerrs, totalArea, seed);
+            IntStream.range(0, nTerrs).forEach(i -> terrs.get(i).setArea(areas.get(i)));
+        });
+    }
+
+    protected void assignFoodSpeed(Map<Integer, List<Territory>> groups,
+                              int totalFoodSpeed, Random seed) {
+        int nTerrs = groups.get(0).size();
+        groups.values().forEach(terrs -> {
+            List<Integer> foodSpeeds = generateRandomFixedSumList(nTerrs, totalFoodSpeed, seed);
+            IntStream.range(0, nTerrs).forEach(i -> terrs.get(i).setFoodSpeed(foodSpeeds.get(i)));
+        });
+    }
+
+    protected void assignTechSpeed(Map<Integer, List<Territory>> groups,
+                                   int totalTechSpeed, Random seed) {
+        int nTerrs = groups.get(0).size();
+        groups.values().forEach(terrs -> {
+            List<Integer> techSpeeds = generateRandomFixedSumList(nTerrs, totalTechSpeed, seed);
+            IntStream.range(0, nTerrs).forEach(i -> terrs.get(i).setTechSpeed(techSpeeds.get(i)));
+        });
+    }
+
     protected void assignRandomAttributes (
     		Map<Integer, List<Territory>> groups,
     		int totalArea, int totalFoodSpeed, int totalTechSpeed,
 			Random seed) {
-    	int nTerrs = groups.get(0).size();
-    	for (List<Territory> terrs : groups.values()) {
-    		List<Integer> areas = generateRandomFixedSumList(nTerrs, totalArea, seed);
-	        List<Integer> foodSpeeds = generateRandomFixedSumList(nTerrs, totalFoodSpeed, seed);
-	        List<Integer> techSpeeds = generateRandomFixedSumList(nTerrs, totalTechSpeed, seed);
-	        for (int i = 0; i < nTerrs; i++) {
-	        	terrs.get(i).setArea(areas.get(i));
-	        	terrs.get(i).setFoodSpeed(foodSpeeds.get(i));
-	        	terrs.get(i).setTechSpeed(techSpeeds.get(i));
-	        }
-    	}
+        assignArea(groups, totalArea, seed);
+    	assignFoodSpeed(groups, totalArea, seed);
+    	assignTechSpeed(groups, totalTechSpeed, seed);
     }
 
     /*
@@ -197,27 +216,64 @@ public class WorldFactory implements Serializable {
      */
 
     /**
-     * assign a group of territories to every player.
-     * @param world is the world to split into groups of territories.
-     *        Should be a World object only with territories and connections.
-     * @param playerNames is a list of player names.
-     * @return a mapping, from a player's name to a group of territories.
+     * Overloaded function that has hard-coded:
+     *
+     * total area = 10 * worldSize,
+     * total food speed = 50 * worldSize,
+     * total tech speed = 100 * worldSize.
+     *
+     * each player starts with 2000 food and 2000 tech resource.
+     *
+     * @param world is the world object.
+     * @param playerNames is a list of names of players.
      */
     public Map<String, List<Territory>> assignTerritories(
             World world, List<String> playerNames) {
+        // TODO: A hardcoded version.
+        int worldSize = world.size();
+        return assignTerritories(world,  playerNames,
+                10 * worldSize, // area
+                50 * worldSize, // food
+                100 * worldSize, // tech
+                2000, 2000,
+                new Random(0));
+    }
+
+    /**
+     * Assign a group of territories to every player,
+     * meanwhile set the attributes of territories,
+     * so that each group has the same sum of all attributes.
+     *
+     * Can change total area, food speed, tech speed in each group,
+     * and the resource each player starts with.
+     *
+     * @param world is the world object
+     * @param playerNames is a list of names of players
+     * @param totalArea is the sum of area of a group of territories
+     * @param totalFoodSpeed is the sum of food speed of a group of territories
+     * @param totalTechSpeed is the sum of tech speed of a group of territories
+     * @param startingFood is each player's food resource quantity at start
+     * @param startingTech is each player's tech resource quantity at start
+     * @param seed is a random seed
+     * @return
+     */
+    public Map<String, List<Territory>> assignTerritories(
+            World world, List<String> playerNames,
+            int totalArea, int totalFoodSpeed, int totalTechSpeed,
+            int startingFood, int startingTech,
+            Random seed ) {
 
         int nGroup = playerNames.size();
         Map<Integer, List<Territory>> groups = world.divideTerritories(nGroup);
 
-        // set total size & total food speed & total tech speed here
-        // TODO: this is now hardcoded.
+        // total size & total food speed & total tech speed is set here
         int worldSize = world.size();
         assignRandomAttributes (groups,
-        		10 * worldSize, // size
-                50 * worldSize, // food
-                100 * worldSize, // tech
-                new Random(0));
-        
+                totalArea, // size
+                totalFoodSpeed, // food
+                totalTechSpeed, // tech
+                seed);
+
         Map<String, List<Territory>> ans = new HashMap<>();
         for (int i = 0; i < nGroup; i++) {
             String playerName = playerNames.get(i);
@@ -226,10 +282,10 @@ public class WorldFactory implements Serializable {
             territories.forEach(terr -> terr.setOwnerTroop(0, new TextPlayer(playerName)));
             ans.put(playerName, territories);
         }
-        // players start with 0 resource
-        playerNames.forEach(name -> world.registerPlayer(name));
+
+        // starting resources set here
+        playerNames.forEach(name -> world.registerPlayer(new PlayerInfo(name, startingFood, startingTech)));
 
         return ans;
     }
-
 }

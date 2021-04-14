@@ -1,5 +1,6 @@
 package edu.duke.ece651.group4.RISK.shared;
 
+import static edu.duke.ece651.group4.RISK.shared.Constant.UNIT_NAMES;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
@@ -30,6 +31,21 @@ public class TroopTest {
         assertThrows(new IllegalArgumentException().getClass(), () -> test.dispatchCertainUnit("Soldier LV6"));
         assertEquals(test.checkUnitNum("Soldier LV6"),0);
     }
+
+    @Test
+    public void Test_real() {
+        Troop test = new Troop(5, new TextPlayer("test"));
+        HashMap<String, Integer> myDict = new HashMap<>();
+        myDict.put("Soldier LV0", 5);
+        Troop dem = new Troop(myDict, new TextPlayer("test"));
+        test.sendTroop(dem);
+        assertEquals(test.checkTroopSize(), 0);
+        assertThrows(new IllegalArgumentException().getClass(), () -> test.sendTroop(dem));
+
+
+    }
+
+
 
     @Test
     public void Test_upGrade() {
@@ -75,7 +91,7 @@ public class TroopTest {
         assertEquals(receive.checkTroopSize(), 8);
         assertEquals(receive.checkUnitNum("Soldier LV0"), 6);
         assertEquals(receive.checkUnitNum("Soldier LV5"), 1);
-
+        System.out.println(receive.getSummary());
     }
     
     @Test
@@ -119,9 +135,19 @@ public class TroopTest {
     @Test
     public void Test_clone() {
         Random rnd = new Random(0);
-        Troop test = new Troop(4, new TextPlayer("test"), rnd);
+        Troop test = new Troop(5, new TextPlayer("test"), rnd);
         Troop clone = test.clone();
         assertEquals(test.checkTroopSize(), clone.checkTroopSize());
+
+
+        test.dispatchCertainUnit(UNIT_NAMES.get(0));
+        test.dispatchCertainUnit(UNIT_NAMES.get(0));
+        test.dispatchCertainUnit(UNIT_NAMES.get(0));
+        test.dispatchCertainUnit(UNIT_NAMES.get(0));
+        test.dispatchCertainUnit(UNIT_NAMES.get(0));
+
+
+
     }
     
 }

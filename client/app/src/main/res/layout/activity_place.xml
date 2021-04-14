@@ -13,12 +13,15 @@
 
     <fragment
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="250dp"
             android:name="edu.duke.ece651.group4.RISK.client.fragment.WorldFragment"
             android:id="@+id/worldFG"
     />
 
-    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+    <TextView
+            android:id="@+id/placeInstru"
+            android:layout_width="match_parent"
+              android:layout_height="wrap_content"
               android:text="@string/INITPLACE"
               android:layout_marginTop="@dimen/fragmentMargin"
               android:layout_marginBottom="@dimen/fragmentMargin"
@@ -30,8 +33,8 @@
     <include layout="@layout/item_input_num"
              android:id="@+id/terrB"/>
 
-    <include layout="@layout/item_input_num"
-             android:id="@+id/terrC"/>
+<!--    <include layout="@layout/item_input_num"-->
+<!--             android:id="@+id/terrC"/>-->
 
     <Button
             android:id="@+id/buttonCommitPlace"

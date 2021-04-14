@@ -32,7 +32,7 @@ public class PlayerInfoTest {
 		assertEquals(1, pInfo.getTechLevel());
 		
 		PlayerInfo rich = new PlayerInfo("rich", 999, 999);
-		rich.upgradeTechLevelBy1();
+		rich.upgradeTechLevelBy(1);
 		assertEquals(2, rich.getTechLevel());
 	}
 
@@ -75,41 +75,30 @@ public class PlayerInfoTest {
 	@Test
 	public void testUpgradeTechLevel() {
 		PlayerInfo pInfo = new PlayerInfo("player", 0, 999);
-		assertEquals(pInfo.techLevel, 1);
+		assertEquals(1, pInfo.techLevelInfo.getTechLevel());
 		// try modify to -1
 		assertThrows(IllegalArgumentException.class,
-					() -> pInfo.modifyTechLevelBy(-2));
+					() -> pInfo.upgradeTechLevelBy(-2));
 		// try modify to 7
 		assertThrows(IllegalArgumentException.class,
-					() -> pInfo.modifyTechLevelBy(6));
+					() -> pInfo.upgradeTechLevelBy(6));
 		// upgrade tech level by 1
-		pInfo.upgradeTechLevelBy1();
-		assertEquals(2, pInfo.techLevel);
+		pInfo.upgradeTechLevelBy(1);
+		assertEquals(2, pInfo.techLevelInfo.getTechLevel());
 		// upgrade tech level by 2
 		pInfo.upgradeTechLevelBy(2);
-		assertEquals(4, pInfo.techLevel);
+		assertEquals(4, pInfo.techLevelInfo.getTechLevel());
 	}
 
 	@Test
 	public void testTechLevel_not_enough_resource() {
 		PlayerInfo pInfo = new PlayerInfo("A", 0, 0);
-		assertEquals(pInfo.techLevel, 1);
+		assertEquals(1, pInfo.techLevelInfo.getTechLevel());
 		assertThrows(IllegalArgumentException.class, 
-					() -> pInfo.upgradeTechLevelBy1());
-		assertEquals(pInfo.techLevel, 1);
+					() -> pInfo.consumeResourceOfTechUpgrade(1));
+		assertEquals(1, pInfo.techLevelInfo.getTechLevel());
 	}
 
-	@Test
-	public void testCalcUpgradeTechLevelConsumption() {
-		assertEquals(125, PlayerInfo.calcUpgradeTechLevelConsumption(3, 4));
-		assertEquals(50, PlayerInfo.calcUpgradeTechLevelConsumption(1, 2));
-		assertEquals(300, PlayerInfo.calcUpgradeTechLevelConsumption(5, 6));
-		assertThrows(IllegalArgumentException.class,
-					() -> PlayerInfo.calcUpgradeTechLevelConsumption(6, 7));
-		assertThrows(IllegalArgumentException.class,
-					() -> PlayerInfo.calcUpgradeTechLevelConsumption(-1, 0));
-	}
-	
 	@Test
 	public void testClone() {
 		PlayerInfo pInfo = new PlayerInfo("");
@@ -118,9 +107,7 @@ public class PlayerInfoTest {
 		assertFalse(pInfo == clonePInfo);
 		assertEquals(pInfo, clonePInfo);
 		assertEquals(pInfo.playerName, clonePInfo.playerName);
-		assertEquals(pInfo.techLevel, clonePInfo.techLevel);
-		assertEquals(pInfo.MIN_TECH_LEVEL, clonePInfo.MIN_TECH_LEVEL);
-		assertEquals(pInfo.MAX_TECH_LEVEL, clonePInfo.MAX_TECH_LEVEL);
+		assertEquals(pInfo.techLevelInfo, clonePInfo.techLevelInfo);
 		assertEquals(pInfo.foodResource, clonePInfo.foodResource);
 		assertEquals(pInfo.techResource, clonePInfo.techResource);
 	}
