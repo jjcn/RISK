@@ -144,18 +144,46 @@ public class PlayerInfo implements Serializable {
         techResource.consume(consumption);
     }
 
-    public void checkUpgradeTechLevelBy(int n) {
-
+    /**
+     * Check if the player's tech level can be upgraded by a number N.
+     *
+     * @param n is the number to add to player's tech level.
+     *        Can be positive, 0, or negative.
+     */
+    public void checkUpgradeTechLevelBy(int n) throws IllegalArgumentException {
+        techLevelInfo.checkUpgradeTechLevelBy(n);
+        checkResourceConsumptionOfTechUpgrade(n);
     }
 
     /**
-     * Upgrade player's tech level by a number n.
-     *
-     * @param n is the number to add to tech level.
-     *          Can be positive, 0, or negative.
+     * Try upgrade player's tech level by a number n.
+     * @param n is the number to add to player's tech level.
+     *        Can be positive, 0, or negative.
+     * @throws IllegalArgumentException
      */
     public void upgradeTechLevelBy(int n) throws IllegalArgumentException {
+        checkResourceConsumptionOfTechUpgrade(n);
         techLevelInfo.upgradeTechLevelBy(n);
+    }
+
+    /**
+     * Check if there is enough tech resource to consume after
+     * upgrading the player's tech level by a number n.
+     * @param n is the number to add to player's tech level.
+     *        Can be positive, 0, or negative.
+     * @throws IllegalArgumentException
+     */
+    protected void checkResourceConsumptionOfTechUpgrade(int n) throws IllegalArgumentException {
+        int techLevel = techLevelInfo.getTechLevel();
+        int techLevelAfterMod = techLevel + n;
+        try {
+            int consumption = TechLevelInfo.calcConsumption(techLevel, techLevelAfterMod);
+            techResource.checkConsume(consumption);
+        } catch (IllegalArgumentException e) {
+            String err_msg = e.getMessage() + "\n" +
+                    String.format(FAILURE_TECH_LEVEL_UPGRADE_MSG, playerName);
+            throw new IllegalArgumentException(err_msg);
+        }
     }
 
     /**
@@ -167,14 +195,9 @@ public class PlayerInfo implements Serializable {
     public void consumeResourceOfTechUpgrade(int n) {
         int techLevel = techLevelInfo.getTechLevel();
         int techLevelAfterMod = techLevel + n;
-        try {
-            int consumption = TechLevelInfo.calcConsumption(techLevel, techLevelAfterMod);
-            consumeTech(consumption);
-        } catch (IllegalArgumentException iae) {
-            String err_msg = iae.getMessage() + "\n" +
-                    String.format(FAILURE_TECH_LEVEL_UPGRADE_MSG, playerName);
-            throw new IllegalArgumentException(err_msg);
-        }
+        int consumption = TechLevelInfo.calcConsumption(techLevel, techLevelAfterMod);
+        checkResourceConsumptionOfTechUpgrade(consumption);
+        consumeTech(consumption);
     }
 
     /**
