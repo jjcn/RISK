@@ -25,12 +25,12 @@ public class ChatDialog implements IDialog {
         this.unreadCount = unreadCount;
     }
 
-    public ChatDialog(String id, String name, ArrayList<String> playersName, ChatMessage lastMessage, int unreadCount) {
+    public ChatDialog(int id, String name, List<String> playersName, ChatMessage lastMessage, int unreadCount) {
         ArrayList<ChatPlayer> players = new ArrayList<ChatPlayer>();
         for(String playerName: playersName){
             players.add(new ChatPlayer(getWorld().getRoomID(),playerName));
         }
-        this(id, name, null, players, lastMessage, unreadCount);
+        this(String.valueOf(id), name, null, players, lastMessage, unreadCount);
     }
 
     @Override

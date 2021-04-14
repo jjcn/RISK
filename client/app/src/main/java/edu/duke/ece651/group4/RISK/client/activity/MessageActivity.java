@@ -49,14 +49,15 @@ public class MessageActivity extends AppCompatActivity
         input.setInputListener(this);
     }
 
-    //TODO:get history
+    //TODO+: get history
     @Override
     protected void onStart() {
         super.onStart();
-        getHistoryMsg();
+        // getHistoryMsg();
         msgAdapter.addToStart(new ChatMessage(0,"",new ChatPlayer(0,"")), true);
     }
 
+    //TODO
     @Override
     public boolean onSubmit(CharSequence input) {
         ChatPlayer user = new ChatPlayer(getWorld().getRoomID(), getUserName());
@@ -72,7 +73,7 @@ public class MessageActivity extends AppCompatActivity
                 Log.e(TAG, LOG_FUNC_RUN+"send message fail");
                 return;
             }
-        });
+        }) ;
         msgAdapter.addToStart(message, true);
         return true;
     }

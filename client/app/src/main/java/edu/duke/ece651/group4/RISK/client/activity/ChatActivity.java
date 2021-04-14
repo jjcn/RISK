@@ -11,8 +11,10 @@ import com.stfalcon.chatkit.dialogs.DialogsListAdapter;
 
 import edu.duke.ece651.group4.RISK.client.R;
 import edu.duke.ece651.group4.RISK.client.model.ChatDialog;
+import edu.duke.ece651.group4.RISK.client.model.ChatMessage;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -38,14 +40,17 @@ public class ChatActivity extends AppCompatActivity implements DialogsListAdapte
         chatList.setAdapter(chatListAdapter);
     }
 
-    //TODO++: chats: 1v1 & whole world
+    //TODO: chats: 1v1 & whole world
     private List getChats() {
         ArrayList<ChatDialog> chats = new ArrayList<>();
-        for (int i = 0; i < getCurrentRoomSize(); i++) {
+
+        ArrayList<String> allPlayerNames = getAllplayersName();
+        chats.add(new ChatDialog(0, "Whole world", allPlayerNames , null, 0));
+        for(int i=0;i<getCurrentRoomSize();i++){
             Calendar calendar = Calendar.getInstance();
-            calendar.add(Calendar.DAY_OF_MONTH, -(i * i));
-            calendar.add(Calendar.MINUTE, -(i * i));
-            chats.add(new ChatDialog(i, ));
+            calendar.add(Calendar.DAY_OF_MONTH,-(i*i));
+            calendar.add(Calendar.MINUTE,-(i*i));
+            chats.add(new ChatDialog(i+1,"Whole world", Arrays.asList(allPlayerNames.get(i)), null, 0));
         }
         return chats;
     }
