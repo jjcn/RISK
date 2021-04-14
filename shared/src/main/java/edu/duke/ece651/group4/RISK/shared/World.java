@@ -9,6 +9,7 @@ import java.util.NoSuchElementException;
 
 import java.util.Random;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.io.Serializable;
 
@@ -57,7 +58,6 @@ public class World implements Serializable {
      * Random seed to use with random division of territories.
      */
     protected final Random rnd;
-
 
     /**
      * Construct a default world with an empty graph.
@@ -313,13 +313,11 @@ public class World implements Serializable {
     }
 
     /**
-     * Overloaded function taking in a Player object.
-     *
-     * @param player
-     * @return
+     * Get all names of players that are still in the game (which means he hasn't lose)
+     * @return names of all players that are still in the game.
      */
-    public List<Territory> getTerritoriesOfPlayer(Player player) {
-        return getTerritoriesOfPlayer(player.getName());
+    public Set<String> getAllPlayerNames() {
+        return playerInfos.keySet().stream().filter((name -> !checkLost(name))).collect(Collectors.toSet());
     }
 
     /**
@@ -427,7 +425,7 @@ public class World implements Serializable {
          * to the unvisited set.
          */
         while (unvisited.size() != 0) {
-            Territory current = getSmallestDistanceVertex(unvisited, distances);
+            Territory current = getSmallestDistanceTerr(unvisited, distances);
             unvisited.remove(current);
             for (Territory adjacent : getAdjacents(current)) {
                 if (!visited.contains(adjacent) && adjacent.getOwner().equals(start.getOwner())) {
@@ -446,15 +444,15 @@ public class World implements Serializable {
     }
 
     /**
-     * Find the smallest distance vertex.
-     *
-     * @param tovisit
-     * @return
+     * Find the smallest distance territory is a set.
+     * @param toVisit is a set of territories.
+     * @param distances is the distances from the staring territory.
+     * @return the smallest distance territory.
      */
-    protected Territory getSmallestDistanceVertex(Set<Territory> tovisit, Map<Territory, Integer> distances) {
+    protected Territory getSmallestDistanceTerr(Set<Territory> toVisit, Map<Territory, Integer> distances) {
         Territory smallestDistanceVertex = null;
         int lowestDistance = Integer.MAX_VALUE;
-        for (Territory vertex : tovisit) {
+        for (Territory vertex : toVisit) {
             int dist = distances.get(vertex);
             if (dist < lowestDistance) {
                 lowestDistance = dist;
@@ -503,14 +501,14 @@ public class World implements Serializable {
      * Consumes food resource.
      *
      * @param order      is a move order.
-     * @param playerName is the player's name who commited this order.
+     * @param playerName is the player's name who committed this order.
      */
     public void moveTroop(MoveOrder order, String playerName) { // TODO: coupled upgrade and resource consumption
         Territory start = findTerritory(order.getSrcName());
         Territory end = findTerritory(order.getDesName());
         Troop troop = order.getActTroop();
         // check error of move order
-        String errorMsg = orderChecker.checkOrder(order, this);
+        String errorMsg = orderChecker.checkOrder(order, this, getPlayerInfoByName(playerName));
         if (errorMsg != null) {
             throw new IllegalArgumentException(errorMsg);
         }
@@ -554,7 +552,7 @@ public class World implements Serializable {
         Territory end = findTerritory(order.getDesName());
         Troop troop = order.getActTroop();
         // check error of attack order
-        String errorMsg = orderChecker.checkOrder(order, this);
+        String errorMsg = orderChecker.checkOrder(order, this, getPlayerInfoByName(playerName));
         if (errorMsg != null) {
             throw new IllegalArgumentException(errorMsg);
         }
@@ -574,7 +572,7 @@ public class World implements Serializable {
     public void upgradeTroop(UpgradeTroopOrder utOrder, String playerName) {
         Territory terr = findTerritory(utOrder.getSrcName());
         PlayerInfo pInfo = getPlayerInfoByName(playerName);
-        if (utOrder.getLevelAfter() > pInfo.techLevel) {
+        if (utOrder.getLevelAfter() > pInfo.techLevelInfo.getTechLevel()) {
             throw new IllegalArgumentException("Cannot upgrade beyond your tech level.");
         }
         try {
@@ -617,6 +615,26 @@ public class World implements Serializable {
      */
     public void upgradePlayerTechLevelBy1(String playerName) {
         upgradePlayerTechLevelBy(new UpgradeTechOrder(1), playerName);
+    }
+
+    /**
+     * Two players form an alliance.
+     * @param playerName1 is the name of a player.
+     * @param playerName2 is the name of another player.
+     */
+    public void formAlliance(String playerName1, String playerName2) {
+        playerInfos.get(playerName1).formAlliance(playerName2);
+        playerInfos.get(playerName2).formAlliance(playerName1);
+    }
+
+    /**
+     * Two players break from an alliance.
+     * @param playerName1 is the name of a player.
+     * @param playerName2 is the name of another player.
+     */
+    public void breakAlliance(String playerName1, String playerName2) {
+        playerInfos.get(playerName1).breakAlliance(playerName2);
+        playerInfos.get(playerName2).breakAlliance(playerName1);
     }
 
     /**

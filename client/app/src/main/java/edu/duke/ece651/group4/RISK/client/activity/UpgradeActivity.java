@@ -70,6 +70,9 @@ public class UpgradeActivity extends AppCompatActivity {
     }
 
     private void impUI() {
+        worldImageView = findViewById(R.id.world_image_view);
+        worldImageView.setImageResource(MAPS.get(getCurrentRoomSize()));
+        
         // territory spinner
         List<String> myTerrNames = getMyTerrNames();
 

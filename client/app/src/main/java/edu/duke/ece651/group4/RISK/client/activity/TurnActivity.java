@@ -171,6 +171,7 @@ public class TurnActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
+                // nothing yet
             }
         });
     }

@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Random;
+import java.util.Set;
 
 public class WorldTest {
     /**
@@ -69,10 +70,11 @@ public class WorldTest {
     PrintStream out = null;
     Reader inputReader = null;
     Player green = new TextPlayer(out, inputReader, "green");
-    PlayerInfo greenInfo = new PlayerInfo(green.getName(), 100, 100);
     Player red = new TextPlayer(out, inputReader, "red");
-    PlayerInfo redInfo = new PlayerInfo(red.getName(), 100, 100);
     Player blue = new TextPlayer(out, inputReader, "blue");
+
+    PlayerInfo greenInfo = new PlayerInfo(green.getName(), 100, 100);
+    PlayerInfo redInfo = new PlayerInfo(red.getName(), 100, 100);
     PlayerInfo blueInfo = new PlayerInfo(blue.getName(), 100, 100);
 
     String names[] =
@@ -238,6 +240,14 @@ public class WorldTest {
         assertNotNull(world.getPlayerInfoByName("red"));
         assertThrows(IllegalArgumentException.class,
                     () -> world.getPlayerInfoByName("blue"));
+    }
+
+    @Test
+    public void testGetPlayerNames() {
+        World world = createWorldAndRegister(troopsSamePlayer);
+        Set<String> redSet = new HashSet<String>();
+        redSet.add("red");
+        assertEquals(redSet, world.getAllPlayerNames());
     }
 
     @Test
@@ -453,6 +463,12 @@ public class WorldTest {
         assertEquals(1, world.getPlayerInfoByName("red").getTechLevel());
         world.upgradePlayerTechLevelBy1("red");
         assertEquals(2, world.getPlayerInfoByName("red").getTechLevel());
+    }
+
+    @Test
+    public void charAndCharacter() {
+        assertEquals('A', new Character('A'));
+        assertTrue('A' == new Character('A'));
     }
 
     @Test
