@@ -20,6 +20,7 @@ import static edu.duke.ece651.group4.RISK.client.Constant.LOG_CREATE_SUCCESS;
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.*;
 import static edu.duke.ece651.group4.RISK.client.utility.Notice.showByToast;
 import static edu.duke.ece651.group4.RISK.shared.Constant.UNIT_NAMES;
+import static edu.duke.ece651.group4.RISK.client.Constant.MAPS;
 
 public class UpgradeActivity extends AppCompatActivity {
     private final String TAG = this.getClass().getSimpleName();
