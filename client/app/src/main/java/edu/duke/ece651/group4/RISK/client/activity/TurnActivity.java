@@ -137,9 +137,9 @@ public class TurnActivity extends AppCompatActivity {
     }
 
     private void impUserInfoRC() {
-        userInfo = getWorldInfo();
+        userInfo = new ArrayList<>();
         userInfoAdapter = new ArrayAdapter<>(TurnActivity.this, R.layout.item_choice, userInfo);
-        worldInfoRC.setAdapter(worldInfoAdapter);
+        userInfoTV.setAdapter(userInfoAdapter);
     }
 
     private void impSwipeFresh() {
@@ -250,7 +250,7 @@ public class TurnActivity extends AppCompatActivity {
                 userInfo.clear();
                 userInfo.add(getPlayerInfo());
                 userInfoAdapter.notifyDataSetChanged();
-                actionAdapter.remove(UI_UPTECH); // can only upgrade once in one turn
+                // actionAdapter.remove(UI_UPTECH); // can only upgrade once in one turn
             }
 
             @Override
@@ -309,11 +309,14 @@ public class TurnActivity extends AppCompatActivity {
                         userInfoTV.setVisibility(View.GONE);
                     }
                     Log.i(TAG, LOG_FUNC_RUN + "call update after turn");
-                    noticeInfo.clear();
-                    noticeInfo.add(getPlayerInfo());
+                    userInfo.clear();
+                    userInfo.add(getPlayerInfo());
+                    userInfoAdapter.notifyDataSetChanged();
+
                     noticeInfo.clear();
                     noticeInfo.add(getWorld().getReport());
                     noticesAdapter.notifyDataSetChanged();
+
                     worldInfo.clear();
                     worldInfo.addAll(getWorldInfo());
                     worldInfoAdapter.notifyDataSetChanged();

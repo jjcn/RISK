@@ -89,7 +89,7 @@ public class RISKApplication extends Application {
     public static int getCurrentRoomSize(){return currentRoomSize;}
 
     public static List<Territory> getMyTerritory() {
-        return theWorld.getTerritoriesOfPlayer(new TextPlayer(userName));
+        return theWorld.getTerritoriesOfPlayer(userName);
     }
 
     /**
@@ -103,7 +103,7 @@ public class RISKApplication extends Application {
      * @return list of all my territory
      */
     public static List<String> getMyTerrNames() {
-        return transferToNames(theWorld.getTerritoriesOfPlayer(new TextPlayer(userName)));
+        return transferToNames(theWorld.getTerritoriesOfPlayer(userName));
     }
 
     /**
@@ -497,12 +497,12 @@ public class RISKApplication extends Application {
         techOrder=new UpgradeTechOrder(1);
         techListener=listener;
 //        UpgradeTechOrder order =
-//        try {
-//            theWorld.upgradePlayerTechLevelBy1(userName);
-//            send(order, listener);
-//        } catch (Exception e) {
-//            return e.getMessage();
-//        }
+        try {
+            theWorld.upgradePlayerTechLevelBy1(userName);
+            send(techOrder, listener);
+        } catch (Exception e) {
+            return e.getMessage();
+        }
         return null;
     }
 
@@ -510,14 +510,14 @@ public class RISKApplication extends Application {
      * Used to send an done order
      */
     public static void doDone(Order order, onReceiveListener listener) {
-        if(techOrder!=null){
-           try {
-            theWorld.upgradePlayerTechLevelBy1(userName);
-            send(techOrder, techListener);
-            } catch (Exception e) {
-               Log.e(TAG, e.getMessage());
-            }
-        }
+//        if(techOrder!=null){
+//           try {
+//            theWorld.upgradePlayerTechLevelBy1(userName);
+//            send(techOrder, techListener);
+//            } catch (Exception e) {
+//               Log.e(TAG, e.getMessage());
+//            }
+//        }
         sendReceiveHelper(order, listener, WORLD);
         techOrder=null;
         techListener=null;
