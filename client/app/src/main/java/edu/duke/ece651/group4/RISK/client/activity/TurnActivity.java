@@ -208,7 +208,7 @@ public class TurnActivity extends AppCompatActivity {
                     break;
                 case UI_ALLIANCE:
                     String choice = showSelector(TurnActivity.this, getMyTerrNames());
-                    requireAlliance(choice);
+//                    requireAlliance(choice);
                     break;
                 default:
                     throw new IllegalStateException("Unexpected value: " + actionType);
