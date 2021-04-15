@@ -96,7 +96,7 @@ public class World implements Serializable {
         this.orderChecker = new OrderChecker();
         this.rnd = random;
         this.report = report;
-        this.roomID=0;
+        this.roomID = 0;
     }
 
     /**
@@ -317,6 +317,7 @@ public class World implements Serializable {
 
     /**
      * Get all names of players that are still in the game (which means he hasn't lose)
+     *
      * @return names of all players that are still in the game.
      */
     public Set<String> getAllPlayerNames() {
@@ -448,7 +449,8 @@ public class World implements Serializable {
 
     /**
      * Find the smallest distance territory is a set.
-     * @param toVisit is a set of territories.
+     *
+     * @param toVisit   is a set of territories.
      * @param distances is the distances from the staring territory.
      * @return the smallest distance territory.
      */
@@ -490,6 +492,7 @@ public class World implements Serializable {
 
     /**
      * A player consume food resources of a move.
+     *
      * @param order      is the move order.
      * @param playerName is the name of the player who committed this order.
      */
@@ -534,6 +537,7 @@ public class World implements Serializable {
 
     /**
      * A player consume food resources of an attack.
+     *
      * @param order      is the attack order.
      * @param playerName is the name of the player who committed this order.
      */
@@ -589,6 +593,7 @@ public class World implements Serializable {
 
     /**
      * Consumes tech resource of an upgrade tech order.
+     *
      * @param upgradeTechOrder
      * @param playerName
      */
@@ -626,6 +631,7 @@ public class World implements Serializable {
 
     /**
      * Two players form an alliance.
+     *
      * @param playerName1 is the name of a player.
      * @param playerName2 is the name of another player.
      */
@@ -636,6 +642,7 @@ public class World implements Serializable {
 
     /**
      * Two players break from an alliance.
+     *
      * @param playerName1 is the name of a player.
      * @param playerName2 is the name of another player.
      */
@@ -859,11 +866,11 @@ public class World implements Serializable {
         return toString().hashCode();
     }
 
-    public void setRoomID(int id){
-        this.roomID=id;
+    public void setRoomID(int id) {
+        this.roomID = id;
     }
 
-    public int getRoomID(){
+    public int getRoomID() {
         return this.roomID;
     }
 
