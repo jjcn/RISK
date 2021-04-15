@@ -40,16 +40,24 @@ public class ChatActivity extends AppCompatActivity implements DialogsListAdapte
         chatList.setAdapter(chatListAdapter);
     }
 
-    //TODO: chats: 1v1 & whole world
-    private List getChats() {
+    // TODO: chats: 1v1 & whole world
+    private List<ChatDialog> getChats() {
         ArrayList<ChatDialog> chats = new ArrayList<>();
         ArrayList<String> allPlayerNames = getAllplayersName();
-        chats.add(new ChatDialog(0, "Whole world", allPlayerNames , null, 0));
-        for(int i=0;i<getCurrentRoomSize();i++){
+        /**
+         * All players' chat room, id = 0
+         */
+        chats.add(new ChatDialog(0, "World Chat", allPlayerNames));
+        /**
+         * One-to-one chat room
+         */
+        for (int i = 0; i < getCurrentRoomSize(); i++) {
             Calendar calendar = Calendar.getInstance();
-            calendar.add(Calendar.DAY_OF_MONTH,-(i*i));
-            calendar.add(Calendar.MINUTE,-(i*i));
-            chats.add(new ChatDialog(i+1,"Whole world", Arrays.asList(allPlayerNames.get(i)), null, 0));
+            calendar.add(Calendar.DAY_OF_MONTH, -(i * i));
+            calendar.add(Calendar.MINUTE, -(i * i));
+
+            chats.add(new ChatDialog(i + 1, "Private Chat " + (i + 1),
+                    Arrays.asList(allPlayerNames.get(i))));
         }
         return chats;
     }
