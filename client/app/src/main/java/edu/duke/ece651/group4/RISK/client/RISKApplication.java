@@ -505,13 +505,13 @@ public class RISKApplication extends Application {
    }
 
 
-    /*************** function for chat **************/
+    /*************** functions for chat **************/
 
-    public static void sendOneMsg(ChatMessage message, onReceiveListener listener){
-
+    public static void sendOneMsg(ChatMessage message, onReceiveListener listener) {
+        // TODO
     }
 
-    public static void getHistoryMsg(){
-
-    }
+//    public static void getHistoryMsg() {
+//        // TODO
+//    }
 }

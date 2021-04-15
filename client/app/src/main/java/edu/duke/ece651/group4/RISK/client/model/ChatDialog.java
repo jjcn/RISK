@@ -9,6 +9,9 @@ import java.util.List;
 
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.getWorld;
 
+/**
+ * A dialog
+ */
 public class ChatDialog implements IDialog {
     private String chatID;
     private String dialogPhoto;
