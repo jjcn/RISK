@@ -207,8 +207,11 @@ public class TurnActivity extends AppCompatActivity {
                     }
                     break;
                 case UI_ALLIANCE:
-                    String choice = showSelector(TurnActivity.this, getMyTerrNames());
-//                    requireAlliance(choice);
+                    String choice = showSelector(TurnActivity.this, String.valueOf(R.string.CHOOSE_USER_INSTR),getMyTerrNames());
+                    Log.i(TAG,LOG_FUNC_RUN+"get choice: "+choice);
+                    if(choice != "") {
+                        requireAlliance(choice);
+                    }
                     break;
                 default:
                     throw new IllegalStateException("Unexpected value: " + actionType);
@@ -269,7 +272,7 @@ public class TurnActivity extends AppCompatActivity {
             waitDG.show();
         }
         commitBT.setClickable(false);
-        doDone(new BasicOrder(null, null, null, 'D'), new onReceiveListener() {
+        doDone(new onReceiveListener() {
             @Override
             public void onSuccess(Object o) {
                 World world = (World) o;

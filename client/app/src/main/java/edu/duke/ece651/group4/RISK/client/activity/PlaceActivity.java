@@ -43,7 +43,7 @@ public class PlaceActivity extends AppCompatActivity {
     private void impUI() {
         instr = findViewById(R.id.placeInstru);
         instr.append("You have total of " + PLACE_TOTAL + " soldiers.");
-        mapIV = findViewById(R.id.worldFG).findViewById(R.id.world_image_view);
+        mapIV = findViewById(R.id.world_image_view);
         mapIV.setImageResource(MAPS.get(getCurrentRoomSize()));
         List<Territory> myTerr = getMyTerritory(); // two for each player
 

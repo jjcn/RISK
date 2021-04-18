@@ -474,8 +474,9 @@ public class RISKApplication extends Application {
     /**
      * Used to send an done order
      */
-    public static void doDone(Order order, onReceiveListener listener) {
+    public static void doDone(onReceiveListener listener) {
         Log.d(TAG, "Done start");
+        Order order = new BasicOrder(null, null, null, DONE_ACTION);
         sendAndReceiveWorld(order,listener);
         Log.d(TAG, "Done end");
         updatedTech=false;
@@ -494,10 +495,10 @@ public class RISKApplication extends Application {
         return theWorld.getTerritoriesNotOfPlayer(userName);
     }
 
-//    public static void requireAlliance(String allyName) {
-//        Order allyOrder = new AllianceOrder(userName,allyName);
-//        send(allyOrder);
-//    }
+    public static void requireAlliance(String allyName) {
+        Order allyOrder = new AllianceOrder(userName,allyName);
+        send(allyOrder);
+    }
 
 
    public static int getRoomId(){
@@ -506,12 +507,17 @@ public class RISKApplication extends Application {
 
 
     /*************** function for chat **************/
-
+    // TODO
     public static void sendOneMsg(ChatMessage message, onReceiveListener listener){
 
     }
 
     public static void getHistoryMsg(){
 
+    }
+
+    public static ArrayList<String> getAllPlayersName(){
+        ArrayList<String> playerNames = new ArrayList<>();
+        return playerNames;
     }
 }

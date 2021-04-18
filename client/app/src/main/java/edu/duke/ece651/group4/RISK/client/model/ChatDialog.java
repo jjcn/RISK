@@ -7,6 +7,8 @@ import com.stfalcon.chatkit.commons.models.IUser;
 import java.util.ArrayList;
 import java.util.List;
 
+import static edu.duke.ece651.group4.RISK.client.RISKApplication.getWorld;
+
 public class ChatDialog implements IDialog {
     private String chatID;
     private String dialogPhoto;
@@ -26,11 +28,10 @@ public class ChatDialog implements IDialog {
     }
 
     public ChatDialog(int id, String name, List<String> playersName, ChatMessage lastMessage, int unreadCount) {
-        ArrayList<ChatPlayer> players = new ArrayList<ChatPlayer>();
+        this(String.valueOf(id), name, null, new ArrayList<ChatPlayer>(), lastMessage, unreadCount);
         for(String playerName: playersName){
-            players.add(new ChatPlayer(getWorld().getRoomID(),playerName));
+            users.add(new ChatPlayer(getWorld().getRoomID(),playerName));
         }
-        this(String.valueOf(id), name, null, players, lastMessage, unreadCount);
     }
 
     @Override
@@ -60,7 +61,7 @@ public class ChatDialog implements IDialog {
 
     @Override
     public void setLastMessage(IMessage message) {
-        this.lastMessage = message;
+        this.lastMessage = (ChatMessage) message;
     }
 
     @Override

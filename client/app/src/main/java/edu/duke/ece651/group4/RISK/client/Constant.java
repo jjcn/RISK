@@ -3,7 +3,6 @@ package edu.duke.ece651.group4.RISK.client;
 import java.util.HashMap;
 
 public class Constant {
-
     //*************CONSTANTS FOR DEBUG************//
     public static final boolean DEBUG_MODE = false;
     public static final boolean SINGLE_TEST = false;

@@ -8,12 +8,14 @@ import com.stfalcon.chatkit.dialogs.DialogsList;
 import com.stfalcon.chatkit.dialogs.DialogsListAdapter;
 import edu.duke.ece651.group4.RISK.client.R;
 import edu.duke.ece651.group4.RISK.client.model.ChatDialog;
-import edu.duke.ece651.group4.RISK.client.model.ChatMessage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+
+import static edu.duke.ece651.group4.RISK.client.RISKApplication.getAllPlayersName;
+import static edu.duke.ece651.group4.RISK.client.RISKApplication.getCurrentRoomSize;
 
 public class ChatActivity extends AppCompatActivity implements DialogsListAdapter.OnDialogClickListener {
     private static final String TAG = ChatActivity.class.getSimpleName();
@@ -35,10 +37,10 @@ public class ChatActivity extends AppCompatActivity implements DialogsListAdapte
         chatList.setAdapter(chatListAdapter);
     }
 
-    //TODO: chats: 1v1 & whole world
+    //TODO: chats: whole world
     private List getChats() {
         ArrayList<ChatDialog> chats = new ArrayList<>();
-        ArrayList<String> allPlayerNames = getAllplayersName();
+        ArrayList<String> allPlayerNames = getAllPlayersName();
         chats.add(new ChatDialog(0, "Whole world", allPlayerNames , null, 0));
         for(int i=0;i<getCurrentRoomSize();i++){
             Calendar calendar = Calendar.getInstance();

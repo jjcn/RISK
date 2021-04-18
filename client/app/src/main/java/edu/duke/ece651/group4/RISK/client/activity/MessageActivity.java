@@ -57,23 +57,23 @@ public class MessageActivity extends AppCompatActivity
         msgAdapter.addToStart(new ChatMessage(0,"",new ChatPlayer(0,"")), true);
     }
 
-    //TODO
+    //TODO++
     @Override
     public boolean onSubmit(CharSequence input) {
         ChatPlayer user = new ChatPlayer(getWorld().getRoomID(), getUserName());
         ChatMessage message = new ChatMessage(0, input.toString(), user);
-        sendOneMsg(message, new onReceiveListener() {
-            @Override
-            public void onSuccess(Object o) {
-                message.setChatID((int) o);
-            }
-
-            @Override
-            public void onFailure(String errMsg) {
-                Log.e(TAG, LOG_FUNC_RUN+"send message fail");
-                return;
-            }
-        }) ;
+//        sendOneMsg(message, new onReceiveListener() {
+//            @Override
+//            public void onSuccess(Object o) {
+//                message.setChatID((int) o);
+//            }
+//
+//            @Override
+//            public void onFailure(String errMsg) {
+//                Log.e(TAG, LOG_FUNC_RUN+"send message fail");
+//                return;
+//            }
+//        }) ;
         msgAdapter.addToStart(message, true);
         return true;
     }

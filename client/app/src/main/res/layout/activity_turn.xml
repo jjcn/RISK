@@ -23,15 +23,16 @@
             app:layout_constraintBottom_toTopOf="@id/hguide1"
     />
 
-    <ImageView
-            android:id="@+id/world_image_view"
+    <fragment
             android:layout_width="match_parent"
+            android:layout_height="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/hguide1"
-            app:srcCompat="@drawable/terrs4"
-            android:layout_height="0dp"/>
+            android:name="edu.duke.ece651.group4.RISK.client.fragment.WorldFragment"
+            android:id="@+id/worldFG"
+    />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/refreshInfo"
