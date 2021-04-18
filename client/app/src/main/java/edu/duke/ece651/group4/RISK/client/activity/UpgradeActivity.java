@@ -9,6 +9,7 @@ import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import edu.duke.ece651.group4.RISK.client.R;
 import edu.duke.ece651.group4.RISK.client.RISKApplication;
+import static edu.duke.ece651.group4.RISK.client.Constant.MAPS;
 
 import java.util.HashMap;
 import java.util.List;
