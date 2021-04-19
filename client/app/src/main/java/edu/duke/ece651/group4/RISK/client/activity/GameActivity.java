@@ -89,7 +89,7 @@ public class GameActivity extends AppCompatActivity {
 
         FragmentManager fm = getSupportFragmentManager();
         addFragment(fm, R.id.fragment_myTerr_container);
-        addFragment(fm, R.id.fragment_enemyTerr_container);
+        //addFragment(fm, R.id.fragment_enemyTerr_container);
 
         impUpTechBT();
         impAllyBT();
