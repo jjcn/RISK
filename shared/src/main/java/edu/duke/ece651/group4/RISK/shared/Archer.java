@@ -15,7 +15,6 @@ public class Archer extends Soldier {
         this.level = level;
         this.jobName = ARCHER_NAMES.get(level);
         this.range = ARCHER_RANGE;
-
     }
 
     @Override

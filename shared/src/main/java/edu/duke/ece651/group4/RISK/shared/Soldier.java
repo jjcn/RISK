@@ -17,7 +17,6 @@ public class Soldier implements Unit, Serializable {
     protected double speed;
     protected int range;
 
-
     public Soldier() {
         this(new Random());
     }
@@ -49,7 +48,6 @@ public class Soldier implements Unit, Serializable {
     public int getLevel() {
         return this.level;
     }
-
 
     public int getBonus() {
         return UNIT_BONUS.get(this.level);

@@ -9,16 +9,15 @@ public class Breaker extends Soldier {
     private final int breakBonus;
 
     public Breaker(int level) {
-        this(new Random(),level);
+        this(new Random(), level);
     }
 
-    public Breaker(Random rand,int level) {
+    public Breaker(Random rand, int level) {
         super(rand);
-        this.level=level;
-        this.jobName=BREAKER_NAMES.get(level);
-        this.range=ARCHER_RANGE;
-        this.breakBonus=BREAKER_BONUS;
-
+        this.level = level;
+        this.jobName = BREAKER_NAMES.get(level);
+        this.range = ARCHER_RANGE;
+        this.breakBonus = BREAKER_BONUS;
     }
 
     @Override
@@ -33,10 +32,9 @@ public class Breaker extends Soldier {
         this.level = BREAKER_NAMES.indexOf(newJob);
     }
 
-    public int getBreakBonus(){
+    public int getBreakBonus() {
         return this.breakBonus;
     }
-
 
 
     @Override
