@@ -57,5 +57,4 @@ public class Constant {
     public static final String PLACEMENT_DONE="Placement Done\n";
 
     //Chat
-    public static final int CHAT_PORT = 5678;
 }
