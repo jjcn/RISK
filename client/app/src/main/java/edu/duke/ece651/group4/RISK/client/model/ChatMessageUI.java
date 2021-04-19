@@ -6,22 +6,22 @@ import com.stfalcon.chatkit.commons.models.IUser;
 import java.util.Date;
 import java.util.List;
 
-public class ChatMessage implements IMessage {
+public class ChatMessageUI implements IMessage {
     private String chatID;
     private String text;
     private ChatPlayer user;
     private Date createdAt;
     private List<String> targets; // want to talk to ---
 
-    public ChatMessage(int chatID, String text, ChatPlayer user) {
+    public ChatMessageUI(int chatID, String text, ChatPlayer user) {
         this(String.valueOf(chatID), text, user, new Date());
     }
 
-    public ChatMessage(String chatID, String text, ChatPlayer user) {
+    public ChatMessageUI(String chatID, String text, ChatPlayer user) {
         this(chatID, text, user, new Date());
     }
 
-    public ChatMessage(String chatID, String text, ChatPlayer user, Date createdAt){
+    public ChatMessageUI(String chatID, String text, ChatPlayer user, Date createdAt){
         this.chatID = chatID;
         this.text = text;
         this.user = user;

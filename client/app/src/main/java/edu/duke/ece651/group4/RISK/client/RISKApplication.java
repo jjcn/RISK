@@ -167,7 +167,7 @@ public class RISKApplication extends Application {
         StringBuilder result = new StringBuilder();
         result.append("Player name:  " + userName + "\n");
         result.append("Tech Level: " + info.getTechLevel() + "\n");
-        result.append("Alliance: " + getAllianceName());
+        result.append("Alliance: " + getAllianceName() + "\n");
         result.append("Food Resource: " + info.getFoodQuantity() + "\n");
         result.append("Tech Resource: " + info.getTechQuantity() + "\n");
 //        result.append("My Territories: ");

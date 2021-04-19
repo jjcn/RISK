@@ -54,6 +54,7 @@ public class TurnActivity extends AppCompatActivity {
     private String actionType;
     private boolean isWatch; // turn to true after lose game.
     private WaitDialog waitDG;
+    private String chosenAlliance;
 
     List<String> actions;
 
@@ -69,7 +70,7 @@ public class TurnActivity extends AppCompatActivity {
         actionType = UI_MOVE; // default: move
         isWatch = false;
         waitDG = new WaitDialog(TurnActivity.this);
-        c = null;
+        chosenAlliance = null;
 
         impUI();
         updateAfterTurn();
@@ -202,10 +203,7 @@ public class TurnActivity extends AppCompatActivity {
                     }
                     break;
                 case UI_ALLIANCE:
-                    showSelectTerr();
-                    if(c != null){
-                        Log.i(TAG,LOG_FUNC_RUN+"choose: "+c);
-                    }
+                    selectAlliance();
                     break;
                 default:
                     throw new IllegalStateException("Unexpected value: " + actionType);
@@ -215,38 +213,28 @@ public class TurnActivity extends AppCompatActivity {
         });
     }
 
-
-    private String c;
-
-    private void showSelectTerr() {
-        Context context = TurnActivity.this;
+    private void selectAlliance() {
         ArrayList<String> choices = new ArrayList<>();
-        for(String playerName: getAllPlayersName()){
-//            if(!getUserName().equals(playerName)){
-                choices.add(playerName);
-//            }
+        for (String playerName : getAllPlayersName()) {
+            choices.add(playerName);
         }
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(context, R.layout.item_choice,
-                choices);
+        SimpleSelector selector = new SimpleSelector(TurnActivity.this, CHOOSE_USER_INSTR, choices, new onReceiveListener() {
+            @Override
+            public void onSuccess(Object o) {
+                if(o instanceof String) {
+                    String alliance = (String) o;
+                    requireAlliance(alliance);
+                }else{
+                    onFailure("not String name");
+                }
+            }
 
-        String[] chosen = new String[1];
-        builder.setTitle(CHOOSE_USER_INSTR)
-                .setSingleChoiceItems(adapter, 0, (dialog, which) -> {
-                    chosen[0] = choices.get(which);
-                    showByToast((Activity) context,"You have choose: "+chosen[0]);
-                })
-                .setPositiveButton("Confirm", (dialog, which)->{
-                    c = chosen[0];
-                    requireAlliance(c);
-                    dialog.dismiss();
-                })
-                .setNegativeButton("Cancel", (dialog, which)->{
-                    c = null;
-                    dialog.dismiss();
-                });
-        Log.i(Context.class.getSimpleName(),LOG_FUNC_RUN+"show selector");
-        builder.show();
+            @Override
+            public void onFailure(String errMsg) {
+                Log.e(TAG,errMsg);
+            }
+        });
+        selector.show();
     }
 
     private void showConfirmDialog() {
@@ -337,6 +325,9 @@ public class TurnActivity extends AppCompatActivity {
                         commitBT.setVisibility(View.GONE);
                     }
                     Log.i(TAG, LOG_FUNC_RUN + "call update after turn");
+                    userInfo.clear();
+                    userInfo.add(getPlayerInfo());
+                    userInfoAdapter.notifyDataSetChanged();
                     noticeInfo.clear();
                     noticeInfo.add(getPlayerInfo());
                     noticeInfo.add(getWorld().getReport());
