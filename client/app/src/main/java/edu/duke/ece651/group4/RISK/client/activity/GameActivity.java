@@ -43,6 +43,7 @@ public class GameActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i(TAG, LOG_FUNC_RUN + "begin create");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
         if (getSupportActionBar() != null) {
@@ -53,6 +54,7 @@ public class GameActivity extends AppCompatActivity {
         waitDG = new WaitDialog(GameActivity.this);
         impUI();
         updateAllInfo();
+        Log.i(TAG,LOG_CREATE_SUCCESS);
     }
 
     /**

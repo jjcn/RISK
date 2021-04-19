@@ -18,8 +18,6 @@ import static edu.duke.ece651.group4.RISK.client.Constant.LOG_CREATE_SUCCESS;
 import static edu.duke.ece651.group4.RISK.client.Constant.MAPS;
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.*;
 import static edu.duke.ece651.group4.RISK.client.utility.Notice.showByToast;
-import static edu.duke.ece651.group4.RISK.shared.Constant.UNIT_NAMES;
-import static edu.duke.ece651.group4.RISK.client.Constant.MAPS;
 
 public class UpgradeActivity extends AppCompatActivity {
     private final String TAG = this.getClass().getSimpleName();
@@ -151,13 +149,11 @@ public class UpgradeActivity extends AppCompatActivity {
                     nUnit, levels.get(typeNameBefore), levels.get(typeNameAfter)));
 
             // TODO: need mapping from levelNames -> level integer, hard-coded for now
-            String result = doSoliderUpgrade(
+            String result = doSoldierUpgrade(
                     buildUpOrder(terrName,
                             levels.get(typeNameBefore),
                             levels.get(typeNameAfter),
-                            nUnit)
-            );
-
+                            nUnit));
             if (result == null) {
                 finish();
             } else {

@@ -21,9 +21,7 @@ public class WorldFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_world, container, false);
-
         mWorldImageView = v.findViewById(R.id.world_image_view);
-
         return v;
     }
 }

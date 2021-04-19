@@ -168,8 +168,12 @@ public class World implements Serializable {
         }
         List<Integer> weightsCopy = territories.cloneWeights();
         boolean[][] adjMatrixCopy = territories.cloneAdjMatrix();
+        List<PlayerInfo> playerInfoCopy = clonePlayerInfos();
+        boolean[][] allianceMatrixCopy = cloneAllianceMatrix();
         World cpyWorld = new World(new Graph<>(cpy, weightsCopy, adjMatrixCopy),
-                clonePlayerInfos(), this.allianceMatrix, this.rnd,
+                playerInfoCopy,
+                allianceMatrixCopy,
+                this.rnd,
                 new String(this.report == null ? null : new String(this.report)));
         cpyWorld.setRoomID(this.roomID);
         return cpyWorld;
@@ -184,6 +188,20 @@ public class World implements Serializable {
             newList.add(pInfo.clone());
         }
         return newList;
+    }
+
+    /**
+     * Creates a deep copy of allianceMatrix.
+     */
+    protected boolean[][] cloneAllianceMatrix() {
+        int n = allianceMatrix.length;
+        boolean[][] cpy = new boolean[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                cpy[i][j] = allianceMatrix[i][j];
+            }
+        }
+        return cpy;
     }
 
     protected void expandAllianceMatrixBy1() {
@@ -345,7 +363,9 @@ public class World implements Serializable {
      * @return that player's playerInfo.
      */
     public PlayerInfo getPlayerInfoByName(String playerName) {
-        for (PlayerInfo pInfo : playerInfos) {
+        assert(playerInfos.size() != 0);
+        for (int i = 0; i < playerInfos.size(); i++) {
+            PlayerInfo pInfo = playerInfos.get(i);
             if (pInfo.getName().equals(playerName)) {
                 return pInfo;
             }
