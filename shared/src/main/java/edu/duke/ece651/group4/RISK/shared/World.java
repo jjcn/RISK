@@ -45,7 +45,11 @@ public class World implements Serializable {
     /**
      * A mapping of player's name to his/her info.
      */
-    protected Map<String, PlayerInfo> playerInfos;
+    protected List<PlayerInfo> playerInfos;
+    /**
+     * A matrix storing the alliance relationship of players.
+     */
+    protected boolean[][] allianceMatrix;
     /**
      * Battle report
      */
@@ -58,8 +62,14 @@ public class World implements Serializable {
      * Random seed to use with random division of territories.
      */
     protected final Random rnd;
-
+    /**
+     *
+     */
     protected int roomID;
+    /**
+     * A counter that keeps track of current turn number.
+     */
+    protected int nTurn;
 
     /**
      * Construct a default world with an empty graph.
@@ -84,19 +94,25 @@ public class World implements Serializable {
      * @param random is the random seed.
      */
     public World(Graph<Territory> terrs, Random random) {
-        this(terrs, new HashMap<String, PlayerInfo>(), random, "");
+        this(terrs, new ArrayList<PlayerInfo>(), new boolean[0][0], random, "");
     }
 
     protected World(Graph<Territory> terrs,
-                    Map<String, PlayerInfo> playerInfos,
+                    List<PlayerInfo> playerInfos,
+                    boolean[][] allianceMatrix,
                     Random random,
                     String report) {
         this.territories = terrs;
         this.playerInfos = playerInfos;
+        this.allianceMatrix = allianceMatrix;
         this.orderChecker = new OrderChecker();
         this.rnd = random;
         this.report = report;
         this.roomID = 0;
+<<<<<<< HEAD
+=======
+        this.nTurn = 1;
+>>>>>>> alliance
     }
 
     /**
@@ -156,7 +172,7 @@ public class World implements Serializable {
         List<Integer> weightsCopy = territories.cloneWeights();
         boolean[][] adjMatrixCopy = territories.cloneAdjMatrix();
         World cpyWorld = new World(new Graph<>(cpy, weightsCopy, adjMatrixCopy),
-                cloneAllPlayerInfos(), this.rnd,
+                clonePlayerInfos(), this.allianceMatrix, this.rnd,
                 new String(this.report == null ? null : new String(this.report)));
         cpyWorld.setRoomID(this.roomID);
         return cpyWorld;
@@ -165,12 +181,23 @@ public class World implements Serializable {
     /**
      * Creates a deep copy of playerInfos.
      */
-    public Map<String, PlayerInfo> cloneAllPlayerInfos() {
-        Map<String, PlayerInfo> newMap = new HashMap<>();
-        for (String playerName : playerInfos.keySet()) {
-            newMap.put(playerName, playerInfos.get(playerName).clone());
+    protected List<PlayerInfo> clonePlayerInfos() {
+        List<PlayerInfo> newList = new ArrayList<>();
+        for (PlayerInfo pInfo : playerInfos) {
+            newList.add(pInfo.clone());
         }
-        return newMap;
+        return newList;
+    }
+
+    protected void expandAllianceMatrixBy1() {
+        int n = playerInfos.size();
+        boolean[][] newAllianceMatrix = new boolean[n + 1][n + 1];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                newAllianceMatrix[i][j] = allianceMatrix[i][j];
+            }
+        }
+        allianceMatrix = newAllianceMatrix;
     }
 
     /**
@@ -240,7 +267,6 @@ public class World implements Serializable {
         findTerritory(terrName).setRandom(seed);
     }
 
-
     /**
      * Get battle report.
      *
@@ -252,6 +278,18 @@ public class World implements Serializable {
 
     protected void setReport(String report) {
         this.report = report;
+    }
+
+    public int getRoomID(){
+        return this.roomID;
+    }
+
+    public void setRoomID(int id){
+        this.roomID = id;
+    }
+
+    public int getTurnNumber() {
+        return nTurn;
     }
 
     /**
@@ -290,7 +328,7 @@ public class World implements Serializable {
      * @param playerName is the player's name.
      */
     public void registerPlayer(String playerName) {
-        playerInfos.put(playerName, new PlayerInfo(playerName));
+        registerPlayer(new PlayerInfo(playerName));
     }
 
     /**
@@ -299,7 +337,8 @@ public class World implements Serializable {
      * @param pInfo is the player info to register.
      */
     public void registerPlayer(PlayerInfo pInfo) {
-        playerInfos.put(pInfo.getName(), pInfo);
+        playerInfos.add(pInfo);
+        expandAllianceMatrixBy1();
     }
 
     /**
@@ -309,10 +348,12 @@ public class World implements Serializable {
      * @return that player's playerInfo.
      */
     public PlayerInfo getPlayerInfoByName(String playerName) {
-        if (playerInfos.get(playerName) == null) {
-            throw new IllegalArgumentException(String.format(NO_PLAYERINFO_MSG, playerName));
+        for (PlayerInfo pInfo : playerInfos) {
+            if (pInfo.getName().equals(playerName)) {
+                return pInfo;
+            }
         }
-        return playerInfos.get(playerName);
+        throw new IllegalArgumentException(String.format(NO_PLAYERINFO_MSG, playerName));
     }
 
     /**
@@ -321,7 +362,10 @@ public class World implements Serializable {
      * @return names of all players that are still in the game.
      */
     public Set<String> getAllPlayerNames() {
-        return playerInfos.keySet().stream().filter((name -> !checkLost(name))).collect(Collectors.toSet());
+        return playerInfos.stream()
+                .map(playerInfo -> playerInfo.getName())
+                .filter(name -> !checkLost(name))
+                .collect(Collectors.toSet());
     }
 
     /**
@@ -514,7 +558,7 @@ public class World implements Serializable {
         Territory end = findTerritory(order.getDesName());
         Troop troop = order.getActTroop();
         // check error of move order
-        String errorMsg = orderChecker.checkOrder(order, this, getPlayerInfoByName(playerName));
+        String errorMsg = orderChecker.checkOrder(order, this);
         if (errorMsg != null) {
             throw new IllegalArgumentException(errorMsg);
         }
@@ -559,7 +603,7 @@ public class World implements Serializable {
         Territory end = findTerritory(order.getDesName());
         Troop troop = order.getActTroop();
         // check error of attack order
-        String errorMsg = orderChecker.checkOrder(order, this, getPlayerInfoByName(playerName));
+        String errorMsg = orderChecker.checkOrder(order, this);
         if (errorMsg != null) {
             throw new IllegalArgumentException(errorMsg);
         }
@@ -603,25 +647,26 @@ public class World implements Serializable {
 
     /**
      * Try upgrade a player's tech level using an upgrade tech order.
-     * <p>
-     * Consumes tech resource.
      *
      * @param uTechOrder is an upgrade tech order
      * @param playerName is a player's name.
      */
     public void upgradePlayerTechLevelBy(UpgradeTechOrder uTechOrder, String playerName) {
-        consumeResourceOfPlayerTechUpgrade(uTechOrder, playerName);
         getPlayerInfoByName(playerName).upgradeTechLevelBy(uTechOrder.getNLevel());
     }
 
+    /**
+     * Consume tech resource of a tech upgrade.
+     *
+     * @param uTechOrder is an upgrade tech order.
+     * @param playerName is the name of the player who upgrades tech level.
+     */
     public void doUpgradeTechResourceConsumption(UpgradeTechOrder uTechOrder, String playerName) {
         consumeResourceOfPlayerTechUpgrade(uTechOrder, playerName);
     }
 
     /**
      * Try upgrade a player's tech level by 1.
-     * <p>
-     * Consumes tech resource.
      *
      * @param playerName is a player's name.
      */
@@ -630,25 +675,86 @@ public class World implements Serializable {
     }
 
     /**
+<<<<<<< HEAD
      * Two players form an alliance.
      *
      * @param playerName1 is the name of a player.
      * @param playerName2 is the name of another player.
+=======
+     * Get the names of all alliances of a player.
+     *
+     * @param playerName is the name of the player to find alliance.
+     * @return a set of names of all alliances of a player.
+>>>>>>> alliance
      */
-    public void formAlliance(String playerName1, String playerName2) {
-        playerInfos.get(playerName1).formAlliance(playerName2);
-        playerInfos.get(playerName2).formAlliance(playerName1);
+    public Set<String> getAllianceNames(String playerName) {
+        Set<String> ans = new HashSet<>();
+        int playerIndex = playerInfos.indexOf(getPlayerInfoByName(playerName));
+        for (int i = 0; i < playerInfos.size(); i++) {
+            if (allianceMatrix[playerIndex][i] == true) {
+                ans.add(playerInfos.get(i).getName());
+            }
+        }
+        return ans;
     }
 
     /**
+<<<<<<< HEAD
      * Two players break from an alliance.
      *
      * @param playerName1 is the name of a player.
      * @param playerName2 is the name of another player.
+=======
+     * Player 1 tries forming alliance with player 2.
+     * Note: Player 2 has to form alliance with player 1 ON THE SAME TURN
+     * so they can form an alliance successfully.
+     *
+     * @param p1Name is the name of player 1.
+     * @param p2Name is the name of player 2.
+>>>>>>> alliance
      */
-    public void breakAlliance(String playerName1, String playerName2) {
-        playerInfos.get(playerName1).breakAlliance(playerName2);
-        playerInfos.get(playerName2).breakAlliance(playerName1);
+    public void tryFormAlliance(String p1Name, String p2Name) {
+        int p1Index = playerInfos.indexOf(getPlayerInfoByName(p1Name));
+        int p2Index = playerInfos.indexOf(getPlayerInfoByName(p2Name));
+        allianceMatrix[p1Index][p2Index] = true;
+    }
+
+    /**
+     * Check if an alliance is successfully formed between two players.
+     *
+     * For an alliance to form, two players has to send to each other form alliance ON THE SAME TURN
+     */
+    protected void checkIfAllianceSuccess() {
+        int n = playerInfos.size();
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (allianceMatrix[i][j] == true) {
+                    if (allianceMatrix[j][i] == false) {
+                        allianceMatrix[i][j] = false;
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Check if alliances are successfully formed.
+     */
+    public void doCheckIfAllianceSuccess() {
+        checkIfAllianceSuccess();
+    }
+
+    /**
+     * Two players break an alliance.
+     *
+     * @param p1Name is the name of player 1.
+     * @param p2Name is the name of player 2.
+     */
+    public void breakAlliance(String p1Name, String p2Name) {
+        int p1Index = playerInfos.indexOf(getPlayerInfoByName(p1Name));
+        int p2Index = playerInfos.indexOf(getPlayerInfoByName(p2Name));
+        allianceMatrix[p1Index][p2Index] = false;
+        allianceMatrix[p2Index][p1Index] = false;
     }
 
     /**
@@ -657,6 +763,9 @@ public class World implements Serializable {
      * @return A summary of battle info on all territories.
      */
     public String doAllBattles() {
+        // turn number + 1
+        nTurn++;
+        // update report
         StringBuilder ans = new StringBuilder();
         for (Territory terr : territories.getVertices()) {
             ans.append(terr.doBattles());
@@ -670,7 +779,7 @@ public class World implements Serializable {
      * territories he owns.
      */
     public void allPlayersGainResources() {
-        for (PlayerInfo pInfo : playerInfos.values()) {
+        for (PlayerInfo pInfo : playerInfos) {
             String playerName = pInfo.getName();
             for (Territory terr : getTerritoriesOfPlayer(playerName)) {
                 pInfo.gainFood(terr.getFoodSpeed());
@@ -854,7 +963,7 @@ public class World implements Serializable {
             ans.append(terr.toString());
             ans.append("\n");
         }
-        for (PlayerInfo pInfo : playerInfos.values()) {
+        for (PlayerInfo pInfo : playerInfos) {
             ans.append(pInfo.toString());
             ans.append("\n");
         }
@@ -866,6 +975,7 @@ public class World implements Serializable {
         return toString().hashCode();
     }
 
+<<<<<<< HEAD
     public void setRoomID(int id) {
         this.roomID = id;
     }
@@ -874,4 +984,6 @@ public class World implements Serializable {
         return this.roomID;
     }
 
+=======
+>>>>>>> alliance
 }

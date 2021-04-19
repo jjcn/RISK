@@ -168,6 +168,13 @@ public class Graph<T> implements Serializable {
      */
     public void addVertex(T vertex) {
         // enlarge the adjacency matrix
+        expandAdjMatrixBy1();
+        // add to vertices
+        vertices.add(vertex);
+        weights.add(0);
+    }
+
+    protected void expandAdjMatrixBy1() {
         int n = vertices.size();
         boolean[][] newAdjMatrix = new boolean[n + 1][n + 1];
         for (int i = 0; i < n; i++) {
@@ -176,9 +183,6 @@ public class Graph<T> implements Serializable {
             }
         }
         adjMatrix = newAdjMatrix;
-        // add to vertices
-        vertices.add(vertex);
-        weights.add(0);
     }
 
     /**
