@@ -7,14 +7,14 @@ import static edu.duke.ece651.group4.RISK.shared.Constant.*;
 public class Archer extends Soldier {
 
     public Archer(int level) {
-        this(new Random(),level);
+        this(new Random(), level);
     }
 
-    public Archer(Random rand,int level) {
+    public Archer(Random rand, int level) {
         super(rand);
-        this.level=level;
-        this.jobName=ARCHER_NAMES.get(level);
-        this.range=ARCHER_RANGE;
+        this.level = level;
+        this.jobName = ARCHER_NAMES.get(level);
+        this.range = ARCHER_RANGE;
 
     }
 
@@ -29,7 +29,6 @@ public class Archer extends Soldier {
         this.jobName = newJob;
         this.level = ARCHER_NAMES.indexOf(newJob);
     }
-
 
 
     @Override
