@@ -522,6 +522,7 @@ public class RISKApplication extends Application {
     }
 
     public static void requireAlliance(String allyName) {
+        Log.i(TAG,LOG_FUNC_RUN+"send name: "+allyName);
         Order allyOrder = new AllianceOrder(userName, allyName);
         send(allyOrder);
     }
@@ -541,8 +542,8 @@ public class RISKApplication extends Application {
 
     }
 
-    public static ArrayList<String> getAllPlayersName() {
-        ArrayList<String> playerNames = new ArrayList<>();
+    public static Set<String> getAllPlayersName() {
+        Set<String> playerNames = theWorld.getAllPlayerNames();
         return playerNames;
     }
 }

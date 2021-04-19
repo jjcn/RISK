@@ -1,6 +1,8 @@
 package edu.duke.ece651.group4.RISK.client.activity;
 
+import android.app.Activity;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,9 +11,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import edu.duke.ece651.group4.RISK.client.R;
+import edu.duke.ece651.group4.RISK.client.fragment.SimpleSelector;
 import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
 import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
 import edu.duke.ece651.group4.RISK.client.utility.WaitDialog;
@@ -65,6 +69,7 @@ public class TurnActivity extends AppCompatActivity {
         actionType = UI_MOVE; // default: move
         isWatch = false;
         waitDG = new WaitDialog(TurnActivity.this);
+        c = null;
 
         impUI();
         updateAfterTurn();
@@ -197,10 +202,9 @@ public class TurnActivity extends AppCompatActivity {
                     }
                     break;
                 case UI_ALLIANCE:
-                    String choice = showSelector(TurnActivity.this, CHOOSE_USER_INSTR, getMyTerrNames());
-                    Log.i(TAG, LOG_FUNC_RUN + "get choice: " + choice);
-                    if (choice != "") {
-                        requireAlliance(choice);
+                    showSelectTerr();
+                    if(c != null){
+                        Log.i(TAG,LOG_FUNC_RUN+"choose: "+c);
                     }
                     break;
                 default:
@@ -209,6 +213,40 @@ public class TurnActivity extends AppCompatActivity {
             commitBT.setClickable(true);
             updateAfterTurn();
         });
+    }
+
+
+    private String c;
+
+    private void showSelectTerr() {
+        Context context = TurnActivity.this;
+        ArrayList<String> choices = new ArrayList<>();
+        for(String playerName: getAllPlayersName()){
+//            if(!getUserName().equals(playerName)){
+                choices.add(playerName);
+//            }
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(context, R.layout.item_choice,
+                choices);
+
+        String[] chosen = new String[1];
+        builder.setTitle(CHOOSE_USER_INSTR)
+                .setSingleChoiceItems(adapter, 0, (dialog, which) -> {
+                    chosen[0] = choices.get(which);
+                    showByToast((Activity) context,"You have choose: "+chosen[0]);
+                })
+                .setPositiveButton("Confirm", (dialog, which)->{
+                    c = chosen[0];
+                    requireAlliance(c);
+                    dialog.dismiss();
+                })
+                .setNegativeButton("Cancel", (dialog, which)->{
+                    c = null;
+                    dialog.dismiss();
+                });
+        Log.i(Context.class.getSimpleName(),LOG_FUNC_RUN+"show selector");
+        builder.show();
     }
 
     private void showConfirmDialog() {
