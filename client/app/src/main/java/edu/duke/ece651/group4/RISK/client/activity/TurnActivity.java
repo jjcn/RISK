@@ -207,7 +207,7 @@ public class TurnActivity extends AppCompatActivity {
                     }
                     break;
                 case UI_ALLIANCE:
-                    String choice = showSelector(TurnActivity.this, String.valueOf(R.string.CHOOSE_USER_INSTR),getMyTerrNames());
+                    String choice = showSelector(TurnActivity.this, CHOOSE_USER_INSTR,getMyTerrNames());
                     Log.i(TAG,LOG_FUNC_RUN+"get choice: "+choice);
                     if(choice != "") {
                         requireAlliance(choice);
@@ -262,7 +262,7 @@ public class TurnActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(String errMsg) {
-                Log.e(TAG, errMsg);
+                showByToast(TurnActivity.this,errMsg);
             }
         });
     }

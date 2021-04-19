@@ -107,7 +107,6 @@ public class RoomActivity extends AppCompatActivity {
                             Intent gameIntent = new Intent(RoomActivity.this, TurnActivity.class);
                             showByToast(RoomActivity.this, SUCCESS_START);
                             startActivity(gameIntent);
-                            finish();
                         }
                     });
                 }
@@ -179,6 +178,5 @@ public class RoomActivity extends AppCompatActivity {
         showByToast(RoomActivity.this, SUCCESS_START);
         Intent placeIntent = new Intent(RoomActivity.this, PlaceActivity.class);
         startActivity(placeIntent);
-        finish();
     }
 }

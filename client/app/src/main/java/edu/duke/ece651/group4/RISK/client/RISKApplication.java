@@ -11,10 +11,7 @@ import edu.duke.ece651.group4.RISK.shared.message.GameMessage;
 import edu.duke.ece651.group4.RISK.shared.message.LogMessage;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import static edu.duke.ece651.group4.RISK.client.Constant.*;
 import static edu.duke.ece651.group4.RISK.shared.Constant.*;
@@ -52,6 +49,10 @@ public class RISKApplication extends Application {
         Log.i(TAG, LOG_CREATE_SUCCESS);
     }
 
+
+    public static void setWorld(World theWorld) {
+        RISKApplication.theWorld = theWorld;
+    }
 
     /**
      * @return user name
@@ -102,6 +103,20 @@ public class RISKApplication extends Application {
         return UNIT_NAMES;
     }
 
+    public static String getAllianceName(){
+        Set<String> allyNames = getWorld().getPlayerInfoByName(getUserName()).getAllianceNames();
+        if(allyNames.isEmpty()){
+            return NO_ALLY;
+        }
+        StringBuilder names = new StringBuilder();
+        String sep = "";
+        for (String allis: allyNames){
+            names.append(sep+allis);
+            sep = ", ";
+        }
+        return names.toString();
+    }
+
     /**
      * @return list of all my territory
      */
@@ -145,6 +160,7 @@ public class RISKApplication extends Application {
         PlayerInfo info = theWorld.getPlayerInfoByName(userName);
         StringBuilder result = new StringBuilder();
         result.append("Player name:  " + userName + "\n");
+        result.append("Alliance: "+getAllianceName());
         result.append("Food Resource: " + info.getFoodQuantity() + "\n");
         result.append("Tech Resource: " + info.getTechQuantity() + "\n");
         result.append("Tech Level: " + info.getTechLevel() + "\n");
@@ -455,20 +471,18 @@ public class RISKApplication extends Application {
     /**
      * Used to send an tech level upgrade order
      */
-    public static String doOneUpgrade(onResultListener listener) {
-
+    public static void doOneUpgrade(onResultListener listener) {
         if(updatedTech){
-            return "You can only upgrade tech once in a turn.";
+            listener.onFailure("You can only upgrade once.");
         }
         UpgradeTechOrder techOrder = new UpgradeTechOrder(1);
         try {
             theWorld.doUpgradeTechResourceConsumption(techOrder,userName);
             send(techOrder);
         } catch (Exception e) {
-            return e.getMessage();
+            listener.onFailure(e.getMessage());
         }
         updatedTech=true;
-        return null;
     }
 
     /**
@@ -499,7 +513,6 @@ public class RISKApplication extends Application {
         Order allyOrder = new AllianceOrder(userName,allyName);
         send(allyOrder);
     }
-
 
    public static int getRoomId(){
         return theWorld.getRoomID();

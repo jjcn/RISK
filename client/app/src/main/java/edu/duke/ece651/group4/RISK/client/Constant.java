@@ -30,6 +30,8 @@ public class Constant {
     public static final String STAY_INSTR = "Do you want to stay in this room?";
     public static final String CONFIRM = "Do you want to finish this turn?";
     public static final String CONFIRM_ACTION = "(You cannot perform further action this turn if choose yes.)";
+    public static final String CHOOSE_USER_INSTR = "Please choose the user you want to ally with";
+    public static final String NO_ALLY = "None";
 
     public static final String UI_MOVE = "Move";
     public static final String UI_DONE = "Done";
@@ -44,7 +46,6 @@ public class Constant {
     public static final String WORLD_INFO_ADP= "worldInfoAdapter";
 
     //**************check receive type***************//
-    public static final String WORLD = "world";
     public static final String ROOMS = "roomInfo";
     public static final String NAME = "name";
     public static final String MESSAGE = "message_menu";

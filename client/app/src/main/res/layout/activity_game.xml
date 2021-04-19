@@ -4,7 +4,11 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/fragmentMargin"
+        android:layout_marginEnd="@dimen/fragmentMargin"
+        android:layout_marginTop="@dimen/fragmentMargin"
+        android:layout_marginBottom="@dimen/fragmentMargin">
 
     <androidx.constraintlayout.widget.Guideline
             android:id="@+id/vguide1"
@@ -44,10 +48,23 @@
               android:scrollbars="vertical"
     />
 
+    <Button android:id="@+id/ally"
+            android:text="@string/ALLY"
+            android:textColor="@color/gray_light"
+            android:background="@drawable/button_style"
+            android:layout_width="wrap_content" android:layout_height="35dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/upgradeTech"
+            app:layout_constraintStart_toStartOf="@id/vguide1"
+            app:layout_constraintEnd_toEndOf="parent"
+    />
+
     <Button android:id="@+id/upgradeTech"
             android:text="@string/UPTECH"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
+            android:background="@drawable/button_style"
+            android:textColor="@color/gray_light"
+            android:layout_width="wrap_content" android:layout_height="35dp"
+            app:layout_constraintTop_toBottomOf="@id/ally"
             app:layout_constraintBottom_toBottomOf="@id/hguide1"
             app:layout_constraintStart_toStartOf="@id/vguide1"
             app:layout_constraintEnd_toEndOf="parent"
@@ -75,8 +92,18 @@
     >
     </ListView>
 
+    <FrameLayout android:layout_width="0dp" android:layout_height="0dp"
+                 android:id="@+id/fragment_myTerr_container"
+                 app:layout_constraintTop_toTopOf="@id/hguide2"
+                 app:layout_constraintBottom_toBottomOf="@id/hguide3"
+                 app:layout_constraintStart_toStartOf="parent"
+                 app:layout_constraintEnd_toEndOf="@id/vguide1"
+    >
+
+    </FrameLayout>
+
     <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/fragment_myTerr_container"
+            android:id="@+id/myTerr_RC"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintTop_toTopOf="@id/hguide2"
@@ -97,11 +124,25 @@
 
     <Button android:id="@+id/done"
             android:text="@string/DONE"
+            android:textColor="@color/gray_light"
             android:layout_width="wrap_content" android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="@id/hguide3"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@id/vguide1"
             app:layout_constraintEnd_toEndOf="parent"
+            android:layout_margin="@dimen/fragmentMargin"
+            android:background="@drawable/button_style"
     />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/chatButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_chat_24"
+            android:layout_margin="@dimen/fragmentMargin"
+            android:clickable="true"
+            app:layout_constraintBottom_toBottomOf="@id/hguide3"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:backgroundTint="@color/colorPrimaryDark"
+    />
 </androidx.constraintlayout.widget.ConstraintLayout>
