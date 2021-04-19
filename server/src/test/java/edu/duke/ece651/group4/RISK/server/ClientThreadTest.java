@@ -212,61 +212,61 @@ class ClientThreadTest {
         }
         return placeOrders;
     }
-//    @Test
-//    public void test_wholeProcess(){
-//        List<User> users =  createUsers(2);
-//        List<Game> games = createGames(1, 2);
-//        new Thread(() -> {
-//            try {
-//                Socket socket = hostSocket.accept();
-//                this.theClient = new Client(socket);
-//                ClientThread ct = new ClientThread(games, users,null, new AtomicInteger(0));
-//                ct.start();
-//            } catch (IOException ignored) {
-//            }
-//        }).start();
-//
-//        new Thread(() -> {
-//            try {
-//                Client theClient = new Client(hostname, PORT);
-//                simulateOneClientCreate(users.get(0),theClient);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }).start();
-//
-//        new Thread(() -> {
-//            try {
-//                Client theClient = new Client(hostname, PORT);
-////                synchronized (games) {
-////                    games.notify();
-////                }
-//                simulateOneClientCreate(users.get(0),theClient);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }).start();
-//
-//        new Thread(() -> {
-//            try {
-////                synchronized (games){
-////                    try {
-////                        games.wait();
-////                    } catch (InterruptedException e) {
-////                        e.printStackTrace();
-////                    }
-////                }
-//                try {
-//                    TimeUnit.SECONDS.sleep(5);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
+    @Test
+    public void test_wholeProcess(){
+        List<User> users =  createUsers(2);
+        List<Game> games = createGames(1, 2);
+        new Thread(() -> {
+            try {
+                Socket socket = hostSocket.accept();
+                this.theClient = new Client(socket);
+                ClientThread ct = new ClientThread(games, users,null, new AtomicInteger(0));
+                ct.start();
+            } catch (IOException ignored) {
+            }
+        }).start();
+
+        new Thread(() -> {
+            try {
+                Client theClient = new Client(hostname, PORT);
+                simulateOneClientCreate(users.get(0),theClient);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+
+        new Thread(() -> {
+            try {
+                Client theClient = new Client(hostname, PORT);
+//                synchronized (games) {
+//                    games.notify();
 //                }
-//                Client theClient = new Client(hostname, PORT);
-//                simulateOneClientJoin(users.get(1),theClient);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }).start();
-//    }
+                simulateOneClientCreate(users.get(0),theClient);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+
+        new Thread(() -> {
+            try {
+//                synchronized (games){
+//                    try {
+//                        games.wait();
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+                try {
+                    TimeUnit.SECONDS.sleep(5);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Client theClient = new Client(hostname, PORT);
+                simulateOneClientJoin(users.get(1),theClient);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
 
 }
