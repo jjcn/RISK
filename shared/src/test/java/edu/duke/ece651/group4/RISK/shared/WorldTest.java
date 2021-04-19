@@ -494,7 +494,7 @@ public class WorldTest {
      * @param set2
      */
     protected void assertSetEquals(Set<String> set1, Set<String> set2) {
-        assertTrue(set1.size() == set2.size());
+        assertEquals(set1.size(), set2.size());
         assertTrue(set1.containsAll(set2));
         assertTrue(set2.containsAll(set1));
     }
@@ -502,9 +502,10 @@ public class WorldTest {
     @Test
     public void testTryFormAllianceUnilateral() {
         World world = createWorldAndRegister(troopsSeparated);
-        // only red to blue
+        // only red to blue, green to blue
         world.tryFormAlliance("red", "blue");
         world.tryFormAlliance("green", "blue");
+        // test before resolving alliance relationships
         assertSetEquals(new HashSet<String>(Arrays.asList("blue")), world.getAllianceNames("red"));
         assertSetEquals(new HashSet<String>(), world.getAllianceNames("blue"));
         assertSetEquals(new HashSet<String>(Arrays.asList("blue")), world.getAllianceNames("green"));
@@ -524,7 +525,10 @@ public class WorldTest {
         world.tryFormAlliance("blue", "red");
         world.tryFormAlliance("red", "green");
         world.tryFormAlliance("green", "red");
-        Set<String> redAllies = new HashSet<String>(Arrays.asList("green, blue"));
+        Set<String> redAllies = new HashSet<String>();
+        redAllies.add("blue");
+        redAllies.add("green");
+        // test before resolving alliance relationships
         assertSetEquals(redAllies, world.getAllianceNames("red"));
         assertSetEquals(new HashSet<String>(Arrays.asList("red")), world.getAllianceNames("blue"));
         assertSetEquals(new HashSet<String>(Arrays.asList("red")), world.getAllianceNames("green"));
