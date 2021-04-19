@@ -40,6 +40,12 @@ public class HostApp implements Runnable {
         this(s,false);
     }
 
+    protected void addTestUsers(){
+        users.add(new User(0,"xs","1"));
+        users.add(new User(1,"ws","1"));
+        users.add(new User(2,"jin","1"));
+        users.add(new User(3,"sj","1"));
+    }
 
     /*
      * This setup connection between server and clients
@@ -51,6 +57,7 @@ public class HostApp implements Runnable {
      *  */
 
     public void acceptConnection(){
+        addTestUsers();
         while(true) {
             try {
                 Socket s = hostSocket.accept();
