@@ -13,10 +13,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import edu.duke.ece651.group4.RISK.client.R;
-import edu.duke.ece651.group4.RISK.client.utility.WaitDialog;
 import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
 import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
-import edu.duke.ece651.group4.RISK.shared.BasicOrder;
+import edu.duke.ece651.group4.RISK.client.utility.WaitDialog;
 import edu.duke.ece651.group4.RISK.shared.World;
 
 import java.util.ArrayList;
@@ -207,8 +206,11 @@ public class TurnActivity extends AppCompatActivity {
                     }
                     break;
                 case UI_ALLIANCE:
-                    String choice = showSelector(TurnActivity.this, getMyTerrNames());
-//                    requireAlliance(choice);
+                    String choice = showSelector(TurnActivity.this, CHOOSE_USER_INSTR,getMyTerrNames());
+                    Log.i(TAG,LOG_FUNC_RUN+"get choice: "+choice);
+                    if(choice != "") {
+                        requireAlliance(choice);
+                    }
                     break;
                 default:
                     throw new IllegalStateException("Unexpected value: " + actionType);
@@ -259,7 +261,7 @@ public class TurnActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(String errMsg) {
-                Log.e(TAG, errMsg);
+                showByToast(TurnActivity.this,errMsg);
             }
         });
     }
@@ -269,7 +271,7 @@ public class TurnActivity extends AppCompatActivity {
             waitDG.show();
         }
         commitBT.setClickable(false);
-        doDone(new BasicOrder(null, null, null, 'D'), new onReceiveListener() {
+        doDone(new onReceiveListener() {
             @Override
             public void onSuccess(Object o) {
                 World world = (World) o;

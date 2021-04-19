@@ -11,6 +11,7 @@ import com.stfalcon.chatkit.dialogs.DialogsList;
 import com.stfalcon.chatkit.dialogs.DialogsListAdapter;
 
 import edu.duke.ece651.group4.RISK.client.R;
+import edu.duke.ece651.group4.RISK.client.RISKApplication;
 import edu.duke.ece651.group4.RISK.client.model.ChatDialog;
 import edu.duke.ece651.group4.RISK.client.model.ChatMessage;
 
@@ -19,7 +20,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
-import static edu.duke.ece651.group4.RISK.client.RISKApplication.getAllplayerNames;
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.getCurrentRoomSize;
 
 /**
@@ -53,7 +53,7 @@ public class ChatActivity extends AppCompatActivity implements DialogsListAdapte
     // TODO: chats: 1v1 & whole world
     private List<ChatDialog> getChats() {
         ArrayList<ChatDialog> chats = new ArrayList<>();
-        ArrayList<String> allPlayerNames = getAllplayerNames();
+        ArrayList<String> allPlayerNames = RISKApplication.getAllPlayersName();
         /**
          * All players' chat room, id = 0
          */

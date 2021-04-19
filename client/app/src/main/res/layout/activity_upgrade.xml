@@ -16,35 +16,35 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.6" android:gravity="center_horizontal"/>
+            app:layout_constraintGuide_percent="0.7"/>
 
     <androidx.constraintlayout.widget.Guideline
             android:id="@+id/hguide1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.4"/>
+            app:layout_constraintGuide_percent="0.45"/>
 
     <androidx.constraintlayout.widget.Guideline
             android:id="@+id/hguide2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.4"/>
+            app:layout_constraintGuide_percent="0.5"/>
 
     <androidx.constraintlayout.widget.Guideline
             android:id="@+id/hguide3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.5"/>
+            app:layout_constraintGuide_percent="0.55"/>
 
     <androidx.constraintlayout.widget.Guideline
             android:id="@+id/hguide4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.6"/>
+            app:layout_constraintGuide_percent="0.65"/>
     <androidx.constraintlayout.widget.Guideline
             android:id="@+id/hguide5"
             android:layout_width="wrap_content"
@@ -52,15 +52,16 @@
             android:orientation="horizontal"
             app:layout_constraintGuide_percent="0.7"/>
 
-    <ImageView
-            android:id="@+id/world_image_view"
+    <fragment
             android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:name="edu.duke.ece651.group4.RISK.client.fragment.WorldFragment"
+            android:id="@+id/worldFG"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@id/hguide1"
-            app:srcCompat="@drawable/terrs4"
-            android:layout_height="0dp"/>
+    />
 
     <TextView
             android:id="@+id/terr_prompt"
@@ -169,7 +170,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/inputNum"
         />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
