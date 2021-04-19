@@ -67,9 +67,10 @@ public class TurnActivity extends AppCompatActivity {
         actionType = UI_MOVE; // default: move
         isWatch = false;
         waitDG = new WaitDialog(TurnActivity.this);
-        Log.i(TAG, LOG_CREATE_SUCCESS + "start");
+
         impUI();
         updateAfterTurn();
+        Log.i(TAG,LOG_CREATE_SUCCESS);
     }
 
     /**
@@ -120,8 +121,6 @@ public class TurnActivity extends AppCompatActivity {
         userInfoRC = findViewById(R.id.playerInfo);
         noticeInfoRC = findViewById(R.id.noticeInfo);
         mapIV = findViewById(R.id.world_image_view);
-        refreshGS = findViewById(R.id.refreshInfo);
-        Log.i(TAG, LOG_FUNC_RUN + refreshGS);
 
         mapIV.setImageResource(MAPS.get(getCurrentRoomSize()));
         impActionSpinner();
@@ -129,7 +128,6 @@ public class TurnActivity extends AppCompatActivity {
         impNoticeInfoRC();
         impUserInfoRC();
         impCommitBT();
-        impSwipeFresh();
     }
 
     private void impUserInfoRC() {
@@ -137,11 +135,6 @@ public class TurnActivity extends AppCompatActivity {
         userInfo.add(getPlayerInfo());
         userInfoAdapter = new ArrayAdapter<>(TurnActivity.this, R.layout.item_choice, userInfo);
         userInfoRC.setAdapter(userInfoAdapter);
-    }
-
-    private void impSwipeFresh() {
-        Log.i(TAG, LOG_FUNC_RUN + "start swipe fresh");
-        refreshGS.setOnRefreshListener(this::updateAfterTurn);
     }
 
     private void impWorldInfoRC() {

@@ -48,7 +48,9 @@ public class RoomActivity extends AppCompatActivity {
         Log.i(TAG, LOG_CREATE_SUCCESS);
     }
 
-    // Back button: normal return to login page and kill current one
+    /**
+     * Back button: normal return to login page and kill current one
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -86,6 +88,11 @@ public class RoomActivity extends AppCompatActivity {
         refreshGS.setRefreshing(false);
     }
 
+    /**
+     * Listen on which room user choose to join. Receive result from server: null if success
+     * fail if room is full and player is not already in the room.
+     * If join successfully: call waitGameStart to receive World form server.
+     */
     private void impRoomList() {
         roomsAdapt = new RoomAdapter();
         roomsAdapt.setItemClickListener(position -> { // user click on one item in the room list.
@@ -104,7 +111,7 @@ public class RoomActivity extends AppCompatActivity {
                         @Override
                         public void onBack() {
                             waitDG.cancel();
-                            Intent gameIntent = new Intent(RoomActivity.this, TurnActivity.class);
+                            Intent gameIntent = new Intent(RoomActivity.this, GameActivity.class);
                             showByToast(RoomActivity.this, SUCCESS_START);
                             startActivity(gameIntent);
                         }
@@ -129,14 +136,13 @@ public class RoomActivity extends AppCompatActivity {
             if (SINGLE_TEST) {
                 numUser = TEST_NUM_USER;
             }
-            Log.i(TAG, LOG_FUNC_RUN + "before create game.");
         });
     }
 
     private void chooseNumUser() {
         AlertDialog.Builder builder = new AlertDialog.Builder(RoomActivity.this);
         builder.setTitle(CHOOSE_MAP);
-        final String[] numbers = new String[]{"2", "3", "4", "5"};
+        final String[] numbers = new String[]{"1", "2", "3", "4", "5"};
         builder.setItems(numbers, (dialog, which) -> {
             numUser = Integer.parseInt(numbers[which]);
             // numUser = 1;
