@@ -38,10 +38,6 @@ public class PlayerInfo implements Serializable {
      */
     protected FoodResource foodResource;
     protected TechResource techResource;
-    /**
-     * A list of names of this player's allies.
-     */
-    protected Set<String> allianceNames;
 
     protected PlayerInfo(String playerName, TechLevelInfo techLevelInfo,
                          FoodResource foodResource, TechResource techResource,
@@ -50,7 +46,6 @@ public class PlayerInfo implements Serializable {
         this.techLevelInfo = techLevelInfo;
         this.foodResource = foodResource;
         this.techResource = techResource;
-        this.allianceNames = allianceNames;
     }
 
     /**
@@ -84,7 +79,6 @@ public class PlayerInfo implements Serializable {
 
     public PlayerInfo clone() {
         Set<String> allianceNamesCopy = new HashSet<>();
-        allianceNamesCopy.addAll(allianceNames);
         return new PlayerInfo(playerName,
                 new TechLevelInfo(techLevelInfo.getTechLevel()),
                 new FoodResource(foodResource.getQuantity()),
@@ -106,10 +100,6 @@ public class PlayerInfo implements Serializable {
 
     public int getTechQuantity() {
         return techResource.getQuantity();
-    }
-
-    public Set<String> getAllianceNames() {
-        return allianceNames;
     }
 
     /**
@@ -198,26 +188,6 @@ public class PlayerInfo implements Serializable {
         int consumption = TechLevelInfo.calcConsumption(techLevel, techLevelAfterMod);
         checkResourceConsumptionOfTechUpgrade(consumption);
         consumeTech(consumption);
-    }
-
-    /**
-     * Form alliance with another player.
-     * @param otherName is the name of another player.
-     */
-    public void formAlliance(String otherName) {
-        if(!allianceNames.add(otherName)) {
-            throw new IllegalArgumentException(String.format(CANT_FORM_ALLIANCE_MSG, playerName, otherName));
-        }
-    }
-
-    /**
-     * Break alliance with another player.
-     * @param otherName is the name of another player.
-     */
-    public void breakAlliance(String otherName) {
-        if(!allianceNames.remove(otherName)) {
-            throw new IllegalArgumentException(String.format(CANT_FORM_ALLIANCE_MSG, playerName, otherName));
-        }
     }
 
     @Override

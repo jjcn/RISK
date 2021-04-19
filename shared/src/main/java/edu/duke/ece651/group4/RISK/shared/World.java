@@ -45,7 +45,11 @@ public class World implements Serializable {
     /**
      * A mapping of player's name to his/her info.
      */
-    protected Map<String, PlayerInfo> playerInfos;
+    protected List<PlayerInfo> playerInfos;
+    /**
+     * A matrix storing the alliance relationship of players.
+     */
+    protected boolean[][] allianceMatrix;
     /**
      * Battle report
      */
@@ -82,11 +86,11 @@ public class World implements Serializable {
      * @param random is the random seed.
      */
     public World(Graph<Territory> terrs, Random random) {
-        this(terrs, new HashMap<String, PlayerInfo>(), random, "");
+        this(terrs, new ArrayList<PlayerInfo>(), random, "");
     }
 
     protected World(Graph<Territory> terrs,
-                    Map<String, PlayerInfo> playerInfos,
+                    List<PlayerInfo> playerInfos,
                     Random random,
                     String report) {
         this.territories = terrs;
@@ -153,7 +157,7 @@ public class World implements Serializable {
         List<Integer> weightsCopy = territories.cloneWeights();
         boolean[][] adjMatrixCopy = territories.cloneAdjMatrix();
         World cpyWorld = new World(new Graph<>(cpy, weightsCopy, adjMatrixCopy),
-                cloneAllPlayerInfos(), this.rnd,
+                clonePlayerInfos(), this.rnd,
                 new String(this.report == null ? null : new String(this.report)));
 
         return cpyWorld;
@@ -162,12 +166,12 @@ public class World implements Serializable {
     /**
      * Creates a deep copy of playerInfos.
      */
-    public Map<String, PlayerInfo> cloneAllPlayerInfos() {
-        Map<String, PlayerInfo> newMap = new HashMap<>();
-        for (String playerName : playerInfos.keySet()) {
-            newMap.put(playerName, playerInfos.get(playerName).clone());
+    protected List<PlayerInfo> clonePlayerInfos() {
+        List<PlayerInfo> newList = new ArrayList<>();
+        for (PlayerInfo pInfo : playerInfos) {
+            newList.add(pInfo.clone());
         }
-        return newMap;
+        return newList;
     }
 
     /**
@@ -287,7 +291,7 @@ public class World implements Serializable {
      * @param playerName is the player's name.
      */
     public void registerPlayer(String playerName) {
-        playerInfos.put(playerName, new PlayerInfo(playerName));
+        registerPlayer(new PlayerInfo(playerName));
     }
 
     /**
@@ -296,7 +300,7 @@ public class World implements Serializable {
      * @param pInfo is the player info to register.
      */
     public void registerPlayer(PlayerInfo pInfo) {
-        playerInfos.put(pInfo.getName(), pInfo);
+        playerInfos.add(pInfo);
     }
 
     /**
@@ -306,10 +310,12 @@ public class World implements Serializable {
      * @return that player's playerInfo.
      */
     public PlayerInfo getPlayerInfoByName(String playerName) {
-        if (playerInfos.get(playerName) == null) {
-            throw new IllegalArgumentException(String.format(NO_PLAYERINFO_MSG, playerName));
+        for (PlayerInfo pInfo : playerInfos) {
+            if (pInfo.getName().equals(playerName)) {
+                return pInfo;
+            }
         }
-        return playerInfos.get(playerName);
+        throw new IllegalArgumentException(String.format(NO_PLAYERINFO_MSG, playerName));
     }
 
     /**
@@ -317,7 +323,10 @@ public class World implements Serializable {
      * @return names of all players that are still in the game.
      */
     public Set<String> getAllPlayerNames() {
-        return playerInfos.keySet().stream().filter((name -> !checkLost(name))).collect(Collectors.toSet());
+        return playerInfos.stream()
+                .map(playerInfo -> playerInfo.getName())
+                .filter(name -> !checkLost(name))
+                .collect(Collectors.toSet());
     }
 
     /**
@@ -617,25 +626,26 @@ public class World implements Serializable {
         upgradePlayerTechLevelBy(new UpgradeTechOrder(1), playerName);
     }
 
-    /**
-     * Two players form an alliance.
-     * @param playerName1 is the name of a player.
-     * @param playerName2 is the name of another player.
-     */
-    public void formAlliance(String playerName1, String playerName2) {
-        playerInfos.get(playerName1).formAlliance(playerName2);
-        playerInfos.get(playerName2).formAlliance(playerName1);
-    }
-
-    /**
-     * Two players break from an alliance.
-     * @param playerName1 is the name of a player.
-     * @param playerName2 is the name of another player.
-     */
-    public void breakAlliance(String playerName1, String playerName2) {
-        playerInfos.get(playerName1).breakAlliance(playerName2);
-        playerInfos.get(playerName2).breakAlliance(playerName1);
-    }
+    //TODO: form and break alliance functions
+//    /**
+//     * Two players form an alliance.
+//     * @param playerName1 is the name of a player.
+//     * @param playerName2 is the name of another player.
+//     */
+//    public void formAlliance(String playerName1, String playerName2) {
+//        playerInfos.get(playerName1).formAlliance(playerName2);
+//        playerInfos.get(playerName2).formAlliance(playerName1);
+//    }
+//
+//    /**
+//     * Two players break from an alliance.
+//     * @param playerName1 is the name of a player.
+//     * @param playerName2 is the name of another player.
+//     */
+//    public void breakAlliance(String playerName1, String playerName2) {
+//        playerInfos.get(playerName1).breakAlliance(playerName2);
+//        playerInfos.get(playerName2).breakAlliance(playerName1);
+//    }
 
     /**
      * Iterate over all territories around the world, and do battles on them.
@@ -656,7 +666,7 @@ public class World implements Serializable {
      * territories he owns.
      */
     public void allPlayersGainResources() {
-        for (PlayerInfo pInfo : playerInfos.values()) {
+        for (PlayerInfo pInfo : playerInfos) {
             String playerName = pInfo.getName();
             for (Territory terr : getTerritoriesOfPlayer(playerName)) {
                 pInfo.gainFood(terr.getFoodSpeed());
@@ -840,7 +850,7 @@ public class World implements Serializable {
             ans.append(terr.toString());
             ans.append("\n");
         }
-        for (PlayerInfo pInfo : playerInfos.values()) {
+        for (PlayerInfo pInfo : playerInfos) {
             ans.append(pInfo.toString());
             ans.append("\n");
         }
