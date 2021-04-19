@@ -187,19 +187,14 @@ public class World implements Serializable {
     }
 
     protected void expandAllianceMatrixBy1() {
-        int n = playerInfos.size();
-        if (n == 1) {
-            allianceMatrix = new boolean[1][1];
-        }
-        else {
-            boolean[][] newAllianceMatrix = new boolean[n + 1][n + 1];
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n; j++) {
-                    newAllianceMatrix[i][j] = allianceMatrix[i][j];
-                }
+        int n = allianceMatrix.length;
+        boolean[][] newAllianceMatrix = new boolean[n + 1][n + 1];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                newAllianceMatrix[i][j] = allianceMatrix[i][j];
             }
-            allianceMatrix = newAllianceMatrix;
         }
+        allianceMatrix = newAllianceMatrix;
     }
 
     /**
