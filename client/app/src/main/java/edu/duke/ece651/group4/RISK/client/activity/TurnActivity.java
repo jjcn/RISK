@@ -215,23 +215,26 @@ public class TurnActivity extends AppCompatActivity {
 
     private void selectAlliance() {
         ArrayList<String> choices = new ArrayList<>();
+        // you can not ally with yourself
         for (String playerName : getAllPlayersName()) {
-            choices.add(playerName);
+            if (!playerName.equals(getUserName())) {
+                choices.add(playerName);
+            }
         }
         SimpleSelector selector = new SimpleSelector(TurnActivity.this, CHOOSE_USER_INSTR, choices, new onReceiveListener() {
             @Override
             public void onSuccess(Object o) {
-                if(o instanceof String) {
+                if (o instanceof String) {
                     String alliance = (String) o;
                     requireAlliance(alliance);
-                }else{
+                } else {
                     onFailure("not String name");
                 }
             }
 
             @Override
             public void onFailure(String errMsg) {
-                Log.e(TAG,errMsg);
+                Log.e(TAG, errMsg);
             }
         });
         selector.show();

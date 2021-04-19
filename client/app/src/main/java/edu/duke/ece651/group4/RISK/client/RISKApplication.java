@@ -88,8 +88,6 @@ public class RISKApplication extends Application {
         return currentRoomSize;
     }
 
-//    public static RoomInfo getCurrRoomInfo(){return currentRoom;}
-
     public static List<Territory> getMyTerritory() {
         return theWorld.getTerritoriesOfPlayer(userName);
     }
@@ -103,7 +101,7 @@ public class RISKApplication extends Application {
 
     public static String getAllianceName() {
         Log.i(TAG, LOG_FUNC_RUN + "start get alliance");
-        Set<String> allyNames = getWorld().getAllianceNames(userName);
+        Set<String> allyNames = theWorld.getAllianceNames(userName);
         if (allyNames.isEmpty()) {
             return NO_ALLY;
         }

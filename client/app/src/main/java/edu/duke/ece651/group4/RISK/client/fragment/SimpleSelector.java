@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import edu.duke.ece651.group4.RISK.client.R;
 import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
-import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
 
 import java.util.List;
 
