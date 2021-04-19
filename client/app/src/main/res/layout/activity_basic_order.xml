@@ -52,14 +52,16 @@
             android:orientation="horizontal"
             app:layout_constraintGuide_percent="0.65"/>
 
-    <ImageView
-            android:id="@+id/world_image_view"
+    <fragment
             android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:name="edu.duke.ece651.group4.RISK.client.fragment.WorldFragment"
+            android:id="@+id/worldFG"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@id/hguide1"
-            app:srcCompat="@android:drawable/ic_menu_mapmode" android:layout_height="0dp"/>
+    />
 
     <TextView
             android:id="@+id/srcText"

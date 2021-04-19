@@ -1,23 +1,25 @@
 package edu.duke.ece651.group4.RISK.client.activity;
 
+import android.os.Bundle;
 import android.text.Editable;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
-import android.os.Bundle;
 import edu.duke.ece651.group4.RISK.client.R;
 import edu.duke.ece651.group4.RISK.client.RISKApplication;
-import static edu.duke.ece651.group4.RISK.client.Constant.MAPS;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static edu.duke.ece651.group4.RISK.client.Constant.LOG_CREATE_SUCCESS;
+import static edu.duke.ece651.group4.RISK.client.Constant.MAPS;
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.*;
 import static edu.duke.ece651.group4.RISK.client.utility.Notice.showByToast;
+import static edu.duke.ece651.group4.RISK.shared.Constant.UNIT_NAMES;
+import static edu.duke.ece651.group4.RISK.client.Constant.MAPS;
 
 public class UpgradeActivity extends AppCompatActivity {
     private final String TAG = this.getClass().getSimpleName();

@@ -1,5 +1,7 @@
 package edu.duke.ece651.group4.RISK.client.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -24,8 +26,10 @@ import static edu.duke.ece651.group4.RISK.client.RISKApplication.*;
  */
 public class MessageActivity extends AppCompatActivity
         implements MessageInput.InputListener {
+
     private static final String TAG = MessageActivity.class.getSimpleName();
     private static final int TOTAL_MSG = 100;
+
     private MessagesListAdapter msgAdapter;
     private MessagesList msgList;
     //    private Menu menu;
@@ -36,46 +40,59 @@ public class MessageActivity extends AppCompatActivity
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
-        impUI();
-    }
 
-    private void impUI() {
         this.msgList = findViewById(R.id.messagesList);
-        msgAdapter = new MessagesListAdapter(getUserName(), null);
-//        msgAdapter.setLoadMoreListener(this);
-        msgList.setAdapter(msgAdapter);
+        initAdapter();
 
         MessageInput input = findViewById(R.id.input);
         input.setInputListener(this);
+//        input.setTypingListener(this);
+//        input.setAttachmentsListener(this);
     }
 
-    //TODO:get history
+    private void initAdapter() {
+        msgAdapter = new MessagesListAdapter<>(getUserName(), null);
+        msgList.setAdapter(msgAdapter);
+//        msgAdapter.setLoadMoreListener(this);
+    }
+
+    //TODO+: get history
     @Override
     protected void onStart() {
         super.onStart();
-        getHistoryMsg();
+        // getHistoryMsg();
         msgAdapter.addToStart(new ChatMessage(0,"",new ChatPlayer(0,"")), true);
     }
 
+    //TODO
     @Override
     public boolean onSubmit(CharSequence input) {
-//        ChatPlayer user = new ChatPlayer(getWorld().getRoomID(), getUserName());
-//        ChatMessage message = new ChatMessage(0, input.toString(), user);
-//        sendOneMsg(message, new onReceiveListener() {
-//            @Override
-//            public void onSuccess(Object o) {
-//                message.setChatID((int) o);
-//            }
-//
-//            @Override
-//            public void onFailure(String errMsg) {
-//                Log.e(TAG, LOG_FUNC_RUN+"send message fail");
-//                return;
-//            }
-//        });
-//        msgAdapter.addToStart(message, true);
+        ChatPlayer user = new ChatPlayer(getWorld().getRoomID(), getUserName());
+        ChatMessage message = new ChatMessage(0, input.toString(), user);
+        sendOneMsg(message, new onReceiveListener() {
+            @Override
+            public void onSuccess(Object o) {
+                message.setChatID((int) o);
+            }
+
+            @Override
+            public void onFailure(String errMsg) {
+                Log.e(TAG, LOG_FUNC_RUN + "fails to submit message");
+                return;
+            }
+        });
+        msgAdapter.addToStart(message, true);
         return true;
     }
+
+    // TODO
+//    protected void loadMessages() {
+//        new Handler().postDelayed(() -> {
+//            ArrayList<ChatMessage> messages = MessagesFixtures.getMessages(lastLoadedDate);
+//            lastLoadedDate = messages.get(messages.size() - 1).getCreatedAt();
+//            msgAdapter.addToEnd(messages, false);
+//        }, 1000);
+//    }
 
 //    add to implements:, MessagesListAdapter.OnLoadMoreListener
 //    @Override
@@ -85,14 +102,7 @@ public class MessageActivity extends AppCompatActivity
 //        }
 //    }
 //
-//    // TODO
-//    protected void loadMessages() {
-//        new Handler().postDelayed(() -> {
-//            ArrayList<ChatMessage> messages = MessagesFixtures.getMessages(lastLoadedDate);
-//            lastLoadedDate = messages.get(messages.size() - 1).getCreatedAt();
-//            msgAdapter.addToEnd(messages, false);
-//        }, 1000);
-//    }
+
 
 
     //    @Override
