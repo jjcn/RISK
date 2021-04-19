@@ -160,23 +160,14 @@ public class RISKApplication extends Application {
      * @return list information of the player
      */
     public static String getPlayerInfo() {
-        Log.i(TAG, LOG_FUNC_RUN + "start get player info username:" + userName);
         if(theWorld == null){
             Log.e(TAG,LOG_FUNC_FAIL+"getPlayerInfo world null");
         }
         PlayerInfo info = theWorld.getPlayerInfoByName(userName);
-        Log.i(TAG, LOG_FUNC_FAIL + "info get done");
-
         StringBuilder result = new StringBuilder();
         result.append("Player name:  " + userName + "\n");
-
-        Log.i(TAG, LOG_FUNC_RUN + "start get tech level");
         result.append("Tech Level: " + info.getTechLevel() + "\n");
-
-        Log.i(TAG, LOG_FUNC_RUN + "start get alliance info");
         result.append("Alliance: " + getAllianceName());
-        Log.i(TAG, LOG_FUNC_RUN + "end get alliance info");
-
         result.append("Food Resource: " + info.getFoodQuantity() + "\n");
         result.append("Tech Resource: " + info.getTechQuantity() + "\n");
 //        result.append("My Territories: ");

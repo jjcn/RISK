@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import edu.duke.ece651.group4.RISK.client.R;
 import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
 import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
@@ -44,7 +43,6 @@ public class TurnActivity extends AppCompatActivity {
     private ListView userInfoRC;
     private ArrayAdapter<String> userInfoAdapter;
     private ImageView mapIV;
-    private SwipeRefreshLayout refreshGS;
     private List<String> worldInfo;
     private List<String> noticeInfo;
     private List<String> userInfo;
@@ -70,7 +68,7 @@ public class TurnActivity extends AppCompatActivity {
 
         impUI();
         updateAfterTurn();
-        Log.i(TAG,LOG_CREATE_SUCCESS);
+        Log.i(TAG, LOG_CREATE_SUCCESS);
     }
 
     /**
@@ -96,7 +94,7 @@ public class TurnActivity extends AppCompatActivity {
     }
 
     private void goChat() {
-        Intent intent = new Intent(TurnActivity.this,ChatActivity.class);
+        Intent intent = new Intent(TurnActivity.this, ChatActivity.class);
         startActivity(intent);
     }
 
@@ -199,9 +197,9 @@ public class TurnActivity extends AppCompatActivity {
                     }
                     break;
                 case UI_ALLIANCE:
-                    String choice = showSelector(TurnActivity.this, CHOOSE_USER_INSTR,getMyTerrNames());
-                    Log.i(TAG,LOG_FUNC_RUN+"get choice: "+choice);
-                    if(choice != "") {
+                    String choice = showSelector(TurnActivity.this, CHOOSE_USER_INSTR, getMyTerrNames());
+                    Log.i(TAG, LOG_FUNC_RUN + "get choice: " + choice);
+                    if (choice != "") {
                         requireAlliance(choice);
                     }
                     break;
@@ -254,7 +252,7 @@ public class TurnActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(String errMsg) {
-                showByToast(TurnActivity.this,errMsg);
+                showByToast(TurnActivity.this, errMsg);
             }
         });
     }
@@ -308,10 +306,9 @@ public class TurnActivity extends AppCompatActivity {
                     worldInfo.clear();
                     worldInfo.addAll(getWorldInfo());
                     worldInfoAdapter.notifyDataSetChanged();
-                    Log.i(TAG, LOG_FUNC_RUN + "start dismiss");
-                    waitDG.dismiss();
+                    waitDG.cancel();
                     commitBT.setClickable(true);
-                    refreshGS.setRefreshing(false);
+                    Log.i(TAG, LOG_FUNC_RUN + "updateInfo Done");
                 }
         );
     }
