@@ -13,7 +13,6 @@ import com.stfalcon.chatkit.dialogs.DialogsListAdapter;
 import edu.duke.ece651.group4.RISK.client.R;
 import edu.duke.ece651.group4.RISK.client.RISKApplication;
 import edu.duke.ece651.group4.RISK.client.model.ChatDialog;
-import edu.duke.ece651.group4.RISK.client.model.ChatMessage;
 
 import java.util.*;
 

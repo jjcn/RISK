@@ -1,9 +1,6 @@
 package edu.duke.ece651.group4.RISK.client.activity;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,10 +9,9 @@ import com.stfalcon.chatkit.messages.MessagesList;
 import com.stfalcon.chatkit.messages.MessagesListAdapter;
 import edu.duke.ece651.group4.RISK.client.R;
 import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
-import edu.duke.ece651.group4.RISK.client.model.ChatMessage;
+import edu.duke.ece651.group4.RISK.client.model.ChatMessageUI;
 import edu.duke.ece651.group4.RISK.client.model.ChatPlayer;
 
-import java.util.ArrayList;
 import java.util.Date;
 
 import static edu.duke.ece651.group4.RISK.client.Constant.LOG_FUNC_RUN;
@@ -61,14 +57,14 @@ public class MessageActivity extends AppCompatActivity
     protected void onStart() {
         super.onStart();
         // getHistoryMsg();
-        msgAdapter.addToStart(new ChatMessage(0,"",new ChatPlayer(0,"")), true);
+        msgAdapter.addToStart(new ChatMessageUI(0,"",new ChatPlayer(0,"")), true);
     }
 
     //TODO
     @Override
     public boolean onSubmit(CharSequence input) {
         ChatPlayer user = new ChatPlayer(getWorld().getRoomID(), getUserName());
-        ChatMessage message = new ChatMessage(0, input.toString(), user);
+        ChatMessageUI message = new ChatMessageUI(0, input.toString(), user);
         sendOneMsg(message, new onReceiveListener() {
             @Override
             public void onSuccess(Object o) {
