@@ -3,21 +3,16 @@ package edu.duke.ece651.group4.RISK.client.activity;
 import android.content.Intent;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.MenuItem;
-import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import edu.duke.ece651.group4.RISK.client.R;
 import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
-import edu.duke.ece651.group4.RISK.client.utility.WaitDialog;
+import edu.duke.ece651.group4.RISK.client.fragment.WaitDialog;
 import edu.duke.ece651.group4.RISK.shared.*;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 import static edu.duke.ece651.group4.RISK.client.Constant.*;
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.*;

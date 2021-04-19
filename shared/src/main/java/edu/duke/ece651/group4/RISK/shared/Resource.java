@@ -27,7 +27,7 @@ public class Resource implements Serializable {
         "Error: %s resource's gain and consume input value shall be non-negative.";
 
     final String NEG_AFTER_CONSUME_MSG =
-        "Error: quantity of %s resource will be negative after this consumption.";
+        "Error: Not enough %s resource to consume.";
        
 
     public Resource(String name) {
@@ -59,15 +59,23 @@ public class Resource implements Serializable {
     }
 
     /**
-     * A resource is consumed by a number N.
+     * Check if a resource can be consumed by a number N.
      * @param consumption is the quantity of resource consumed.
      */
-    public void consume(int consumption) {
+    public void checkConsume(int consumption) throws IllegalArgumentException {
         checkNonNegative(consumption);
         if (quantity - consumption < 0) {
             throw new IllegalArgumentException(
-                String.format(NEG_AFTER_CONSUME_MSG, name));
-        } 
+                    String.format(NEG_AFTER_CONSUME_MSG, name));
+        }
+    }
+
+    /**
+     * Try consume a resource by a number N.
+     * @param consumption is the quantity of resource consumed.
+     */
+    public void consume(int consumption) {
+        checkConsume(consumption);
         quantity -= consumption;
     }
 

@@ -5,6 +5,7 @@ import android.util.Log;
 import edu.duke.ece651.group4.RISK.client.listener.onJoinRoomListener;
 import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
 import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
+import edu.duke.ece651.group4.RISK.client.model.ChatMessage;
 import edu.duke.ece651.group4.RISK.shared.*;
 import edu.duke.ece651.group4.RISK.shared.message.GameMessage;
 import edu.duke.ece651.group4.RISK.shared.message.LogMessage;
@@ -22,14 +23,13 @@ public class RISKApplication extends Application {
     private static final String TAG = RISKApplication.class.getSimpleName();
     private static Client playerClient;
     private static World theWorld;
-    private int totalPopulation;
     private Random rnd;
-    static String response;
     static ArrayList<RoomInfo> roomInfo;
+    private static RoomInfo currentRoom;
     static String userName;
     static int currentRoomSize;
-    static UpgradeTechOrder techOrder;
-    static onResultListener techListener;
+    static boolean updatedTech;
+    private static Client chatClient;
 
     @Override
     public void onCreate() {
@@ -37,19 +37,18 @@ public class RISKApplication extends Application {
         new Thread(() -> {
             try {
                 playerClient = new Client("vcm-18527.vm.duke.edu", SOCKET_PORT);
+                chatClient = new Client("vcm-18527.vm.duke.edu", CHAT_PORT);
             } catch (IOException e) {
                 Log.e(TAG, LOG_CREATE_FAIL);
                 e.printStackTrace();
             }
         }).start();
         this.theWorld = null;
-        this.totalPopulation = 15;
         this.rnd = new Random();
-        this.techOrder = null;
-        this.techListener = null;
         this.roomInfo = new ArrayList<>();
         this.userName = null;
         this.currentRoomSize = 0;
+        this.updatedTech=false;
         Log.i(TAG, LOG_CREATE_SUCCESS);
     }
 
@@ -90,8 +89,10 @@ public class RISKApplication extends Application {
         return currentRoomSize;
     }
 
+//    public static RoomInfo getCurrRoomInfo(){return currentRoom;}
+
     public static List<Territory> getMyTerritory() {
-        return theWorld.getTerritoriesOfPlayer(new TextPlayer(userName));
+        return theWorld.getTerritoriesOfPlayer(userName);
     }
 
     /**
@@ -105,7 +106,7 @@ public class RISKApplication extends Application {
      * @return list of all my territory
      */
     public static List<String> getMyTerrNames() {
-        return transferToNames(theWorld.getTerritoriesOfPlayer(new TextPlayer(userName)));
+        return transferToNames(theWorld.getTerritoriesOfPlayer(userName));
     }
 
     /**
@@ -160,17 +161,16 @@ public class RISKApplication extends Application {
     /****************** send receive helper function *******************/
 
     /**
-     * To send objects to server. fail if exception is thrown.
+     * To send objects to server. onSuccess is called if no exception is called.
      * Android blocks direct send and receive.
      * new thread works parallel to the main thread (UI thread) thus objects should not be directly stored in Client.
      */
-    public synchronized static void send(Object toSendO, onResultListener listener) {
+    public synchronized static void send(Object toSendO) {
         new Thread(() -> {
             try {
                 playerClient.sendObject(toSendO);
-                listener.onSuccess();
             } catch (Exception e) {
-                Log.e(TAG, LOG_FUNC_FAIL + e.toString());
+                Log.e(TAG, LOG_FUNC_FAIL +"send function: " +e.toString());
             }
         }).start();
     }
@@ -194,7 +194,7 @@ public class RISKApplication extends Application {
     /**
      * called when you want to send an object then receive null if success otherwise receive String explain why fail.
      */
-    public static void sendAndReceiveResult(Object toSendO, onResultListener listener) {
+    public synchronized static void sendAndReceiveResult(Object toSendO, onResultListener listener) {
         new Thread(() -> {
             Log.i(TAG, LOG_FUNC_RUN + "sendReceiveResult called");
             try {
@@ -216,7 +216,7 @@ public class RISKApplication extends Application {
     /**
      * called when you want to send an object then receive a World if success otherwise receive String explain why fail.
      */
-    public static void sendAndReceiveWorld(Object toSendO, onReceiveListener listener) {
+    public synchronized static void sendAndReceiveWorld(Object toSendO, onReceiveListener listener) {
         new Thread(() -> {
             Log.e(TAG, "sendReceiveAndReceiveWorld called");
             try {
@@ -241,7 +241,7 @@ public class RISKApplication extends Application {
      * called when you want to send an object then receive a List if success otherwise receive String explain why fail.
      * type: ROOM: receive a RoomInfo list for displaying of room activity.
      */
-    public static void sendAndReceiveList(Object toSendO, onReceiveListener listener, String type) {
+    public synchronized static void sendAndReceiveList(Object toSendO, onReceiveListener listener, String type) {
         new Thread(() -> {
             Log.e(TAG, "sendReceiveAndReceiveList called");
             try {
@@ -306,14 +306,14 @@ public class RISKApplication extends Application {
     }
 
     /**
-     * Used to send join a game message in the list of rooms, receive null if success otherwise a String.
+     * Used to send join a game message_menu in the list of rooms, receive null if success otherwise a String.
      * on Success the waitGameStart function will be called to receive the upcoming World info.
      */
-    public static void JoinGame(int gameID, onResultListener listenerString) {
-        GameMessage m = new GameMessage(GAME_JOIN, gameID, -1);
-        for (RoomInfo in : roomInfo) {
-            if (in.getRoomID() == gameID) {
-                currentRoomSize = in.getMaxNumPlayers();
+    public static void JoinGame(int roomID, onResultListener listenerString) {
+        GameMessage m = new GameMessage(GAME_JOIN, roomID, -1);
+        for (RoomInfo room : roomInfo) {
+            if (room.getRoomID() == roomID) {
+                currentRoomSize = room.getMaxNumPlayers();
             }
         }
         new Thread(() -> {
@@ -390,13 +390,11 @@ public class RISKApplication extends Application {
     /**
      * Used to send a move order
      */
-    public static String doOneMove(MoveOrder order, onResultListener listener) {
+    public static String doOneMove(MoveOrder order) {
         try {
             MoveOrder tmp = new MoveOrder(order.getSrcName(), order.getDesName(), order.getActTroop().clone(), MOVE_ACTION);
             theWorld.moveTroop(order, userName);
-            Log.e(TAG, theWorld.findTerritory(order.getSrcName()).getInfo());
-            Log.e(TAG, theWorld.findTerritory(order.getDesName()).getInfo());
-            send(tmp, listener);
+            send(tmp);
         } catch (Exception e) {
             return e.getMessage();
         }
@@ -418,11 +416,11 @@ public class RISKApplication extends Application {
     /**
      * Used to send an attack order
      */
-    public static String doOneAttack(AttackOrder order, onResultListener listener) {
+    public static String doOneAttack(AttackOrder order) {
         try {
             AttackOrder tmp = new AttackOrder(order.getSrcName(), order.getDesName(), order.getActTroop().clone(), ATTACK_ACTION);
             theWorld.attackATerritory(order, userName);
-            send(tmp, listener);
+            send(tmp);
         } catch (Exception e) {
             return e.getMessage();
         }
@@ -442,11 +440,11 @@ public class RISKApplication extends Application {
     /**
      * Used to send a soldier level upgrade order
      */
-    public static String doSoliderUpgrade(UpgradeTroopOrder order, onResultListener listener) {
+    public static String doSoliderUpgrade(UpgradeTroopOrder order) {
         try {
             UpgradeTroopOrder tmp = new UpgradeTroopOrder(order.getSrcName(), order.getLevelBefore(), order.getLevelAfter(), order.getNUnit());
             theWorld.upgradeTroop(order, userName);
-            send(tmp, listener);
+            send(tmp);
         } catch (Exception e) {
             return e.getMessage();
         }
@@ -458,15 +456,18 @@ public class RISKApplication extends Application {
      * Used to send an tech level upgrade order
      */
     public static String doOneUpgrade(onResultListener listener) {
-        techOrder = new UpgradeTechOrder(1);
-        techListener = listener;
-//        UpgradeTechOrder order =
-//        try {
-//            theWorld.upgradePlayerTechLevelBy1(userName);
-//            send(order, listener);
-//        } catch (Exception e) {
-//            return e.getMessage();
-//        }
+
+        if(updatedTech){
+            return "You can only upgrade tech once in a turn.";
+        }
+        UpgradeTechOrder techOrder = new UpgradeTechOrder(1);
+        try {
+            theWorld.doUpgradeTechResourceConsumption(techOrder,userName);
+            send(techOrder);
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+        updatedTech=true;
         return null;
     }
 
@@ -474,36 +475,43 @@ public class RISKApplication extends Application {
      * Used to send an done order
      */
     public static void doDone(Order order, onReceiveListener listener) {
-        if (techOrder != null) {
-            try {
-                Log.d(TAG, "UPgrade starts");
-                theWorld.upgradePlayerTechLevelBy1(userName);
-                send(techOrder, techListener);
-                Log.d(TAG, "UPgrade send");
-            } catch (Exception e) {
-                Log.e(TAG, e.getMessage());
-            }
-        }
         Log.d(TAG, "Done start");
         sendAndReceiveWorld(order,listener);
         Log.d(TAG, "Done end");
-        techOrder = null;
-        techListener = null;
+        updatedTech=false;
     }
 
 
     public static void stayInGame(onReceiveListener listener) {
-        String message = null;
-        sendAndReceiveWorld(message, listener);
+        sendAndReceiveWorld(null, listener);
     }
 
-    public static void exitGame(onResultListener listener) {
-        send(EXIT_GAME_MESSAGE, listener);
+    public static void exitGame() {
+        send(new BasicOrder(null, null, null, SWITCH_OUT_ACTION));
     }
 
     public static List<Territory> getEnemyTerritory() {
         return theWorld.getTerritoriesNotOfPlayer(userName);
     }
 
+//    public static void requireAlliance(String allyName) {
+//        Order allyOrder = new AllianceOrder(userName,allyName);
+//        send(allyOrder);
+//    }
 
+
+   public static int getRoomId(){
+        return theWorld.getRoomID();
+   }
+
+
+    /*************** function for chat **************/
+
+    public static void sendOneMsg(ChatMessage message, onReceiveListener listener){
+
+    }
+
+    public static void getHistoryMsg(){
+
+    }
 }

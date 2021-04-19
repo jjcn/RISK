@@ -55,7 +55,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(String errMsg) {
-                    showByToast(LoginActivity.this, errMsg);// show account err message
+                    showByToast(LoginActivity.this, errMsg);// show account err message_menu
                     logInButton.setClickable(true);
                     return;
                 }

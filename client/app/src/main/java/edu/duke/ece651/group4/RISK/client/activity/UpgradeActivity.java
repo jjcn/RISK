@@ -9,8 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import edu.duke.ece651.group4.RISK.client.R;
 import edu.duke.ece651.group4.RISK.client.RISKApplication;
-import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
-import edu.duke.ece651.group4.RISK.shared.Territory;
+import static edu.duke.ece651.group4.RISK.client.Constant.MAPS;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +18,6 @@ import java.util.Map;
 import static edu.duke.ece651.group4.RISK.client.Constant.LOG_CREATE_SUCCESS;
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.*;
 import static edu.duke.ece651.group4.RISK.client.utility.Notice.showByToast;
-import static edu.duke.ece651.group4.RISK.shared.Constant.UNIT_NAMES;
 
 public class UpgradeActivity extends AppCompatActivity {
     private final String TAG = this.getClass().getSimpleName();
@@ -73,6 +71,9 @@ public class UpgradeActivity extends AppCompatActivity {
     }
 
     private void impUI() {
+        worldImageView = findViewById(R.id.world_image_view);
+        worldImageView.setImageResource(MAPS.get(getCurrentRoomSize()));
+        
         // territory spinner
         List<String> myTerrNames = getMyTerrNames();
 
@@ -152,17 +153,8 @@ public class UpgradeActivity extends AppCompatActivity {
                     buildUpOrder(terrName,
                             levels.get(typeNameBefore),
                             levels.get(typeNameAfter),
-                            nUnit),
-                    new onResultListener() {
-                @Override
-                public void onSuccess() {
-                }
-
-                @Override
-                public void onFailure(String errMsg) {
-                    Log.e(TAG, errMsg);
-                }
-            });
+                            nUnit)
+            );
 
             if (result == null) {
                 finish();

@@ -20,6 +20,10 @@ public class AttackOrderCheckerTest {
     Player red = new TextPlayer(out, inputReader, "red");
     Player blue = new TextPlayer(out, inputReader, "blue");
 
+    PlayerInfo greenInfo = new PlayerInfo(green.getName(), 100, 100);
+    PlayerInfo redInfo = new PlayerInfo(red.getName(), 100, 100);
+    PlayerInfo blueInfo = new PlayerInfo(blue.getName(), 100, 100);
+
     String names[] = 
             "Narnia, Midkemia, Oz, Gondor, Mordor, Hogwarts, Scadrial, Elantris, Roshar".split(", ");
     Troop troopsConnected[] = {new Troop(10, green), new Troop(12, green), new Troop(8, green),
@@ -72,10 +76,10 @@ public class AttackOrderCheckerTest {
         World world = createWorld(names, troopsConnected);
 
         BasicOrder order1 = new BasicOrder("Narnia", "Elantris", new Troop(3, green), 'A');
-        assertEquals(null, aoc.checkMyOrder(order1, world));
+        assertEquals(null, aoc.checkMyOrder(order1, world, greenInfo));
 
         BasicOrder order2 = new BasicOrder("Scadrial", "Mordor", new Troop(3, blue), 'A');
-        assertEquals(null, aoc.checkMyOrder(order2, world));
+        assertEquals(null, aoc.checkMyOrder(order2, world, blueInfo));
     }
 
     @Test
@@ -84,11 +88,11 @@ public class AttackOrderCheckerTest {
 
         BasicOrder order1 = new BasicOrder("Narnia", "Midkemia", new Troop(3, green), 'A');
         assertEquals(String.format(SAME_OWNER_MSG, "Midkemia"), 
-                    aoc.checkMyOrder(order1, world));
+                    aoc.checkMyOrder(order1, world, greenInfo));
 
         BasicOrder order2 = new BasicOrder("Gondor", "Mordor", new Troop(3, red), 'A');
         assertEquals(String.format(SAME_OWNER_MSG, "Mordor"), 
-                    aoc.checkMyOrder(order2, world));
+                    aoc.checkMyOrder(order2, world, redInfo));
     }
 
     @Test
@@ -96,10 +100,10 @@ public class AttackOrderCheckerTest {
         World world = createWorld(names, troopsConnected);
 
         BasicOrder order1 = new BasicOrder("Narnia", "Elantris", new Troop(3, green), 'M');
-        assertEquals(NOT_ATTACK_ORDER_MSG, aoc.checkMyOrder(order1, world));
+        assertEquals(NOT_ATTACK_ORDER_MSG, aoc.checkMyOrder(order1, world, greenInfo));
 
         BasicOrder order2 = new BasicOrder("Scadrial", "Mordor", new Troop(3, blue), 'D');
-        assertEquals(NOT_ATTACK_ORDER_MSG, aoc.checkMyOrder(order2, world));
+        assertEquals(NOT_ATTACK_ORDER_MSG, aoc.checkMyOrder(order2, world, blueInfo));
     }
 
     @Test
@@ -108,11 +112,11 @@ public class AttackOrderCheckerTest {
 
         BasicOrder order1 = new BasicOrder("Narnia", "Scadrial", new Troop(3, green), 'A');
         assertEquals(String.format(NOT_ADJACENT_MSG, "Narnia", "Scadrial"), 
-                    aoc.checkMyOrder(order1, world));
+                    aoc.checkMyOrder(order1, world, greenInfo));
 
         BasicOrder order2 = new BasicOrder("Scadrial", "Gondor", new Troop(3, blue), 'A');
         assertEquals(String.format(NOT_ADJACENT_MSG, "Scadrial", "Gondor"),
-                    aoc.checkMyOrder(order2, world));
+                    aoc.checkMyOrder(order2, world, blueInfo));
     }
 
 }

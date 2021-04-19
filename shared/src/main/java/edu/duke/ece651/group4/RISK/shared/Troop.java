@@ -60,7 +60,7 @@ public class Troop implements Serializable {
 
     public Troop(HashMap<String, Integer> myDict, Player owner) {
         this.population = new ArrayList<>();
-        for(String s:myDict.keySet()) {
+        for (String s : myDict.keySet()) {
 
             for (int i = 0; i < myDict.get(s); i++) {
                 Soldier sol = new Soldier();
@@ -73,9 +73,9 @@ public class Troop implements Serializable {
     }
 
     /**
-     * Get the number of units in a troop.
+     * Get the size of a troop.
      *
-     * @return size of a troop.
+     * @return number of units in a troop.
      */
     public int size() {
         return population.size();
@@ -98,7 +98,7 @@ public class Troop implements Serializable {
             } else {
                 this.loseUnit(myUnit);
             }
-            attack=!attack;
+            attack = !attack;
         }
         return enemy;
     }
@@ -130,11 +130,11 @@ public class Troop implements Serializable {
      * send a unit from troop
      */
     public Unit dispatchCertainUnit(String name) {
-        if (this.dict.get(name) == null||this.dict.get(name) == 0) {
+        if (this.dict.get(name) == null || this.dict.get(name) == 0) {
             throw new IllegalArgumentException("No enough Unit at this level");
         }
         for (Unit u : this.population) {
-            if (u.getJobName().equals(name) ) {
+            if (u.getJobName().equals(name)) {
                 this.dict.put(name, this.dict.get(name) - 1);
                 Unit target = u;
                 this.population.remove(u);
@@ -195,14 +195,14 @@ public class Troop implements Serializable {
             int num = subDict.get(s);
             for (int i = 0; i < num; i++) {
 //                try {
-                Unit t=this.dispatchCertainUnit(s);
+                Unit t = this.dispatchCertainUnit(s);
                 sub.add(t);
 //                }catch(Exception e){
 //                    throw new IllegalArgumentException("NULL at dispatch "+i);
 //                }
             }
         }
-        Troop r=new Troop(sub, subDict, this.owner);
+        Troop r = new Troop(sub, subDict, this.owner);
 //        for(Unit c:sub){
 //            if(c==null){
 //                throw new IllegalArgumentException("NULL happen when depart");
@@ -252,16 +252,11 @@ public class Troop implements Serializable {
             cloneList.add(item.clone());
         }
 
-        if(this.owner.getName()==null){
+        if (this.owner.getName() == null) {
             return new Troop(cloneList, new TextPlayer(null));
-        }else{
+        } else {
             return new Troop(cloneList, new TextPlayer(new String(this.owner.getName())));
         }
-
-
-
-
-
 
 
     }
@@ -355,11 +350,11 @@ public class Troop implements Serializable {
         return target;
     }
 
-    public String getSummary(){
+    public String getSummary() {
         StringBuilder report = new StringBuilder();
-        report.append("Troop of "+this.owner.getName()+" with :\n");
-        for(String s:this.dict.keySet()){
-            report.append(s+" : "+dict.get(s)+"\n");
+        report.append("Troop of " + this.owner.getName() + " with :\n");
+        for (String s : this.dict.keySet()) {
+            report.append(s + " : " + dict.get(s) + "\n");
         }
         return report.toString();
     }
