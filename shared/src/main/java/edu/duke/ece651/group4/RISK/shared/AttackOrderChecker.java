@@ -1,6 +1,7 @@
 package edu.duke.ece651.group4.RISK.shared;
 
 import java.io.Serializable;
+import java.util.Set;
 
 /**
  * See "Evolution 1: 4. Turn structure" for rules related with attack order.
@@ -33,11 +34,10 @@ public class AttackOrderChecker implements Serializable {
      * Checks if an attack order is legal.
      * @param order is the order given.
      * @param world is the world object.
-     * @param pInfo is the info of the player who sends the order
      * @return null, if the order is legal;
      *         a String indicating the problem, if not.
      */
-    protected String checkMyOrder(Order order, World world, PlayerInfo pInfo) {
+    protected String checkMyOrder(Order order, World world) {
         if (Character.toUpperCase(order.getActionName()) == 'A') {
             Territory start = world.findTerritory(order.getSrcName());
             Territory end = world.findTerritory(order.getDesName());

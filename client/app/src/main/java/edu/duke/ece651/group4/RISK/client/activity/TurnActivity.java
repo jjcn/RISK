@@ -13,7 +13,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import edu.duke.ece651.group4.RISK.client.R;
-import edu.duke.ece651.group4.RISK.client.fragment.WaitDialog;
+import edu.duke.ece651.group4.RISK.client.utility.WaitDialog;
 import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
 import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
 import edu.duke.ece651.group4.RISK.shared.BasicOrder;
@@ -253,8 +253,8 @@ public class TurnActivity extends AppCompatActivity {
                 userInfo.clear();
                 userInfo.add(getPlayerInfo());
                 userInfoAdapter.notifyDataSetChanged();
-                actions.remove(UI_UPTECH); // can only upgrade once in one turn
-                actionAdapter.notifyDataSetChanged();
+//                actions.remove(UI_UPTECH); // can only upgrade once in one turn
+//                actionAdapter.notifyDataSetChanged();
             }
 
             @Override
