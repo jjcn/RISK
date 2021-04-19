@@ -239,11 +239,20 @@ public class Game {
         }
         out.println("Game" + gameID + ": " + userName + " attack action");
     }
+
+    synchronized protected void tryDoAlliance(Order order){
+        AllianceOrder allianceOrder = (AllianceOrder) order;
+        this.theWorld.tryFormAlliance(allianceOrder.getSrcName(),allianceOrder.getSrcName());
+        out.println("Game" + gameID + ": " + allianceOrder.getSrcName() + " try form alliance with " + allianceOrder.getSrcName());
+    }
+
+
     /*
     * This is the final update for the whole world after one turn
     * */
     public void updateGameAfterOneTurn(){
         this.theWorld.doAllBattles();
+        this.theWorld.doCheckIfAllianceSuccess();
         this.theWorld.allPlayersGainResources();
         this.theWorld.addUnitToAll(1);
     }
@@ -275,6 +284,9 @@ public class Game {
             case DONE_ACTION:
                 doDoneActionFor(u);
                 exit = true;
+                break;
+            case ALLIANCE_ACTION:
+                tryDoAlliance(order);
                 break;
             case SWITCH_OUT_ACTION:
                 switchOutUser(u);
