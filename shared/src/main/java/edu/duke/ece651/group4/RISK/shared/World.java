@@ -345,7 +345,9 @@ public class World implements Serializable {
      * @return that player's playerInfo.
      */
     public PlayerInfo getPlayerInfoByName(String playerName) {
-        for (PlayerInfo pInfo : playerInfos) {
+        assert(playerInfos.size() != 0);
+        for (int i = 0; i < playerInfos.size(); i++) {
+            PlayerInfo pInfo = playerInfos.get(i);
             if (pInfo.getName().equals(playerName)) {
                 return pInfo;
             }
