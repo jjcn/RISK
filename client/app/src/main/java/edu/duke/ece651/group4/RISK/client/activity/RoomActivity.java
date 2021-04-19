@@ -111,7 +111,7 @@ public class RoomActivity extends AppCompatActivity {
                         @Override
                         public void onBack() {
                             waitDG.cancel();
-                            Intent gameIntent = new Intent(RoomActivity.this, GameActivity.class);
+                            Intent gameIntent = new Intent(RoomActivity.this, TurnActivity.class);
                             showByToast(RoomActivity.this, SUCCESS_START);
                             startActivity(gameIntent);
                         }

@@ -98,6 +98,16 @@ public class GameActivity extends AppCompatActivity {
         impChatBT();
     }
 
+    protected void addFragment(FragmentManager fm, int container_id) {
+        Fragment fragment = fm.findFragmentById(container_id);
+        if (fragment == null) {
+            fragment = new ActionsFragment();
+            fm.beginTransaction()
+                    .add(container_id, fragment)
+                    .commit();
+        }
+    }
+
     private void impUpTechBT() {
         upTechBT.setOnClickListener(v -> {
             upTechBT.setClickable(false);
@@ -133,16 +143,6 @@ public class GameActivity extends AppCompatActivity {
             Intent intent = new Intent(GameActivity.this, ChatActivity.class);
             startActivity(intent);
         });
-    }
-
-    protected void addFragment(FragmentManager fm, int container_id) {
-        Fragment fragment = fm.findFragmentById(container_id);
-        if (fragment == null) {
-            fragment = new ActionsFragment();
-            fm.beginTransaction()
-                    .add(container_id, fragment)
-                    .commit();
-        }
     }
 
     private void impWorldInfoRC() {
