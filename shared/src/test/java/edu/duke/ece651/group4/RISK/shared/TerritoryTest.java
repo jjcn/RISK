@@ -55,19 +55,19 @@ class TerritoryTest {
 
 
         assertEquals(test.getOwner().getName(), "p1");
-        assertEquals(test.checkPopulation(),2);
+        assertEquals(test.checkPopulation(),4);
         test.doBattles();
         test.sendInEnemyTroop(new Troop(10, p3, new Random(0)));
         test.doBattles();
-        assertEquals(test.getOwner().getName(), "p3");
+        assertEquals(test.getOwner().getName(), "p1");
 
         test.sendInEnemyTroop(new Troop(1, p2, new Random(0)));
         test.sendInEnemyTroop(new Troop(1, p2, new Random(0)));
         Territory clo=test.clone();
         test.doBattles();
-        assertEquals(test.getOwner().getName(), "p3");
+        assertEquals(test.getOwner().getName(), "p1");
         HashMap<String,Integer> dict=clo.checkTroopInfo();
-        assertEquals(dict.get("Soldier LV0"),10);
+        assertEquals(dict.get("Soldier LV0"),4);
 
     }
 
