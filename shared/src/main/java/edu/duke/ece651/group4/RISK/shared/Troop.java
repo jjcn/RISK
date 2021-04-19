@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
+import static edu.duke.ece651.group4.RISK.shared.Constant.*;
+import static edu.duke.ece651.group4.RISK.shared.Constant.SHIELD;
+
 public class Troop implements Serializable {
     protected static final long serialVersionUID = 17L;
     private final ArrayList<Unit> population;
@@ -96,7 +99,16 @@ public class Troop implements Serializable {
             if (myUnit.fight(enemyUnit)) {
                 enemy.loseUnit(enemyUnit);
             } else {
-                this.loseUnit(myUnit);
+
+                if(ARROW_NAMES.contains(enemyUnit.getJobName())){
+                    enemy.loseUnit(enemyUnit);
+                    this.loseUnit(myUnit);
+                }else if(SHIELD_NAMES.contains(enemyUnit.getJobName())){
+                    Shield s=(Shield) enemyUnit;
+                    if(!s.shieldExist()){
+                        this.loseUnit(myUnit);
+                    }
+                }
             }
             attack = !attack;
         }
@@ -187,9 +199,9 @@ public class Troop implements Serializable {
         ArrayList<Unit> sub = new ArrayList<>();
         HashMap<String, Integer> subDict = target.getDict();
 
-//        if (!this.checkSend(target)) {
-//            throw new IllegalArgumentException("Target sending troop has invalid size");
-//        }
+        if (!this.checkSend(target)) {
+            throw new IllegalArgumentException("Target sending troop has invalid size");
+        }
 
         for (String s : subDict.keySet()) {
             int num = subDict.get(s);
@@ -324,6 +336,11 @@ public class Troop implements Serializable {
 
             if (dict.get(s) != 0) {
                 Soldier check = (Soldier) this.getUnit(s);
+                if(ARROW_NAMES.contains(check.getJobName())){
+                    return check;
+                }else if(BREAKER_NAMES.contains(check.getJobName())){
+                    return check;
+                }
                 if (maxLevel < check.getLevel()) {
                     maxLevel = check.getLevel();
                     target = check;
@@ -333,6 +350,17 @@ public class Troop implements Serializable {
         return target;
     }
 
+    public boolean rangeAttackAbility(){
+        for (String s:dict.keySet()){
+            if(ARCHER_NAMES.contains(s)&&dict.get(s)>0){
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+
     public Unit getWeakest() {
 
         Unit target = null;
@@ -341,6 +369,9 @@ public class Troop implements Serializable {
 
             if (dict.get(s) != 0) {
                 Soldier check = (Soldier) this.getUnit(s);
+                if(SHIELD_NAMES.contains(check.getJobName())){
+                    return check;
+                }
                 if (minLevel > check.getLevel()) {
                     minLevel = check.getLevel();
                     target = check;
@@ -357,6 +388,82 @@ public class Troop implements Serializable {
             report.append(s + " : " + dict.get(s) + "\n");
         }
         return report.toString();
+    }
+
+    public int transfer(String from,String to,int num){
+        if(this.checkUnitNum(from)<num){
+            throw new IllegalArgumentException("No enough Unit to transfer");
+        }
+
+        int unitCost=0;
+        int totalcost=0;
+        if(to.equals(KNIGHT)){
+            unitCost=KNIGHT_COST;
+        }else if(to.equals(ARCHER)){
+            unitCost=ARCHER_COST;
+        }else if(to.equals(BREAKER)){
+            unitCost=BREAKER_COST;
+        }else if(to.equals(SHIELD)){
+            unitCost=SHIELD_COST;
+        }
+
+        while(num>0){
+            Soldier target=(Soldier)this.dispatchCertainUnit(from);
+            Soldier newTarget=target.transfer(to);
+            this.receiveUnit(newTarget);
+            totalcost+=unitCost;
+            num--;
+        }
+
+
+        return totalcost;
+    }
+
+    public double checkSpeed(){
+        for (String s:dict.keySet()){
+            if(KNIGHT_NAMES.contains(s)&&dict.get(s)>0){
+                return KNIGHT_SPEED;
+            }
+        }
+        return NORM_SPEED;
+    }
+
+    public Troop sendRangeAttack(Troop target){
+        if(!this.rangeAttackAbility()){
+            throw new IllegalArgumentException("No range attack unit");
+        }
+
+        ArrayList<Unit> sub = new ArrayList<>();
+        HashMap<String, Integer> subDict = target.getDict();
+        HashMap<String, Integer>  newDict=new HashMap<>();
+        if (!this.checkSend(target)) {
+            throw new IllegalArgumentException("Target sending troop has invalid size");
+        }
+
+        for (String s : subDict.keySet()) {
+
+            if(ARCHER_NAMES.contains(s)){
+                int num = subDict.get(s);
+                int arrowLevel=ARCHER_NAMES.indexOf(s);
+
+                for (int i = 0; i < num; i++) {
+
+                    Arrow t = new Arrow(arrowLevel);
+
+                    sub.add(t);
+
+                }
+                newDict.put(ARROW_NAMES.get(arrowLevel),num);
+
+            }else{
+                throw new IllegalArgumentException("Not using range attack unit");
+            }
+
+        }
+        Troop r = new Troop(sub, newDict, this.owner);
+
+        return r;
+
     }
 
 }

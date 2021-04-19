@@ -11,16 +11,12 @@ import static edu.duke.ece651.group4.RISK.shared.Constant.*;
 public class Soldier implements Unit, Serializable {
     protected static final long serialVersionUID = 13L;
 
-    private String jobName;
-    private int level;
-//    private final List<String> levelNames =
-//        Arrays.asList("Soldier LV0", "Soldier LV1", "Soldier LV2", "Soldier LV3",
-//            "Soldier LV4", "Soldier LV5", "Soldier LV6");
-//    private final List<Integer> levelCost =
-//        Arrays.asList(0, 3, 11, 30, 55, 90, 140); // cumulative cost from level 0
-//    private final List<Integer> levelBonus =
-//        Arrays.asList(0, 1, 3, 5, 8, 11, 15);
-    private final Random dice;
+    protected String jobName;
+    protected int level;
+    protected final Random dice;
+    protected double speed;
+    protected int range;
+
 
     public Soldier() {
         this(new Random());
@@ -35,6 +31,8 @@ public class Soldier implements Unit, Serializable {
         this.jobName = UNIT_NAMES.get(0);
         this.level = 0;
         this.dice = rand;
+        this.speed=NORM_SPEED;
+        this.range=NORM_RANGE;
     }
 
     public Soldier clone() {
@@ -96,8 +94,6 @@ public class Soldier implements Unit, Serializable {
     public int upGrade(int targetLevel, int resource) {
         int cost = 0;
         int aim = targetLevel;
-//        ArrayList<Integer> levelCost= (ArrayList<Integer>)UNIT_COSTS ;
-//        ArrayList<String> levelNames=(ArrayList<String>) UNIT_NAMES;
         if (targetLevel < this.level) {
             throw new IllegalArgumentException("target level is lower than current level");
         }
@@ -126,6 +122,29 @@ public class Soldier implements Unit, Serializable {
         int randomNum = dice.nextInt((max - min) + 1) + min;
 
         return randomNum;
+    }
+
+    public double getSpeed(){
+        return this.speed;
+    }
+
+    public Soldier transfer(String newJob){
+        if(!UNIT_NAMES.contains(newJob)){
+            throw new IllegalArgumentException("Can not transfer job from current job");
+        }
+
+        if(newJob.equals(KNIGHT)){
+            return new Knight(this.level);
+        }else if(newJob.equals(ARCHER)){
+            return new Archer(this.level);
+        }else if(newJob.equals(BREAKER)){
+            return new Breaker(this.level);
+        }else if(newJob.equals(SHIELD)){
+            return new Shield(this.level);
+        }
+
+
+        return null;
     }
 
 }
