@@ -80,10 +80,10 @@ public class MoveOrderCheckerTest {
         World world = createWorld(troopsConnected);
 
         BasicOrder order1 = new BasicOrder("Narnia", "Midkemia", new Troop(3, green), 'M');
-        assertNull(moc.checkMyOrder(order1, world, greenInfo));
+        assertNull(moc.checkMyOrder(order1, world));
 
         BasicOrder order2 = new BasicOrder("Narnia", "Oz", new Troop(3, green), 'M');
-        assertNull(moc.checkMyOrder(order2, world, greenInfo));
+        assertNull(moc.checkMyOrder(order2, world));
     }
 
     @Test
@@ -92,21 +92,22 @@ public class MoveOrderCheckerTest {
 
         BasicOrder order1 = new BasicOrder("Narnia", "Roshar", new Troop(3, green), 'M');
         assertEquals(String.format(NOT_SAME_OWNER_MSG, "Roshar"), 
-                        moc.checkMyOrder(order1, world, greenInfo));
+                        moc.checkMyOrder(order1, world));
 
         BasicOrder order2 = new BasicOrder("Oz", "Gondor", new Troop(3, green), 'M');
         assertEquals(String.format(NOT_SAME_OWNER_MSG, "Gondor"), 
-                         moc.checkMyOrder(order2, world, greenInfo));    }
+                         moc.checkMyOrder(order2, world));
+    }
 
     @Test
     public void testNotMoveOrder() {
         World world = createWorld(troopsConnected);
 
         BasicOrder order1 = new BasicOrder("Narnia", "Midkemia", new Troop(3, green), 'A');
-        assertEquals(NOT_MOVE_ORDER_MSG, moc.checkMyOrder(order1, world, greenInfo));
+        assertEquals(NOT_MOVE_ORDER_MSG, moc.checkMyOrder(order1, world));
 
         BasicOrder order2 = new BasicOrder("Narnia", "Oz", new Troop(3, green), 'D');
-        assertEquals(NOT_MOVE_ORDER_MSG, moc.checkMyOrder(order2, world, greenInfo));
+        assertEquals(NOT_MOVE_ORDER_MSG, moc.checkMyOrder(order2, world));
     }
 
     @Test
@@ -114,18 +115,18 @@ public class MoveOrderCheckerTest {
         World world = createWorld(troopsSeparated);
         
         BasicOrder order1 = new BasicOrder("Roshar", "Hogwarts", new Troop(3, green), 'M');
-        assertNull(moc.checkMyOrder(order1, world, greenInfo));
+        assertNull(moc.checkMyOrder(order1, world));
         
         BasicOrder order2 = new BasicOrder("Roshar", "Oz", new Troop(3, green), 'M');
         assertEquals(String.format(NOT_REACHABLE_MSG, "Roshar", "Oz"), 
-                    moc.checkMyOrder(order2, world, greenInfo));
+                    moc.checkMyOrder(order2, world));
 
         BasicOrder order3 = new BasicOrder("Gondor", "Mordor", new Troop(3, red), 'M');
-        assertNull(moc.checkMyOrder(order3, world, redInfo));
+        assertNull(moc.checkMyOrder(order3, world));
 
         BasicOrder order4 = new BasicOrder("Midkemia", "Mordor", new Troop(3, red), 'M');
         assertEquals(String.format(NOT_REACHABLE_MSG, "Midkemia", "Mordor"), 
-                    moc.checkMyOrder(order4, world, redInfo));
+                    moc.checkMyOrder(order4, world));
     }
 
     @Test
@@ -134,9 +135,10 @@ public class MoveOrderCheckerTest {
         world.registerPlayer(redInfo);
         world.registerPlayer(blueInfo);
         world.registerPlayer(greenInfo);
-        world.getPlayerInfoByName("red").formAlliance("blue");
+        world.tryFormAlliance("red","blue");
+        world.tryFormAlliance("blue","red");
 
         MoveOrder order = new MoveOrder("Midkemia", "Mordor", new Troop(3, red), 'M');
-        assertNull(moc.checkMyOrder(order, world, redInfo));
+        assertNull(moc.checkMyOrder(order, world));
     }
 }
