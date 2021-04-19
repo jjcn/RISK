@@ -26,7 +26,6 @@ public class RISKApplication extends Application {
     static String userName;
     static int currentRoomSize;
     static boolean updatedTech;
-    private static Client chatClient;
 
     @Override
     public void onCreate() {
@@ -34,7 +33,6 @@ public class RISKApplication extends Application {
         new Thread(() -> {
             try {
                 playerClient = new Client("vcm-18527.vm.duke.edu", SOCKET_PORT);
-                chatClient = new Client("vcm-18527.vm.duke.edu", CHAT_PORT);
             } catch (IOException e) {
                 Log.e(TAG, LOG_CREATE_FAIL);
                 e.printStackTrace();
@@ -104,7 +102,7 @@ public class RISKApplication extends Application {
     }
 
     public static String getAllianceName(){
-        Set<String> allyNames = getWorld().getPlayerInfoByName(getUserName()).getAllianceNames();
+        Set<String> allyNames = getWorld().getAllianceNames(userName);
         if(allyNames.isEmpty()){
             return NO_ALLY;
         }
@@ -406,11 +404,11 @@ public class RISKApplication extends Application {
     /**
      * Used to send a move order
      */
-    public static String doOneMove(MoveOrder order) {
+    public static String doOneMove(MoveOrder order, onResultListener listener) {
         try {
             MoveOrder tmp = new MoveOrder(order.getSrcName(), order.getDesName(), order.getActTroop().clone(), MOVE_ACTION);
             theWorld.moveTroop(order, userName);
-            send(tmp);
+            sendAndReceiveResult(tmp, listener);
         } catch (Exception e) {
             return e.getMessage();
         }
@@ -432,11 +430,11 @@ public class RISKApplication extends Application {
     /**
      * Used to send an attack order
      */
-    public static String doOneAttack(AttackOrder order) {
+    public static String doOneAttack(AttackOrder order, onResultListener listener) {
         try {
             AttackOrder tmp = new AttackOrder(order.getSrcName(), order.getDesName(), order.getActTroop().clone(), ATTACK_ACTION);
             theWorld.attackATerritory(order, userName);
-            send(tmp);
+            sendAndReceiveResult(tmp, listener);
         } catch (Exception e) {
             return e.getMessage();
         }
