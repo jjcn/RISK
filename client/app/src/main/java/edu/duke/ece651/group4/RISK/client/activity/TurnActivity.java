@@ -13,10 +13,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import edu.duke.ece651.group4.RISK.client.R;
-import edu.duke.ece651.group4.RISK.client.utility.WaitDialog;
 import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
 import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
-import edu.duke.ece651.group4.RISK.shared.BasicOrder;
+import edu.duke.ece651.group4.RISK.client.utility.WaitDialog;
 import edu.duke.ece651.group4.RISK.shared.World;
 
 import java.util.ArrayList;

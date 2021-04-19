@@ -12,7 +12,6 @@ import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import edu.duke.ece651.group4.RISK.client.R;
@@ -241,7 +240,7 @@ public class GameActivity extends AppCompatActivity {
             if (getAllianceName().equals(NO_ALLY)) {
                 allyBT.setClickable(true);
             }
-            waitDG.dismiss();
+            waitDG.cancel();
         });
     }
 

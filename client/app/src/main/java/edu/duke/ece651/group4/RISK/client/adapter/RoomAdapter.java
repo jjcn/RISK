@@ -12,7 +12,6 @@ import edu.duke.ece651.group4.RISK.client.listener.onItemClickListener;
 import edu.duke.ece651.group4.RISK.shared.RoomInfo;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static edu.duke.ece651.group4.RISK.client.Constant.*;

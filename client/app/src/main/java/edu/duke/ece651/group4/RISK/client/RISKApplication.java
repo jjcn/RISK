@@ -2,10 +2,10 @@ package edu.duke.ece651.group4.RISK.client;
 
 import android.app.Application;
 import android.util.Log;
+import com.stfalcon.chatkit.commons.models.IMessage;
 import edu.duke.ece651.group4.RISK.client.listener.onJoinRoomListener;
 import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
 import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
-import edu.duke.ece651.group4.RISK.client.model.ChatMessage;
 import edu.duke.ece651.group4.RISK.shared.*;
 import edu.duke.ece651.group4.RISK.shared.message.GameMessage;
 import edu.duke.ece651.group4.RISK.shared.message.LogMessage;
@@ -521,7 +521,7 @@ public class RISKApplication extends Application {
 
     /*************** function for chat **************/
     // TODO
-    public static void sendOneMsg(ChatMessage message, onReceiveListener listener){
+    public static void sendOneMsg(IMessage message, onReceiveListener listener){
 
     }
 

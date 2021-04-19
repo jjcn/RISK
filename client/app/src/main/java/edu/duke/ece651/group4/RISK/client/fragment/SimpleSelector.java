@@ -2,7 +2,6 @@ package edu.duke.ece651.group4.RISK.client.fragment;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.view.Gravity;
 import android.widget.ArrayAdapter;
 import androidx.annotation.NonNull;

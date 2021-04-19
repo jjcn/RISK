@@ -1,23 +1,19 @@
 package edu.duke.ece651.group4.RISK.client.activity;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import com.stfalcon.chatkit.messages.MessageInput;
 import com.stfalcon.chatkit.messages.MessagesList;
 import com.stfalcon.chatkit.messages.MessagesListAdapter;
 import edu.duke.ece651.group4.RISK.client.R;
-import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
 import edu.duke.ece651.group4.RISK.client.model.ChatMessage;
 import edu.duke.ece651.group4.RISK.client.model.ChatPlayer;
 
-import java.util.ArrayList;
 import java.util.Date;
 
-import static edu.duke.ece651.group4.RISK.client.Constant.LOG_FUNC_RUN;
-import static edu.duke.ece651.group4.RISK.client.RISKApplication.*;
+import static edu.duke.ece651.group4.RISK.client.RISKApplication.getUserName;
+import static edu.duke.ece651.group4.RISK.client.RISKApplication.getWorld;
 
 /**
  * Reference: https://github.com/stfalcon-studio/ChatKit/blob/d10cfe3393a9d6ce150e817b22b019dcd17c55fa/sample/src/main/java/com/stfalcon/chatkit/sample/features/demo/def/DefaultMessagesActivity.java#L16

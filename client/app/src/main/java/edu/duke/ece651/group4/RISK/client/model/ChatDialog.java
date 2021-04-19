@@ -14,11 +14,11 @@ public class ChatDialog implements IDialog {
     private String dialogPhoto;
     private String dialogName;
     private ArrayList<ChatPlayer> users;
-    private ChatMessage lastMessage;
+    private IMessage lastMessage;
     private int unreadCount;
 
     public ChatDialog(String id, String name, String photo,
-                      ArrayList<ChatPlayer> users, ChatMessage lastMessage, int unreadCount) {
+                      ArrayList<ChatPlayer> users, IMessage lastMessage, int unreadCount) {
         this.chatID = id;
         this.dialogName = name;
         this.dialogPhoto = photo;
@@ -29,9 +29,9 @@ public class ChatDialog implements IDialog {
 
     public ChatDialog(int id, String name, List<String> playersName, ChatMessage lastMessage, int unreadCount) {
         this(String.valueOf(id), name, null, new ArrayList<ChatPlayer>(), lastMessage, unreadCount);
-        for(String playerName: playersName){
-            users.add(new ChatPlayer(getWorld().getRoomID(),playerName));
-        }
+//        for(String playerName: playersName){
+//            users.add(new ChatPlayer(getWorld().getRoomID(),playerName));
+//        }
     }
 
     @Override
@@ -61,7 +61,7 @@ public class ChatDialog implements IDialog {
 
     @Override
     public void setLastMessage(IMessage message) {
-        this.lastMessage = (ChatMessage) message;
+        this.lastMessage = message;
     }
 
     @Override
