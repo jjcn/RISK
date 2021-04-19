@@ -80,10 +80,19 @@ public class MessageActivity extends AppCompatActivity
                 Log.e(TAG, LOG_FUNC_RUN + "fails to submit message");
                 return;
             }
-        }) ;
+        });
         msgAdapter.addToStart(message, true);
         return true;
     }
+
+    // TODO
+//    protected void loadMessages() {
+//        new Handler().postDelayed(() -> {
+//            ArrayList<ChatMessage> messages = MessagesFixtures.getMessages(lastLoadedDate);
+//            lastLoadedDate = messages.get(messages.size() - 1).getCreatedAt();
+//            msgAdapter.addToEnd(messages, false);
+//        }, 1000);
+//    }
 
 //    add to implements:, MessagesListAdapter.OnLoadMoreListener
 //    @Override
@@ -93,14 +102,7 @@ public class MessageActivity extends AppCompatActivity
 //        }
 //    }
 //
-//    // TODO
-//    protected void loadMessages() {
-//        new Handler().postDelayed(() -> {
-//            ArrayList<ChatMessage> messages = MessagesFixtures.getMessages(lastLoadedDate);
-//            lastLoadedDate = messages.get(messages.size() - 1).getCreatedAt();
-//            msgAdapter.addToEnd(messages, false);
-//        }, 1000);
-//    }
+
 
 
     //    @Override

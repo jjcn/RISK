@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
+import static edu.duke.ece651.group4.RISK.client.RISKApplication.getAllplayerNames;
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.getCurrentRoomSize;
 
 /**

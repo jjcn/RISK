@@ -253,8 +253,8 @@ public class TurnActivity extends AppCompatActivity {
                 userInfo.clear();
                 userInfo.add(getPlayerInfo());
                 userInfoAdapter.notifyDataSetChanged();
-                actions.remove(UI_UPTECH); // can only upgrade once in one turn
-                actionAdapter.notifyDataSetChanged();
+//                actions.remove(UI_UPTECH); // can only upgrade once in one turn
+//                actionAdapter.notifyDataSetChanged();
             }
 
             @Override
