@@ -109,10 +109,7 @@ public class World implements Serializable {
         this.rnd = random;
         this.report = report;
         this.roomID = 0;
-<<<<<<< HEAD
-=======
         this.nTurn = 1;
->>>>>>> alliance
     }
 
     /**
@@ -675,17 +672,10 @@ public class World implements Serializable {
     }
 
     /**
-<<<<<<< HEAD
-     * Two players form an alliance.
-     *
-     * @param playerName1 is the name of a player.
-     * @param playerName2 is the name of another player.
-=======
      * Get the names of all alliances of a player.
      *
      * @param playerName is the name of the player to find alliance.
      * @return a set of names of all alliances of a player.
->>>>>>> alliance
      */
     public Set<String> getAllianceNames(String playerName) {
         Set<String> ans = new HashSet<>();
@@ -699,19 +689,12 @@ public class World implements Serializable {
     }
 
     /**
-<<<<<<< HEAD
-     * Two players break from an alliance.
-     *
-     * @param playerName1 is the name of a player.
-     * @param playerName2 is the name of another player.
-=======
      * Player 1 tries forming alliance with player 2.
      * Note: Player 2 has to form alliance with player 1 ON THE SAME TURN
      * so they can form an alliance successfully.
      *
      * @param p1Name is the name of player 1.
      * @param p2Name is the name of player 2.
->>>>>>> alliance
      */
     public void tryFormAlliance(String p1Name, String p2Name) {
         int p1Index = playerInfos.indexOf(getPlayerInfoByName(p1Name));
@@ -975,15 +958,4 @@ public class World implements Serializable {
         return toString().hashCode();
     }
 
-<<<<<<< HEAD
-    public void setRoomID(int id) {
-        this.roomID = id;
-    }
-
-    public int getRoomID() {
-        return this.roomID;
-    }
-
-=======
->>>>>>> alliance
 }
