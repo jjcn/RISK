@@ -455,6 +455,8 @@ public class Troop implements Serializable {
                 }
                 newDict.put(ARROW_NAMES.get(arrowLevel),num);
 
+            }else{
+                throw new IllegalArgumentException("Not using range attack unit");
             }
 
         }
