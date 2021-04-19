@@ -74,7 +74,11 @@ public class GameRunner extends Thread{
                 if(game.gameState.isAllPlayersDoneOneTurn()){
                     exit2 = true;
                 }
-
+                try {
+                  TimeUnit.SECONDS.sleep(1);
+                } catch (InterruptedException e) {
+                  e.printStackTrace();
+                }
             }
 //            while(!game.gameState.isAllPlayersDoneOneTurn()){game.waitTime(1);}
             //Update the game
