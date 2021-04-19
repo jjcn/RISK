@@ -60,7 +60,7 @@ public class Resource implements Serializable {
 
     /**
      * Check if a resource can be consumed by a number N.
-     * @param consumption
+     * @param consumption is the quantity of resource consumed.
      */
     public void checkConsume(int consumption) throws IllegalArgumentException {
         checkNonNegative(consumption);

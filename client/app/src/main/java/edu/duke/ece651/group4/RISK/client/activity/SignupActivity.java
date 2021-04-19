@@ -11,11 +11,11 @@ import android.widget.EditText;
 import androidx.appcompat.app.AppCompatActivity;
 import edu.duke.ece651.group4.RISK.client.R;
 import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
+import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
 
 import java.util.Objects;
 
-import static edu.duke.ece651.group4.RISK.client.Constant.EMPTY_INPUT;
-import static edu.duke.ece651.group4.RISK.client.Constant.SUCCESS_SIGNUP;
+import static edu.duke.ece651.group4.RISK.client.Constant.*;
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.sendSignUp;
 import static edu.duke.ece651.group4.RISK.client.utility.Notice.showByToast;
 
@@ -40,9 +40,10 @@ public class SignupActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
         impUI();
+        Log.i(TAG,SUCCESS_CREATE);
     }
 
-    // back button at toolbar
+    // Back button at toolbar: normal back to login activity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -53,6 +54,11 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     private void impUI() {
+        nameET = findViewById(R.id.editTextTextAccount);
+        passwordET = findViewById(R.id.editTextTextPassword);
+        pwdCheckET = findViewById(R.id.editTextTextPasswordCheck);
+        signupButton = findViewById(R.id.buttonSignUp);
+
         impAccountInput();
         impSignUpBt();
     }
@@ -62,15 +68,9 @@ public class SignupActivity extends AppCompatActivity {
      * Check if input two password are the same. Sign up button been activated if true.
      */
     private void impAccountInput() {
-        // read input
-        nameET = findViewById(R.id.editTextTextAccount);
-        passwordET = findViewById(R.id.editTextTextPassword);
-        pwdCheckET = findViewById(R.id.editTextTextPasswordCheck);
-
         passwordET.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -79,14 +79,12 @@ public class SignupActivity extends AppCompatActivity {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
-            }
+            public void afterTextChanged(Editable s) { }
         });
 
         pwdCheckET.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -95,20 +93,19 @@ public class SignupActivity extends AppCompatActivity {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
-            }
+            public void afterTextChanged(Editable s) { }
         });
     }
 
     /**
-     * send name and password to remote server and receive message if signed up a new account.
+     * send name and password to remote server and receive message_menu if signed up a new account.
      * back to login activity if new account created.
-     * remain in this activity
+     * remain in this activity if account exits or input empty name or password.
      */
     private void impSignUpBt() {
-        signupButton = findViewById(R.id.buttonSignUp);
         signupButton.setOnClickListener(v -> {
             signupButton.setClickable(false);
+            // read input.
             name = Objects.requireNonNull(nameET.getText()).toString().trim();
             password = Objects.requireNonNull(pwdCheckET.getText()).toString().trim();
             if (name.isEmpty() || password.isEmpty()) {
@@ -116,31 +113,24 @@ public class SignupActivity extends AppCompatActivity {
                 signupButton.setClickable(true);
                 return;
             }
+
             //connect to server and try sign up account
-            sendSignUp(name, password, new onReceiveListener() {
+            sendSignUp(name, password, new onResultListener() {
                 @Override
-                public void onSuccess(Object o) {
-                    String result = (String) o;
-                    runOnUiThread(() -> {
-                        if (result == null) {
-                            Intent loginIntent = new Intent(SignupActivity.this, LoginActivity.class);
-                            showByToast(SignupActivity.this, SUCCESS_SIGNUP);
-                            startActivity(loginIntent);
-                            finish();
-                        } else {
-                            showByToast(SignupActivity.this, result);// show account err message
-                            signupButton.setClickable(true);
-                            return;
-                        }
-                    });
+                public void onSuccess() {
+                    showByToast(SignupActivity.this, SUCCESS_SIGNUP);
+                    Intent loginIntent = new Intent(SignupActivity.this, LoginActivity.class);
+                    startActivity(loginIntent);
+                    finish();
                 }
 
                 @Override
                 public void onFailure(String errMsg) {
-                    Log.e(TAG, "sign up: " + errMsg.toString());
+                    showByToast(SignupActivity.this, errMsg);// show account err message_menu
+                    signupButton.setClickable(true);
+                    return;
                 }
             });
-
         });
     }
 

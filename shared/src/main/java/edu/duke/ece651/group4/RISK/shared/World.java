@@ -63,6 +63,8 @@ public class World implements Serializable {
      */
     protected final Random rnd;
 
+    protected int roomID;
+
     /**
      * Construct a default world with an empty graph.
      */
@@ -98,6 +100,7 @@ public class World implements Serializable {
         this.orderChecker = new OrderChecker();
         this.rnd = random;
         this.report = report;
+        this.roomID=0;
     }
 
     /**
@@ -159,7 +162,7 @@ public class World implements Serializable {
         World cpyWorld = new World(new Graph<>(cpy, weightsCopy, adjMatrixCopy),
                 clonePlayerInfos(), this.rnd,
                 new String(this.report == null ? null : new String(this.report)));
-
+        cpyWorld.setRoomID(this.roomID);
         return cpyWorld;
     }
 
@@ -615,6 +618,10 @@ public class World implements Serializable {
         getPlayerInfoByName(playerName).upgradeTechLevelBy(uTechOrder.getNLevel());
     }
 
+    public void doUpgradeTechResourceConsumption(UpgradeTechOrder uTechOrder, String playerName) {
+        consumeResourceOfPlayerTechUpgrade(uTechOrder, playerName);
+    }
+
     /**
      * Try upgrade a player's tech level by 1.
      * <p>
@@ -860,6 +867,14 @@ public class World implements Serializable {
     @Override
     public int hashCode() {
         return toString().hashCode();
+    }
+
+    public void setRoomID(int id){
+        this.roomID=id;
+    }
+
+    public int getRoomID(){
+        return this.roomID;
     }
 
 }

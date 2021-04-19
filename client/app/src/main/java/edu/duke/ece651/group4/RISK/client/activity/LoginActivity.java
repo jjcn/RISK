@@ -8,6 +8,7 @@ import android.widget.EditText;
 import androidx.appcompat.app.AppCompatActivity;
 import edu.duke.ece651.group4.RISK.client.R;
 import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
+import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
 
 import java.util.Objects;
 
@@ -37,36 +38,32 @@ public class LoginActivity extends AppCompatActivity {
         EditText passwordET = findViewById(R.id.editTextTextPassword);
         Button logInButton = findViewById(R.id.buttonLogin);
 
+        // TODO-corner case: name checking
         logInButton.setOnClickListener(v -> {
             logInButton.setClickable(false);
+            // rend in input
             name = Objects.requireNonNull(nameET.getText()).toString();
             password = Objects.requireNonNull(passwordET.getText()).toString();
 
-            sendLogIn(name, password, new onReceiveListener() {
+            sendLogIn(name, password, new onResultListener() {
                 @Override
-                public void onSuccess(Object o) {
-                    String result = (String) o;
-                    runOnUiThread(() -> {
-                        if (result == null) { //match
-                            Intent roomIntent = new Intent(LoginActivity.this, RoomActivity.class);
-                            logInButton.setClickable(true);
-                            startActivity(roomIntent);
-                        } else {
-                            showByToast(LoginActivity.this, result);// show account err message
-                            logInButton.setClickable(true);
-                            return;
-                        }
-                    });
+                public void onSuccess() {
+                    Intent roomIntent = new Intent(LoginActivity.this, RoomActivity.class);
+                    logInButton.setClickable(true);
+                    startActivity(roomIntent);
                 }
 
                 @Override
                 public void onFailure(String errMsg) {
-                    Log.e(TAG, "login: " + errMsg);
+                    showByToast(LoginActivity.this, errMsg);// show account err message_menu
+                    logInButton.setClickable(true);
+                    return;
                 }
             });
         });
     }
 
+    // Sign up button: change to new Signup Activity
     private void impSignUpBt() {
         Button signupButton = findViewById(R.id.buttonSignUp);
         signupButton.setOnClickListener(v -> {
