@@ -242,8 +242,8 @@ public class Game {
 
     synchronized protected void tryDoAlliance(Order order){
         AllianceOrder allianceOrder = (AllianceOrder) order;
-        this.theWorld.tryFormAlliance(allianceOrder.getSrcName(),allianceOrder.getSrcName());
-        out.println("Game" + gameID + ": " + allianceOrder.getSrcName() + " try form alliance with " + allianceOrder.getSrcName());
+        this.theWorld.tryFormAlliance(allianceOrder.getSrcName(),allianceOrder.getDesName());
+        out.println("Game" + gameID + ": " + allianceOrder.getSrcName() + " try form alliance with " + allianceOrder.getDesName());
     }
 
 

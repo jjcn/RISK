@@ -1,8 +1,11 @@
 package edu.duke.ece651.group4.RISK.server;
+//package org.apache.commons.lang3;
 
 import java.io.IOException;
+
+import edu.duke.ece651.group4.RISK.shared.message.ChatMessage;
+import org.apache.commons.lang3.SerializationUtils;
 import java.io.PrintStream;
-import java.io.Serializable;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.nio.ByteBuffer;
@@ -10,21 +13,21 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static edu.duke.ece651.group4.RISK.shared.Constant.CHAT_PORT;
+import static edu.duke.ece651.group4.RISK.shared.Constant.CHAT_SETUP_ACTION;
 
-public class ChatHost {
+public class ChatHost extends Thread {
     PrintStream out = System.out;
     static Selector selector;
     ServerSocketChannel serverSocketChannel;
     Map<String, SocketChannel> clientMap = new HashMap<>();
     ByteBuffer readBuffer = ByteBuffer.allocate(1024); // for read
-    ByteBuffer sendBuffer = ByteBuffer.allocate(1024); // for send
 
+    public ChatHost(){
+
+    }
 
     protected void init() throws IOException {
         out.println("ChatHost starts init");
@@ -46,8 +49,10 @@ public class ChatHost {
                 selector.select();
                 Set<SelectionKey> selectedKeys = selector.selectedKeys();
                 Iterator<SelectionKey> keyIterator = selectedKeys.iterator();
+
                 for (Iterator<SelectionKey> it = keyIterator; it.hasNext(); ) {
                     SelectionKey key = it.next();
+                    if(!key.isValid()){continue;}
                     handleSelectedKey(key);
                 }
                 selectedKeys.clear();
@@ -84,16 +89,68 @@ public class ChatHost {
                 }
                 if(readBytes > 0){
                     readBuffer.flip();
-                    //read the object
-                    //send it to destination
+                    ChatMessage chatMessage = SerializationUtils.deserialize(readBuffer.array());
+                    String action = chatMessage.getAction();
+                    if(action.equals(CHAT_SETUP_ACTION)){ //set up a user chat for init
+                        setUpUserChat(chatMessage, clientChannel);
+                    }
+                    else{
+                        handleChatMessage(chatMessage);
+                    }
                 }
             }
 
         } catch (IOException e) {
+            System.out.println("Key is cancelled");
+            key.cancel();
             e.printStackTrace();
         }
     }
 
+    protected void setUpUserChat(ChatMessage chatMessage,SocketChannel clientChannel){
+        String sender = chatMessage.getSource();
+        if(this.clientMap.containsKey(sender)){
+            this.clientMap.remove(sender);
+        }
+        this.clientMap.put(sender,clientChannel);
+        out.println("ChatHost: " + sender + " sets up successfully");
+    }
 
+    protected void handleChatMessage(ChatMessage chatMessage) throws IOException {
+        String sender = chatMessage.getSource();
+        List<String> targets = chatMessage.getTargetsPlayers();
+        for(String target : targets){
+            SocketChannel clientChannel = this.clientMap.get(target);
+            if(clientChannel == null){
+                out.println("ChatHost: no channel exits for " + target);
+                continue;
+            }
+            out.println("ChatHost: " + sender + " send a message to " + target + "successfully -- " + chatMessage.getChatContent());
+            ByteBuffer sendBuffer = ByteBuffer.wrap(SerializationUtils.serialize(chatMessage));
+            clientChannel.write(sendBuffer);
+            sendBuffer.clear();
+        }
+    }
+
+    @Override
+    public void run() {
+        try {
+            this.init();
+            this.acceptConnection();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (this.selector != null) {
+                    this.selector.close();
+                }
+                if (this.serverSocketChannel != null) {
+                    this.serverSocketChannel.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
 }
