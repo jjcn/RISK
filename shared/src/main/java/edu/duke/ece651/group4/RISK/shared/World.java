@@ -339,8 +339,8 @@ public class World implements Serializable {
      * @param pInfo is the player info to register.
      */
     public void registerPlayer(PlayerInfo pInfo) {
-        playerInfos.add(pInfo);
         expandAllianceMatrixBy1();
+        playerInfos.add(pInfo);
     }
 
     /**
