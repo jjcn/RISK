@@ -2,6 +2,14 @@ package edu.duke.ece651.group4.RISK.client.model;
 
 import com.stfalcon.chatkit.commons.models.IUser;
 
+/**
+ * A ChatPlayer that participates in dialogs.
+ *
+ * Quote: " If user doesn't have avatar image, you can return null,
+ * and image will not be shown in incoming message item:"
+ * from:
+ * https://github.com/stfalcon-studio/ChatKit/blob/master/docs/COMPONENT_MESSAGES_LIST.md
+ */
 public class ChatPlayer implements IUser {
     private String roomID;
     private String name;

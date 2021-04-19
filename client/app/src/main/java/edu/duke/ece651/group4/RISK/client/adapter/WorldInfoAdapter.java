@@ -4,7 +4,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import edu.duke.ece651.group4.RISK.shared.Player;
 import edu.duke.ece651.group4.RISK.shared.Territory;
 import edu.duke.ece651.group4.RISK.shared.World;
 

@@ -14,7 +14,6 @@ public class Constant {
     //socket
     public static final String SOCKET_HOSTNAME = "localhost";
     public static final int SOCKET_PORT = 9999;
-    public static final int CHAT_PORT = 5678;
 
     //Message
     public static final String MESS_LOG = "MessageLog";
@@ -57,4 +56,5 @@ public class Constant {
     public static final String PLACEMENT_DONE="Placement Done\n";
 
     //Chat
+    public static final int CHAT_PORT = 5678;
 }

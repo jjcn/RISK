@@ -1,5 +1,6 @@
 package edu.duke.ece651.group4.RISK.client.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import edu.duke.ece651.group4.RISK.client.R;
+import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
 
 import java.util.List;
 
@@ -154,11 +156,29 @@ public class BasicOrderActivity extends AppCompatActivity {
                     + " move " + nUnit + " " + typeName);
             String result = "";
             if (actionType.equals(UI_MOVE)) {
-                result = doOneMove(buildMoveOrder(srcName, desName, nUnit, typeName)
-                );
+                result = doOneMove(buildMoveOrder(srcName, desName, nUnit, typeName),
+                        new onResultListener() {
+                            @Override
+                            public void onSuccess() {
+                            }
+
+                            @Override
+                            public void onFailure(String errMsg) {
+                                Log.e(TAG, errMsg);
+                            }
+                        });
             } else if (actionType.equals(UI_ATK)) {
-                result = doOneAttack(buildAttackOrder(srcName, desName, nUnit, typeName)
-                );
+                result = doOneAttack(buildAttackOrder(srcName, desName, nUnit, typeName),
+                        new onResultListener() {
+                            @Override
+                            public void onSuccess() {
+                            }
+
+                            @Override
+                            public void onFailure(String errMsg) {
+                                Log.e(TAG, errMsg);
+                            }
+                        });
             }
 
             if (result == null) {

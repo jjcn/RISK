@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import edu.duke.ece651.group4.RISK.client.R;
 import edu.duke.ece651.group4.RISK.client.adapter.RoomAdapter;
-import edu.duke.ece651.group4.RISK.client.fragment.WaitDialog;
+import edu.duke.ece651.group4.RISK.client.utility.WaitDialog;
 import edu.duke.ece651.group4.RISK.client.listener.onJoinRoomListener;
 import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
 import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
@@ -107,7 +107,6 @@ public class RoomActivity extends AppCompatActivity {
                             Intent gameIntent = new Intent(RoomActivity.this, TurnActivity.class);
                             showByToast(RoomActivity.this, SUCCESS_START);
                             startActivity(gameIntent);
-                            finish();
                         }
                     });
                 }
@@ -179,6 +178,5 @@ public class RoomActivity extends AppCompatActivity {
         showByToast(RoomActivity.this, SUCCESS_START);
         Intent placeIntent = new Intent(RoomActivity.this, PlaceActivity.class);
         startActivity(placeIntent);
-        finish();
     }
 }
