@@ -176,13 +176,18 @@ public class Graph<T> implements Serializable {
 
     protected void expandAdjMatrixBy1() {
         int n = vertices.size();
-        boolean[][] newAdjMatrix = new boolean[n + 1][n + 1];
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                newAdjMatrix[i][j] = this.adjMatrix[i][j];
-            }
+        if (n == 1) {
+            adjMatrix = new boolean[1][1];
         }
-        adjMatrix = newAdjMatrix;
+        else {
+            boolean[][] newAdjMatrix = new boolean[n + 1][n + 1];
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    newAdjMatrix[i][j] = this.adjMatrix[i][j];
+                }
+            }
+            adjMatrix = newAdjMatrix;
+        }
     }
 
     /**
