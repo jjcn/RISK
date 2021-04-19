@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import edu.duke.ece651.group4.RISK.client.R;
 import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
-import edu.duke.ece651.group4.RISK.client.fragment.WaitDialog;
+import edu.duke.ece651.group4.RISK.client.utility.WaitDialog;
 import edu.duke.ece651.group4.RISK.shared.*;
 
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ public class PlaceActivity extends AppCompatActivity {
     private void impUI() {
         instr = findViewById(R.id.placeInstru);
         instr.append("You have total of " + PLACE_TOTAL + " soldiers.");
-        mapIV = findViewById(R.id.worldFG).findViewById(R.id.world_image_view);
+        mapIV = findViewById(R.id.world_image_view);
         mapIV.setImageResource(MAPS.get(getCurrentRoomSize()));
         List<Territory> myTerr = getMyTerritory(); // two for each player
 

@@ -2,7 +2,6 @@ package edu.duke.ece651.group4.RISK.client.fragment;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.view.Gravity;
 import android.widget.ArrayAdapter;
 import androidx.annotation.NonNull;
@@ -16,7 +15,7 @@ public class SimpleSelector extends Dialog {
     private String chosen;
     private final ArrayAdapter<String> adapter;
 
-    public SimpleSelector(@NonNull Context context, List<String> choices) {
+    public SimpleSelector(@NonNull Context context,String title, List<String> choices) {
         super(context);
         getWindow().setGravity(Gravity.CENTER);
         setCanceledOnTouchOutside(true);
@@ -24,7 +23,7 @@ public class SimpleSelector extends Dialog {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         adapter = new ArrayAdapter<>(context, R.layout.item_choice,
                 choices);
-        builder.setTitle(R.string.CHOOSE_USER_INSTR)
+        builder.setTitle(title)
                 .setSingleChoiceItems(adapter, 0, (dialog, which) -> chosen = choices.get(which))
                 .setPositiveButton("Confirm", (dialog, which) -> {
                 })
