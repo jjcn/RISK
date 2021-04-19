@@ -78,9 +78,17 @@ public class OrderCheckerTest {
         return world;
     }
 
+    public World createWorldAndRegister(Troop... troop) {
+        World world = createWorld(troop);
+        world.registerPlayer(redInfo);
+        world.registerPlayer(blueInfo);
+        world.registerPlayer(greenInfo);
+        return world;
+    }
+
     @Test
     public void testMoveOrderCheckerValid() {
-        World world = createWorld(troopsConnected);
+        World world = createWorldAndRegister(troopsConnected);
 
         BasicOrder order1 = new BasicOrder("Narnia", "Midkemia", new Troop(3, green), 'M');
         assertEquals(null, oc.checkOrder(order1, world));
@@ -91,7 +99,7 @@ public class OrderCheckerTest {
 
     @Test
     public void testAttackOrderCheckerValid() {
-        World world = createWorld(troopsConnected);
+        World world = createWorldAndRegister(troopsConnected);
 
         BasicOrder order1 = new BasicOrder("Narnia", "Elantris", new Troop(3, green), 'A');
         assertEquals(null, oc.checkOrder(order1, world));
@@ -103,7 +111,7 @@ public class OrderCheckerTest {
 
     @Test
     public void testOrderNotYourTroop() {
-        World world = createWorld(troopsConnected);
+        World world = createWorldAndRegister(troopsConnected);
 
         BasicOrder order1_red = new BasicOrder("Narnia", "Midkemia", new Troop(3, red), 'M');
         BasicOrder order1_blue = new BasicOrder("Narnia", "Midkemia", new Troop(3, blue), 'M');
@@ -122,7 +130,7 @@ public class OrderCheckerTest {
 
     @Test
     public void testOrderNotEnoughTroop() {
-        World world = createWorld(troopsConnected);
+        World world = createWorldAndRegister(troopsConnected);
 
         BasicOrder order1 = new BasicOrder("Narnia", "Midkemia", new Troop(11, green), 'M');
         assertEquals(String.format(NOT_ENOUGH_TROOP_MSG, 
@@ -139,7 +147,7 @@ public class OrderCheckerTest {
 
     @Test
     public void testOrderNotBasicOrderType() {
-        World world = createWorld(troopsConnected);
+        World world = createWorldAndRegister(troopsConnected);
 
         BasicOrder order1 = new BasicOrder("Narnia", "Midkemia", new Troop(3, green), 'J');
         assertEquals(String.format(UNKNOWN_BASIC_ORDER_TYPE, 'J'), 
