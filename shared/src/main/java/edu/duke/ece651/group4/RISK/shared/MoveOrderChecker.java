@@ -27,8 +27,8 @@ public class MoveOrderChecker implements Serializable {
      * Error messages
      */
     protected final String NOT_MOVE_ORDER_MSG = "This is not a move order.";
-    protected final String NOT_SAME_OWNER_MSG = 
-        "Cannot move troop to %s, which belongs to another player.";
+    protected final String NOT_PERMITTED_OWNER_MSG =
+        "Cannot move troop to %s, which belongs to another player who is not your ally.";
     protected final String NOT_REACHABLE_MSG = 
         "Cannot reach from %s to %s. " +
         "Other players' territories are blocking the way.";
@@ -47,10 +47,13 @@ public class MoveOrderChecker implements Serializable {
             Territory start = world.findTerritory(order.getSrcName());
             Territory end = world.findTerritory(order.getDesName());
             String moverName = start.getOwner().getName();
-            // if the start and end do not have the same owner
-            if (!start.getOwner().equals(end.getOwner())) {
-                return String.format(NOT_SAME_OWNER_MSG, end.getName());
+            Set<String> permittedOwnerNames = getPermittedOwnerNames(moverName, world);
+
+            // if end is not your or your allies' territory
+            if (!permittedOwnerNames.contains(end.getOwner().getName())) {
+                return String.format(NOT_PERMITTED_OWNER_MSG, end.getName());
             }
+
             // if not reachable
             Queue<Territory> queue = new LinkedList<>();
             Set<Territory> visited = new HashSet<>();
@@ -64,8 +67,7 @@ public class MoveOrderChecker implements Serializable {
                         return null;
                     }
                     if (!visited.contains(adjacent)) {
-                        if (getPermittedOwnerNames(moverName, world)
-                            .contains(adjacent.getOwner().getName())) { // changed in evol3
+                        if (permittedOwnerNames.contains(adjacent.getOwner().getName())) {
                                 visited.add(adjacent);
                                 queue.add(adjacent);
                             }

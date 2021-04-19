@@ -350,7 +350,7 @@ public class Troop implements Serializable {
         return target;
     }
 
-    public boolean isRanged() {
+    public boolean hasRanged() {
         for (String s : dict.keySet()) {
             if (ARCHER_NAMES.contains(s) && dict.get(s) > 0) {
                 return true;
@@ -358,7 +358,6 @@ public class Troop implements Serializable {
         }
         return false;
     }
-
 
     public Unit getWeakest() {
 
@@ -426,8 +425,8 @@ public class Troop implements Serializable {
         return NORM_SPEED;
     }
 
-    public Troop sendRangeAttack(Troop target) {
-        if (!this.isRanged()) {
+    public Troop sendRangedAttack(Troop target) {
+        if (!this.hasRanged()) {
             throw new IllegalArgumentException("No range attack unit");
         }
 

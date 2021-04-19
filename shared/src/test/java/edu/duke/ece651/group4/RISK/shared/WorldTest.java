@@ -1,6 +1,7 @@
 package edu.duke.ece651.group4.RISK.shared;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -485,6 +486,54 @@ public class WorldTest {
         UpgradeTechOrder uTechOrder = new UpgradeTechOrder(5);
         assertThrows(IllegalArgumentException.class,
                     () -> world.upgradePlayerTechLevelBy(uTechOrder, "red"));
+    }
+
+    /**
+     * Helper function that tests if two sets of Strings are equal
+     * @param set1
+     * @param set2
+     */
+    protected void assertSetEquals(Set<String> set1, Set<String> set2) {
+        assertTrue(set1.size() == set2.size());
+        assertTrue(set1.containsAll(set2));
+        assertTrue(set2.containsAll(set1));
+    }
+
+    @Test
+    public void testTryFormAllianceUnilateral() {
+        World world = createWorldAndRegister(troopsSeparated);
+        // only red to blue
+        world.tryFormAlliance("red", "blue");
+        world.tryFormAlliance("green", "blue");
+        assertSetEquals(new HashSet<String>(Arrays.asList("blue")), world.getAllianceNames("red"));
+        assertSetEquals(new HashSet<String>(), world.getAllianceNames("blue"));
+        assertSetEquals(new HashSet<String>(Arrays.asList("blue")), world.getAllianceNames("green"));
+        // resolve alliance results
+        world.doCheckIfAllianceSuccess();
+        // only unilateral requests, no alliance formed
+        assertSetEquals(new HashSet<String>(), world.getAllianceNames("red"));
+        assertSetEquals(new HashSet<String>(), world.getAllianceNames("blue"));
+        assertSetEquals(new HashSet<String>(), world.getAllianceNames("green"));
+    }
+
+    @Test
+    public void testTryFormAllianceMutual() {
+        World world = createWorldAndRegister(troopsSeparated);
+        // red and blue, red and green mutually send alliance requests
+        world.tryFormAlliance("red", "blue");
+        world.tryFormAlliance("blue", "red");
+        world.tryFormAlliance("red", "green");
+        world.tryFormAlliance("green", "red");
+        Set<String> redAllies = new HashSet<String>(Arrays.asList("green, blue"));
+        assertSetEquals(redAllies, world.getAllianceNames("red"));
+        assertSetEquals(new HashSet<String>(Arrays.asList("red")), world.getAllianceNames("blue"));
+        assertSetEquals(new HashSet<String>(Arrays.asList("red")), world.getAllianceNames("green"));
+        // resolve alliance results
+        world.doCheckIfAllianceSuccess();
+        // all mutual requests, all alliance formed4
+        assertSetEquals(redAllies, world.getAllianceNames("red"));
+        assertSetEquals(new HashSet<String>(Arrays.asList("red")), world.getAllianceNames("blue"));
+        assertSetEquals(new HashSet<String>(Arrays.asList("red")), world.getAllianceNames("green"));
     }
 
     @Test
