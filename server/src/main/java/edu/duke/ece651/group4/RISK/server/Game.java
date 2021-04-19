@@ -245,11 +245,14 @@ public class Game {
         this.theWorld.tryFormAlliance(allianceOrder.getSrcName(),allianceOrder.getSrcName());
         out.println("Game" + gameID + ": " + allianceOrder.getSrcName() + " try form alliance with " + allianceOrder.getSrcName());
     }
+
+
     /*
     * This is the final update for the whole world after one turn
     * */
     public void updateGameAfterOneTurn(){
         this.theWorld.doAllBattles();
+        this.theWorld.doCheckIfAllianceSuccess();
         this.theWorld.allPlayersGainResources();
         this.theWorld.addUnitToAll(1);
     }
