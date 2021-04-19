@@ -1,27 +1,35 @@
 package edu.duke.ece651.group4.RISK.client.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import com.stfalcon.chatkit.messages.MessageInput;
 import com.stfalcon.chatkit.messages.MessagesList;
 import com.stfalcon.chatkit.messages.MessagesListAdapter;
 import edu.duke.ece651.group4.RISK.client.R;
+import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
 import edu.duke.ece651.group4.RISK.client.model.ChatMessage;
 import edu.duke.ece651.group4.RISK.client.model.ChatPlayer;
 
+import java.util.ArrayList;
 import java.util.Date;
 
-import static edu.duke.ece651.group4.RISK.client.RISKApplication.getUserName;
-import static edu.duke.ece651.group4.RISK.client.RISKApplication.getWorld;
+import static edu.duke.ece651.group4.RISK.client.Constant.LOG_FUNC_RUN;
+import static edu.duke.ece651.group4.RISK.client.RISKApplication.*;
 
 /**
  * Reference: https://github.com/stfalcon-studio/ChatKit/blob/d10cfe3393a9d6ce150e817b22b019dcd17c55fa/sample/src/main/java/com/stfalcon/chatkit/sample/features/demo/def/DefaultMessagesActivity.java#L16
  */
 public class MessageActivity extends AppCompatActivity
         implements MessageInput.InputListener {
+
     private static final String TAG = MessageActivity.class.getSimpleName();
     private static final int TOTAL_MSG = 100;
+
     private MessagesListAdapter msgAdapter;
     private MessagesList msgList;
     //    private Menu menu;
@@ -32,17 +40,20 @@ public class MessageActivity extends AppCompatActivity
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
-        impUI();
-    }
 
-    private void impUI() {
         this.msgList = findViewById(R.id.messagesList);
-        msgAdapter = new MessagesListAdapter(getUserName(), null);
-//        msgAdapter.setLoadMoreListener(this);
-        msgList.setAdapter(msgAdapter);
+        initAdapter();
 
         MessageInput input = findViewById(R.id.input);
         input.setInputListener(this);
+//        input.setTypingListener(this);
+//        input.setAttachmentsListener(this);
+    }
+
+    private void initAdapter() {
+        msgAdapter = new MessagesListAdapter<>(getUserName(), null);
+        msgList.setAdapter(msgAdapter);
+//        msgAdapter.setLoadMoreListener(this);
     }
 
     //TODO+: get history
@@ -53,26 +64,35 @@ public class MessageActivity extends AppCompatActivity
         msgAdapter.addToStart(new ChatMessage(0,"",new ChatPlayer(0,"")), true);
     }
 
-    //TODO++
+    //TODO
     @Override
     public boolean onSubmit(CharSequence input) {
         ChatPlayer user = new ChatPlayer(getWorld().getRoomID(), getUserName());
         ChatMessage message = new ChatMessage(0, input.toString(), user);
-//        sendOneMsg(message, new onReceiveListener() {
-//            @Override
-//            public void onSuccess(Object o) {
-//                message.setChatID((int) o);
-//            }
-//
-//            @Override
-//            public void onFailure(String errMsg) {
-//                Log.e(TAG, LOG_FUNC_RUN+"send message fail");
-//                return;
-//            }
-//        }) ;
+        sendOneMsg(message, new onReceiveListener() {
+            @Override
+            public void onSuccess(Object o) {
+                message.setChatID((int) o);
+            }
+
+            @Override
+            public void onFailure(String errMsg) {
+                Log.e(TAG, LOG_FUNC_RUN + "fails to submit message");
+                return;
+            }
+        });
         msgAdapter.addToStart(message, true);
         return true;
     }
+
+    // TODO
+//    protected void loadMessages() {
+//        new Handler().postDelayed(() -> {
+//            ArrayList<ChatMessage> messages = MessagesFixtures.getMessages(lastLoadedDate);
+//            lastLoadedDate = messages.get(messages.size() - 1).getCreatedAt();
+//            msgAdapter.addToEnd(messages, false);
+//        }, 1000);
+//    }
 
 //    add to implements:, MessagesListAdapter.OnLoadMoreListener
 //    @Override
@@ -82,14 +102,7 @@ public class MessageActivity extends AppCompatActivity
 //        }
 //    }
 //
-//    // TODO
-//    protected void loadMessages() {
-//        new Handler().postDelayed(() -> {
-//            ArrayList<ChatMessage> messages = MessagesFixtures.getMessages(lastLoadedDate);
-//            lastLoadedDate = messages.get(messages.size() - 1).getCreatedAt();
-//            msgAdapter.addToEnd(messages, false);
-//        }, 1000);
-//    }
+
 
 
     //    @Override

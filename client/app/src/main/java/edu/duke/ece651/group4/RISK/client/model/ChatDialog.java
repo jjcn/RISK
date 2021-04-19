@@ -9,6 +9,9 @@ import java.util.List;
 
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.getWorld;
 
+/**
+ * A dialog
+ */
 public class ChatDialog implements IDialog {
     private String chatID;
     private String dialogPhoto;
@@ -17,7 +20,7 @@ public class ChatDialog implements IDialog {
     private IMessage lastMessage;
     private int unreadCount;
 
-    public ChatDialog(String id, String name, String photo,
+    protected ChatDialog(String id, String name, String photo,
                       ArrayList<ChatPlayer> users, IMessage lastMessage, int unreadCount) {
         this.chatID = id;
         this.dialogName = name;
@@ -27,11 +30,20 @@ public class ChatDialog implements IDialog {
         this.unreadCount = unreadCount;
     }
 
-    public ChatDialog(int id, String name, List<String> playersName, ChatMessage lastMessage, int unreadCount) {
-        this(String.valueOf(id), name, null, new ArrayList<ChatPlayer>(), lastMessage, unreadCount);
-//        for(String playerName: playersName){
-//            users.add(new ChatPlayer(getWorld().getRoomID(),playerName));
-//        }
+    /**
+     * No need for: player avatar, last message, unread count
+     * @param id is chat ID
+     * @param name is the name of the chat
+     * @param playerNames is the names of players in the chat
+     */
+    public ChatDialog(int id, String name, List<String> playerNames) {
+        this(String.valueOf(id), name, null,
+                new ArrayList<ChatPlayer>(), null, 0);
+        ArrayList<ChatPlayer> players = new ArrayList<ChatPlayer>();
+        for (String playerName : playerNames) {
+            players.add(new ChatPlayer(getWorld().getRoomID(), playerName));
+        }
+        this.users = players;
     }
 
     @Override

@@ -13,12 +13,12 @@ public class ChatMessage implements IMessage {
     private Date createdAt;
     private List<String> targets; // want to talk to ---
 
-    public ChatMessage(int id, String text, ChatPlayer user) {
-        this(String.valueOf(id), text, user, new Date());
+    public ChatMessage(int chatID, String text, ChatPlayer user) {
+        this(String.valueOf(chatID), text, user, new Date());
     }
 
-    public ChatMessage(String id, String text, ChatPlayer user) {
-        this(id, text, user, new Date());
+    public ChatMessage(String chatID, String text, ChatPlayer user) {
+        this(chatID, text, user, new Date());
     }
 
     public ChatMessage(String chatID, String text, ChatPlayer user, Date createdAt){

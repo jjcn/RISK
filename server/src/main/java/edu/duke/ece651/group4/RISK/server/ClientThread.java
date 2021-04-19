@@ -288,6 +288,13 @@ public class ClientThread extends Thread {
             return;
         }
         doActionPhaseOneTurn();
+
+        if(gameOnGoing.gameState.getAPlayerState(ownerUser).equals(PLAYER_STATE_SWITCH_OUT)){
+            out.println("Game" + gameOnGoing.getGameID() + ": Checking Phase :  " + ownerUser.getUsername() + " Switches Out");
+            gameOnGoing = null;
+            return;
+        }
+        
         out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " wait for runner update the world");
         boolean exit = false;
         while(!exit){
@@ -336,18 +343,21 @@ public class ClientThread extends Thread {
      * */
     protected void updatePlayerStateOneTurn(){
         //Go back to Games Page (Part2)
-        if(gameOnGoing.gameState.getAPlayerState(ownerUser).equals(PLAYER_STATE_SWITCH_OUT)){
-            out.println("Game" + gameOnGoing.getGameID() + ": Checking Phase :  " + ownerUser.getUsername() + " Switches Out");
-            gameOnGoing = null;
-        }
-        else if(gameOnGoing.isUserLose(ownerUser)){
-            out.println("Game" + gameOnGoing.getGameID() + ": Checking Phase :  " + ownerUser.getUsername() + " loses");
-            gameOnGoing.gameState.changAPlayerStateTo(ownerUser, PLAYER_STATE_LOSE);
-        }
-        else if(gameOnGoing.isEndGame()){
+        if(gameOnGoing.isEndGame()){
             out.println("Game" + gameOnGoing.getGameID() + ": Checking Phase :  game END!!!! and winner is " + gameOnGoing.getTheWorld().getWinner() );
+            this.theClient.sendObject(gameOnGoing.getTheWorld());
             gameOnGoing.switchOutUser(ownerUser);
             gameOnGoing = null;
+            return;
+        }
+
+        /*        if(gameOnGoing.gameState.getAPlayerState(ownerUser).equals(PLAYER_STATE_SWITCH_OUT)){
+            out.println("Game" + gameOnGoing.getGameID() + ": Checking Phase :  " + ownerUser.getUsername() + " Switches Out");
+            gameOnGoing = null;
+            }*/
+        if(gameOnGoing.isUserLose(ownerUser)){
+            out.println("Game" + gameOnGoing.getGameID() + ": Checking Phase :  " + ownerUser.getUsername() + " loses");
+            gameOnGoing.gameState.changAPlayerStateTo(ownerUser, PLAYER_STATE_LOSE);
         }
         else{
             out.println("Game" + gameOnGoing.getGameID() + ": Checking Phase :  " + ownerUser.getUsername() + " go back to do action");
