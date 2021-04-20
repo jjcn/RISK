@@ -38,4 +38,5 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'com.github.stfalcon-studio:Chatkit:[0.4.1]'
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.7+'
 }
