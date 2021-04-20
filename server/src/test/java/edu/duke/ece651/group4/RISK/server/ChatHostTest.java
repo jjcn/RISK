@@ -20,14 +20,71 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static edu.duke.ece651.group4.RISK.shared.Constant.CHAT_SETUP_ACTION;
 import static org.junit.jupiter.api.Assertions.*;
 
+
+
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+class ChatHostTest {
+    ChatHost ch;
+    Map<String,ChatClient> clients = new HashMap<>();
+    int port;
+    String host = "localhost";
+
+    protected void timeWait(int t){
+        try {
+            TimeUnit.SECONDS.sleep(t);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @BeforeAll
+    public void  setUp(){
+        port = 9988;
+        ch = new ChatHost(port);// initialize the chat host
+        ch.start();
+        timeWait(1);
+        for(int i = 0; i< 3; i++){
+            setUpAClient("user" + i);
+        }
+    }
+
+
+     synchronized void setUpAClient(String username){
+        try {
+            SocketChannel chatChannel = SocketChannel.open();
+            chatChannel.connect(new InetSocketAddress(host, port));
+
+            ChatClient chatClient = new ChatClient(username, chatChannel);
+            clients.put(username,chatClient);
+            chatClient.start();
+            chatClient.send(new ChatMessage(username, null, null,  0, CHAT_SETUP_ACTION));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @Test
+    public void test_run(){
+        List<String> targets = new ArrayList<>();
+        targets.add("user1");
+        targets.add("user2");
+        ChatMessage cM1 = new ChatMessage("user0", targets, "hello everyone!",  0, "");
+        clients.get("user0").send(cM1);
+    }
+
+
+}
+
 class ChatClient extends Thread {
 
     SocketChannel chatChannel = null;
-    String clientName;
+    String username;
     private final AtomicBoolean exit = new AtomicBoolean(false);
+
     // constructor
     public ChatClient(String username, SocketChannel chatChannel) {
-        this.clientName = username;
+        this.username = username;
         this.chatChannel = chatChannel;
     }
 
@@ -70,74 +127,11 @@ class ChatClient extends Thread {
             ChatMessage chatMsgRecv = (ChatMessage) SerializationUtils.deserialize(readBuffer.array());
             readBuffer.clear();
             // debug
-            System.out.println("The chat message is from: " + chatMsgRecv.getSource());
-            System.out.println("Saying: " + chatMsgRecv.getChatContent());
-        }
-    }
-}
-
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class ChatHostTest {
-    ChatHost ch;
-    Map<String,SocketChannel> clients = new HashMap<>();
-//    Map<String,Client> clients = new HashMap<>();
-    int port;
-    String host = "localhost";
-
-    protected void timeWait(int t){
-        try {
-            TimeUnit.SECONDS.sleep(t);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-    @BeforeAll
-    public void  setUp(){
-        port = 9988;
-        ch = new ChatHost(port);// initialize the chat host
-        ch.start();
-        timeWait(1);
-        for(int i = 0; i< 3; i++){
-            setUpAClient("user" + i);
-            send(new ChatMessage("user" + i, null, null,  0, CHAT_SETUP_ACTION));
+            System.out.println("ClientChat: " + username + " get from " + chatMsgRecv.getSource() +" saying "+ chatMsgRecv.getChatContent());
         }
     }
 
-
-     synchronized void setUpAClient(String username){
-        try {
-            SocketChannel chatChannel = SocketChannel.open();
-            chatChannel.connect(new InetSocketAddress(host, port));
-//            System.out.println("get a new connection: " + username);
-            clients.put(username,chatChannel);
-            ChatClient chatClient = new ChatClient(username, chatChannel);
-            chatClient.start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-//    synchronized void setUpAClient(String username){
-//        try {
-//            Client c = new Client(host, port);
-//            clients.put(username, c);
-//            System.out.println("Test: get a new connection: " + username);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
-//    void send(ChatMessage chatMessage){
-//        System.out.println("Send " + chatMessage.getSource());
-//        Client c = clients.get(chatMessage.getSource());
-//        assertNotNull(c);
-//        c.sendObject(chatMessage);
-//    }
-    void send(ChatMessage chatMessage){
-
-        SocketChannel chatChannel = clients.get(chatMessage.getSource());
-        assertNotNull(chatChannel);
+    public void send(ChatMessage chatMessage){
         byte[] chatBytes = SerializationUtils.serialize(chatMessage);
         ByteBuffer writeBuffer = ByteBuffer.wrap(chatBytes);
         try {
@@ -150,15 +144,4 @@ class ChatHostTest {
         }
         writeBuffer.clear();
     }
-
-    @Test
-    public void test_run(){
-        List<String> targets = new ArrayList<>();
-        targets.add("user1");
-        targets.add("user2");
-        ChatMessage cM1 = new ChatMessage("user0", targets, "hello everyone!",  0, "");
-        send(cM1);
-    }
-
-
 }
