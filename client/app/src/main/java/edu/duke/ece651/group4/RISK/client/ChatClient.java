@@ -64,9 +64,6 @@ public class ChatClient extends Thread {
             readBuffer.clear();
             //deal with chatMsgRecV to notify android UI
 
-
-
-
             System.out.println("ClientChat: " + username + " get from " + chatMsgRecv.getSource() +" saying "+ chatMsgRecv.getChatContent());
         }
     }
