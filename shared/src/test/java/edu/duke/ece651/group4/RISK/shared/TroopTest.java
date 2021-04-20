@@ -27,6 +27,7 @@ public class TroopTest {
         myDict.put("Soldier LV4", 2);
         myDict.put("Soldier LV0", 4);
         Troop dem = new Troop(myDict, new TextPlayer("test"));
+
         assertThrows(new IllegalArgumentException().getClass(), () -> test.sendTroop(dem));
         assertThrows(new IllegalArgumentException().getClass(), () -> test.dispatchCertainUnit("Soldier LV6"));
         assertEquals(test.checkUnitNum("Soldier LV6"),0);
@@ -41,8 +42,6 @@ public class TroopTest {
         test.sendTroop(dem);
         assertEquals(test.checkTroopSize(), 0);
         assertThrows(new IllegalArgumentException().getClass(), () -> test.sendTroop(dem));
-
-
     }
 
 
@@ -112,7 +111,6 @@ public class TroopTest {
         assertEquals(receive.checkTroopSize(), 8);
         assertEquals(receive.checkUnitNum("Soldier LV0"), 6);
         assertEquals(receive.checkUnitNum("Soldier LV5"), 1);
-
     }
 
     @Test
@@ -128,8 +126,6 @@ public class TroopTest {
         Troop enemy2 = new Troop(25, new TextPlayer("test"), rnd);
         test2.combat(enemy2);
         assertEquals(test2.checkTroopSize(), 5);
-
-
     }
 
     @Test
@@ -139,15 +135,18 @@ public class TroopTest {
         Troop clone = test.clone();
         assertEquals(test.checkTroopSize(), clone.checkTroopSize());
 
-
         test.dispatchCertainUnit(UNIT_NAMES.get(0));
         test.dispatchCertainUnit(UNIT_NAMES.get(0));
         test.dispatchCertainUnit(UNIT_NAMES.get(0));
         test.dispatchCertainUnit(UNIT_NAMES.get(0));
         test.dispatchCertainUnit(UNIT_NAMES.get(0));
-
-
-
     }
-    
+
+    @Test
+    public void Test_transfer() {
+        Troop troop1 = new Troop(5, new TextPlayer("test"), new Random(0));
+        troop1.transfer(Constant.SOLDIER, Constant.KNIGHT, 0,1);
+        assertEquals(1, troop1.checkUnitNum("Knight LV0"));
+        assertEquals(4, troop1.checkUnitNum("Soldier LV0"));
+    }
 }

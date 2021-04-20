@@ -167,7 +167,7 @@ public class RISKApplication extends Application {
         StringBuilder result = new StringBuilder();
         result.append("Player name:  " + userName + "\n");
         result.append("Tech Level: " + info.getTechLevel() + "\n");
-        result.append("Alliance: " + getAllianceName());
+        result.append("Alliance: " + getAllianceName() + "\n");
         result.append("Food Resource: " + info.getFoodQuantity() + "\n");
         result.append("Tech Resource: " + info.getTechQuantity() + "\n");
 //        result.append("My Territories: ");
@@ -270,6 +270,7 @@ public class RISKApplication extends Application {
                 playerClient.sendObject(toSendO);
                 Object receivedO = playerClient.recvObject();
                 if (receivedO instanceof String) {
+                    listener.onFailure((String) receivedO);
                     listener.onFailure((String) receivedO);
                 } else if (receivedO instanceof List) {
                     if (type == ROOMS) {
@@ -522,6 +523,7 @@ public class RISKApplication extends Application {
     }
 
     public static void requireAlliance(String allyName) {
+        Log.i(TAG,LOG_FUNC_RUN+"send name: "+allyName);
         Order allyOrder = new AllianceOrder(userName, allyName);
         send(allyOrder);
     }
@@ -541,8 +543,8 @@ public class RISKApplication extends Application {
 
     }
 
-    public static ArrayList<String> getAllPlayersName() {
-        ArrayList<String> playerNames = new ArrayList<>();
+    public static Set<String> getAllPlayersName() {
+        Set<String> playerNames = theWorld.getAllPlayerNames();
         return playerNames;
     }
 }

@@ -1,6 +1,8 @@
 package edu.duke.ece651.group4.RISK.client.activity;
 
+import android.app.Activity;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,9 +11,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import edu.duke.ece651.group4.RISK.client.R;
+import edu.duke.ece651.group4.RISK.client.fragment.SimpleSelector;
 import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
 import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
 import edu.duke.ece651.group4.RISK.client.utility.WaitDialog;
@@ -50,6 +54,7 @@ public class TurnActivity extends AppCompatActivity {
     private String actionType;
     private boolean isWatch; // turn to true after lose game.
     private WaitDialog waitDG;
+    private String chosenAlliance;
 
     List<String> actions;
 
@@ -65,6 +70,7 @@ public class TurnActivity extends AppCompatActivity {
         actionType = UI_MOVE; // default: move
         isWatch = false;
         waitDG = new WaitDialog(TurnActivity.this);
+        chosenAlliance = null;
 
         impUI();
         updateAfterTurn();
@@ -148,7 +154,7 @@ public class TurnActivity extends AppCompatActivity {
     }
 
     private void impActionSpinner() {
-        List<String> actions = new ArrayList<>(Arrays.asList(UI_MOVE, UI_ATK, UI_UPTECH, UI_UPTROOP, UI_DONE));
+        List<String> actions = new ArrayList<>(Arrays.asList(UI_MOVE, UI_ATK, UI_UPTECH, UI_UPTROOP, UI_DONE, UI_ALLIANCE));
         actionAdapter = new ArrayAdapter<>(TurnActivity.this, R.layout.item_choice, actions);
         chooseActionSP.setAdapter(actionAdapter);
         chooseActionSP.setSelection(0, false);
@@ -197,11 +203,7 @@ public class TurnActivity extends AppCompatActivity {
                     }
                     break;
                 case UI_ALLIANCE:
-                    String choice = showSelector(TurnActivity.this, CHOOSE_USER_INSTR, getMyTerrNames());
-                    Log.i(TAG, LOG_FUNC_RUN + "get choice: " + choice);
-                    if (choice != "") {
-                        requireAlliance(choice);
-                    }
+                    selectAlliance();
                     break;
                 default:
                     throw new IllegalStateException("Unexpected value: " + actionType);
@@ -209,6 +211,30 @@ public class TurnActivity extends AppCompatActivity {
             commitBT.setClickable(true);
             updateAfterTurn();
         });
+    }
+
+    private void selectAlliance() {
+        ArrayList<String> choices = new ArrayList<>();
+        for (String playerName : getAllPlayersName()) {
+            choices.add(playerName);
+        }
+        SimpleSelector selector = new SimpleSelector(TurnActivity.this, CHOOSE_USER_INSTR, choices, new onReceiveListener() {
+            @Override
+            public void onSuccess(Object o) {
+                if(o instanceof String) {
+                    String alliance = (String) o;
+                    requireAlliance(alliance);
+                }else{
+                    onFailure("not String name");
+                }
+            }
+
+            @Override
+            public void onFailure(String errMsg) {
+                Log.e(TAG,errMsg);
+            }
+        });
+        selector.show();
     }
 
     private void showConfirmDialog() {
@@ -299,6 +325,9 @@ public class TurnActivity extends AppCompatActivity {
                         commitBT.setVisibility(View.GONE);
                     }
                     Log.i(TAG, LOG_FUNC_RUN + "call update after turn");
+                    userInfo.clear();
+                    userInfo.add(getPlayerInfo());
+                    userInfoAdapter.notifyDataSetChanged();
                     noticeInfo.clear();
                     noticeInfo.add(getPlayerInfo());
                     noticeInfo.add(getWorld().getReport());

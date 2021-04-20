@@ -120,7 +120,7 @@ public class Territory implements Serializable {
 
     /**
      * Added specific number of unit to territory
-     * 
+     *
      * @param num shows number added
      */
     public void addUnit(int num) {
@@ -130,7 +130,7 @@ public class Territory implements Serializable {
 
     /**
      * Initialize population and owner of territory
-     * 
+     *
      * @param num   shows number added
      * @param owner shows owner of territory
      */
@@ -147,7 +147,7 @@ public class Territory implements Serializable {
 
     /**
      * Send out specific number of unit from territory
-     * 
+     *
      * @param subTroop shows the number of unit send out from territory
      */
     public Troop sendOutTroop(Troop subTroop) {
@@ -156,7 +156,7 @@ public class Territory implements Serializable {
 
     /**
      * Send in specific number of unit to territory
-     * 
+     *
      * @param subTroop shows the number of unit send in to territory
      */
     public void sendInTroop(Troop subTroop) {
@@ -165,34 +165,34 @@ public class Territory implements Serializable {
 
     /**
      * Send in specific number of enemy to territory
-     * 
+     *
      * @param enemy shows the enemy troop attack in
      */
     public void sendInEnemyTroop(Troop enemy) {
-        String enemyName=enemy.getOwner().getName();
-        if(this.enemyOnTerritory.get(enemyName)==null){
+        String enemyName = enemy.getOwner().getName();
+        if (this.enemyOnTerritory.get(enemyName) == null) {
             this.enemyOnTerritory.put(enemyName, enemy);
-        }else{
-            Troop origin=this.enemyOnTerritory.get(enemyName);
+        } else {
+            Troop origin = this.enemyOnTerritory.get(enemyName);
             origin.receiveTroop(enemy);
-            this.enemyOnTerritory.put(enemyName,origin);
+            this.enemyOnTerritory.put(enemyName, origin);
         }
 
     }
 
     /**
      * Do battle between two troops
-     * 
+     *
      * @param enemy shows the enemy troop attack in
      */
     public void doOneBattle(Troop enemy) {
         Troop enemyRemain = this.ownerTroop.combat(enemy);
-        this.ownerTroop = enemyRemain.checkWin() ? enemyRemain:this.ownerTroop;
+        this.ownerTroop = enemyRemain.checkWin() ? enemyRemain : this.ownerTroop;
     }
 
     /**
      * Do all the battles with enemies the sequence is random
-     * 
+     *
      * @return A report of all battles happened
      */
     public String doBattles() {
@@ -268,45 +268,40 @@ public class Territory implements Serializable {
         return upgradeTroop(levelBefore, levelAfter, nUnit, nTech);
     }
 
-    public String getInfo(){
+    public String getInfo() {
         StringBuilder report = new StringBuilder();
-        report.append("Owner : "+this.getOwner().getName()+"\n");
-        report.append("Terr Name : "+this.name+"\n");
-        report.append("Size : "+this.area+"\n");
-        report.append("Food production : "+this.foodSpeed+"\n");
-        report.append("Tech production : "+this.techSpeed+"\n");
-        List<String> list=UNIT_NAMES;
-        HashMap<String,Integer> dict=this.ownerTroop.getDict();
-        for(String s:list){
-            if(dict.get(s)==null){
-                report.append(s+" : 0"+"\n");
-            }else{
-                report.append(s+" : "+dict.get(s)+"\n");
+        report.append("Owner : " + this.getOwner().getName() + "\n");
+        report.append("Terr Name : " + this.name + "\n");
+        report.append("Size : " + this.area + "\n");
+        report.append("Food production : " + this.foodSpeed + "\n");
+        report.append("Tech production : " + this.techSpeed + "\n");
+        List<String> list = UNIT_NAMES;
+        HashMap<String, Integer> dict = this.ownerTroop.getDict();
+        for (String s : list) {
+            if (dict.get(s) == null) {
+                report.append(s + " : 0" + "\n");
+            } else {
+                report.append(s + " : " + dict.get(s) + "\n");
             }
         }
         return report.toString();
     }
-
-
 
     /**
      * From certain job to new Job name with certain number of unit
      *
      * @return cost of transfer
      */
-    public int transfer(String from,String to,int num){
-        return this.ownerTroop.transfer(from,to,num);
+    public int transfer(String from, String to, int unitLevel, int nUnit) {
+        return this.ownerTroop.transfer(from, to, unitLevel, nUnit);
     }
 
-    public Troop sendRangeAttack(Troop target){
-        return this.ownerTroop.sendRangeAttack(target);
+    public Troop sendRangedAttack(Troop target) {
+        return this.ownerTroop.sendRangedAttack(target);
     }
 
-
-    public boolean checkRangeAbility(){
-        return this.ownerTroop.rangeAttackAbility();
+    public boolean hasRangedTroop() {
+        return this.ownerTroop.hasRanged();
     }
-
-
 
 }

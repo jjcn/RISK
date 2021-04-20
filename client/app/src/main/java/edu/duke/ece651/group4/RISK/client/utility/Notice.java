@@ -40,13 +40,20 @@ public class Notice {
         final String[] chosen = new String[1];
         chosen[0] = "";
         builder.setTitle(title)
-                .setSingleChoiceItems(adapter, 0, null)
-                .setPositiveButton("Confirm", (dialog, which) -> {
+                .setSingleChoiceItems(adapter, 0, (dialog, which) -> {
                     chosen[0] = choices.get(which);
+                    showByToast((Activity) context,"You have choose: "+chosen[0]);
                 })
-                .setNegativeButton("Cancel", null);
-        Log.i(Context.class.getSimpleName(),LOG_FUNC_RUN+"show selector");
+                .setPositiveButton("Confirm", (dialog, which)->{
+                    Log.i(Context.class.getSimpleName(),LOG_FUNC_RUN+"confirm");
+                    dialog.dismiss();
+                })
+                .setNegativeButton("Cancel", (dialog, which)->{
+                    chosen[0] = "";
+                    dialog.dismiss();
+                });
         builder.show();
+        Log.i(Context.class.getSimpleName(),LOG_FUNC_RUN+"show selector done");
         return chosen[0];
     }
 }
