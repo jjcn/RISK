@@ -52,7 +52,7 @@ public class TransferTroopOrder implements Order, Serializable {
     public TransferTroopOrder(String srcName,
                               String typeBefore, String typeAfter,
                               int unitLevel, int nUnit) {
-        this.actionName = 'R';
+        this.actionName = Constant.TRANSFER_TROOP_ACTION;
         this.srcName = srcName;
         this.typeBefore = typeBefore;
         this.typeAfter = typeAfter;

@@ -48,7 +48,7 @@ public class UpgradeTroopOrder implements Order, Serializable {
     public UpgradeTroopOrder(String srcName,
                             int levelBefore, int levelAfter, 
                             int nUnit) {
-        this.actionName = 'U';
+        this.actionName = Constant.UPTROOP_ACTION;
         this.srcName = srcName;
         this.levelBefore = levelBefore;
         this.levelAfter = levelAfter;
