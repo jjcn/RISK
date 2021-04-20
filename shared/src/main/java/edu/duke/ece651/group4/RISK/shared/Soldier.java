@@ -126,7 +126,7 @@ public class Soldier implements Unit, Serializable {
     }
 
     public Soldier transfer(String newJob) {
-        if (!UNIT_NAMES.contains(newJob)) {
+        if (!JOB_NAMES.contains(newJob)) {
             throw new IllegalArgumentException(
                     String.format("Fails to transfer job. Job \"%s\" does not exist.", newJob));
         }

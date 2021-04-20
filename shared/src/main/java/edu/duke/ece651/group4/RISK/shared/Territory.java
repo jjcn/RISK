@@ -292,8 +292,8 @@ public class Territory implements Serializable {
      *
      * @return cost of transfer
      */
-    public int transfer(String from, String to, int num) {
-        return this.ownerTroop.transfer(from, to, num);
+    public int transfer(String from, String to, int unitLevel, int nUnit) {
+        return this.ownerTroop.transfer(from, to, unitLevel, nUnit);
     }
 
     public Troop sendRangedAttack(Troop target) {

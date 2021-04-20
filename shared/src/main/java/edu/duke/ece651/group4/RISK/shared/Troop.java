@@ -3,6 +3,7 @@ package edu.duke.ece651.group4.RISK.shared;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.NoSuchElementException;
 import java.util.Random;
 
 import static edu.duke.ece651.group4.RISK.shared.Constant.*;
@@ -269,13 +270,22 @@ public class Troop implements Serializable {
         } else {
             return new Troop(cloneList, new TextPlayer(new String(this.owner.getName())));
         }
+    }
 
-
+    /**
+     * Check if a unit exists in troop.
+     * @param name the name of unit.
+     */
+    public void checkUnitExistence(String name) {
+        if (this.dict.get(name) == null) {
+            throw new NoSuchElementException(String.format("%s does not exist in this troop.", name));
+        }
     }
 
     public int checkUnitNum(String name) {
-        if (this.dict.get(name) == null)
+        if (this.dict.get(name) == null) {
             return 0;
+        }
         return this.dict.get(name);
     }
 
@@ -388,9 +398,11 @@ public class Troop implements Serializable {
         return report.toString();
     }
 
-    public int transfer(String from, String to, int num) {
-        if (this.checkUnitNum(from) < num) {
-            throw new IllegalArgumentException(String.format("No enough %s to transfer", from));
+    public int transfer(String from, String to, int unitLevel, int nUnit) {
+        String typeBefore = buildJobName(from, unitLevel);
+
+        if (this.checkUnitNum(typeBefore) < nUnit) {
+            throw new IllegalArgumentException(String.format("Not enough %s to transfer", from));
         }
 
         int unitCost = 0;
@@ -405,12 +417,12 @@ public class Troop implements Serializable {
             unitCost = SHIELD_COST;
         }
 
-        while (num > 0) {
-            Soldier target = (Soldier) this.dispatchCertainUnit(from);
+        while (nUnit > 0) {
+            Soldier target = (Soldier) this.dispatchCertainUnit(typeBefore);
             Soldier newTarget = target.transfer(to);
             this.receiveUnit(newTarget);
             totalcost += unitCost;
-            num--;
+            nUnit--;
         }
 
         return totalcost;
@@ -463,4 +475,14 @@ public class Troop implements Serializable {
 
     }
 
+    /**
+     * Construct jobName like: Soldier LV0
+     *
+     * @param unitType is the type of unit defined in shared/Constant.
+     * @param unitLevel is the level of unit.
+     * @return constructed jobName.
+     */
+    protected String buildJobName(String unitType, int unitLevel) {
+        return String.format("%s LV%d",unitType, unitLevel);
+    }
 }

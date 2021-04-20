@@ -663,9 +663,33 @@ public class World implements Serializable {
         }
     }
 
+    /**
+     * Construct jobName like: Soldier LV0
+     *
+     * @param unitType is the type of unit defined in shared/Constant.
+     * @param unitLevel is the level of unit.
+     * @return constructed jobName.
+     */
+    protected String buildJobName(String unitType, int unitLevel) {
+        return String.format("%s LV%d",unitType, unitLevel);
+    }
 
+    /**
+     * Transfer units to another type via a transfer troop order.
+     * Level of units stay the same.
+     *
+     * @param ttOrder is a transfer troop order.
+     * @param playerName is the name of the player who gives this order.
+     */
     public void transferTroop(TransferTroopOrder ttOrder, String playerName) {
+        Territory terr = findTerritory(ttOrder.getSrcName());
+        String typeBefore = ttOrder.getTypeBefore();
+        String typeAfter = ttOrder.getTypeAfter();
+        int unitLevel = ttOrder.getUnitLevel();
+        int nUnit = ttOrder.getNUnit();
 
+        int transferCost = terr.transfer(typeBefore, typeAfter, unitLevel, nUnit);
+        getPlayerInfoByName(playerName).consumeTech(transferCost);
     }
 
     /**
