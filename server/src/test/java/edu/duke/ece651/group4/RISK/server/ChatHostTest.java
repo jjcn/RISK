@@ -112,7 +112,6 @@ class ChatClient extends Thread {
     * This keeps waiting for message from server
     * */
     public void waitToRecv() throws IOException {
-
         while (!exit.get()) {
             ByteBuffer readBuffer = ByteBuffer.allocate(1024);
             int readBytes = this.chatChannel.read(readBuffer);
