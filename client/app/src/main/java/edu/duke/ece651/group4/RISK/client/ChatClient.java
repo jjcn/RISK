@@ -6,15 +6,18 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import android.util.Log;
 import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
 import edu.duke.ece651.group4.RISK.client.model.ChatMessageUI;
 import edu.duke.ece651.group4.RISK.client.model.ChatPlayer;
 import edu.duke.ece651.group4.RISK.shared.message.ChatMessage;
 import org.apache.commons.lang3.SerializationUtils;
 
+import static edu.duke.ece651.group4.RISK.client.Constant.LOG_FUNC_RUN;
 import static edu.duke.ece651.group4.RISK.shared.Constant.CHAT_SETUP_ACTION;
 
 public class ChatClient extends Thread {
+    private final String TAG = this.getClass().getSimpleName();
 
     SocketChannel chatChannel = null;
     String username;
@@ -70,11 +73,11 @@ public class ChatClient extends Thread {
             //deal with chatMsgRecV to notify android UI
             // TODO: syc in database
             ChatMessageUI receivedMsg = new ChatMessageUI(0, chatMsgReceive.getChatContent(),
-                    new ChatPlayer(chatMsgReceive.getGameID(), chatMsgReceive.getSource()));
+                    new ChatPlayer(chatMsgReceive.getGameID(), chatMsgReceive.getSource()),chatMsgReceive.getTargetsPlayers());
             if(receiveMsgListener != null){
                 receiveMsgListener.onSuccess(receivedMsg);
             }
-            System.out.println("ClientChat: " + username + " get from " + chatMsgReceive.getSource() + " saying " + chatMsgReceive.getChatContent());
+            Log.i(TAG,"ClientChat: " + username + " get from " + chatMsgReceive.getSource() + " saying " + chatMsgReceive.getChatContent());
         }
     }
 
@@ -83,18 +86,19 @@ public class ChatClient extends Thread {
     }
 
     //send a chatMessage to Server
-    public void send(ChatMessage chatMessage) throws Exception {
+    public void send(ChatMessage chatMessage) {
         byte[] chatBytes = SerializationUtils.serialize(chatMessage);
         ByteBuffer writeBuffer = ByteBuffer.wrap(chatBytes);
-//        try {
-        chatChannel.write(writeBuffer);
-        System.out.println("Test: " + chatMessage.getSource() + " send chat message to chatServer!");
-//        } catch (IOException e) {
-//            System.out.println("IOException when send message to chat server");
-//            e.printStackTrace();
-//            System.exit(0);
-//            throw new Exception(e);
-//        }
+        new Thread(()->{
+            try {
+                Log.i(TAG,LOG_FUNC_RUN+"chatChannel");
+                chatChannel.write(writeBuffer);
+                Log.i(TAG,LOG_FUNC_RUN+"chatChannel done");
+            } catch (IOException e) {
+                Log.e(TAG,e.toString());
+            }
+        }).start();
+        Log.i(TAG,LOG_FUNC_RUN + "Test: " + chatMessage.getSource() + " send chat message to chatServer!");
         writeBuffer.clear();
     }
 }

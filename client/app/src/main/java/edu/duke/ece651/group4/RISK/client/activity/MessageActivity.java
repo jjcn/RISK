@@ -1,9 +1,14 @@
 package edu.duke.ece651.group4.RISK.client.activity;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
+import android.widget.ImageView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import com.stfalcon.chatkit.commons.ImageLoader;
 import com.stfalcon.chatkit.messages.MessageInput;
 import com.stfalcon.chatkit.messages.MessagesList;
 import com.stfalcon.chatkit.messages.MessagesListAdapter;
@@ -33,22 +38,31 @@ public class MessageActivity extends AppCompatActivity
 //    private int selectionCount;
 //    private Date lastLoadedDate;
 
+    //TODO: get history info
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        Log.i(TAG,LOG_FUNC_RUN+"start create");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         this.msgList = findViewById(R.id.messagesList);
-        msgAdapter = new MessagesListAdapter<>(getUserName(), null);
+        msgAdapter = new MessagesListAdapter<>(getUserName(), new ImageLoader() {
+            @Override
+            public void loadImage(ImageView imageView, @Nullable String url, @Nullable Object payload) {
+
+            }
+        });
         msgList.setAdapter(msgAdapter);
 //        msgAdapter.setLoadMoreListener(this);
 
         MessageInput input = findViewById(R.id.input);
         input.setInputListener(this);
 //        input.setTypingListener(this);
-//        input.setAttachmentsListener(this);
-        // for receive message
+
+        Log.i(TAG, LOG_FUNC_RUN + "start set lsn");
         setReceiveListener(new onReceiveListener() {
             @Override
             public void onSuccess(Object o) {
@@ -65,24 +79,17 @@ public class MessageActivity extends AppCompatActivity
                 Log.e(TAG, LOG_FUNC_FAIL + errMsg);
             }
         });
-        Log.i(TAG,SUCCESS_CREATE);
+        Log.i(TAG, SUCCESS_CREATE);
     }
 
-    //TODO: get history info
-//    @Override
-//    protected void onStart() {
-//        Log.i(TAG,LOG_FUNC_RUN+"on start");
-//        super.onStart();
-//        // getHistoryMsg();
-//
-//        Log.i(TAG,SUCCESS_CREATE+"start");
-//    }
+
 
     @Override
     public boolean onSubmit(CharSequence input) {
-        Log.i(TAG,LOG_FUNC_RUN+"");
+        Log.i(TAG, LOG_FUNC_RUN + "onSubmit");
         ChatPlayer user = new ChatPlayer(getRoomId(), getUserName());
-        ChatMessageUI message = new ChatMessageUI(0, input.toString(), user);
+        ChatMessageUI message = new ChatMessageUI(0, input.toString(), user, getAllPlayersName());
+        Log.i(TAG, LOG_FUNC_RUN + "start send mag");
         sendOneMsg(message, new onResultListener() {
             @Override
             public void onSuccess() {
@@ -96,6 +103,18 @@ public class MessageActivity extends AppCompatActivity
             }
         });
         return true;
+    }
+
+    public Bitmap stringToBitmap(String string) {
+        Bitmap bitmap = null;
+        try {
+            byte[] bitmapArray;
+            bitmapArray = Base64.decode(string, Base64.DEFAULT);
+            bitmap = BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return bitmap;
     }
 
     // todo: load msg

@@ -14,7 +14,9 @@ import edu.duke.ece651.group4.RISK.shared.message.LogMessage;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import static edu.duke.ece651.group4.RISK.client.Constant.*;
 import static edu.duke.ece651.group4.RISK.shared.Constant.*;
@@ -49,6 +51,8 @@ public class RISKApplication extends Application {
         this.currentRoomSize = 0;
         this.updatedTech = false;
         this.chatClient = null;
+        this.threadPool = new ThreadPoolExecutor(2, 5, 1,
+                TimeUnit.MINUTES, new LinkedBlockingDeque<>(10));
         Log.i(TAG, LOG_CREATE_SUCCESS);
     }
 
@@ -77,7 +81,7 @@ public class RISKApplication extends Application {
      * @return maximum level of soldier
      */
     public static int getMaxSoldierLevel() {
-        return UNIT_NAMES.size()-1;
+        return UNIT_NAMES.size() - 1;
     }
 
 
@@ -140,8 +144,8 @@ public class RISKApplication extends Application {
      * @return list information of each territory
      */
     public static List<String> getWorldInfo() {
-        if(theWorld == null){
-            Log.e(TAG,LOG_FUNC_FAIL+"getWorldInfo world null");
+        if (theWorld == null) {
+            Log.e(TAG, LOG_FUNC_FAIL + "getWorldInfo world null");
         }
         List<Territory> terrs = theWorld.getAllTerritories();
         List<String> info = new ArrayList<>();
@@ -152,7 +156,7 @@ public class RISKApplication extends Application {
         return info;
     }
 
-    public static int getTechLevel(){
+    public static int getTechLevel() {
         return theWorld.getPlayerInfoByName(userName).getTechLevel();
     }
 
@@ -160,8 +164,8 @@ public class RISKApplication extends Application {
      * @return list information of the player
      */
     public static String getPlayerInfo() {
-        if(theWorld == null){
-            Log.e(TAG,LOG_FUNC_FAIL+"getPlayerInfo world null");
+        if (theWorld == null) {
+            Log.e(TAG, LOG_FUNC_FAIL + "getPlayerInfo world null");
         }
         PlayerInfo info = theWorld.getPlayerInfoByName(userName);
         StringBuilder result = new StringBuilder();
@@ -536,21 +540,19 @@ public class RISKApplication extends Application {
 
     /*************** function for chat **************/
 
-    public static void initChat(){
-        if(chatClient == null) {
-            new Thread(() -> {
-                chatClient = new ChatClient(userName, SOCKET_HOSTNAME, CHAT_PORT);
-                try {
-                    chatClient.start();
-                } catch (Exception e) {
-                    Log.e(TAG, "initChat: " + e.toString());
-                }
-            }).start();
-        }
+    public static void initChat() {
+        new Thread(() -> {
+            chatClient = new ChatClient(userName, SOCKET_HOSTNAME, CHAT_PORT);
+            try {
+                chatClient.start();
+            } catch (Exception e) {
+                Log.e(TAG, "initChat: " + e.toString());
+            }
+        }).start();
     }
 
-    public static void setReceiveListener(onReceiveListener listener){
-        new Thread(()->{
+    public static void setReceiveListener(onReceiveListener listener) {
+        new Thread(() -> {
             chatClient.setReceiveMsgListener(listener);
         }).start();
     }
@@ -560,8 +562,8 @@ public class RISKApplication extends Application {
         try {
             chatClient.send(msgSent);
             listener.onSuccess();
-        }catch (Exception e){
-            Log.e(TAG,e.toString());
+        } catch (Exception e) {
+            Log.e(TAG, e.toString());
             listener.onFailure(SEND_CHAT_FAIL);
         }
     }

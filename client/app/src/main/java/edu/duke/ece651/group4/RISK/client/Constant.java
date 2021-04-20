@@ -41,6 +41,7 @@ public class Constant {
     public static final String UI_UPTECH = "Upgrade Max tech";
     public static final String UI_SWITCH_OUT = "SwitchOut";
     public static final String UI_ALLIANCE = "Alliance";
+    public static final String UI_CHANGETYPE = "Change soldier type";
 
     public static final String USER_INFO_TV = "userInfoTV";
     public static final String NOTICE_ADP = "noticeAdapter";

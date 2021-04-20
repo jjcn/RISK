@@ -124,7 +124,7 @@ public class ChatHost extends Thread {
 
     protected void handleChatMessage(ChatMessage chatMessage) throws IOException {
         String sender = chatMessage.getSource();
-        List<String> targets = chatMessage.getTargetsPlayers();
+        Set<String> targets = chatMessage.getTargetsPlayers();
         for(String target : targets){
             SocketChannel clientChannel = this.clientMap.get(target);
             if(clientChannel == null){
