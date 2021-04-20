@@ -15,7 +15,7 @@ import edu.duke.ece651.group4.RISK.client.model.ChatPlayer;
 
 import java.util.Date;
 
-import static edu.duke.ece651.group4.RISK.client.Constant.LOG_FUNC_RUN;
+import static edu.duke.ece651.group4.RISK.client.Constant.*;
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.*;
 import static edu.duke.ece651.group4.RISK.client.utility.Notice.showByToast;
 
@@ -35,6 +35,7 @@ public class MessageActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        Log.i(TAG,LOG_FUNC_RUN+"start create");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
 
@@ -47,19 +48,39 @@ public class MessageActivity extends AppCompatActivity
         input.setInputListener(this);
 //        input.setTypingListener(this);
 //        input.setAttachmentsListener(this);
-    }
+        // for receive message
+        setReceiveListener(new onReceiveListener() {
+            @Override
+            public void onSuccess(Object o) {
+                if (o instanceof ChatMessageUI) {
+                    ChatMessageUI message = (ChatMessageUI) o;
+                    msgAdapter.addToStart(message, true);
+                } else {
+                    onFailure("receive not ChatMessageUI");
+                }
+            }
 
+            @Override
+            public void onFailure(String errMsg) {
+                Log.e(TAG, LOG_FUNC_FAIL + errMsg);
+            }
+        });
+        Log.i(TAG,SUCCESS_CREATE);
+    }
 
     //TODO: get history info
-    @Override
-    protected void onStart() {
-        super.onStart();
-        // getHistoryMsg();
-        msgAdapter.addToStart(new ChatMessageUI(0,"",new ChatPlayer(getRoomId(),"")), true);
-    }
+//    @Override
+//    protected void onStart() {
+//        Log.i(TAG,LOG_FUNC_RUN+"on start");
+//        super.onStart();
+//        // getHistoryMsg();
+//
+//        Log.i(TAG,SUCCESS_CREATE+"start");
+//    }
 
     @Override
     public boolean onSubmit(CharSequence input) {
+        Log.i(TAG,LOG_FUNC_RUN+"");
         ChatPlayer user = new ChatPlayer(getRoomId(), getUserName());
         ChatMessageUI message = new ChatMessageUI(0, input.toString(), user);
         sendOneMsg(message, new onResultListener() {
@@ -70,7 +91,7 @@ public class MessageActivity extends AppCompatActivity
 
             @Override
             public void onFailure(String errMsg) {
-                showByToast(MessageActivity.this,errMsg);
+                showByToast(MessageActivity.this, errMsg);
                 return;
             }
         });
@@ -93,8 +114,6 @@ public class MessageActivity extends AppCompatActivity
 //            loadMessages();
 //        }
 //    }
-
-
 
 
     //    @Override

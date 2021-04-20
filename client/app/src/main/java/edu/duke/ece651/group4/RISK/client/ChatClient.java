@@ -6,16 +6,20 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
 import edu.duke.ece651.group4.RISK.client.model.ChatMessageUI;
 import edu.duke.ece651.group4.RISK.client.model.ChatPlayer;
 import edu.duke.ece651.group4.RISK.shared.message.ChatMessage;
 import org.apache.commons.lang3.SerializationUtils;
+
+import static edu.duke.ece651.group4.RISK.shared.Constant.CHAT_SETUP_ACTION;
 
 public class ChatClient extends Thread {
 
     SocketChannel chatChannel = null;
     String username;
     private final AtomicBoolean exit = new AtomicBoolean(false);
+    private onReceiveListener receiveMsgListener;
 
     public ChatClient(String username, String hostname, int port) {
         try {
@@ -25,6 +29,7 @@ public class ChatClient extends Thread {
             e.printStackTrace();
         }
         this.username = username;
+        this.receiveMsgListener = null;
     }
 
     public void exit() {
@@ -36,12 +41,12 @@ public class ChatClient extends Thread {
     @Override
     public void run() {
         try {
+            this.send(new ChatMessage(username, null, null, 0, CHAT_SETUP_ACTION));
             waitToReceive();
             System.out.println("chat client exits");
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
-
         }
     }
 
@@ -66,10 +71,15 @@ public class ChatClient extends Thread {
             // TODO: syc in database
             ChatMessageUI receivedMsg = new ChatMessageUI(0, chatMsgReceive.getChatContent(),
                     new ChatPlayer(chatMsgReceive.getGameID(), chatMsgReceive.getSource()));
-
-
+            if(receiveMsgListener != null){
+                receiveMsgListener.onSuccess(receivedMsg);
+            }
             System.out.println("ClientChat: " + username + " get from " + chatMsgReceive.getSource() + " saying " + chatMsgReceive.getChatContent());
         }
+    }
+
+    public void setReceiveMsgListener(onReceiveListener receiveMsgListener) {
+        this.receiveMsgListener = receiveMsgListener;
     }
 
     //send a chatMessage to Server

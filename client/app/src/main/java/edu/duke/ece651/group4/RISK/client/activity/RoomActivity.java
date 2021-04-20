@@ -46,6 +46,8 @@ public class RoomActivity extends AppCompatActivity {
         waitDG = new WaitDialog(RoomActivity.this);
         numUser = 0;
         impUI();
+        initChat();
+        refreshRoom();
         Log.i(TAG, LOG_CREATE_SUCCESS);
     }
 
@@ -55,6 +57,7 @@ public class RoomActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
+            backLogin();
             onBackPressed();
             return true;
         }
@@ -115,6 +118,7 @@ public class RoomActivity extends AppCompatActivity {
                             Intent gameIntent = new Intent(RoomActivity.this, TurnActivity.class);
                             showByToast(RoomActivity.this, SUCCESS_START);
                             startActivity(gameIntent);
+                            finish();
                         }
                     });
                 }
@@ -185,5 +189,6 @@ public class RoomActivity extends AppCompatActivity {
         showByToast(RoomActivity.this, SUCCESS_START);
         Intent placeIntent = new Intent(RoomActivity.this, PlaceActivity.class);
         startActivity(placeIntent);
+        finish();
     }
 }

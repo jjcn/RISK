@@ -48,6 +48,7 @@ public class RISKApplication extends Application {
         this.userName = null;
         this.currentRoomSize = 0;
         this.updatedTech = false;
+        this.chatClient = null;
         Log.i(TAG, LOG_CREATE_SUCCESS);
     }
 
@@ -99,7 +100,6 @@ public class RISKApplication extends Application {
     }
 
     public static String getAllianceName() {
-        Log.i(TAG, LOG_FUNC_RUN + "start get alliance");
         Set<String> allyNames = theWorld.getAllianceNames(userName);
         if (allyNames.isEmpty()) {
             return NO_ALLY;
@@ -110,7 +110,6 @@ public class RISKApplication extends Application {
             names.append(sep + allis);
             sep = ", ";
         }
-        Log.i(TAG, LOG_FUNC_RUN + "getAlliance returned");
         return names.toString();
     }
 
@@ -333,7 +332,6 @@ public class RISKApplication extends Application {
      * on Success the waitGameStart function will be called to receive the upcoming World info.
      */
     public static void JoinGame(int roomID, onResultListener listenerString) {
-        Log.i(TAG, LOG_FUNC_RUN + "Join game");
         GameMessage m = new GameMessage(GAME_JOIN, roomID, -1);
         for (RoomInfo room : roomInfo) {
             if (room.getRoomID() == roomID) {
@@ -341,7 +339,6 @@ public class RISKApplication extends Application {
             }
         }
         new Thread(() -> {
-            Log.i(TAG, LOG_FUNC_RUN + "new thread on JoinRoom");
             try {
                 sendAndReceiveResult(m, listenerString);
             } catch (Exception e) {
@@ -412,7 +409,6 @@ public class RISKApplication extends Application {
         HashMap<String, Integer> dict = new HashMap<>();
         dict.put(job, num);
         Troop target = new Troop(dict, new TextPlayer(userName));
-        Log.i(TAG, LOG_FUNC_RUN + "MOVEORDER: num" + num + "; MOVEORDER: job" + job);
         return new MoveOrder(src, des, target, MOVE_ACTION);
     }
 
@@ -509,7 +505,6 @@ public class RISKApplication extends Application {
         updatedTech = false;
     }
 
-
     public static void stayInGame(onReceiveListener listener) {
         // todo: send watch_action?
         Order order = new BasicOrder(null, null, null, DONE_ACTION);
@@ -520,12 +515,16 @@ public class RISKApplication extends Application {
         send(new BasicOrder(null, null, null, SWITCH_OUT_ACTION));
     }
 
+    public static void backLogin() {
+        GameMessage m = new GameMessage(GAME_EXIT, -1, -1);
+        send(m);
+    }
+
     public static List<Territory> getEnemyTerritory() {
         return theWorld.getTerritoriesNotOfPlayer(userName);
     }
 
     public static void requireAlliance(String allyName) {
-        Log.i(TAG,LOG_FUNC_RUN+"send name: "+allyName);
         Order allyOrder = new AllianceOrder(userName, allyName);
         send(allyOrder);
     }
@@ -538,14 +537,22 @@ public class RISKApplication extends Application {
     /*************** function for chat **************/
 
     public static void initChat(){
-        chatClient = new ChatClient(userName, SOCKET_HOSTNAME, CHAT_PORT);
-        chatClient.start();
-        // send init message to notify server
-        try {
-            chatClient.send(new ChatMessage(userName, null, null, 0, CHAT_SETUP_ACTION));
-        }catch (Exception e){
-            Log.e(TAG,"initChat: "+e.toString());
+        if(chatClient == null) {
+            new Thread(() -> {
+                chatClient = new ChatClient(userName, SOCKET_HOSTNAME, CHAT_PORT);
+                try {
+                    chatClient.start();
+                } catch (Exception e) {
+                    Log.e(TAG, "initChat: " + e.toString());
+                }
+            }).start();
         }
+    }
+
+    public static void setReceiveListener(onReceiveListener listener){
+        new Thread(()->{
+            chatClient.setReceiveMsgListener(listener);
+        }).start();
     }
 
     public static void sendOneMsg(ChatMessageUI message, onResultListener listener) {

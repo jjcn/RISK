@@ -69,7 +69,6 @@ public class TurnActivity extends AppCompatActivity {
         waitDG = new WaitDialog(TurnActivity.this);
 
         impUI();
-        initChat();
         updateAfterTurn();
         Log.i(TAG, LOG_CREATE_SUCCESS);
     }
@@ -85,6 +84,7 @@ public class TurnActivity extends AppCompatActivity {
                 return true;
             case R.id.menu_chat:
                 goChat();
+                return true;
             case R.id.menu_rooms:
                 switchOut();
                 return true;
@@ -173,7 +173,6 @@ public class TurnActivity extends AppCompatActivity {
             Intent intent = new Intent();
             Bundle bundle = new Bundle();
 
-            Log.e(TAG, LOG_FUNC_RUN + "commitBT");
             switch (actionType) {
                 case UI_MOVE:
                 case UI_ATK:
@@ -190,7 +189,6 @@ public class TurnActivity extends AppCompatActivity {
                     upgradeTech();
                     break;
                 case UI_DONE:
-                    Log.i(TAG, LOG_FUNC_RUN + "is watch" + isWatch);
                     if (isWatch) {
                         showStayDialog();
                     } else {
@@ -236,12 +234,10 @@ public class TurnActivity extends AppCompatActivity {
     }
 
     private void showConfirmDialog() {
-        Log.i(TAG, LOG_FUNC_RUN + "enter confirm");
         AlertDialog.Builder builder = new AlertDialog.Builder(TurnActivity.this);
         builder.setTitle(CONFIRM);
         builder.setMessage(CONFIRM_ACTION);
         builder.setPositiveButton("Yes", (dialog, which) -> {
-            Log.i(TAG, LOG_FUNC_RUN + "click yes");
             waitNextTurn();
         });
         builder.setNegativeButton("No", (dialog, which) -> {
@@ -322,7 +318,6 @@ public class TurnActivity extends AppCompatActivity {
                         userInfoRC.setVisibility(View.GONE);
                         commitBT.setVisibility(View.GONE);
                     }
-                    Log.i(TAG, LOG_FUNC_RUN + "call update after turn");
                     userInfo.clear();
                     userInfo.add(getPlayerInfo());
                     userInfoAdapter.notifyDataSetChanged();
