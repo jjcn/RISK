@@ -10,6 +10,7 @@ import java.io.Reader;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.HashSet;
 import java.util.Map;
@@ -499,6 +500,18 @@ public class WorldTest {
         assertTrue(set2.containsAll(set1));
     }
 
+    /**
+     * Helper function that creates a new set from an indefinite number of objects
+     * @param objects are the objects
+     * @param <T> is the object type
+     * @return a new set containing these objects
+     */
+    protected <T> Set<T> newSet(T... objects) {
+        Set<T> set = new HashSet<T>();
+        Collections.addAll(set, objects);
+        return set;
+    }
+
     @Test
     public void testTryFormAllianceUnilateral() {
         World world = createWorldAndRegister(troopsSeparated);
@@ -506,9 +519,9 @@ public class WorldTest {
         world.tryFormAlliance("red", "blue");
         world.tryFormAlliance("green", "blue");
         // test before resolving alliance relationships
-        assertSetEquals(new HashSet<String>(Arrays.asList("blue")), world.getAllianceNames("red"));
+        assertSetEquals(newSet("blue"), world.getAllianceNames("red"));
         assertSetEquals(new HashSet<String>(), world.getAllianceNames("blue"));
-        assertSetEquals(new HashSet<String>(Arrays.asList("blue")), world.getAllianceNames("green"));
+        assertSetEquals(newSet("blue"), world.getAllianceNames("green"));
         // resolve alliance results
         world.doCheckIfAllianceSuccess();
         // only unilateral requests, no alliance formed
@@ -525,19 +538,16 @@ public class WorldTest {
         world.tryFormAlliance("blue", "red");
         world.tryFormAlliance("red", "green");
         world.tryFormAlliance("green", "red");
-        Set<String> redAllies = new HashSet<String>();
-        redAllies.add("blue");
-        redAllies.add("green");
         // test before resolving alliance relationships
-        assertSetEquals(redAllies, world.getAllianceNames("red"));
-        assertSetEquals(new HashSet<String>(Arrays.asList("red")), world.getAllianceNames("blue"));
-        assertSetEquals(new HashSet<String>(Arrays.asList("red")), world.getAllianceNames("green"));
+        assertSetEquals(newSet("blue", "green"), world.getAllianceNames("red"));
+        assertSetEquals(newSet("red"), world.getAllianceNames("blue"));
+        assertSetEquals(newSet("red"), world.getAllianceNames("green"));
         // resolve alliance results
         world.doCheckIfAllianceSuccess();
         // all mutual requests, all alliance formed4
-        assertSetEquals(redAllies, world.getAllianceNames("red"));
-        assertSetEquals(new HashSet<String>(Arrays.asList("red")), world.getAllianceNames("blue"));
-        assertSetEquals(new HashSet<String>(Arrays.asList("red")), world.getAllianceNames("green"));
+        assertSetEquals(newSet("blue", "green"), world.getAllianceNames("red"));
+        assertSetEquals(newSet("red"), world.getAllianceNames("blue"));
+        assertSetEquals(newSet("red"), world.getAllianceNames("green"));
     }
 
     @Test
