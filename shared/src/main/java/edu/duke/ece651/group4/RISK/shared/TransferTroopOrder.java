@@ -50,14 +50,32 @@ public class TransferTroopOrder implements Order, Serializable {
     private int nUnit;
 
     public TransferTroopOrder(String srcName,
-                              String typeBefore, String typeAfter,
-                              int unitLevel, int nUnit) {
+                              String typeBefore,
+                              String typeAfter,
+                              int unitLevel,
+                              int nUnit) {
         this.actionName = Constant.TRANSFER_TROOP_ACTION;
         this.srcName = srcName;
         this.typeBefore = typeBefore;
         this.typeAfter = typeAfter;
         this.unitLevel = unitLevel;
         this.nUnit = nUnit;
+    }
+
+    /**
+     * Overloaded constructor that does not specify type before.
+     *
+     * Default typeBefore is Constant.SOLDIER
+     */
+    public TransferTroopOrder(String srcName,
+                              String typeAfter,
+                              int unitLevel,
+                              int nUnit) {
+        this(srcName,
+             Constant.SOLDIER,
+             typeAfter,
+             unitLevel,
+             nUnit);
     }
 
     @Override
