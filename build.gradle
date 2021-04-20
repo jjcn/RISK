@@ -19,11 +19,14 @@ subprojects {
     dependencies {
         implementation 'com.google.guava:guava:28.0-jre'
         testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.1'
-        //testImplementation 'org.junit.platform:junit-platform-launcher:1.5.2'     
+        //testImplementation 'org.junit.platform:junit-platform-launcher:1.5.2'
         testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.1'
         clover 'org.openclover:clover:4.3.1'
         testCompile "org.mockito:mockito-core:2.+"
         //implementation 'org.junit.jupiter:junit-jupiter:5.4.2'
+        // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+        implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.7+'
+//        compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
 
     }
 
@@ -50,12 +53,12 @@ subprojects {
             extendsFrom(testRuntime)
         }
     }
-    
+
     task testCode(type: Jar) {
         classifier = 'test'
         from sourceSets.test.output
     }
-    
+
     artifacts {
         testPkg testCode
     }
@@ -76,7 +79,7 @@ project (':client') {
     dependencies {
         implementation project(':shared')
         testImplementation project(path: ':shared', configuration: "testPkg")
-    } 
+    }
 }
 */
 clover{
@@ -97,24 +100,24 @@ tasks.register("run-server") {
 }
 
 tasks.withType(JavaCompile) {
- options.debug = true
+    options.debug = true
 }
 
 task resolveDependencies {
-   doLast {
-       project.rootProject.allprojects.each { subProject ->
-           subProject.buildscript.configurations.each { configuration->
-              if(configuration.canBeResolved) {
-                 configuration.resolve()
-              }
-           }
-           subProject.configurations.each { configuration ->
-              if(configuration.canBeResolved) {
-                 configuration.resolve()
-              }
-           }
-       }
-   }
+    doLast {
+        project.rootProject.allprojects.each { subProject ->
+            subProject.buildscript.configurations.each { configuration->
+                if(configuration.canBeResolved) {
+                    configuration.resolve()
+                }
+            }
+            subProject.configurations.each { configuration ->
+                if(configuration.canBeResolved) {
+                    configuration.resolve()
+                }
+            }
+        }
+    }
 }
 
 task clean(type: Delete) {
