@@ -6,12 +6,15 @@ import com.stfalcon.chatkit.commons.models.IMessage;
 import edu.duke.ece651.group4.RISK.client.listener.onJoinRoomListener;
 import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
 import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
+import edu.duke.ece651.group4.RISK.client.model.ChatMessageUI;
 import edu.duke.ece651.group4.RISK.shared.*;
+import edu.duke.ece651.group4.RISK.shared.message.ChatMessage;
 import edu.duke.ece651.group4.RISK.shared.message.GameMessage;
 import edu.duke.ece651.group4.RISK.shared.message.LogMessage;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import static edu.duke.ece651.group4.RISK.client.Constant.*;
 import static edu.duke.ece651.group4.RISK.shared.Constant.*;
@@ -22,17 +25,18 @@ public class RISKApplication extends Application {
     private static World theWorld;
     private Random rnd;
     static ArrayList<RoomInfo> roomInfo;
-    private static RoomInfo currentRoom;
     static String userName;
     static int currentRoomSize;
     static boolean updatedTech;
+    private static ThreadPoolExecutor threadPool;
+    private static ChatClient chatClient;
 
     @Override
     public void onCreate() {
         super.onCreate();
         new Thread(() -> {
             try {
-                playerClient = new Client("vcm-18527.vm.duke.edu", SOCKET_PORT);
+                playerClient = new Client(SOCKET_HOSTNAME, SOCKET_PORT);
             } catch (IOException e) {
                 Log.e(TAG, LOG_CREATE_FAIL);
                 e.printStackTrace();
@@ -45,11 +49,6 @@ public class RISKApplication extends Application {
         this.currentRoomSize = 0;
         this.updatedTech = false;
         Log.i(TAG, LOG_CREATE_SUCCESS);
-    }
-
-
-    public static void setWorld(World theWorld) {
-        RISKApplication.theWorld = theWorld;
     }
 
     /**
@@ -76,8 +75,8 @@ public class RISKApplication extends Application {
     /**
      * @return maximum level of soldier
      */
-    public static int getMaxLevel() {
-        return UNIT_NAMES.size() - 1;
+    public static int getMaxSoldierLevel() {
+        return UNIT_NAMES.size()-1;
     }
 
 
@@ -154,6 +153,10 @@ public class RISKApplication extends Application {
         return info;
     }
 
+    public static int getTechLevel(){
+        return theWorld.getPlayerInfoByName(userName).getTechLevel();
+    }
+
     /**
      * @return list information of the player
      */
@@ -164,7 +167,7 @@ public class RISKApplication extends Application {
         PlayerInfo info = theWorld.getPlayerInfoByName(userName);
         StringBuilder result = new StringBuilder();
         result.append("Player name:  " + userName + "\n");
-        result.append("Tech Level: " + info.getTechLevel() + "\n");
+        result.append("Tech Level: " + getTechLevel() + "\n");
         result.append("Alliance: " + getAllianceName() + "\n");
         result.append("Food Resource: " + info.getFoodQuantity() + "\n");
         result.append("Tech Resource: " + info.getTechQuantity() + "\n");
@@ -508,7 +511,9 @@ public class RISKApplication extends Application {
 
 
     public static void stayInGame(onReceiveListener listener) {
-        sendAndReceiveWorld(null, listener);
+        // todo: send watch_action?
+        Order order = new BasicOrder(null, null, null, DONE_ACTION);
+        sendAndReceiveWorld(order, listener);
     }
 
     public static void exitGame() {
@@ -531,13 +536,30 @@ public class RISKApplication extends Application {
 
 
     /*************** function for chat **************/
-    // TODO
-    public static void sendOneMsg(IMessage message, onReceiveListener listener) {
 
+    public static void initChat(){
+        chatClient = new ChatClient(userName, SOCKET_HOSTNAME, CHAT_PORT);
+        chatClient.start();
+        // send init message to notify server
+        try {
+            chatClient.send(new ChatMessage(userName, null, null, 0, CHAT_SETUP_ACTION));
+        }catch (Exception e){
+            Log.e(TAG,"initChat: "+e.toString());
+        }
+    }
+
+    public static void sendOneMsg(ChatMessageUI message, onResultListener listener) {
+        ChatMessage msgSent = new ChatMessage(userName, message.getTargets(), message.getText(), getRoomId());
+        try {
+            chatClient.send(msgSent);
+            listener.onSuccess();
+        }catch (Exception e){
+            Log.e(TAG,e.toString());
+            listener.onFailure(SEND_CHAT_FAIL);
+        }
     }
 
     public static void getHistoryMsg() {
-
     }
 
     public static Set<String> getAllPlayersName() {

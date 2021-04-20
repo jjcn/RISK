@@ -1,4 +1,4 @@
-package edu.duke.ece651.group4.RISK.client.fragment;
+package edu.duke.ece651.group4.RISK.client.utility;
 
 import android.app.Activity;
 import android.app.Dialog;

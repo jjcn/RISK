@@ -1,8 +1,6 @@
 package edu.duke.ece651.group4.RISK.client.activity;
 
-import android.app.Activity;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,11 +9,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import edu.duke.ece651.group4.RISK.client.ChatClient;
 import edu.duke.ece651.group4.RISK.client.R;
-import edu.duke.ece651.group4.RISK.client.fragment.SimpleSelector;
+import edu.duke.ece651.group4.RISK.client.utility.SimpleSelector;
 import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
 import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
 import edu.duke.ece651.group4.RISK.client.utility.WaitDialog;
@@ -28,7 +26,6 @@ import java.util.List;
 import static edu.duke.ece651.group4.RISK.client.Constant.*;
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.*;
 import static edu.duke.ece651.group4.RISK.client.utility.Notice.showByToast;
-import static edu.duke.ece651.group4.RISK.client.utility.Notice.showSelector;
 
 /**
  * implement game with text input
@@ -36,7 +33,7 @@ import static edu.duke.ece651.group4.RISK.client.utility.Notice.showSelector;
 public class TurnActivity extends AppCompatActivity {
     private final String TAG = this.getClass().getSimpleName();
 
-    // TODO--: expendable list view
+    // todo: expendable list view
     private Button commitBT;
     private ListView worldInfoRC;
     private ArrayAdapter<String> worldInfoAdapter;
@@ -54,7 +51,6 @@ public class TurnActivity extends AppCompatActivity {
     private String actionType;
     private boolean isWatch; // turn to true after lose game.
     private WaitDialog waitDG;
-    private String chosenAlliance;
 
     List<String> actions;
 
@@ -63,22 +59,23 @@ public class TurnActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_turn);
         if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("RISK/Room "+getWorld().getRoomID());
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-        actions = new ArrayList<>(Arrays.asList(UI_MOVE, UI_ATK, UI_UPTECH, UI_UPTROOP, UI_DONE));
+        actions = new ArrayList<>(Arrays.asList(UI_MOVE, UI_ATK, UI_UPTECH, UI_UPTROOP, UI_ALLIANCE, UI_DONE));
         actionType = UI_MOVE; // default: move
         isWatch = false;
         waitDG = new WaitDialog(TurnActivity.this);
-        chosenAlliance = null;
 
         impUI();
+        initChat();
         updateAfterTurn();
         Log.i(TAG, LOG_CREATE_SUCCESS);
     }
 
     /**
-     * overwrite the functions to have switch room and back and menu button.
+     * overwrite the functions to have switch room, develop info and chat menu button.
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -100,7 +97,7 @@ public class TurnActivity extends AppCompatActivity {
     }
 
     private void goChat() {
-        Intent intent = new Intent(TurnActivity.this, ChatActivity.class);
+        Intent intent = new Intent(TurnActivity.this, MessageActivity.class);
         startActivity(intent);
     }
 
@@ -154,7 +151,6 @@ public class TurnActivity extends AppCompatActivity {
     }
 
     private void impActionSpinner() {
-        List<String> actions = new ArrayList<>(Arrays.asList(UI_MOVE, UI_ATK, UI_UPTECH, UI_UPTROOP, UI_DONE, UI_ALLIANCE));
         actionAdapter = new ArrayAdapter<>(TurnActivity.this, R.layout.item_choice, actions);
         chooseActionSP.setAdapter(actionAdapter);
         chooseActionSP.setSelection(0, false);
@@ -171,7 +167,6 @@ public class TurnActivity extends AppCompatActivity {
         });
     }
 
-    // TODO: alert to confirm actions.
     private void impCommitBT() {
         commitBT.setOnClickListener(v -> {
             commitBT.setClickable(false);

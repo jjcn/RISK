@@ -6,6 +6,8 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import edu.duke.ece651.group4.RISK.client.model.ChatMessageUI;
+import edu.duke.ece651.group4.RISK.client.model.ChatPlayer;
 import edu.duke.ece651.group4.RISK.shared.message.ChatMessage;
 import org.apache.commons.lang3.SerializationUtils;
 
@@ -15,7 +17,7 @@ public class ChatClient extends Thread {
     String username;
     private final AtomicBoolean exit = new AtomicBoolean(false);
 
-    public ChatClient(String username, String hostname, int port){
+    public ChatClient(String username, String hostname, int port) {
         try {
             chatChannel = SocketChannel.open();
             chatChannel.connect(new InetSocketAddress(hostname, port));
@@ -25,7 +27,7 @@ public class ChatClient extends Thread {
         this.username = username;
     }
 
-    public void exit(){
+    public void exit() {
         exit.set(true);
         System.out.println("set exit to true in chat client");
     }
@@ -34,9 +36,8 @@ public class ChatClient extends Thread {
     @Override
     public void run() {
         try {
-            waitToRecv();
+            waitToReceive();
             System.out.println("chat client exits");
-
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -47,8 +48,7 @@ public class ChatClient extends Thread {
     /*
      * This keeps waiting for message from server
      * */
-    public void waitToRecv() throws IOException {
-
+    public void waitToReceive() throws IOException {
         while (!exit.get()) {
             ByteBuffer readBuffer = ByteBuffer.allocate(1024);
             int readBytes = this.chatChannel.read(readBuffer);
@@ -60,26 +60,31 @@ public class ChatClient extends Thread {
                 this.chatChannel.close();
                 System.out.println("close channel");
             }
-            ChatMessage chatMsgRecv = (ChatMessage) SerializationUtils.deserialize(readBuffer.array());
+            ChatMessage chatMsgReceive = (ChatMessage) SerializationUtils.deserialize(readBuffer.array());
             readBuffer.clear();
             //deal with chatMsgRecV to notify android UI
+            // TODO: syc in database
+            ChatMessageUI receivedMsg = new ChatMessageUI(0, chatMsgReceive.getChatContent(),
+                    new ChatPlayer(chatMsgReceive.getGameID(), chatMsgReceive.getSource()));
 
-            System.out.println("ClientChat: " + username + " get from " + chatMsgRecv.getSource() +" saying "+ chatMsgRecv.getChatContent());
+
+            System.out.println("ClientChat: " + username + " get from " + chatMsgReceive.getSource() + " saying " + chatMsgReceive.getChatContent());
         }
     }
 
     //send a chatMessage to Server
-    public void send(ChatMessage chatMessage){
+    public void send(ChatMessage chatMessage) throws Exception {
         byte[] chatBytes = SerializationUtils.serialize(chatMessage);
         ByteBuffer writeBuffer = ByteBuffer.wrap(chatBytes);
-        try {
-            chatChannel.write(writeBuffer);
-            System.out.println("Test: "+ chatMessage.getSource()+ " send chat message to chatServer!");
-        } catch (IOException e) {
-            System.out.println("IOException when send message to chat server");
-            e.printStackTrace();
-            System.exit(0);
-        }
+//        try {
+        chatChannel.write(writeBuffer);
+        System.out.println("Test: " + chatMessage.getSource() + " send chat message to chatServer!");
+//        } catch (IOException e) {
+//            System.out.println("IOException when send message to chat server");
+//            e.printStackTrace();
+//            System.exit(0);
+//            throw new Exception(e);
+//        }
         writeBuffer.clear();
     }
 }

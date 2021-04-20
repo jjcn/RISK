@@ -39,6 +39,7 @@ public class RoomActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room);
         if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Game Rooms");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
