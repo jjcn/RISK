@@ -31,6 +31,8 @@ public class Territory implements Serializable {
 
     private Random rnd;
 
+    private Troop allianceTroop;
+
 
 
     public Territory(String name, Player owner, int population, Random rnd) {
@@ -41,6 +43,7 @@ public class Territory implements Serializable {
         this.techSpeed = 0;
         this.foodSpeed = 0;
         this.area = 0;
+        this.allianceTroop=null;
 
     }
 
@@ -52,6 +55,7 @@ public class Territory implements Serializable {
         this.techSpeed = 0;
         this.foodSpeed = 0;
         this.area = 0;
+        this.allianceTroop=null;
     }
 
     public Territory(String name) {
@@ -72,6 +76,7 @@ public class Territory implements Serializable {
         this.techSpeed = 0;
         this.foodSpeed = 0;
         this.area = area;
+        this.allianceTroop=null;
     }
 
     public Territory(String name, Random rnd) {
@@ -82,6 +87,7 @@ public class Territory implements Serializable {
         this.techSpeed = 0;
         this.foodSpeed = 0;
         this.area = 0;
+        this.allianceTroop=null;
     }
 
     public String getName() {
@@ -153,6 +159,14 @@ public class Territory implements Serializable {
      * @param subTroop shows the number of unit send out from territory
      */
     public Troop sendOutTroop(Troop subTroop) {
+        if(subTroop.getOwner().getName()!=this.ownerTroop.getOwner().getName()){
+            if(allianceTroop==null){
+                throw new IllegalArgumentException("No alliance troop now");
+            }else{
+                allianceTroop.sendTroop(subTroop);
+            }
+        }
+
         return this.ownerTroop.sendTroop(subTroop);
     }
 
@@ -162,6 +176,13 @@ public class Territory implements Serializable {
      * @param subTroop shows the number of unit send in to territory
      */
     public void sendInTroop(Troop subTroop) {
+        if(subTroop.getOwner().getName()!=this.ownerTroop.getOwner().getName()){
+            if(allianceTroop==null){
+                subTroop=allianceTroop;
+            }else{
+                allianceTroop.receiveTroop(subTroop);
+            }
+        }
         this.ownerTroop.receiveTroop(subTroop);
     }
 
@@ -314,6 +335,12 @@ public class Territory implements Serializable {
         this.ownerTroop.archerReady();
     }
 
+
+    public Troop breakAlliance(){
+        Troop target=this.allianceTroop;
+        this.allianceTroop=null;
+        return target;
+    }
 
 
 }
