@@ -147,6 +147,7 @@ public class ChatHost extends Thread {
             e.printStackTrace();
         } finally {
             try {
+                out.println("ChatHost exits!!!!!!");
                 if (this.selector != null) {
                     this.selector.close();
                 }
