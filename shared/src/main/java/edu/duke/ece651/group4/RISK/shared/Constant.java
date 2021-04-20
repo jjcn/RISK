@@ -20,6 +20,8 @@ public class Constant {
     public static final String MESS_GAME = "MessageGame";
     public static final String MESS_ACTION = "MessageAction";
     public static final String MESS_CHAT = "MessageChat";
+    public static final String CHAT_SETUP_ACTION = "ChatSetUpAction";
+
 
     //Log:
     public static final String LOG_SIGNIN = "LogIn";
