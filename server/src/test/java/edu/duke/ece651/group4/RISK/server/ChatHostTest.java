@@ -50,17 +50,13 @@ class ChatHostTest {
 
 
      synchronized void setUpAClient(String username){
-        try {
-            SocketChannel chatChannel = SocketChannel.open();
-            chatChannel.connect(new InetSocketAddress(host, port));
 
-            ChatClient chatClient = new ChatClient(username, chatChannel);
-            clients.put(username,chatClient);
-            chatClient.start();
-            chatClient.send(new ChatMessage(username, null, null,  0, CHAT_SETUP_ACTION));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//            SocketChannel chatChannel = SocketChannel.open();
+//            chatChannel.connect(new InetSocketAddress(host, port));
+        ChatClient chatClient = new ChatClient(username, host, port);
+        clients.put(username,chatClient);
+        chatClient.start();
+        chatClient.send(new ChatMessage(username, null, null,  0, CHAT_SETUP_ACTION));
     }
 
 
@@ -73,7 +69,6 @@ class ChatHostTest {
         clients.get("user0").send(cM1);
     }
 
-
 }
 
 class ChatClient extends Thread {
@@ -83,9 +78,18 @@ class ChatClient extends Thread {
     private final AtomicBoolean exit = new AtomicBoolean(false);
 
     // constructor
-    public ChatClient(String username, SocketChannel chatChannel) {
+//    public ChatClient(String username, SocketChannel chatChannel) {
+//        this.username = username;
+//        this.chatChannel = chatChannel;
+//    }
+    public ChatClient(String username, String hostname, int port){
+        try {
+            chatChannel = SocketChannel.open();
+            chatChannel.connect(new InetSocketAddress(hostname, port));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         this.username = username;
-        this.chatChannel = chatChannel;
     }
 
     public void exit(){
@@ -97,8 +101,7 @@ class ChatClient extends Thread {
     @Override
     public void run() {
         try {
-            this.init();
-            this.process();
+            waitToRecv();
             System.out.println("chatclient exits");
 
         } catch (IOException e) {
@@ -108,10 +111,10 @@ class ChatClient extends Thread {
         }
     }
 
-    public void init() throws IOException {
-    }
-
-    public void process() throws IOException {
+    /*
+    * This keeps waiting for message from server
+    * */
+    public void waitToRecv() throws IOException {
 
         while (!exit.get()) {
             ByteBuffer readBuffer = ByteBuffer.allocate(1024);
@@ -126,11 +129,16 @@ class ChatClient extends Thread {
             }
             ChatMessage chatMsgRecv = (ChatMessage) SerializationUtils.deserialize(readBuffer.array());
             readBuffer.clear();
-            // debug
+            //deal with chatMsgRecV to notify android UI
+
+
+
+
             System.out.println("ClientChat: " + username + " get from " + chatMsgRecv.getSource() +" saying "+ chatMsgRecv.getChatContent());
         }
     }
 
+    //send a chatMessage to Server
     public void send(ChatMessage chatMessage){
         byte[] chatBytes = SerializationUtils.serialize(chatMessage);
         ByteBuffer writeBuffer = ByteBuffer.wrap(chatBytes);
