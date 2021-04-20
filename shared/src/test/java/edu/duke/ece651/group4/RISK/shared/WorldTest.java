@@ -1,6 +1,7 @@
 package edu.duke.ece651.group4.RISK.shared;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -9,6 +10,7 @@ import java.io.Reader;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.HashSet;
 import java.util.Map;
@@ -43,19 +45,7 @@ public class WorldTest {
     protected final String NOT_ADJACENT_MSG =
         "You tried to attack from %s to %s, which are not adjacent territories. %n" +
         "You can only attack territories directly adjacent to your territories.";
-    /**
-     * Creates a world for test.
-     * Territory layout is the same as that on Evolution 1 requirements.
-     * N-----M--O--G
-     * |   /  |/ \ |
-     * |  /   S ---M
-     * |/   / |  \ |
-     * E------R----H
-     * Can specify territory names and troops stationed on the territories.
-     * @param names is an array of territory names.
-     * @param troops is the corresponding troops on these territories.
-     * @return a world object.
-     */
+
     public World createWorldSimple() {
         World world = new World();
         Territory t1 = new Territory("1");
@@ -89,8 +79,18 @@ public class WorldTest {
     Troop troopsSamePlayer[] = {new Troop(10, red), new Troop(12, red), new Troop(8, red),
                         new Troop(13, red), new Troop(14, red), new Troop(3, red),
                         new Troop(5, red), new Troop(6, red), new Troop(3, red)};
+
     /**
-     * Creates a test world. Troop not specified. Same as the one on Evolution 1 requirements.
+     * Creates a world for test.
+     * Territory layout is the same as that on Evolution 1 requirements.
+     * N-----M--O--G
+     * |   /  |/ \ |
+     * |  /   S ---M
+     * |/   / |  \ |
+     * E------R----H
+     * Can specify territory names and troops stationed on the territories.
+     * @param troops is the corresponding troops on these territories.
+     * @return a world object.
      */
     public World createWorld(Troop... troops) {
         World world = new World();
@@ -466,12 +466,6 @@ public class WorldTest {
     }
 
     @Test
-    public void charAndCharacter() {
-        assertEquals('A', new Character('A'));
-        assertTrue('A' == new Character('A'));
-    }
-
-    @Test
     public void testUpgradeTechLevelExceedMax() {
         World world = createWorldAndRegister(troopsSeparated);
         world.registerPlayer(new PlayerInfo("test", 99999, 99999));
@@ -485,6 +479,132 @@ public class WorldTest {
         UpgradeTechOrder uTechOrder = new UpgradeTechOrder(5);
         assertThrows(IllegalArgumentException.class,
                     () -> world.upgradePlayerTechLevelBy(uTechOrder, "red"));
+    }
+
+    @Test
+    public void testTransferTroopSuccess() {
+        World world = createWorldAndRegister(troopsConnected);
+        int greenTechResource = world.getPlayerInfoByName("green").getTechQuantity();
+
+        // one Soldier LV0 -> Knight LV0
+        TransferTroopOrder ttOrder1 = new TransferTroopOrder("Narnia",
+                Constant.SOLDIER, Constant.KNIGHT,0, 1);
+        world.transferTroop(ttOrder1, "green");
+        Map<String, Integer> NarniaTroop = world.findTerritory("Narnia").checkTroopInfo();
+        assertEquals(1, NarniaTroop.get("Knight LV0"));
+        assertEquals(9, NarniaTroop.get("Soldier LV0"));
+        // check resource consumption
+        greenTechResource -= Constant.KNIGHT_COST;
+        assertEquals(greenTechResource, world.getPlayerInfoByName("green").getTechQuantity());
+
+        // one Soldier LV0 -> Shield LV0
+        TransferTroopOrder ttOrder2 = new TransferTroopOrder("Narnia",
+                Constant.SOLDIER, Constant.SHIELD,0, 1);
+        world.transferTroop(ttOrder2, "green");
+        NarniaTroop = world.findTerritory("Narnia").checkTroopInfo();
+        assertEquals(1, NarniaTroop.get("Knight LV0"));
+        assertEquals(1, NarniaTroop.get("Shield LV0"));
+        assertEquals(8, NarniaTroop.get("Soldier LV0"));
+        // check resource consumption
+        greenTechResource -= Constant.SHIELD_COST;
+        assertEquals(greenTechResource, world.getPlayerInfoByName("green").getTechQuantity());
+
+        // upgrade
+        UpgradeTroopOrder utOrder1 = new UpgradeTroopOrder("Narnia", 0, 1, 1);
+        utOrder1.setUnitType(Constant.KNIGHT);
+        world.upgradeTroop(utOrder1, "green");
+        /*System.out.println("green's remaining tech resource = " +
+                world.getPlayerInfoByName("green").getTechQuantity());*/
+    }
+
+    @Test
+    public void testTransferTroopInvalid() {
+        World world = createWorldAndRegister(troopsConnected);
+
+        // not enough troop to transfer
+        TransferTroopOrder ttOrder1 = new TransferTroopOrder("Narnia",
+                Constant.SOLDIER, Constant.KNIGHT, 0, 11);
+        assertThrows(IllegalArgumentException.class,
+                () -> world.transferTroop(ttOrder1, "green"));
+
+        // invalid type before
+        TransferTroopOrder ttOrder2 = new TransferTroopOrder("Narnia",
+                "unknownType", Constant.KNIGHT, 0, 1);
+        assertThrows(IllegalArgumentException.class,
+                () -> world.transferTroop(ttOrder2, "green"));
+
+        // invalid type after
+        TransferTroopOrder ttOrder3 = new TransferTroopOrder("Narnia",
+                Constant.SOLDIER, "unknownType",0, 1);
+        assertThrows(IllegalArgumentException.class,
+                () -> world.transferTroop(ttOrder3, "green"));
+
+        // invalid level
+        TransferTroopOrder ttOrder4 = new TransferTroopOrder("Narnia",
+                Constant.SOLDIER, "unknownType",1, 1);
+        assertThrows(IllegalArgumentException.class,
+                () -> world.transferTroop(ttOrder4, "green"));
+    }
+
+    /**
+     * Helper function that tests if two sets of Strings are equal
+     * @param set1
+     * @param set2
+     */
+    protected void assertSetEquals(Set<String> set1, Set<String> set2) {
+        assertEquals(set1.size(), set2.size());
+        assertTrue(set1.containsAll(set2));
+        assertTrue(set2.containsAll(set1));
+    }
+
+    /**
+     * Helper function that creates a new set from an indefinite number of objects
+     * @param objects are the objects
+     * @param <T> is the object type
+     * @return a new set containing these objects
+     */
+    protected <T> Set<T> newSet(T... objects) {
+        Set<T> set = new HashSet<T>();
+        Collections.addAll(set, objects);
+        return set;
+    }
+
+    @Test
+    public void testTryFormAllianceUnilateral() {
+        World world = createWorldAndRegister(troopsSeparated);
+        // only red to blue, green to blue
+        world.tryFormAlliance("red", "blue");
+        world.tryFormAlliance("green", "blue");
+        // test before resolving alliance relationships
+        assertSetEquals(newSet("blue"), world.getAllianceNames("red"));
+        assertSetEquals(new HashSet<String>(), world.getAllianceNames("blue"));
+        assertSetEquals(newSet("blue"), world.getAllianceNames("green"));
+        // resolve alliance results
+        world.doCheckIfAllianceSuccess();
+        // only unilateral requests, no alliance formed
+        assertSetEquals(new HashSet<String>(), world.getAllianceNames("red"));
+        assertSetEquals(new HashSet<String>(), world.getAllianceNames("blue"));
+        assertSetEquals(new HashSet<String>(), world.getAllianceNames("green"));
+    }
+
+    @Test
+    public void testTryFormAllianceMutual() {
+        World world = createWorldAndRegister(troopsSeparated);
+        // red and blue, red and green mutually send alliance requests
+        world.tryFormAlliance("red", "blue");
+        world.tryFormAlliance("blue", "red");
+        world.tryFormAlliance("red", "green");
+        world.tryFormAlliance("green", "red");
+        // test before resolving alliance relationships
+        assertSetEquals(newSet("blue", "green"), world.getAllianceNames("red"));
+        assertSetEquals(newSet("red"), world.getAllianceNames("blue"));
+        assertSetEquals(newSet("red"), world.getAllianceNames("green"));
+        // resolve alliance results
+        world.doCheckIfAllianceSuccess();
+        // all mutual requests, all alliance formed4
+        assertSetEquals(newSet("blue", "green"), world.getAllianceNames("red"));
+        assertSetEquals(newSet("red"), world.getAllianceNames("blue"));
+        assertSetEquals(newSet("red"), world.getAllianceNames("green"));
     }
 
     @Test

@@ -5,12 +5,16 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
+import java.util.Arrays;
+import java.util.HashSet;
+
+import edu.duke.ece651.group4.RISK.shared.MoveOrderChecker.*;
 
 public class MoveOrderCheckerTest {
     private final String NOT_MOVE_ORDER_MSG = "This is not a move order.";
-    private final String NOT_SAME_OWNER_MSG = 
-        "Cannot move troop to %s, which belongs to another player.";
-    private final String NOT_REACHABLE_MSG = 
+    private final String NOT_SAME_OWNER_MSG =
+         "Cannot move troop to %s, which belongs to another player who is not your ally.";
+    private final String NOT_REACHABLE_MSG =
         "Cannot reach from %s to %s. " +
         "Other players' territories are blocking the way.";
 
@@ -145,6 +149,8 @@ public class MoveOrderCheckerTest {
         world.registerPlayer(greenInfo);
         world.tryFormAlliance("red","blue");
         world.tryFormAlliance("blue","red");
+        world.doCheckIfAllianceSuccess();
+        assertEquals(new HashSet<>(Arrays.asList("blue")), world.getAllianceNames("red"));
 
         MoveOrder order = new MoveOrder("Midkemia", "Mordor", new Troop(3, red), 'M');
         assertNull(moc.checkMyOrder(order, world));

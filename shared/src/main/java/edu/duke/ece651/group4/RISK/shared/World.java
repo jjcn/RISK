@@ -617,7 +617,9 @@ public class World implements Serializable {
      */
     public void attackATerritory(AttackOrder order, String playerName) { // TODO: coupled upgrade and resource consumption
         Territory start = findTerritory(order.getSrcName());
+        String startOwnerName = start.getOwner().getName();
         Territory end = findTerritory(order.getDesName());
+        String endOwnerName = end.getOwner().getName();
         Troop troop = order.getActTroop();
         // check error of attack order
         String errorMsg = orderChecker.checkOrder(order, this);
@@ -626,6 +628,15 @@ public class World implements Serializable {
         }
         // also check if player has enough food
         consumeResourceOfAttack(order, playerName);
+        // check if the destination is a territory of your ally, if so, break alliance with him
+        if (getAllianceNames(startOwnerName).contains(endOwnerName)) {
+            breakAlliance(startOwnerName, endOwnerName);
+            /* TODO: if th If A breaks an alliance
+            with B, and B has units in A’s territories, then B’s units return to the nearest (break ties
+            randomly) B-owned territory at before any other actions are resolved (i.e. are available
+            to defend those territories)
+            */
+        }
         // moves troop
         end.sendInEnemyTroop(start.sendOutTroop(troop));
     }
@@ -650,6 +661,35 @@ public class World implements Serializable {
         } catch (IllegalArgumentException iae) {
             throw iae;
         }
+    }
+
+    /**
+     * Construct jobName like: Soldier LV0
+     *
+     * @param unitType is the type of unit defined in shared/Constant.
+     * @param unitLevel is the level of unit.
+     * @return constructed jobName.
+     */
+    protected String buildJobName(String unitType, int unitLevel) {
+        return String.format("%s LV%d",unitType, unitLevel);
+    }
+
+    /**
+     * Transfer units to another type via a transfer troop order.
+     * Level of units stay the same.
+     *
+     * @param ttOrder is a transfer troop order.
+     * @param playerName is the name of the player who gives this order.
+     */
+    public void transferTroop(TransferTroopOrder ttOrder, String playerName) {
+        Territory terr = findTerritory(ttOrder.getSrcName());
+        String typeBefore = ttOrder.getTypeBefore();
+        String typeAfter = ttOrder.getTypeAfter();
+        int unitLevel = ttOrder.getUnitLevel();
+        int nUnit = ttOrder.getNUnit();
+
+        int transferCost = terr.transfer(typeBefore, typeAfter, unitLevel, nUnit);
+        getPlayerInfoByName(playerName).consumeTech(transferCost);
     }
 
     /**
@@ -732,7 +772,7 @@ public class World implements Serializable {
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 if (allianceMatrix[i][j] == true) {
-                    if (allianceMatrix[j][i] == false) {
+                    if (allianceMatrix[j][i] == false || (i == j)) {
                         allianceMatrix[i][j] = false;
                     }
                 }

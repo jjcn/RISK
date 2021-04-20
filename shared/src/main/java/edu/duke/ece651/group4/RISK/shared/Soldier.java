@@ -17,22 +17,21 @@ public class Soldier implements Unit, Serializable {
     protected double speed;
     protected int range;
 
-
     public Soldier() {
         this(new Random());
     }
 
     /**
      * Construct a soldier with specific seed
-     * 
+     *
      * @param rand is the random seed.
      */
     public Soldier(Random rand) {
         this.jobName = UNIT_NAMES.get(0);
         this.level = 0;
         this.dice = rand;
-        this.speed=NORM_SPEED;
-        this.range=NORM_RANGE;
+        this.speed = NORM_SPEED;
+        this.range = NORM_RANGE;
     }
 
     public Soldier clone() {
@@ -50,8 +49,6 @@ public class Soldier implements Unit, Serializable {
         return this.level;
     }
 
-
-
     public int getBonus() {
         return UNIT_BONUS.get(this.level);
     }
@@ -68,7 +65,7 @@ public class Soldier implements Unit, Serializable {
 
     /**
      * Soldier fight with another unit by rolling a 20faced dice
-     * 
+     *
      * @param enemy is the enemy unit.
      */
     @Override
@@ -85,7 +82,7 @@ public class Soldier implements Unit, Serializable {
 
     /**
      * Try upgrade a soldier to target Level.
-     * 
+     *
      * @param targetLevel is the desired level to upgrade to.
      * @param resource    is the resource quantity at hand.
      * @return remaining resource quantity after the upgrade attempt.
@@ -124,25 +121,25 @@ public class Soldier implements Unit, Serializable {
         return randomNum;
     }
 
-    public double getSpeed(){
+    public double getSpeed() {
         return this.speed;
     }
 
-    public Soldier transfer(String newJob){
-        if(!UNIT_NAMES.contains(newJob)){
-            throw new IllegalArgumentException("Can not transfer job from current job");
+    public Soldier transfer(String newJob) {
+        if (!JOB_NAMES.contains(newJob)) {
+            throw new IllegalArgumentException(
+                    String.format("Fails to transfer job. Job \"%s\" does not exist.", newJob));
         }
 
-        if(newJob.equals(KNIGHT)){
+        if (newJob.equals(KNIGHT)) {
             return new Knight(this.level);
-        }else if(newJob.equals(ARCHER)){
+        } else if (newJob.equals(ARCHER)) {
             return new Archer(this.level);
-        }else if(newJob.equals(BREAKER)){
+        } else if (newJob.equals(BREAKER)) {
             return new Breaker(this.level);
-        }else if(newJob.equals(SHIELD)){
+        } else if (newJob.equals(SHIELD)) {
             return new Shield(this.level);
         }
-
 
         return null;
     }

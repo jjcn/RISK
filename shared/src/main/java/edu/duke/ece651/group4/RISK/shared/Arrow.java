@@ -7,7 +7,6 @@ import static edu.duke.ece651.group4.RISK.shared.Constant.BREAKER_NAMES;
 
 public class Arrow extends Soldier {
 
-
     public Arrow(int level) {
         this(new Random(),level);
     }

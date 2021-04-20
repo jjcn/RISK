@@ -275,6 +275,7 @@ public class RISKApplication extends Application {
                 Object receivedO = playerClient.recvObject();
                 if (receivedO instanceof String) {
                     listener.onFailure((String) receivedO);
+                    listener.onFailure((String) receivedO);
                 } else if (receivedO instanceof List) {
                     if (type == ROOMS) {
                         roomInfo = (ArrayList<RoomInfo>) receivedO;
