@@ -18,8 +18,11 @@ import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
 import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
 import edu.duke.ece651.group4.RISK.client.model.ChatMessageUI;
 import edu.duke.ece651.group4.RISK.client.model.ChatPlayer;
+import edu.duke.ece651.group4.RISK.shared.message.ChatMessage;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import static edu.duke.ece651.group4.RISK.client.Constant.*;
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.*;
@@ -39,6 +42,7 @@ public class MessageActivity extends AppCompatActivity
 //    private int selectionCount;
 //    private Date lastLoadedDate;
 
+    //TODO: show sender name
     //TODO: get history info
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,12 +54,8 @@ public class MessageActivity extends AppCompatActivity
         }
 
         this.msgList = findViewById(R.id.messagesList);
-        msgAdapter = new MessagesListAdapter<>(getUserName(), new ImageLoader() {
-            @Override
-            public void loadImage(ImageView imageView, @Nullable String url, @Nullable Object payload) {
+        msgAdapter = new MessagesListAdapter<>(getUserName(), null);
 
-            }
-        });
         msgList.setAdapter(msgAdapter);
 //        msgAdapter.setLoadMoreListener(this);
 
@@ -169,16 +169,16 @@ public class MessageActivity extends AppCompatActivity
 //        return true;
 //    }
 
-//    private MessagesListAdapter.Formatter<Message> getMessageStringFormatter() {
-//        return message -> {
-//            String createdAt = new SimpleDateFormat("MMM d, EEE 'at' h:mm a", Locale.getDefault())
-//                    .format(message.getCreatedAt());
-//
-//            String text = message.getText();
-//            if (text == null) text = "[attachment]";
-//
-//            return String.format(Locale.getDefault(), "%s: %s (%s)",
-//                    message.getUser().getName(), text, createdAt);
-//        };
-//    }
+    private MessagesListAdapter.Formatter<ChatMessageUI> getMessageStringFormatter() {
+        return message -> {
+            String createdAt = new SimpleDateFormat("MMM d, EEE 'at' h:mm a", Locale.getDefault())
+                    .format(message.getCreatedAt());
+
+            String text = message.getText();
+            if (text == null) text = "[attachment]";
+
+            return String.format(Locale.getDefault(), "%s: %s (%s)",
+                    message.getUser().getName(), text, createdAt);
+        };
+    }
 }
