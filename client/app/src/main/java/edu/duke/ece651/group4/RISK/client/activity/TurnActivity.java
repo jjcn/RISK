@@ -198,6 +198,10 @@ public class TurnActivity extends AppCompatActivity {
                 case UI_ALLIANCE:
                     selectAlliance();
                     break;
+                case UI_CHANGETYPE:
+                    intent.setComponent(new ComponentName(TurnActivity.this, TransferActivity.class));
+                    startActivity(intent);
+                    break;
                 default:
                     throw new IllegalStateException("Unexpected value: " + actionType);
             }
