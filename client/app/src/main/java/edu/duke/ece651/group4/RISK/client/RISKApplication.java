@@ -463,8 +463,14 @@ public class RISKApplication extends Application {
 
     public static UpgradeTroopOrder buildUpOrder(String srcName,
                                                  int levelBefore, int levelAfter,
-                                                 int nUnit) {
-        return new UpgradeTroopOrder(srcName, levelBefore, levelAfter, nUnit);
+                                                 int nUnit, String type) {
+        UpgradeTroopOrder order = new UpgradeTroopOrder(srcName, levelBefore, levelAfter, nUnit);
+        order.setUnitType(type);
+        return order;
+    }
+
+    public static TransferTroopOrder buildTransferTroopOrder(String srcName, String typeAfter, int unitLevel, int nUnit) {
+        return new TransferTroopOrder(srcName, typeAfter, unitLevel, nUnit);
     }
 
     /**
@@ -474,6 +480,17 @@ public class RISKApplication extends Application {
         try {
             UpgradeTroopOrder tmp = new UpgradeTroopOrder(order.getSrcName(), order.getLevelBefore(), order.getLevelAfter(), order.getNUnit());
             theWorld.upgradeTroop(order, userName);
+            send(tmp);
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+        return null;
+    }
+
+    public static String doSoldierTransfer(TransferTroopOrder order) {
+        try {
+            TransferTroopOrder tmp = new TransferTroopOrder(order.getSrcName(), order.getTypeAfter(), order.getUnitLevel(), order.getNUnit());
+            theWorld.transferTroop(tmp,userName);
             send(tmp);
         } catch (Exception e) {
             return e.getMessage();
