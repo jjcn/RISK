@@ -10,10 +10,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -59,10 +56,9 @@ class ChatHostTest {
 
     @Test
     public void test_run(){
-        List<String> targets = new ArrayList<>();
-        targets.add("user0");
-//        targets.add("user1");
-//        targets.add("user2");
+        Set<String> targets = new HashSet<>();
+        targets.add("user1");
+        targets.add("user2");
         ChatMessage cM1 = new ChatMessage("user0", targets, "hello everyone!",  0, "");
         clients.get("user0").send(cM1);
     }

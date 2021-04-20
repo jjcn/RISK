@@ -121,7 +121,7 @@ public class TroopTest {
         Troop test = new Troop(4, new TextPlayer("test"), rnd);
         Troop enemy = new Troop(4, new TextPlayer("test"), rnd);
 
-        assertEquals(test.combat(enemy).checkTroopSize(), 1);
+        assertEquals(test.combat(enemy).checkTroopSize(), 0);
 
         Troop test2 = new Troop(5, new TextPlayer("test"), rnd);
         test2.updateUnit("Soldier LV0", 6, 5, 1000000);

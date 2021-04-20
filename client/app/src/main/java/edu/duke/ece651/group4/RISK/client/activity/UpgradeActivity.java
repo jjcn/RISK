@@ -18,12 +18,15 @@ import static edu.duke.ece651.group4.RISK.client.Constant.LOG_CREATE_SUCCESS;
 import static edu.duke.ece651.group4.RISK.client.Constant.MAPS;
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.*;
 import static edu.duke.ece651.group4.RISK.client.utility.Notice.showByToast;
+import static edu.duke.ece651.group4.RISK.shared.Constant.UNIT_NAMES;
 
+
+// todo: refactor some code & comment
 public class UpgradeActivity extends AppCompatActivity {
     private final String TAG = this.getClass().getSimpleName();
     private String terrName;
-    private String typeNameBefore;
-    private String typeNameAfter;
+    private int levelBefore;
+    private int levelAfter;
     private int nUnit;
 
     private ImageView worldImageView;
@@ -37,7 +40,7 @@ public class UpgradeActivity extends AppCompatActivity {
 
     protected void initMapping() {
         for (int i = 0; i <= 6; i++) {
-            levels.put("Soldier LV" + i, i);
+            levels.put(UNIT_NAMES.get(i), i);
         }
     }
 
@@ -49,13 +52,13 @@ public class UpgradeActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         this.terrName = "";
-        this.typeNameBefore = "";
-        this.typeNameAfter = "";
+        this.levelBefore = 0;
+        this.levelAfter = 0;
         this.nUnit = -1;
         this.levels = new HashMap<>();
         initMapping();
 
-        Log.e(TAG, "Upgrade Activity: set up successfully and will enter UI" );
+        Log.e(TAG, "Upgrade Activity: set up successfully and will enter UI");
         impUI();
         Log.i(TAG, LOG_CREATE_SUCCESS);
     }
@@ -73,7 +76,7 @@ public class UpgradeActivity extends AppCompatActivity {
     private void impUI() {
         worldImageView = findViewById(R.id.world_image_view);
         worldImageView.setImageResource(MAPS.get(getCurrentRoomSize()));
-        
+
         // territory spinner
         List<String> myTerrNames = getMyTerrNames();
 
@@ -89,43 +92,43 @@ public class UpgradeActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
 
         // unit level before spinner
-        List<String> levelNamesBefore = RISKApplication.getLevelNames(); // TODO
+        List<String> levelNames = UNIT_NAMES.subList(0, getTechLevel() + 1);
 
         levelBeforeSpinner = findViewById(R.id.unit_before_choices);
         SpinnerAdapter levelBeforeAdapter = new ArrayAdapter<>(
                 UpgradeActivity.this, R.layout.item_choice,
-                levelNamesBefore);
+                levelNames);
         levelBeforeSpinner.setAdapter(levelBeforeAdapter);
         levelBeforeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                typeNameBefore = (String) levelBeforeAdapter.getItem(position);
+                levelBefore = position;
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
-
-        // unit level after spinner
-        List<String> levelNamesAfter = RISKApplication.getLevelNames(); // TODO
 
         levelAfterSpinner = findViewById(R.id.unit_after_choices);
         SpinnerAdapter levelAfterAdapter = new ArrayAdapter<>(
                 UpgradeActivity.this, R.layout.item_choice,
-                levelNamesAfter);
+                levelNames);
         levelAfterSpinner.setAdapter(levelAfterAdapter);
         levelAfterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                typeNameAfter = (String) levelAfterAdapter.getItem(position);
+                levelAfter = position;
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
 
         // number of unit
@@ -136,24 +139,16 @@ public class UpgradeActivity extends AppCompatActivity {
         commitBT.setOnClickListener(v -> {
 
             Editable text = nUnitET.getText();
-            if(text == null){
+            if (text == null) {
                 return;
-            }else if(text.toString()==""){
-                showByToast(UpgradeActivity.this,"Please input the number.");
+            } else if (text.toString() == "") {
+                showByToast(UpgradeActivity.this, "Please input the number.");
                 return;
             }
             nUnit = Integer.parseInt(text.toString());
-            Log.d(TAG, String.format("User selected: upgrade %d units from \"%s\" to \"%s\".",
-                    nUnit, typeNameBefore, typeNameAfter));
-            Log.d(TAG, String.format("Upgrade order to be created: upgrade %d units from LV%d to LV%d.",
-                    nUnit, levels.get(typeNameBefore), levels.get(typeNameAfter)));
 
-            // TODO: need mapping from levelNames -> level integer, hard-coded for now
             String result = doSoldierUpgrade(
-                    buildUpOrder(terrName,
-                            levels.get(typeNameBefore),
-                            levels.get(typeNameAfter),
-                            nUnit));
+                    buildUpOrder(terrName, levelBefore, levelAfter, nUnit));
             if (result == null) {
                 finish();
             } else {

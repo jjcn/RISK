@@ -7,21 +7,21 @@ import java.util.Set;
 import static edu.duke.ece651.group4.RISK.shared.Constant.MESS_CHAT;
 
 public class ChatMessage extends BasicMessage {
-    List<String> targetPlayers;
+    Set<String> targetPlayers;
     int gameID;
     String chatContent;
-    public ChatMessage(String sender, List<String> targetPlayers, String chatContent, int gameID, String action){
+    public ChatMessage(String sender, Set<String> targetPlayers, String chatContent, int gameID, String action){
         super(sender,MESS_CHAT, action);
         this.targetPlayers = targetPlayers;
         this.chatContent = chatContent;
         this.gameID = gameID;
     }
 
-    public ChatMessage(String sender, List<String> targetPlayers, String chatContent, int gameID){
+    public ChatMessage(String sender, Set<String> targetPlayers, String chatContent, int gameID){
         this(sender,targetPlayers,chatContent,gameID,"");
     }
 
-    public List<String> getTargetsPlayers(){
+    public Set<String> getTargetsPlayers(){
         return targetPlayers;
     }
 

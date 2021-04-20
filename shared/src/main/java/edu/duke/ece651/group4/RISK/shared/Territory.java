@@ -187,7 +187,7 @@ public class Territory implements Serializable {
      */
     public void doOneBattle(Troop enemy) {
         Troop enemyRemain = this.ownerTroop.combat(enemy);
-        this.ownerTroop = this.ownerTroop.checkWin() ? this.ownerTroop : enemyRemain;
+        this.ownerTroop = enemyRemain.checkWin() ? enemyRemain:this.ownerTroop;
     }
 
     /**
@@ -286,5 +286,27 @@ public class Territory implements Serializable {
         }
         return report.toString();
     }
+
+
+
+    /**
+     * From certain job to new Job name with certain number of unit
+     *
+     * @return cost of transfer
+     */
+    public int transfer(String from,String to,int num){
+        return this.ownerTroop.transfer(from,to,num);
+    }
+
+    public Troop sendRangeAttack(Troop target){
+        return this.ownerTroop.sendRangeAttack(target);
+    }
+
+
+    public boolean checkRangeAbility(){
+        return this.ownerTroop.rangeAttackAbility();
+    }
+
+
 
 }

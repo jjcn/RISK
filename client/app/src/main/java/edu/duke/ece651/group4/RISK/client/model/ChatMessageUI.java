@@ -4,28 +4,25 @@ import com.stfalcon.chatkit.commons.models.IMessage;
 import com.stfalcon.chatkit.commons.models.IUser;
 
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
-public class ChatMessage implements IMessage {
+public class ChatMessageUI implements IMessage {
     private String chatID;
     private String text;
     private ChatPlayer user;
     private Date createdAt;
-    private List<String> targets; // want to talk to ---
+    private Set<String> targets; // want to talk to ---
 
-    public ChatMessage(int chatID, String text, ChatPlayer user) {
-        this(String.valueOf(chatID), text, user, new Date());
+    public ChatMessageUI(int chatID, String text, ChatPlayer user, Set targets) {
+        this(String.valueOf(chatID), text, user, new Date(),targets);
     }
 
-    public ChatMessage(String chatID, String text, ChatPlayer user) {
-        this(chatID, text, user, new Date());
-    }
-
-    public ChatMessage(String chatID, String text, ChatPlayer user, Date createdAt){
+    public ChatMessageUI(String chatID, String text, ChatPlayer user, Date createdAt, Set targets){
         this.chatID = chatID;
         this.text = text;
         this.user = user;
         this.createdAt = createdAt;
+        this.targets = targets;
     }
 
     @Override
@@ -56,5 +53,5 @@ public class ChatMessage implements IMessage {
         this.chatID = String.valueOf(id);
     }
 
-    public List<String> getTargets(){return targets;}
+    public Set<String> getTargets(){return targets;}
 }

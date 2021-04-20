@@ -11,7 +11,9 @@ import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import edu.duke.ece651.group4.RISK.client.ChatClient;
 import edu.duke.ece651.group4.RISK.client.R;
+import edu.duke.ece651.group4.RISK.client.utility.SimpleSelector;
 import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
 import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
 import edu.duke.ece651.group4.RISK.client.utility.WaitDialog;
@@ -24,7 +26,6 @@ import java.util.List;
 import static edu.duke.ece651.group4.RISK.client.Constant.*;
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.*;
 import static edu.duke.ece651.group4.RISK.client.utility.Notice.showByToast;
-import static edu.duke.ece651.group4.RISK.client.utility.Notice.showSelector;
 
 /**
  * implement game with text input
@@ -32,7 +33,7 @@ import static edu.duke.ece651.group4.RISK.client.utility.Notice.showSelector;
 public class TurnActivity extends AppCompatActivity {
     private final String TAG = this.getClass().getSimpleName();
 
-    // TODO--: expendable list view
+    // todo: expendable list view
     private Button commitBT;
     private ListView worldInfoRC;
     private ArrayAdapter<String> worldInfoAdapter;
@@ -58,10 +59,11 @@ public class TurnActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_turn);
         if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("RISK/Room "+getWorld().getRoomID());
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-        actions = new ArrayList<>(Arrays.asList(UI_MOVE, UI_ATK, UI_UPTECH, UI_UPTROOP, UI_DONE));
+        actions = new ArrayList<>(Arrays.asList(UI_MOVE, UI_ATK, UI_UPTECH, UI_UPTROOP, UI_ALLIANCE,UI_CHANGETYPE, UI_DONE));
         actionType = UI_MOVE; // default: move
         isWatch = false;
         waitDG = new WaitDialog(TurnActivity.this);
@@ -72,7 +74,7 @@ public class TurnActivity extends AppCompatActivity {
     }
 
     /**
-     * overwrite the functions to have switch room and back and menu button.
+     * overwrite the functions to have switch room, develop info and chat menu button.
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -82,6 +84,7 @@ public class TurnActivity extends AppCompatActivity {
                 return true;
             case R.id.menu_chat:
                 goChat();
+                return true;
             case R.id.menu_rooms:
                 switchOut();
                 return true;
@@ -94,7 +97,7 @@ public class TurnActivity extends AppCompatActivity {
     }
 
     private void goChat() {
-        Intent intent = new Intent(TurnActivity.this, ChatActivity.class);
+        Intent intent = new Intent(TurnActivity.this, MessageActivity.class);
         startActivity(intent);
     }
 
@@ -148,7 +151,6 @@ public class TurnActivity extends AppCompatActivity {
     }
 
     private void impActionSpinner() {
-        List<String> actions = new ArrayList<>(Arrays.asList(UI_MOVE, UI_ATK, UI_UPTECH, UI_UPTROOP, UI_DONE));
         actionAdapter = new ArrayAdapter<>(TurnActivity.this, R.layout.item_choice, actions);
         chooseActionSP.setAdapter(actionAdapter);
         chooseActionSP.setSelection(0, false);
@@ -165,14 +167,12 @@ public class TurnActivity extends AppCompatActivity {
         });
     }
 
-    // TODO: alert to confirm actions.
     private void impCommitBT() {
         commitBT.setOnClickListener(v -> {
             commitBT.setClickable(false);
             Intent intent = new Intent();
             Bundle bundle = new Bundle();
 
-            Log.e(TAG, LOG_FUNC_RUN + "commitBT");
             switch (actionType) {
                 case UI_MOVE:
                 case UI_ATK:
@@ -189,7 +189,6 @@ public class TurnActivity extends AppCompatActivity {
                     upgradeTech();
                     break;
                 case UI_DONE:
-                    Log.i(TAG, LOG_FUNC_RUN + "is watch" + isWatch);
                     if (isWatch) {
                         showStayDialog();
                     } else {
@@ -197,11 +196,7 @@ public class TurnActivity extends AppCompatActivity {
                     }
                     break;
                 case UI_ALLIANCE:
-                    String choice = showSelector(TurnActivity.this, CHOOSE_USER_INSTR, getMyTerrNames());
-                    Log.i(TAG, LOG_FUNC_RUN + "get choice: " + choice);
-                    if (choice != "") {
-                        requireAlliance(choice);
-                    }
+                    selectAlliance();
                     break;
                 default:
                     throw new IllegalStateException("Unexpected value: " + actionType);
@@ -211,13 +206,38 @@ public class TurnActivity extends AppCompatActivity {
         });
     }
 
+    private void selectAlliance() {
+        ArrayList<String> choices = new ArrayList<>();
+        // you can not ally with yourself
+        for (String playerName : getAllPlayersName()) {
+            if (!playerName.equals(getUserName())) {
+                choices.add(playerName);
+            }
+        }
+        SimpleSelector selector = new SimpleSelector(TurnActivity.this, CHOOSE_USER_INSTR, choices, new onReceiveListener() {
+            @Override
+            public void onSuccess(Object o) {
+                if (o instanceof String) {
+                    String alliance = (String) o;
+                    requireAlliance(alliance);
+                } else {
+                    onFailure("not String name");
+                }
+            }
+
+            @Override
+            public void onFailure(String errMsg) {
+                Log.e(TAG, errMsg);
+            }
+        });
+        selector.show();
+    }
+
     private void showConfirmDialog() {
-        Log.i(TAG, LOG_FUNC_RUN + "enter confirm");
         AlertDialog.Builder builder = new AlertDialog.Builder(TurnActivity.this);
         builder.setTitle(CONFIRM);
         builder.setMessage(CONFIRM_ACTION);
         builder.setPositiveButton("Yes", (dialog, which) -> {
-            Log.i(TAG, LOG_FUNC_RUN + "click yes");
             waitNextTurn();
         });
         builder.setNegativeButton("No", (dialog, which) -> {
@@ -298,7 +318,9 @@ public class TurnActivity extends AppCompatActivity {
                         userInfoRC.setVisibility(View.GONE);
                         commitBT.setVisibility(View.GONE);
                     }
-                    Log.i(TAG, LOG_FUNC_RUN + "call update after turn");
+                    userInfo.clear();
+                    userInfo.add(getPlayerInfo());
+                    userInfoAdapter.notifyDataSetChanged();
                     noticeInfo.clear();
                     noticeInfo.add(getPlayerInfo());
                     noticeInfo.add(getWorld().getReport());
