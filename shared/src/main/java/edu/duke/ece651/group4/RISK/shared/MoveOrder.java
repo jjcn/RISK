@@ -9,12 +9,19 @@ public class MoveOrder implements Order, Serializable {
     private String src;
     private String des;
     private Troop troop;
-    
+
     public MoveOrder(String src, String des, Troop troop, Character name) {
         this.src = src;
         this.des = des;
         this.troop = troop;
         this.actionName = name;
+    }
+
+    public MoveOrder(String src, String des, Troop troop) {
+        this.src = src;
+        this.des = des;
+        this.troop = troop;
+        this.actionName = Constant.MOVE_ACTION;
     }
 
     @Override

@@ -561,7 +561,8 @@ public class World implements Serializable {
 
         int lengthShortestPath = calculateShortestPath(start, end, moverName);
         int nUnits = troop.size();
-        int nConsumedResource = lengthShortestPath * nUnits;
+        double troopSpeed = troop.checkSpeed();
+        int nConsumedResource = (int) (lengthShortestPath * nUnits * troopSpeed);
 
         return nConsumedResource;
     }

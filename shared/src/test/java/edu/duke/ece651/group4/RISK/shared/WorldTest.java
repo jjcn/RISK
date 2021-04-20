@@ -11,6 +11,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.HashSet;
 import java.util.Map;
@@ -118,6 +119,17 @@ public class WorldTest {
             world.stationTroop(names[i], troops[i]);
         }
         
+        return world;
+    }
+
+    /**
+     * Helper function that creates a world and register player info of red, blue and green.
+     */
+    public World createWorldAndRegister(Troop... troops) {
+        World world = createWorld(troops);
+        world.registerPlayer(redInfo);
+        world.registerPlayer(blueInfo);
+        world.registerPlayer(greenInfo);
         return world;
     }
 
@@ -294,13 +306,25 @@ public class WorldTest {
         assertThrows(IllegalArgumentException.class,
                 () -> world.calculateShortestPath("Midkemia", "Mordor", "red"));
     }
-    
-    public World createWorldAndRegister(Troop... troop) {
-        World world = createWorld(troop);
-        world.registerPlayer(redInfo);
-        world.registerPlayer(blueInfo);
-        world.registerPlayer(greenInfo);
-        return world;
+
+    @Test
+    public void testCalculateMoveConsumption() {
+        World world = createWorldAndRegister(troopsConnected);
+
+        MoveOrder moveOrder1 = new MoveOrder("Narnia", "Oz", new Troop(3, green));
+        assertEquals((10 + 12 + 8) * 3 * 1, world.calculateMoveConsumption(moveOrder1));
+
+        // transfer one Soldier LV0 -> Knight LV0
+        TransferTroopOrder ttOrder1 = new TransferTroopOrder(
+                "Narnia", Constant.SOLDIER, Constant.KNIGHT, 0, 1);
+        world.transferTroop(ttOrder1, "green");
+        // try move 1 Knight LV0 and 1 Soldier LV0
+        HashMap<String, Integer> troopDict = new HashMap<>();
+        troopDict.put("Soldier LV0", 1);
+        troopDict.put("Knight LV0", 1);
+        Troop troop2 = new Troop(troopDict, green);
+        MoveOrder moveOrder2 = new MoveOrder("Narnia", "Oz", troop2);
+        assertEquals((int)((10 + 12 + 8) * 2 * 0.75), world.calculateMoveConsumption(moveOrder2));
     }
 
     @Test
