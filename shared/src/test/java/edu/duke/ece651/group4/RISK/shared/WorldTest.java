@@ -267,12 +267,32 @@ public class WorldTest {
     public void testCalculateShortestPath() {
     	World world = createWorldAndRegister(troopsConnected);
 
+        // Narnia -> Midkemia -> Oz
     	assertEquals(30,
                 world.calculateShortestPath("Narnia", "Oz", "green"));
+    	// Blocked
     	assertThrows(IllegalArgumentException.class,
                 () -> world.calculateShortestPath("Narnia", "Roshar", "green"));
+    	// Scadrial -> Roshar
     	assertEquals(8,
                 world.calculateShortestPath("Scadrial", "Roshar", "blue"));
+    }
+
+    @Test
+    public void testCalculateShortestPathWihAlliance() {
+        World world = createWorldAndRegister(troopsSeparated);
+        world.tryFormAlliance("blue", "green");
+        world.tryFormAlliance("green", "blue");
+
+        // Narnia -> Elantris -> Scadrial -> Oz
+        assertEquals(29,
+                world.calculateShortestPath("Narnia", "Oz", "green"));
+        // Scadrial -> Roshar
+        assertEquals(8,
+                world.calculateShortestPath("Scadrial", "Roshar", "blue"));
+        // blocked
+        assertThrows(IllegalArgumentException.class,
+                () -> world.calculateShortestPath("Midkemia", "Mordor", "red"));
     }
     
     public World createWorldAndRegister(Troop... troop) {

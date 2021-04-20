@@ -557,8 +557,9 @@ public class World implements Serializable {
         Territory start = findTerritory(order.getSrcName());
         Territory end = findTerritory(order.getDesName());
         Troop troop = order.getActTroop();
+        String moverName = start.getOwner().getName();
 
-        int lengthShortestPath = calculateShortestPath(start, end, start.getOwner().getName());
+        int lengthShortestPath = calculateShortestPath(start, end, moverName);
         int nUnits = troop.size();
         int nConsumedResource = lengthShortestPath * nUnits;
 
