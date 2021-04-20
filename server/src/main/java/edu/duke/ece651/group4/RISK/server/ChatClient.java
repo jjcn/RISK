@@ -26,7 +26,6 @@ public class ChatClient extends Thread {
         System.out.println("set exit to true in chat client");
     }
 
-
     @Override
     public void run() {
         try {

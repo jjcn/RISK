@@ -663,6 +663,11 @@ public class World implements Serializable {
         }
     }
 
+
+    public void transferTroop(TransferTroopOrder ttOrder, String playerName) {
+
+    }
+
     /**
      * Consumes tech resource of an upgrade tech order.
      *

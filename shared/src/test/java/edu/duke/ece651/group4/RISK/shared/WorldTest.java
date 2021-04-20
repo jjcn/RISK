@@ -45,6 +45,7 @@ public class WorldTest {
     protected final String NOT_ADJACENT_MSG =
         "You tried to attack from %s to %s, which are not adjacent territories. %n" +
         "You can only attack territories directly adjacent to your territories.";
+
     /**
      * Creates a world for test.
      * Territory layout is the same as that on Evolution 1 requirements.
