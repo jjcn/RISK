@@ -2,7 +2,6 @@ package edu.duke.ece651.group4.RISK.server;
 //package org.apache.commons.lang3;
 
 import java.io.IOException;
-
 import edu.duke.ece651.group4.RISK.shared.message.ChatMessage;
 import org.apache.commons.lang3.SerializationUtils;
 import java.io.PrintStream;
@@ -24,9 +23,13 @@ public class ChatHost extends Thread {
     ServerSocketChannel serverSocketChannel;
     Map<String, SocketChannel> clientMap = new HashMap<>();
     ByteBuffer readBuffer = ByteBuffer.allocate(1024); // for read
-
+    int chatPort;
+    boolean isClose = false;
+    public ChatHost(int chatPort){
+        this.chatPort = chatPort;
+    }
     public ChatHost(){
-
+        this(CHAT_PORT);
     }
 
     protected void init() throws IOException {
@@ -34,7 +37,7 @@ public class ChatHost extends Thread {
         serverSocketChannel = ServerSocketChannel.open();
         serverSocketChannel.configureBlocking(false);
         ServerSocket serverSocket = serverSocketChannel.socket();
-        serverSocket.bind(new InetSocketAddress(CHAT_PORT));
+        serverSocket.bind(new InetSocketAddress(chatPort));
         selector = Selector.open();
         serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
         out.println("ChatHost finishes init");
@@ -44,7 +47,7 @@ public class ChatHost extends Thread {
     * This starts selector to accept any active channel
     * */
     protected void acceptConnection(){
-        while(true){
+        while(!isClose){
             try {
                 selector.select();
                 Set<SelectionKey> selectedKeys = selector.selectedKeys();
@@ -62,6 +65,9 @@ public class ChatHost extends Thread {
         }
     }
 
+    public void tryExit(){
+        this.isClose = true;
+    }
     /*
     * This handles selectedKey
     * 1.accept
@@ -125,7 +131,7 @@ public class ChatHost extends Thread {
                 out.println("ChatHost: no channel exits for " + target);
                 continue;
             }
-            out.println("ChatHost: " + sender + " send a message to " + target + "successfully -- " + chatMessage.getChatContent());
+            out.println("ChatHost: " + sender + " send a message to " + target + " successfully -- " + chatMessage.getChatContent());
             ByteBuffer sendBuffer = ByteBuffer.wrap(SerializationUtils.serialize(chatMessage));
             clientChannel.write(sendBuffer);
             sendBuffer.clear();
