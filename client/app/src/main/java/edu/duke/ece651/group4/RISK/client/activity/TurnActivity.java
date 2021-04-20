@@ -1,6 +1,8 @@
 package edu.duke.ece651.group4.RISK.client.activity;
 
+import android.app.Activity;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,10 +11,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import edu.duke.ece651.group4.RISK.client.R;
+import edu.duke.ece651.group4.RISK.client.fragment.SimpleSelector;
 import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
 import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
 import edu.duke.ece651.group4.RISK.client.utility.WaitDialog;
@@ -44,7 +47,6 @@ public class TurnActivity extends AppCompatActivity {
     private ListView userInfoRC;
     private ArrayAdapter<String> userInfoAdapter;
     private ImageView mapIV;
-    private SwipeRefreshLayout refreshGS;
     private List<String> worldInfo;
     private List<String> noticeInfo;
     private List<String> userInfo;
@@ -52,6 +54,7 @@ public class TurnActivity extends AppCompatActivity {
     private String actionType;
     private boolean isWatch; // turn to true after lose game.
     private WaitDialog waitDG;
+    private String chosenAlliance;
 
     List<String> actions;
 
@@ -67,9 +70,11 @@ public class TurnActivity extends AppCompatActivity {
         actionType = UI_MOVE; // default: move
         isWatch = false;
         waitDG = new WaitDialog(TurnActivity.this);
-        Log.i(TAG, LOG_CREATE_SUCCESS + "start");
+        chosenAlliance = null;
+
         impUI();
         updateAfterTurn();
+        Log.i(TAG, LOG_CREATE_SUCCESS);
     }
 
     /**
@@ -95,7 +100,7 @@ public class TurnActivity extends AppCompatActivity {
     }
 
     private void goChat() {
-        Intent intent = new Intent(TurnActivity.this,ChatActivity.class);
+        Intent intent = new Intent(TurnActivity.this, ChatActivity.class);
         startActivity(intent);
     }
 
@@ -120,8 +125,6 @@ public class TurnActivity extends AppCompatActivity {
         userInfoRC = findViewById(R.id.playerInfo);
         noticeInfoRC = findViewById(R.id.noticeInfo);
         mapIV = findViewById(R.id.world_image_view);
-        refreshGS = findViewById(R.id.refreshInfo);
-        Log.i(TAG, LOG_FUNC_RUN + refreshGS);
 
         mapIV.setImageResource(MAPS.get(getCurrentRoomSize()));
         impActionSpinner();
@@ -129,7 +132,6 @@ public class TurnActivity extends AppCompatActivity {
         impNoticeInfoRC();
         impUserInfoRC();
         impCommitBT();
-        impSwipeFresh();
     }
 
     private void impUserInfoRC() {
@@ -137,11 +139,6 @@ public class TurnActivity extends AppCompatActivity {
         userInfo.add(getPlayerInfo());
         userInfoAdapter = new ArrayAdapter<>(TurnActivity.this, R.layout.item_choice, userInfo);
         userInfoRC.setAdapter(userInfoAdapter);
-    }
-
-    private void impSwipeFresh() {
-        Log.i(TAG, LOG_FUNC_RUN + "start swipe fresh");
-        refreshGS.setOnRefreshListener(this::updateAfterTurn);
     }
 
     private void impWorldInfoRC() {
@@ -157,7 +154,7 @@ public class TurnActivity extends AppCompatActivity {
     }
 
     private void impActionSpinner() {
-        List<String> actions = new ArrayList<>(Arrays.asList(UI_MOVE, UI_ATK, UI_UPTECH, UI_UPTROOP, UI_DONE));
+        List<String> actions = new ArrayList<>(Arrays.asList(UI_MOVE, UI_ATK, UI_UPTECH, UI_UPTROOP, UI_DONE, UI_ALLIANCE));
         actionAdapter = new ArrayAdapter<>(TurnActivity.this, R.layout.item_choice, actions);
         chooseActionSP.setAdapter(actionAdapter);
         chooseActionSP.setSelection(0, false);
@@ -206,11 +203,7 @@ public class TurnActivity extends AppCompatActivity {
                     }
                     break;
                 case UI_ALLIANCE:
-                    String choice = showSelector(TurnActivity.this, CHOOSE_USER_INSTR,getMyTerrNames());
-                    Log.i(TAG,LOG_FUNC_RUN+"get choice: "+choice);
-                    if(choice != "") {
-                        requireAlliance(choice);
-                    }
+                    selectAlliance();
                     break;
                 default:
                     throw new IllegalStateException("Unexpected value: " + actionType);
@@ -218,6 +211,30 @@ public class TurnActivity extends AppCompatActivity {
             commitBT.setClickable(true);
             updateAfterTurn();
         });
+    }
+
+    private void selectAlliance() {
+        ArrayList<String> choices = new ArrayList<>();
+        for (String playerName : getAllPlayersName()) {
+            choices.add(playerName);
+        }
+        SimpleSelector selector = new SimpleSelector(TurnActivity.this, CHOOSE_USER_INSTR, choices, new onReceiveListener() {
+            @Override
+            public void onSuccess(Object o) {
+                if(o instanceof String) {
+                    String alliance = (String) o;
+                    requireAlliance(alliance);
+                }else{
+                    onFailure("not String name");
+                }
+            }
+
+            @Override
+            public void onFailure(String errMsg) {
+                Log.e(TAG,errMsg);
+            }
+        });
+        selector.show();
     }
 
     private void showConfirmDialog() {
@@ -261,7 +278,7 @@ public class TurnActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(String errMsg) {
-                showByToast(TurnActivity.this,errMsg);
+                showByToast(TurnActivity.this, errMsg);
             }
         });
     }
@@ -308,6 +325,9 @@ public class TurnActivity extends AppCompatActivity {
                         commitBT.setVisibility(View.GONE);
                     }
                     Log.i(TAG, LOG_FUNC_RUN + "call update after turn");
+                    userInfo.clear();
+                    userInfo.add(getPlayerInfo());
+                    userInfoAdapter.notifyDataSetChanged();
                     noticeInfo.clear();
                     noticeInfo.add(getPlayerInfo());
                     noticeInfo.add(getWorld().getReport());
@@ -315,10 +335,9 @@ public class TurnActivity extends AppCompatActivity {
                     worldInfo.clear();
                     worldInfo.addAll(getWorldInfo());
                     worldInfoAdapter.notifyDataSetChanged();
-                    Log.i(TAG, LOG_FUNC_RUN + "start dismiss");
-                    waitDG.dismiss();
+                    waitDG.cancel();
                     commitBT.setClickable(true);
-                    refreshGS.setRefreshing(false);
+                    Log.i(TAG, LOG_FUNC_RUN + "updateInfo Done");
                 }
         );
     }

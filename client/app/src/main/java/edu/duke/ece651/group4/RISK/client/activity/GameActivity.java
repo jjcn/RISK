@@ -43,6 +43,7 @@ public class GameActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i(TAG, LOG_FUNC_RUN + "begin create");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
         if (getSupportActionBar() != null) {
@@ -53,6 +54,7 @@ public class GameActivity extends AppCompatActivity {
         waitDG = new WaitDialog(GameActivity.this);
         impUI();
         updateAllInfo();
+        Log.i(TAG,LOG_CREATE_SUCCESS);
     }
 
     /**
@@ -87,13 +89,23 @@ public class GameActivity extends AppCompatActivity {
 
         FragmentManager fm = getSupportFragmentManager();
         addFragment(fm, R.id.fragment_myTerr_container);
-        addFragment(fm, R.id.fragment_enemyTerr_container);
+        //addFragment(fm, R.id.fragment_enemyTerr_container);
 
         impUpTechBT();
         impAllyBT();
         impDoneButton();
         impWorldInfoRC();
         impChatBT();
+    }
+
+    protected void addFragment(FragmentManager fm, int container_id) {
+        Fragment fragment = fm.findFragmentById(container_id);
+        if (fragment == null) {
+            fragment = new ActionsFragment();
+            fm.beginTransaction()
+                    .add(container_id, fragment)
+                    .commit();
+        }
     }
 
     private void impUpTechBT() {
@@ -131,16 +143,6 @@ public class GameActivity extends AppCompatActivity {
             Intent intent = new Intent(GameActivity.this, ChatActivity.class);
             startActivity(intent);
         });
-    }
-
-    protected void addFragment(FragmentManager fm, int container_id) {
-        Fragment fragment = fm.findFragmentById(container_id);
-        if (fragment == null) {
-            fragment = new ActionsFragment();
-            fm.beginTransaction()
-                    .add(container_id, fragment)
-                    .commit();
-        }
     }
 
     private void impWorldInfoRC() {

@@ -7,17 +7,15 @@ import static edu.duke.ece651.group4.RISK.shared.Constant.*;
 public class Knight extends Soldier {
 
     public Knight(int level) {
-        this(new Random(),level);
-}
-
-    public Knight(Random rand,int level) {
-        super(rand);
-        this.level=level;
-        this.jobName=KNIGHT_NAMES.get(level);
-        this.speed=KNIGHT_SPEED;
-
+        this(new Random(), level);
     }
 
+    public Knight(Random rand, int level) {
+        super(rand);
+        this.level = level;
+        this.jobName = KNIGHT_NAMES.get(level);
+        this.speed = KNIGHT_SPEED;
+    }
 
     @Override
     public void setLevel(int lv) {
@@ -36,6 +34,5 @@ public class Knight extends Soldier {
         Knight clone = new Knight(this.level);
         return clone;
     }
-
 
 }

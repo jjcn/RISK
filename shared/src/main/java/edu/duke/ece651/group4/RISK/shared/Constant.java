@@ -20,6 +20,8 @@ public class Constant {
     public static final String MESS_GAME = "MessageGame";
     public static final String MESS_ACTION = "MessageAction";
     public static final String MESS_CHAT = "MessageChat";
+    public static final String CHAT_SETUP_ACTION = "ChatSetUpAction";
+
 
     //Log:
     public static final String LOG_SIGNIN = "LogIn";
@@ -73,8 +75,7 @@ public class Constant {
     public static  final List<String> ARROW_NAMES = Arrays.asList("Arrow LV0","Arrow LV1",
             "Arrow LV2","Arrow LV3","Arrow LV4","Arrow LV5","Arrow LV6");
 
-
-    public static final List<String> JOB_NAMES =Arrays.asList("Archer","Shield","Breaker","Knight");
+    public static final String SOLDIER="Soldier";
 
     public static final String KNIGHT="Knight";
 
@@ -84,7 +85,7 @@ public class Constant {
 
     public static final String BREAKER="Breaker";
 
-
+    public static final List<String> JOB_NAMES = Arrays.asList(KNIGHT,ARCHER,SHIELD,BREAKER);
 
     public static final char MOVE_ACTION ='M';
     public static final char ATTACK_ACTION='A';
@@ -93,6 +94,7 @@ public class Constant {
     public static final char UPTECH_ACTION='T';
     public static final char SWITCH_OUT_ACTION='E';
     public static final char ALLIANCE_ACTION='L';
+    public static final char TRANSFER_TROOP_ACTION ='R';
 
     public static final String PLACEMENT_DONE="Placement Done\n";
 

@@ -9,10 +9,10 @@ public class Archer extends Soldier {
     private boolean ready;
 
     public Archer(int level) {
-        this(new Random(),level);
+        this(new Random(), level);
     }
 
-    public Archer(Random rand,int level) {
+    public Archer(Random rand, int level) {
         super(rand);
         this.level=level;
         this.jobName=ARCHER_NAMES.get(level);
@@ -49,7 +49,6 @@ public class Archer extends Soldier {
         Arrow t = new Arrow(this.level);
         return t;
     }
-
 
 
     @Override

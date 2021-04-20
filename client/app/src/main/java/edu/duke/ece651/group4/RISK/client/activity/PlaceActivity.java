@@ -34,11 +34,11 @@ public class PlaceActivity extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle("Placement");
         }
-        waitDG = new WaitDialog(PlaceActivity.this,WAIT_PLACEMENT);
+        waitDG = new WaitDialog(PlaceActivity.this);
+        waitDG.setWaitText(WAIT_PLACEMENT);
         impUI();
         Log.i(TAG, LOG_CREATE_SUCCESS);
     }
-
 
     private void impUI() {
         instr = findViewById(R.id.placeInstru);
@@ -75,6 +75,11 @@ public class PlaceActivity extends AppCompatActivity {
                 doPlacement(placements, new onReceiveListener() {
                     @Override
                     public void onSuccess(Object o) {
+                        if(getWorld() == null){
+                            Log.e(TAG,LOG_FUNC_FAIL+"world null");
+                        } else{
+                            Log.i(TAG,LOG_FUNC_RUN+"world not null");
+                        }
                         showByToast(PlaceActivity.this, PLACEMENT_DONE);
                         Intent intent = new Intent(PlaceActivity.this, TurnActivity.class);
                         startActivity(intent);
