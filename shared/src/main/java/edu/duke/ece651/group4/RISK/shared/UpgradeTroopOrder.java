@@ -40,6 +40,10 @@ public class UpgradeTroopOrder implements Order, Serializable {
      * Number of units to upgrade.
      */
     private int nUnit;
+    /**
+     * Type of unit to upgrade.
+     */
+    private String unitType;
 
     public UpgradeTroopOrder(String srcName,
                             int levelBefore, int levelAfter, 
@@ -49,6 +53,16 @@ public class UpgradeTroopOrder implements Order, Serializable {
         this.levelBefore = levelBefore;
         this.levelAfter = levelAfter;
         this.nUnit = nUnit;
+        this.unitType = Constant.SOLDIER;
+    }
+
+    /**
+     * Specify the unit type to upgrade.
+     * @param unitType is a string indicating the type of unit,
+     *                 defined in shared/Constant.
+     */
+    public void specifyUnitType(String unitType) {
+        this.unitType = unitType;
     }
 
     @Override

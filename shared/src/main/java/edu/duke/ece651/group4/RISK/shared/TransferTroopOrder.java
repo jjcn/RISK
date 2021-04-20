@@ -8,13 +8,12 @@ import java.util.NoSuchElementException;
  * Does not change unit level.
  *
  * Usage demo:
- *
  * In order to transfer two LV3 soldier -> LV3 knight on a territory named "Hogwarts",
- *
  * construct a TransferTroopOrder as follows:
  *
  * TransferTroopOrder ttOrder = new TransferTroopOrder("Hogwarts", Constant.SOLDIER, Constant.KNIGHT, 3, 2);
  *
+ * NOTE: you MUST use the Strings defined in shared/Constant for 'typeBefore' and 'typeBefore' fields.
  */
 public class TransferTroopOrder implements Order, Serializable {
     /**

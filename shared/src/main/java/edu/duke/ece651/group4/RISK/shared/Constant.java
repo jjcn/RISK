@@ -78,6 +78,8 @@ public class Constant {
 
     public static final List<String> JOB_NAMES =Arrays.asList("Archer","Shield","Breaker","Knight");
 
+    public static final String SOLDIER="Soldier";
+
     public static final String KNIGHT="Knight";
 
     public static final String ARCHER="Archer";
