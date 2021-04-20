@@ -131,10 +131,10 @@ public class ChatHost extends Thread {
                 out.println("ChatHost: no channel exits for " + target);
                 continue;
             }
-            out.println("ChatHost: " + sender + " send a message to " + target + " successfully -- " + chatMessage.getChatContent());
             ByteBuffer sendBuffer = ByteBuffer.wrap(SerializationUtils.serialize(chatMessage));
             clientChannel.write(sendBuffer);
             sendBuffer.clear();
+            out.println("ChatHost: " + sender + " send a message to " + target + " successfully -- " + chatMessage.getChatContent());
         }
     }
 
