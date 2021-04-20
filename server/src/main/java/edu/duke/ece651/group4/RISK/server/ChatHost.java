@@ -33,6 +33,7 @@ public class ChatHost extends Thread {
     }
 
     protected void init() throws IOException {
+
         out.println("ChatHost starts init");
         serverSocketChannel = ServerSocketChannel.open();
         serverSocketChannel.configureBlocking(false);
@@ -105,9 +106,8 @@ public class ChatHost extends Thread {
                     }
                 }
             }
-
         } catch (IOException e) {
-            System.out.println("Key is cancelled");
+            out.println("Key is cancelled");
             key.cancel();
             e.printStackTrace();
         }
@@ -145,6 +145,7 @@ public class ChatHost extends Thread {
             this.acceptConnection();
         } catch (IOException e) {
             e.printStackTrace();
+            out.println("Wrong with accep-tion!!!!!!");
         } finally {
             try {
                 out.println("ChatHost exits!!!!!!");

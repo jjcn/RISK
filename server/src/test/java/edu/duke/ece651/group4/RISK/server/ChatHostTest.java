@@ -60,8 +60,9 @@ class ChatHostTest {
     @Test
     public void test_run(){
         List<String> targets = new ArrayList<>();
-        targets.add("user1");
-        targets.add("user2");
+        targets.add("user0");
+//        targets.add("user1");
+//        targets.add("user2");
         ChatMessage cM1 = new ChatMessage("user0", targets, "hello everyone!",  0, "");
         clients.get("user0").send(cM1);
     }
