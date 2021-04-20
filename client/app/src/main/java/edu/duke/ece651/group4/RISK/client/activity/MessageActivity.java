@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -66,12 +67,16 @@ public class MessageActivity extends AppCompatActivity
         setReceiveListener(new onReceiveListener() {
             @Override
             public void onSuccess(Object o) {
-                if (o instanceof ChatMessageUI) {
-                    ChatMessageUI message = (ChatMessageUI) o;
-                    msgAdapter.addToStart(message, true);
-                } else {
-                    onFailure("receive not ChatMessageUI");
-                }
+                runOnUiThread(()->{
+                    if (o instanceof ChatMessageUI) {
+                        Log.i(TAG, LOG_FUNC_RUN+"recv msg lsn");
+                        ChatMessageUI message = (ChatMessageUI) o;
+                        msgAdapter.addToStart(message, true);
+                    } else {
+                        onFailure("receive not ChatMessageUI");
+                    }
+                    Log.i(TAG, LOG_FUNC_RUN+"recv msg lsn done success");
+                });
             }
 
             @Override
@@ -82,7 +87,14 @@ public class MessageActivity extends AppCompatActivity
         Log.i(TAG, SUCCESS_CREATE);
     }
 
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public boolean onSubmit(CharSequence input) {

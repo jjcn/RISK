@@ -18,6 +18,7 @@ import static edu.duke.ece651.group4.RISK.client.Constant.LOG_CREATE_SUCCESS;
 import static edu.duke.ece651.group4.RISK.client.Constant.MAPS;
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.*;
 import static edu.duke.ece651.group4.RISK.client.utility.Notice.showByToast;
+import static edu.duke.ece651.group4.RISK.shared.Constant.JOB_NAMES;
 import static edu.duke.ece651.group4.RISK.shared.Constant.UNIT_NAMES;
 
 
@@ -25,6 +26,7 @@ import static edu.duke.ece651.group4.RISK.shared.Constant.UNIT_NAMES;
 public class UpgradeActivity extends AppCompatActivity {
     private final String TAG = this.getClass().getSimpleName();
     private String terrName;
+    private String type;
     private int levelBefore;
     private int levelAfter;
     private int nUnit;
@@ -32,6 +34,7 @@ public class UpgradeActivity extends AppCompatActivity {
     private ImageView worldImageView;
     private Spinner terrSpinner;
     private Spinner levelBeforeSpinner;
+    private Spinner typeSpinner;
     private Spinner levelAfterSpinner;
     private EditText nUnitET;
     private Button commitBT;
@@ -48,10 +51,13 @@ public class UpgradeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upgrade);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
 
         this.terrName = "";
+        this.type = "";
         this.levelBefore = 0;
         this.levelAfter = 0;
         this.nUnit = -1;
@@ -89,6 +95,25 @@ public class UpgradeActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 terrName = (String) terrAdapter.getItem(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        // type spinner
+        List<String> jobNames = JOB_NAMES;
+
+        typeSpinner = findViewById(R.id.unit_type_choices);
+        SpinnerAdapter typeAdapter = new ArrayAdapter<>(
+                UpgradeActivity.this, R.layout.item_choice,
+                jobNames);
+        typeSpinner.setAdapter(typeAdapter);
+        typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                type = JOB_NAMES.get(position);
             }
 
             @Override

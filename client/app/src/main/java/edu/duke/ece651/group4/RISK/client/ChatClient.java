@@ -75,10 +75,14 @@ public class ChatClient extends Thread {
             ChatMessageUI receivedMsg = new ChatMessageUI(0, chatMsgReceive.getChatContent(),
                     new ChatPlayer(chatMsgReceive.getGameID(), chatMsgReceive.getSource()),chatMsgReceive.getTargetsPlayers());
             if(receiveMsgListener != null){
+                Log.i(TAG,LOG_FUNC_RUN+"ClientChat: " + username + " get from " + chatMsgReceive.getSource() + " saying " + chatMsgReceive.getChatContent());
                 receiveMsgListener.onSuccess(receivedMsg);
+                Log.i(TAG,LOG_FUNC_RUN+"not back loop");
+            }else {
+                Log.i(TAG, LOG_FUNC_RUN + "lsm null");
             }
-            Log.i(TAG,"ClientChat: " + username + " get from " + chatMsgReceive.getSource() + " saying " + chatMsgReceive.getChatContent());
         }
+
     }
 
     public void setReceiveMsgListener(onReceiveListener receiveMsgListener) {
@@ -91,9 +95,7 @@ public class ChatClient extends Thread {
         ByteBuffer writeBuffer = ByteBuffer.wrap(chatBytes);
         new Thread(()->{
             try {
-                Log.i(TAG,LOG_FUNC_RUN+"chatChannel");
                 chatChannel.write(writeBuffer);
-                Log.i(TAG,LOG_FUNC_RUN+"chatChannel done");
             } catch (IOException e) {
                 Log.e(TAG,e.toString());
             }
