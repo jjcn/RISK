@@ -57,11 +57,11 @@ public class UpgradeTroopOrder implements Order, Serializable {
     }
 
     /**
-     * Specify the unit type to upgrade.
+     * Set the unit type to upgrade.
      * @param unitType is a string indicating the type of unit,
      *                 defined in shared/Constant.
      */
-    public void specifyUnitType(String unitType) {
+    public void setUnitType(String unitType) {
         this.unitType = unitType;
     }
 
