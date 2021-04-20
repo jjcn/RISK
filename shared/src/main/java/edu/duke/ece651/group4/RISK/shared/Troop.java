@@ -519,4 +519,16 @@ public class Troop implements Serializable {
         return partner;
     }
 
+    /**
+     * Construct jobName like: Soldier LV0
+     *
+     * @param unitType is the type of unit defined in shared/Constant.
+     * @param unitLevel is the level of unit.
+     * @return constructed jobName.
+     */
+    protected String buildJobName(String unitType, int unitLevel) {
+        return String.format("%s LV%d",unitType, unitLevel);
+    }
+
+
 }
