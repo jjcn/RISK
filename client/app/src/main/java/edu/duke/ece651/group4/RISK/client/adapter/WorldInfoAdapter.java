@@ -18,7 +18,6 @@ import java.util.List;
  * Terr A: 3 Soldier Level 1, 2 Soldier Level 2.
  * Terr B: 1 Soldier Level 1, 3 Soldier Level 2.
  */
-// TODO: not implemented yet
 public class WorldInfoAdapter extends RecyclerView.Adapter<WorldInfoAdapter.WorldInfoViewHolder> {
     private World world;
     private List<Territory> allTerrs;

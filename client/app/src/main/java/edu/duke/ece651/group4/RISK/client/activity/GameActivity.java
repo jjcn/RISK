@@ -18,9 +18,11 @@ import edu.duke.ece651.group4.RISK.client.R;
 import edu.duke.ece651.group4.RISK.client.fragment.ActionsFragment;
 import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
 import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
+import edu.duke.ece651.group4.RISK.client.utility.SimpleSelector;
 import edu.duke.ece651.group4.RISK.client.utility.WaitDialog;
 import edu.duke.ece651.group4.RISK.shared.World;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static edu.duke.ece651.group4.RISK.client.Constant.*;
@@ -54,7 +56,7 @@ public class GameActivity extends AppCompatActivity {
         waitDG = new WaitDialog(GameActivity.this);
         impUI();
         updateAllInfo();
-        Log.i(TAG,LOG_CREATE_SUCCESS);
+        Log.i(TAG, LOG_CREATE_SUCCESS);
     }
 
     /**
@@ -78,7 +80,7 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
-    // TODO: historyInfo button, upTech button
+    // TODO: historyInfo button, upTech button, report button
     private void impUI() {
         playerInfo = findViewById(R.id.playerInfo);
         allyBT = findViewById(R.id.ally);
@@ -108,6 +110,7 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    // todo: alert to confirm actions.
     private void impUpTechBT() {
         upTechBT.setOnClickListener(v -> {
             upTechBT.setClickable(false);
@@ -119,25 +122,47 @@ public class GameActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(String errMsg) {
-                    showByToast(GameActivity.this,errMsg);
+                    showByToast(GameActivity.this, errMsg);
                 }
             });
         });
     }
 
-    // TODO: untested feature
     private void impAllyBT() {
         allyBT.setOnClickListener(v -> {
             allyBT.setClickable(false);
-            String choice = showSelector(GameActivity.this, CHOOSE_USER_INSTR, getMyTerrNames());
-            Log.i(TAG, LOG_FUNC_RUN + "get choice: " + choice);
-            if (choice != "") {
-                requireAlliance(choice);
-            }
+            selectAlliance();
         });
     }
 
-    // TODO: incomplete feature in ChatActivity (should start activity at start and keep running)
+    private void selectAlliance() {
+        ArrayList<String> choices = new ArrayList<>();
+        // you can not ally with yourself
+        for (String playerName : getAllPlayersName()) {
+            if (!playerName.equals(getUserName())) {
+                choices.add(playerName);
+            }
+        }
+        SimpleSelector selector = new SimpleSelector(GameActivity.this, CHOOSE_USER_INSTR, choices, new onReceiveListener() {
+            @Override
+            public void onSuccess(Object o) {
+                if (o instanceof String) {
+                    String alliance = (String) o;
+                    requireAlliance(alliance);
+                } else {
+                    onFailure("not String name");
+                }
+            }
+
+            @Override
+            public void onFailure(String errMsg) {
+                Log.e(TAG, errMsg);
+            }
+        });
+        selector.show();
+    }
+
+    // TODO+++: incomplete feature in ChatActivity (should start activity at start and keep running)
     private void impChatBT() {
         chatBT.setOnClickListener(v -> {
             Intent intent = new Intent(GameActivity.this, ChatActivity.class);
@@ -181,29 +206,25 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void waitNextTurn() {
-        if (!isWatch) {
-            waitDG.show();
-        }
+        waitDG.show();
         doneBT.setClickable(false);
         doDone(new onReceiveListener() {
             @Override
             public void onSuccess(Object o) {
                 World world = (World) o;
-                showByReport(GameActivity.this, TURN_END, world.getReport());
-                updateAfterTurn();
                 if (world.isGameEnd()) {
-                    showByToast(GameActivity.this, world.getWinner() + " won the game!");
-                    return;
+                    // todo: show history / can stay after finish
+                    showByReport(GameActivity.this, "Game end!", world.getWinner() + " won the game!");
+                    Intent backRoom = new Intent(GameActivity.this, RoomActivity.class);
+                    startActivity(backRoom);
+                    finish();
                 }
                 if (world.checkLost(getUserName())) {
+                    showByReport(GameActivity.this, LOSE_MSG, world.getReport());
                     watchGame();
                 }
-                isWatch = world.checkLost(getUserName());
-                if (isWatch) {
-                    runOnUiThread(() -> {
-                        doneBT.performClick();
-                    });
-                }
+                showByToast(GameActivity.this, TURN_END);
+                updateAfterTurn();
             }
 
             @Override
@@ -213,25 +234,40 @@ public class GameActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * send null to server and waiting for receive World.
+     */
     private void watchGame() {
+        waitDG.cancel();
         doneBT.setVisibility(View.GONE);
         upTechBT.setVisibility(View.GONE);
         allyBT.setVisibility(View.GONE);
-        receive(new onReceiveListener() {
-            @Override
-            public void onSuccess(Object o) {
-                World world = (World) o;
-                setWorld(world);
-                showByReport(GameActivity.this, TURN_END, world.getReport());
-                updateAllInfo();
-                watchGame();
-            }
+        showStayDialog();
+    }
 
-            @Override
-            public void onFailure(String errMsg) {
-                Log.e(TAG, LOG_FUNC_FAIL + "watchGame should not fail");
-            }
-        });
+    private void showStayDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
+        builder.setTitle(STAY_INSTR)
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    stayInGame(new onReceiveListener() {
+                        @Override
+                        public void onSuccess(Object o) {
+                            World world = (World) o;
+                            showByReport(GameActivity.this, TURN_END, world.getReport());
+                            updateAllInfo();
+                            watchGame();
+                        }
+
+                        @Override
+                        public void onFailure(String errMsg) {
+                            Log.e(TAG, LOG_FUNC_FAIL + "watchGame should not fail");
+                        }
+                    });
+                })
+                .setNegativeButton("No", (dialog, which) -> {
+                    exitGame();
+                });
+        builder.show();
     }
 
     private void updateAfterTurn() {
@@ -248,11 +284,6 @@ public class GameActivity extends AppCompatActivity {
 
     private void updateAllInfo() {
         runOnUiThread(() -> {
-                    if (isWatch) {
-                        doneBT.setVisibility(View.GONE);
-                        upTechBT.setVisibility(View.GONE);
-                        allyBT.setVisibility(View.GONE);
-                    }
                     Log.i(TAG, LOG_FUNC_RUN + "call update");
                     playerInfo.setText(getPlayerInfo());
                     worldInfo.clear();

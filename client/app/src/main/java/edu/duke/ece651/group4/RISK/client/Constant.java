@@ -32,6 +32,7 @@ public class Constant {
     public static final String CONFIRM_ACTION = "(You cannot perform further action this turn if choose yes.)";
     public static final String CHOOSE_USER_INSTR = "Please choose the user you want to ally with";
     public static final String NO_ALLY = "None";
+    public static final String SEND_CHAT_FAIL = "Failed to send the message";
 
     public static final String UI_MOVE = "Move";
     public static final String UI_DONE = "Done";
@@ -40,6 +41,7 @@ public class Constant {
     public static final String UI_UPTECH = "Upgrade Max tech";
     public static final String UI_SWITCH_OUT = "SwitchOut";
     public static final String UI_ALLIANCE = "Alliance";
+    public static final String UI_CHANGETYPE = "Change soldier type";
 
     public static final String USER_INFO_TV = "userInfoTV";
     public static final String NOTICE_ADP = "noticeAdapter";
@@ -52,7 +54,6 @@ public class Constant {
     public static final String WRG_MESSAGE = "fail to create world";
     public static final String EXIT_GAME_MESSAGE = "Exit Game";
 
-    public static final int MAXLEVEL = 6; //max soldier level
     public static final int PLACE_TOTAL = 15;//initial soldier allowed
     public static final HashMap<Integer, Integer> MAPS = new HashMap<Integer, Integer>() {
         {

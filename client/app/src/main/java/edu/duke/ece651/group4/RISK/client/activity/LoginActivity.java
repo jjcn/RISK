@@ -36,7 +36,7 @@ public class LoginActivity extends AppCompatActivity {
         EditText passwordET = findViewById(R.id.editTextTextPassword);
         Button logInButton = findViewById(R.id.buttonLogin);
 
-        // TODO-corner case: name checking
+        // TODO-corner case: name checking non-empty
         logInButton.setOnClickListener(v -> {
             logInButton.setClickable(false);
             // rend in input
@@ -61,7 +61,9 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    // Sign up button: change to new Signup Activity
+    /**
+     * Sign up button: change to new Signup Activity
+     */
     private void impSignUpBt() {
         Button signupButton = findViewById(R.id.buttonSignUp);
         signupButton.setOnClickListener(v -> {
