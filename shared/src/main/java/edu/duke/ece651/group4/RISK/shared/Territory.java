@@ -31,6 +31,8 @@ public class Territory implements Serializable {
 
     private Random rnd;
 
+
+
     public Territory(String name, Player owner, int population, Random rnd) {
         this.name = name;
         this.enemyOnTerritory = new HashMap<>();
@@ -221,6 +223,7 @@ public class Territory implements Serializable {
             report.append(this.getOwner().getName() + " wins the fight and owns " + this.getName() + " \n");
         }
         this.enemyOnTerritory.clear();
+        this.archerReady();
         return report.toString();
     }
 
@@ -305,6 +308,10 @@ public class Territory implements Serializable {
 
     public boolean checkRangeAbility(){
         return this.ownerTroop.rangeAttackAbility();
+    }
+
+    public void archerReady(){
+        this.ownerTroop.archerReady();
     }
 
 

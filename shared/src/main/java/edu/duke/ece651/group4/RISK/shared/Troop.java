@@ -444,17 +444,35 @@ public class Troop implements Serializable {
 
             if(ARCHER_NAMES.contains(s)){
                 int num = subDict.get(s);
+                int numReady=0;
                 int arrowLevel=ARCHER_NAMES.indexOf(s);
+                for (int i = 0; i < this.population.size(); i++) {
+                    if(population.get(i).getJobName().equals(s)){
+                        Archer arc=(Archer)population.get(i);
+                        numReady+=(arc.checkReady()?1:0);
+                    }
+                }
+                if(numReady<num){
+                    throw new IllegalArgumentException("No enough archer ready to shoot");
+                }
 
-                for (int i = 0; i < num; i++) {
-
-                    Arrow t = new Arrow(arrowLevel);
-
-                    sub.add(t);
-
+                for (int i = 0; i < this.population.size(); i++) {
+                    if(population.get(i).getJobName().equals(s)){
+                        Archer arc=(Archer)population.get(i);
+                        sub.add(arc.shoot());
+                    }
                 }
                 newDict.put(ARROW_NAMES.get(arrowLevel),num);
 
+//                for (int i = 0; i < num; i++) {
+//
+//                    Arrow t = new Arrow(arrowLevel);
+//
+//                    sub.add(t);
+//
+//                }
+
+//
             }else{
                 throw new IllegalArgumentException("Not using range attack unit");
             }
@@ -464,6 +482,15 @@ public class Troop implements Serializable {
 
         return r;
 
+    }
+
+    public void archerReady(){
+        for (int i = 0; i < this.population.size(); i++) {
+            if(ARCHER_NAMES.contains(population.get(i).getJobName())){
+                Archer arc=(Archer)population.get(i);
+                arc.active();
+            }
+        }
     }
 
 }
