@@ -6,6 +6,7 @@ package edu.duke.ece651.group4.RISK.server;
 import edu.duke.ece651.group4.RISK.shared.Client;
 import edu.duke.ece651.group4.RISK.shared.Territory;
 import edu.duke.ece651.group4.RISK.shared.World;
+import org.checkerframework.checker.units.qual.C;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -35,6 +36,7 @@ public class HostApp implements Runnable {
         this.globalID = new AtomicInteger(0);
         this.out = System.out;
         this.test_mode = test_mode;
+
     }
     public HostApp(ServerSocket s){
         this(s,false);
@@ -58,6 +60,7 @@ public class HostApp implements Runnable {
 
     public void acceptConnection(){
         addTestUsers();
+
         while(true) {
             try {
                 Socket s = hostSocket.accept();
@@ -83,5 +86,7 @@ public class HostApp implements Runnable {
         ServerSocket hostSocket = new ServerSocket(SOCKET_PORT);
         HostApp hostApp = new HostApp(hostSocket);
         hostApp.run();
+        ChatHost chatHost = new ChatHost();
+        chatHost.start();
     }
 }
