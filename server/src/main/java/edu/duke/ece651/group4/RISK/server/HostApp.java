@@ -83,10 +83,10 @@ public class HostApp implements Runnable {
     }
 
     public static void main(String[] args) throws IOException {
+        ChatHost chatHost = new ChatHost();
+        chatHost.start();
         ServerSocket hostSocket = new ServerSocket(SOCKET_PORT);
         HostApp hostApp = new HostApp(hostSocket);
         hostApp.run();
-        ChatHost chatHost = new ChatHost();
-        chatHost.start();
     }
 }
