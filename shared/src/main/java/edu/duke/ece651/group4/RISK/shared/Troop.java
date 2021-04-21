@@ -13,7 +13,7 @@ public class Troop implements Serializable {
     protected static final long serialVersionUID = 17L;
     private final ArrayList<Unit> population;
     private final HashMap<String, Integer> dict;
-    private Troop ally;
+
 
     private Player owner;
 
@@ -22,7 +22,7 @@ public class Troop implements Serializable {
         this.population = new ArrayList<>();
         this.owner = new TextPlayer(owner.getName());
         this.dict = new HashMap<>();
-        this.ally=null;
+
         dict.put("Soldier LV0", number);
         for (int i = 0; i < number; i++) {
             Soldier s = new Soldier(rand);
@@ -35,7 +35,7 @@ public class Troop implements Serializable {
         this.population = new ArrayList<>();
         this.owner = new TextPlayer(owner.getName());
         this.dict = new HashMap<>();
-        this.ally=null;
+
         dict.put("Soldier LV0", number);
 
         for (int i = 0; i < number; i++) {
@@ -48,7 +48,7 @@ public class Troop implements Serializable {
         this.population = subTroop;
         this.owner = new TextPlayer(owner.getName());
         this.dict = new HashMap<>();
-        this.ally=null;
+
         for (Unit u : subTroop) {
             String name = u.getJobName();
             if (dict.get(name) == null) {
@@ -63,7 +63,7 @@ public class Troop implements Serializable {
         this.population = subTroop;
         this.owner = new TextPlayer(owner.getName());
         this.dict = myDict;
-        this.ally=null;
+
     }
 
     public Troop(HashMap<String, Integer> myDict, Player owner) {
@@ -78,7 +78,7 @@ public class Troop implements Serializable {
         }
         this.owner = new TextPlayer(owner.getName());
         this.dict = myDict;
-        this.ally=null;
+
     }
 
     /**
@@ -509,15 +509,6 @@ public class Troop implements Serializable {
         }
     }
 
-    public void setAlly(Troop partner){
-        this.ally=partner;
-    }
-
-    public Troop returnAlly(){
-        Troop partner=this.ally;
-        this.ally=null;
-        return partner;
-    }
 
     /**
      * Construct jobName like: Soldier LV0

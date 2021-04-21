@@ -468,4 +468,16 @@ public class Territory implements Serializable {
     public boolean hasAllianceTroop() {
         return this.allianceTroop != null;
     }
+
+
+    public int checkUnitNum(String jobName){
+        return this.ownerTroop.checkUnitNum(jobName);
+    }
+
+    public int checkUnitNumAlly(String jobName){
+        if(this.allianceTroop==null){
+            return 0;
+        }
+        return this.allianceTroop.checkUnitNum(jobName);
+    }
 }
