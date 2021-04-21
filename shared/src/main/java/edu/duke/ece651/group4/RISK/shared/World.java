@@ -414,6 +414,22 @@ public class World implements Serializable {
     }
 
     /**
+     * Get a list of all territories a player is allowed to move through.
+     *
+     * @param playerName is a player's name.
+     * @return all territories owned by a player and his alliance.
+     */
+    public List<Territory> getTerritoriesOfPlayerAndAlliance(String playerName) {
+        List<Territory> ans = new ArrayList<>();
+        for (Territory terr : getAllTerritories()) {
+            if (canMoveThrough(playerName, terr)) {
+                ans.add(terr);
+            }
+        }
+        return ans;
+    }
+
+    /**
      * Get a list of all territories that are not owned by a player.
      *
      * @param playerName is a player's name.
