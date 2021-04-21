@@ -5,10 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.*;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -16,6 +13,7 @@ import androidx.fragment.app.FragmentManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import edu.duke.ece651.group4.RISK.client.R;
 import edu.duke.ece651.group4.RISK.client.fragment.ActionsFragment;
+import edu.duke.ece651.group4.RISK.client.fragment.TerrFragment;
 import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
 import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
 import edu.duke.ece651.group4.RISK.client.utility.SimpleSelector;
@@ -35,8 +33,8 @@ public class GameActivity extends AppCompatActivity {
     private WaitDialog waitDG;
 
     TextView playerInfo;
-    Button allyBT;
-    Button upTechBT;
+    ImageButton allyBT;
+    ImageButton upTechBT;
     ListView worldInfoRC;
     ArrayAdapter worldInfoAdapter;
     List<String> worldInfo;
@@ -81,7 +79,7 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
-    // TODO: historyInfo button, upTech button, report button
+    // TODO: historyInfo button, upTech button
     private void impUI() {
         playerInfo = findViewById(R.id.playerInfo);
         allyBT = findViewById(R.id.ally);
@@ -91,7 +89,14 @@ public class GameActivity extends AppCompatActivity {
         chatBT = findViewById(R.id.chatButton);
 
         FragmentManager fm = getSupportFragmentManager();
-        addFragment(fm, R.id.fragment_myTerr_container);
+        Fragment fragment = fm.findFragmentById(R.id.terrInfo_container);
+        if (fragment == null) {
+            fragment = new TerrFragment();
+            fm.beginTransaction()  // start a new fragment task
+                    .add(R.id.terrInfo_container, fragment)
+                    .commit();
+        }
+        //addFragment(fm, R.id.terrInfo_container);
         //addFragment(fm, R.id.fragment_enemyTerr_container);
 
         impUpTechBT();
@@ -102,19 +107,13 @@ public class GameActivity extends AppCompatActivity {
     }
 
     protected void addFragment(FragmentManager fm, int container_id) {
-        Fragment fragment = fm.findFragmentById(container_id);
-        if (fragment == null) {
-            fragment = new ActionsFragment();
-            fm.beginTransaction()
-                    .add(container_id, fragment)
-                    .commit();
-        }
+
     }
 
     // todo: alert to confirm actions.
     private void impUpTechBT() {
         upTechBT.setOnClickListener(v -> {
-            upTechBT.setClickable(false);
+            upTechBT.setEnabled(false);
             doOneUpgrade(new onResultListener() {
                 @Override
                 public void onSuccess() {
@@ -131,11 +130,14 @@ public class GameActivity extends AppCompatActivity {
 
     private void impAllyBT() {
         allyBT.setOnClickListener(v -> {
-            allyBT.setClickable(false);
+            allyBT.setEnabled(false);
             selectAlliance();
         });
     }
 
+    /**
+     * you can only select once.
+     */
     private void selectAlliance() {
         ArrayList<String> choices = new ArrayList<>();
         // you can not ally with yourself
@@ -163,7 +165,6 @@ public class GameActivity extends AppCompatActivity {
         selector.show();
     }
 
-    // TODO+++: incomplete feature in ChatActivity (should start activity at start and keep running)
     private void impChatBT() {
         chatBT.setOnClickListener(v -> {
             Intent intent = new Intent(GameActivity.this, ChatActivity.class);
@@ -180,7 +181,7 @@ public class GameActivity extends AppCompatActivity {
     // todo --: passing method in show dialog
     private void impDoneButton() {
         doneBT.setOnClickListener(v -> {
-            doneBT.setClickable(false);
+            doneBT.setEnabled(false);
             if (isWatch) {
                 showDoneDialog(LOSE_MSG, STAY_INSTR);
             } else {
@@ -208,7 +209,7 @@ public class GameActivity extends AppCompatActivity {
 
     private void waitNextTurn() {
         waitDG.show();
-        doneBT.setClickable(false);
+        doneBT.setEnabled(false);
         doDone(new onReceiveListener() {
             @Override
             public void onSuccess(Object o) {
@@ -274,10 +275,10 @@ public class GameActivity extends AppCompatActivity {
     private void updateAfterTurn() {
         runOnUiThread(() -> {
             updateAllInfo();
-            doneBT.setClickable(true);
-            upTechBT.setClickable(true);
+            doneBT.setEnabled(true);
+            upTechBT.setEnabled(true);
             if (getAllianceName().equals(NO_ALLY)) {
-                allyBT.setClickable(true);
+                allyBT.setEnabled(true);
             }
             waitDG.cancel();
         });

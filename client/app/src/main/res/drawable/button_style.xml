@@ -3,6 +3,7 @@
 
     <item android:drawable="@color/greyBorder" android:state_pressed="true"></item>
     <item android:drawable="@color/greyBorder" android:state_enabled="false"></item>
+    <item android:drawable="@color/greyBorder" android:state_activated="false"></item>
     <item android:drawable="@color/colorPrimaryDark"></item>
 
 </selector>
