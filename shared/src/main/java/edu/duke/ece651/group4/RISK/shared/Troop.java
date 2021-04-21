@@ -296,12 +296,18 @@ public class Troop implements Serializable {
         return this.dict.get(name);
     }
 
+    /**
+     * Upgrades troop using an upgrade troop order. Also checks if there is enough resource.
+     * @param utOrder is an upgrade troop order.
+     * @param nResource is the number of resource at hand.
+     * @return remaining resource after upgrade.
+     */
     public int updateUnit(UpgradeTroopOrder utOrder, int nResource) {
         int levelBefore = utOrder.getLevelBefore();
         int levelAfter = utOrder.getLevelAfter();
         int levelUp = levelAfter - levelBefore;
 
-        String from = String.format("%s LV%d", utOrder.getTypeName(), levelBefore);
+        String from = String.format("%s LV%d", utOrder.getTypeName(), levelBefore); // TODO: hard coded for now.
 
         int nUnit = utOrder.getNUnit();
 
