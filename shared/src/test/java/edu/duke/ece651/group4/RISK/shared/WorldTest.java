@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class WorldTest {
     /**
@@ -864,6 +865,37 @@ public class WorldTest {
             redList.add(new Territory(name));
         }
     	assertEquals(redList, world.getTerritoriesNotOfPlayer("red"));
+    }
+
+    @Test
+    public void testGetTerritoriesWithMyTroop() {
+        World world = createWorldAndRegister(troopsConnected);
+        world.tryFormAlliance("red", "blue");
+        world.tryFormAlliance("blue", "red");
+        world.doCheckIfAllianceSuccess();
+
+        world.findTerritory("Mordor").sendInAlly(new Troop(1, blue));
+        assertEquals(1, world.findTerritory("Mordor").allianceTroop.size());
+        assertEquals(14, world.findTerritory("Mordor").checkPopulation());
+
+        assertListContentEquals(new ArrayList<String>(Arrays.asList("Elantris", "Scadrial", "Roshar", "Mordor")),
+                world.getTerritoriesWithMyTroop("blue")
+                        .stream()
+                        .map(terr -> terr.getName())
+                        .collect(Collectors.toList())
+        );
+    }
+
+    /**
+     * Assert that the contents of two lists are equal.
+     * @param list1
+     * @param list2
+     * @param <T>
+     */
+    protected <T> void assertListContentEquals(List<T> list1, List<T> list2) {
+        assertEquals(list1.size(), list2.size());
+        assertTrue(list1.containsAll(list2));
+        assertTrue(list2.containsAll(list1));
     }
 
     @Test
