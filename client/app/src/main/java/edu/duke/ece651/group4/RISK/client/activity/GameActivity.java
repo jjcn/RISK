@@ -130,7 +130,6 @@ public class GameActivity extends AppCompatActivity {
 
     private void impAllyBT() {
         allyBT.setOnClickListener(v -> {
-            allyBT.setEnabled(false);
             selectAlliance();
         });
     }
@@ -152,6 +151,7 @@ public class GameActivity extends AppCompatActivity {
                 if (o instanceof String) {
                     String alliance = (String) o;
                     requireAlliance(alliance);
+                    allyBT.setEnabled(false);
                 } else {
                     onFailure("not String name");
                 }
@@ -191,6 +191,23 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void showDoneDialog(String title, String msg) {
+        Log.i(TAG, LOG_FUNC_RUN + "enter done");
+        AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
+        builder.setTitle(title);
+        builder.setMessage(msg);
+        builder.setPositiveButton("Yes", (dialog, which) -> {
+            Log.i(TAG, LOG_FUNC_RUN + "click yes");
+            waitNextTurn();
+        });
+        builder.setNegativeButton("No", (dialog, which) -> {
+            if (isWatch) {
+                exitGame();
+            }
+        });
+        builder.show();
+    }
+
+    private void showUpConfirmDialog(String title, String msg) {
         Log.i(TAG, LOG_FUNC_RUN + "enter confirm");
         AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
         builder.setTitle(title);
