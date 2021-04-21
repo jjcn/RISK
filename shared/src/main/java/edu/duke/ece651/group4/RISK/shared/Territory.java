@@ -164,6 +164,10 @@ public class Territory implements Serializable {
                 throw new IllegalArgumentException("No alliance troop now");
             }else{
                 allianceTroop.sendTroop(subTroop);
+                if(allianceTroop.checkTroopSize()==0){
+                    allianceTroop=null;
+                }
+
             }
         }
 
@@ -178,7 +182,7 @@ public class Territory implements Serializable {
     public void sendInTroop(Troop subTroop) {
         if(subTroop.getOwner().getName()!=this.ownerTroop.getOwner().getName()){
             if(allianceTroop==null){
-                subTroop=allianceTroop;
+                allianceTroop=subTroop;
             }else{
                 allianceTroop.receiveTroop(subTroop);
             }
@@ -209,6 +213,7 @@ public class Territory implements Serializable {
      * @param enemy shows the enemy troop attack in
      */
     public void doOneBattle(Troop enemy) {
+       // Troop partner
         Troop enemyRemain = this.ownerTroop.combat(enemy);
         this.ownerTroop = enemyRemain.checkWin() ? enemyRemain : this.ownerTroop;
     }
@@ -333,7 +338,7 @@ public class Territory implements Serializable {
     }
 
 
-    public Troop breakAlliance(){
+    public Troop kickOut(){
         Troop target=this.allianceTroop;
         this.allianceTroop=null;
         return target;
