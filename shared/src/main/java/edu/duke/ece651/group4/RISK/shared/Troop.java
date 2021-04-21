@@ -296,6 +296,18 @@ public class Troop implements Serializable {
         return this.dict.get(name);
     }
 
+    public int updateUnit(UpgradeTroopOrder utOrder, int nResource) {
+        int levelBefore = utOrder.getLevelBefore();
+        int levelAfter = utOrder.getLevelAfter();
+        int levelUp = levelAfter - levelBefore;
+
+        String from = String.format("%s LV%d", utOrder.getTypeName(), levelBefore); // TODO: this is hardcoded
+
+        int nUnit = utOrder.getNUnit();
+
+        return updateUnit(from, levelUp, nUnit, nResource);
+    }
+
     public int updateUnit(int levelBefore, int levelUp, int num, int resource) {
         String from = String.format("Soldier LV%d", levelBefore); // TODO: this is hardcoded
         return updateUnit(from, levelUp, num, resource);

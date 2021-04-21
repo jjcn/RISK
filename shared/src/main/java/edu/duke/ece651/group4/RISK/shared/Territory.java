@@ -402,16 +402,9 @@ public class Territory implements Serializable {
         return this.ownerTroop.getDict();
     }
 
-    public int upgradeTroop(int levelBefore, int levelAfter, int nUnit, int nResource) {
-        int levelUp = levelAfter - levelBefore;
-        return ownerTroop.updateUnit(levelBefore, levelUp, nUnit, nResource);
-    }
 
-    public int upgradeTroop(UpgradeTroopOrder utOrder, int nTech) {
-        int levelBefore = utOrder.getLevelBefore();
-        int levelAfter = utOrder.getLevelAfter();
-        int nUnit = utOrder.getNUnit();
-        return upgradeTroop(levelBefore, levelAfter, nUnit, nTech);
+    public int upgradeTroop(UpgradeTroopOrder utOrder, int nResource) {
+        return ownerTroop.updateUnit(utOrder, nResource);
     }
 
     /**
