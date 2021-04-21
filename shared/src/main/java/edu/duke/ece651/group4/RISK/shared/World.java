@@ -659,6 +659,7 @@ public class World implements Serializable {
         // check if the destination is a territory of your ally, if so, break alliance with him
         if (getAllianceNames(startOwnerName).contains(endOwnerName)) {
             breakAlliance(startOwnerName, endOwnerName);
+            Territory nearest = getNearestSameOwnerTerritory(start);
             /* TODO: If A breaks an alliance
             with B, and B has units in A’s territories, then B’s units return to the nearest (break ties
             randomly) B-owned territory at before any other actions are resolved (i.e. are available
@@ -793,6 +794,20 @@ public class World implements Serializable {
     }
 
     /**
+     * Get a mapping of all player's names to the names of their alliance.
+     * @return A map of player name -> alliance names
+     */
+    protected Map<String, Set<String>> getAllPlayersAlliance() {
+        checkIfAllianceSuccess();
+        Map<String, Set<String>> ans = new HashMap<>();
+        for (PlayerInfo pInfo : playerInfos) {
+            String playerName = pInfo.getName();
+            ans.put(playerName, getAllianceNames(playerName));
+        }
+        return ans;
+    }
+
+    /**
      * Get the names of all alliances of a player.
      *
      * @param playerName is the name of the player to find alliance.
@@ -807,6 +822,19 @@ public class World implements Serializable {
             }
         }
         return ans;
+    }
+
+    /**
+     * Check if two players are allies.
+     *
+     * @param p1Name is the name of player 1.
+     * @param p2Name is the name of player 2.
+     * @return true, if p1 and p2 are allies;
+     *         false, if not.
+     */
+    public boolean isAlliance(String p1Name, String p2Name) {
+        return getAllianceNames(p1Name).contains(p2Name) &&
+                getAllianceNames(p2Name).contains(p1Name);
     }
 
     /**
@@ -918,7 +946,6 @@ public class World implements Serializable {
             terr.addUnit(num);
         }
     }
-
 
     /**
      * Add level 0 units to a territory.

@@ -417,8 +417,13 @@ public class WorldTest {
         world.tryFormAlliance("blue", "red");
         world.doCheckIfAllianceSuccess();
 
-        MoveOrder move1 = new MoveOrder("Gondor", "Elantris", new Troop(1, red));
+        MoveOrder move1 = new MoveOrder("Mordor", "Midkemia", new Troop(1, red));
         world.moveTroop(move1, "red");
+        assertEquals(14 - 1, world.findTerritory("Mordor").checkPopulation());
+        assertEquals(12 + 1, world.findTerritory("Midkemia").checkPopulation());
+
+        MoveOrder move2 = new MoveOrder("Gondor", "Elantris", new Troop(1, red));
+        world.moveTroop(move2, "red");
         assertEquals(13 - 1, world.findTerritory("Gondor").checkPopulation());
         // TODO: Elantris should now have: a red troop of size 1, and a blue troop of size 6.
         //assertEquals(6 + 1, world.findTerritory("Elantris").checkPopulation());
@@ -645,6 +650,22 @@ public class WorldTest {
         Set<T> set = new HashSet<T>();
         Collections.addAll(set, objects);
         return set;
+    }
+
+    @Test
+    public void testGetAllPlayersAlliance() {
+        World world = createWorldAndRegister(troopsSeparated);
+
+        world.tryFormAlliance("red", "blue");
+        world.tryFormAlliance("blue", "red");
+        world.doCheckIfAllianceSuccess();
+
+        Map<String, Set<String>> expected = new HashMap<>();
+        expected.put("red", newSet("blue"));
+        expected.put("blue", newSet("red"));
+        expected.put("green", new HashSet<>());
+
+        assertEquals(expected, world.getAllPlayersAlliance());
     }
 
     @Test
