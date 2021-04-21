@@ -465,6 +465,6 @@ public class Territory implements Serializable {
      *          false, if not.
      */
     public boolean hasAllianceTroop() {
-        return this.allianceTroop == null;
+        return this.allianceTroop != null;
     }
 }

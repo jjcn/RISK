@@ -511,22 +511,22 @@ public class WorldTest {
     }
 
     @Test
-    public void testGetNearestSameOwnerTerritory() {
+    public void testGetNearestTerritory() {
         World world = createWorldAndRegister(troopsSeparated);
         world.tryFormAlliance("red", "blue");
         world.tryFormAlliance("blue", "red");
         world.doCheckIfAllianceSuccess();
         assertEquals(
                 world.findTerritory("Mordor"),
-                world.getNearestSameOwnerTerritory(world.findTerritory("Gondor"))
+                world.getNearestTerritory(world.findTerritory("Gondor"), "red")
         );
         assertEquals(
                 world.findTerritory("Mordor"),
-                world.getNearestSameOwnerTerritory(world.findTerritory("Midkemia"))
+                world.getNearestTerritory(world.findTerritory("Midkemia"), "red")
         );
         assertEquals(
                 world.findTerritory("Oz"),
-                world.getNearestSameOwnerTerritory(world.findTerritory("Oz"))
+                world.getNearestTerritory(world.findTerritory("Oz"), "green")
         );
     }
 
@@ -543,10 +543,11 @@ public class WorldTest {
         assertEquals(1, world.findTerritory("Midkemia").allianceTroop.size());
         assertEquals(12, world.findTerritory("Midkemia").checkPopulation());
         // red attack blue's territory
-        AttackOrder attack1 = new AttackOrder("Scadrial", "Mordor", new Troop(4, blue));
-        world.attackATerritory(attack1, "blue");
+        AttackOrder attack1 = new AttackOrder("Mordor","Scadrial",  new Troop(4, red));
+        world.attackATerritory(attack1, "red");
         assertEquals(new HashSet<String>(), world.getAllianceNames("red"));
         assertEquals(new HashSet<String>(), world.getAllianceNames("blue"));
+        assertEquals(5, world.findTerritory("Scadrial").checkPopulation());
     }
 
     @Test

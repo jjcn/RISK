@@ -453,7 +453,6 @@ public class World implements Serializable {
         terr.setOwnerTroop(population, terr.getOwner());
     }
 
-
     /**
      * Checks if a player's troop can move through a territory.
      * @param moverName is the name of the player who tries to move through this territory
@@ -669,9 +668,10 @@ public class World implements Serializable {
             // A: playerName, B: endOwnerName
             for (Territory terr : getTerritoriesOfPlayer(playerName)) {
                 if (terr.hasAllianceTroop()) {
-                    Territory nearest = getNearestSameOwnerTerritory(terr);
-                    System.out.println("Nearest territory is " + nearest.getName());
-                    nearest.sendInTroop(end.kickOut());
+                    Territory nearest = getNearestTerritory(terr, endOwnerName);
+                    Troop kickedOutTroop = terr.kickOut();
+                    assert(kickedOutTroop != null);
+                    nearest.sendInTroop(kickedOutTroop);
                 }
             }
             breakAlliance(startOwnerName, endOwnerName);
@@ -681,7 +681,7 @@ public class World implements Serializable {
     }
 
     /**
-     * Get a territory's nearest territory with the same owner.
+     * Get a territory's nearest territory that belongs to a certain player.
      * Checks if a path is valid through the move.
      *
      *  B’s units return to the nearest (break ties randomly) B-owned territory
@@ -691,9 +691,8 @@ public class World implements Serializable {
      * @param terr is a territory.
      * @return nearest territory with the same owner.
      */
-    protected Territory getNearestSameOwnerTerritory(Territory terr) {
+    protected Territory getNearestTerritory(Territory terr, String playerName) {
         Territory nearest = terr;
-        String playerName = terr.getOwner().getName();
         List<Territory> allTerritories = getTerritoriesOfPlayer(playerName);
         int smallestDistance = Integer.MAX_VALUE;
         for (Territory terrToCheck : allTerritories) {
