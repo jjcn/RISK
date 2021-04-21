@@ -1,5 +1,6 @@
 package edu.duke.ece651.group4.RISK.shared;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
@@ -7,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.NoSuchElementException;
 
+import java.util.Queue;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -34,10 +36,21 @@ public class World implements Serializable {
     /**
      * Error messages
      */
-    protected final String INDIVISIBLE_MSG = "Number of territories is not divisible by number of groups.";
-    protected final String NOT_POSITIVE_MSG = "Number should be positive.";
-    protected final String TERRITORY_NOT_FOUND_MSG = "The territory specified by the name '%s' is not found.";
-    protected final String NO_PLAYERINFO_MSG = "Player info of %s is not found.";
+    protected final String INDIVISIBLE_MSG =
+            "Number of territories is not divisible by number of groups.";
+    protected final String NOT_POSITIVE_MSG =
+            "Number should be positive.";
+    protected final String TERRITORY_NOT_FOUND_MSG =
+            "The territory specified by the name '%s' is not found.";
+    protected final String NO_PLAYERINFO_MSG =
+            "Player info of %s is not found.";
+    protected static final String CANT_ALLY_WITH_ONESELF =
+            "Cannot ally with yourself.";
+    protected static final String CANT_FORM_ALLIANCE_MSG =
+            "Cannot form alliance. %s has already reached a maximum number of allies: %d.";
+    protected static final String CANT_BREAK_ALLIANCE_MSG =
+            "Cannot break alliance. %s and %s are not alliances.";
+
     /**
      * All territories in the world. Implemented with a graph structure.
      */
@@ -592,13 +605,14 @@ public class World implements Serializable {
         Territory end = findTerritory(order.getDesName());
         Troop troop = order.getActTroop();
         // check error of move order
-        String errorMsg = orderChecker.checkOrder(order, this);
+        String errorMsg = orderChecker.checkOrder(order, World.this);
         if (errorMsg != null) {
             throw new IllegalArgumentException(errorMsg);
         }
         // check if player has enough food
         consumeResourceOfMove(order, playerName);
-        // moves troop
+        // moves troop.
+        // Order checker already performed checks of whether the troop is allowed to be sent into destination.
         end.sendInTroop(start.sendOutTroop(troop));
     }
 
@@ -645,17 +659,57 @@ public class World implements Serializable {
         }
         // also check if player has enough food
         consumeResourceOfAttack(order, playerName);
-        // check if the destination is a territory of your ally, if so, break alliance with him
-        if (getAllianceNames(startOwnerName).contains(endOwnerName)) {
-            breakAlliance(startOwnerName, endOwnerName);
-            /* TODO: If A breaks an alliance
-            with B, and B has units in A’s territories, then B’s units return to the nearest (break ties
-            randomly) B-owned territory at before any other actions are resolved (i.e. are available
-            to defend those territories)
+        // check if the destination belongs to committer's ally, if so, break they alliance
+        if (getAllianceNames(playerName).contains(endOwnerName)) {
+            /*  If A breaks an alliance with B, and B has units in A’s territories,
+            then B’s units return to the nearest (break ties randomly) B-owned territory
+            before any other actions are resolved (i.e. are available to defend those territories)
             */
+            // A: playerName, B: endOwnerName
+            for (Territory terr : getTerritoriesOfPlayer(playerName)) {
+                if (terr.hasAllianceTroop()) {
+                    Territory nearest = getNearestTerritory(terr, endOwnerName);
+                    Troop kickedOutTroop = terr.kickOut();
+                    assert(kickedOutTroop != null);
+                    nearest.sendInTroop(kickedOutTroop);
+                }
+            }
+            breakAlliance(startOwnerName, endOwnerName);
         }
         // moves troop
         end.sendInEnemyTroop(start.sendOutTroop(troop));
+    }
+
+    /**
+     * Get a territory's nearest territory that belongs to a certain player.
+     * Checks if a path is valid through the move.
+     *
+     *  B’s units return to the nearest (break ties randomly) B-owned territory
+     *  Q1: "nearest" in terms of total territory size?
+     *  Q2: If this territory is blocked, can B move back?
+     *
+     * @param terr is a territory.
+     * @return nearest territory with the same owner.
+     */
+    protected Territory getNearestTerritory(Territory terr, String playerName) {
+        Territory nearest = terr;
+        List<Territory> allTerritories = getTerritoriesOfPlayer(playerName);
+        int smallestDistance = Integer.MAX_VALUE;
+        for (Territory terrToCheck : allTerritories) {
+            if (!terrToCheck.equals(terr)) {
+                int distance = Integer.MAX_VALUE;
+                try {
+                    distance = calculateShortestPath(terr, terrToCheck, playerName);
+                } catch (IllegalArgumentException iae) {
+
+                }
+                if (distance < smallestDistance) {
+                    smallestDistance = distance;
+                    nearest = terrToCheck;
+                }
+            }
+        }
+        return nearest;
     }
 
     /**
@@ -749,6 +803,20 @@ public class World implements Serializable {
     }
 
     /**
+     * Get a mapping of all player's names to the names of their alliance.
+     * @return A map of player name -> alliance names
+     */
+    protected Map<String, Set<String>> getAllPlayersAlliance() {
+        checkIfAllianceSuccess();
+        Map<String, Set<String>> ans = new HashMap<>();
+        for (PlayerInfo pInfo : playerInfos) {
+            String playerName = pInfo.getName();
+            ans.put(playerName, getAllianceNames(playerName));
+        }
+        return ans;
+    }
+
+    /**
      * Get the names of all alliances of a player.
      *
      * @param playerName is the name of the player to find alliance.
@@ -758,7 +826,9 @@ public class World implements Serializable {
         Set<String> ans = new HashSet<>();
         int playerIndex = playerInfos.indexOf(getPlayerInfoByName(playerName));
         for (int i = 0; i < playerInfos.size(); i++) {
-            if (allianceMatrix[playerIndex][i] == true) {
+            // need mutual approval to form alliance
+            if (allianceMatrix[playerIndex][i] == true &&
+                    allianceMatrix[i][playerIndex] == true) {
                 ans.add(playerInfos.get(i).getName());
             }
         }
@@ -766,16 +836,50 @@ public class World implements Serializable {
     }
 
     /**
+     * Check if two players are allies.
+     *
+     * @param p1Name is the name of player 1.
+     * @param p2Name is the name of player 2.
+     * @return true, if p1 and p2 are allies;
+     *         false, if not.
+     */
+    public boolean isAlliance(String p1Name, String p2Name) {
+        return getAllianceNames(p1Name).contains(p2Name) &&
+                getAllianceNames(p2Name).contains(p1Name);
+    }
+
+    /**
+     * Check if a player's number of alliance has reached its limit.
+     * @param playerName is the name of the player to check alliance number.
+     * @param maxPermittedAllies is the maximum number of allies permitted.
+     */
+    protected void checkAllianceNumber(String playerName, int maxPermittedAllies) {
+        if (getAllianceNames(playerName).size() >= maxPermittedAllies) {
+            throw new IllegalArgumentException(
+                    String.format(CANT_FORM_ALLIANCE_MSG, playerName, maxPermittedAllies)
+            );
+        }
+    }
+
+    /**
      * Player 1 tries forming alliance with player 2.
+     * One player can only form an alliance of two with another player.
      * Note: Player 2 has to form alliance with player 1 ON THE SAME TURN
      * so they can form an alliance successfully.
+     *
      *
      * @param p1Name is the name of player 1.
      * @param p2Name is the name of player 2.
      */
     public void tryFormAlliance(String p1Name, String p2Name) {
+        if (p1Name.equals(p2Name)) {
+            throw new IllegalArgumentException(CANT_ALLY_WITH_ONESELF);
+        }
         int p1Index = playerInfos.indexOf(getPlayerInfoByName(p1Name));
         int p2Index = playerInfos.indexOf(getPlayerInfoByName(p2Name));
+        // if either of the player already reached alliance number limit, throw exception
+        checkAllianceNumber(p1Name, Constant.MAX_ALLOWED_ALLY_NUMBER);
+        checkAllianceNumber(p2Name, Constant.MAX_ALLOWED_ALLY_NUMBER);
         allianceMatrix[p1Index][p2Index] = true;
     }
 
@@ -813,6 +917,11 @@ public class World implements Serializable {
     public void breakAlliance(String p1Name, String p2Name) {
         int p1Index = playerInfos.indexOf(getPlayerInfoByName(p1Name));
         int p2Index = playerInfos.indexOf(getPlayerInfoByName(p2Name));
+        if (allianceMatrix[p1Index][p2Index] == false) {
+            throw new IllegalArgumentException(
+                    String.format(CANT_BREAK_ALLIANCE_MSG, p1Name, p2Name)
+            );
+        }
         allianceMatrix[p1Index][p2Index] = false;
         allianceMatrix[p2Index][p1Index] = false;
     }
@@ -828,7 +937,7 @@ public class World implements Serializable {
         // update report
         StringBuilder ans = new StringBuilder();
         for (Territory terr : territories.getVertices()) {
-            ans.append(terr.doBattles());
+            ans.append(terr.doBattlesMix(getAllPlayersAlliance()));
         }
         this.report = ans.toString();
         return report;
@@ -863,7 +972,6 @@ public class World implements Serializable {
             terr.addUnit(num);
         }
     }
-
 
     /**
      * Add level 0 units to a territory.

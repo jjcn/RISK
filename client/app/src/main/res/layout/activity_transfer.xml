@@ -99,7 +99,7 @@
         />
 
         <Spinner
-                android:id="@+id/unit_after_choices"
+                android:id="@+id/type_after_choices"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:spinnerMode="dialog"

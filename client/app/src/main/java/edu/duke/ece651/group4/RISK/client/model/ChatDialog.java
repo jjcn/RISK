@@ -36,8 +36,8 @@ public class ChatDialog implements IDialog {
      * @param name is the name of the chat
      * @param playerNames is the names of players in the chat
      */
-    public ChatDialog(int id, String name, List<String> playerNames) {
-        this(String.valueOf(id), name, null,
+    public ChatDialog(String id, String name, List<String> playerNames) {
+        this(id, name, null,
                 new ArrayList<ChatPlayer>(), null, 0);
         ArrayList<ChatPlayer> players = new ArrayList<ChatPlayer>();
         for (String playerName : playerNames) {
