@@ -75,7 +75,7 @@ public class BasicOrderActivity extends AppCompatActivity {
     }
 
     private void impUI() {
-        List<String> myTerrNames = getMyTerrNames();
+        //List<String> myTerrNames = getMyTerrNames();
         List<String> terrNamesWithMyTroop = getTerrNamesWithMyTroop();
         List<String> myAndAllyTerrNames = getMyAndAllyTerrNames();
         List<String> enemyTerrNames = getEnemyTerrNames();

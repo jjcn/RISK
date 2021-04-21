@@ -642,7 +642,7 @@ public class World implements Serializable {
         Territory end = findTerritory(order.getDesName());
         Troop troop = order.getActTroop();
         // check error of move order
-        String errorMsg = orderChecker.checkOrder(order, World.this);
+        String errorMsg = orderChecker.checkOrder(order, playerName, World.this);
         if (errorMsg != null) {
             throw new IllegalArgumentException(errorMsg);
         }
@@ -690,7 +690,7 @@ public class World implements Serializable {
         String endOwnerName = end.getOwnerName();
         Troop troop = order.getActTroop();
         // check error of attack order
-        String errorMsg = orderChecker.checkOrder(order, this);
+        String errorMsg = orderChecker.checkOrder(order, playerName, this);
         if (errorMsg != null) {
             throw new IllegalArgumentException(errorMsg);
         }
