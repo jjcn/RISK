@@ -44,7 +44,7 @@ public class HostApp implements Runnable {
 
     protected void addTestUsers(){
         users.add(new User(0,"xs","1"));
-        users.add(new User(1,"ws","1"));
+        users.add(new User(1,"wx","1"));
         users.add(new User(2,"jin","1"));
         users.add(new User(3,"sj","1"));
     }

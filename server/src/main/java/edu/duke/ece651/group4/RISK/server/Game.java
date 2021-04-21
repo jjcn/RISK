@@ -237,7 +237,11 @@ public class Game {
         System.out.println("Game" + gInfo.gameID + ": " + allianceOrder.getSrcName() + " try form alliance with " + allianceOrder.getDesName());
     }
 
-
+    synchronized protected void tryTransferTroop(Order order, String userName){
+        TransferTroopOrder transferTroopOrder = (TransferTroopOrder) order;
+        this.gInfo.theWorld.transferTroop(transferTroopOrder, userName);
+        System.out.println("Game" + gInfo.gameID + ": " + userName + " try transfer troop on " + transferTroopOrder.getSrcName() + " from " + transferTroopOrder.getTypeBefore() + " To "+ transferTroopOrder.getTypeAfter());
+    }
     /*
     * This is the final update for the whole world after one turn
     * */
@@ -275,6 +279,8 @@ public class Game {
             case DONE_ACTION:
                 doDoneActionFor(u);
                 exit = true;
+                break;
+            case TRANSFER_TROOP_ACTION:
                 break;
             case ALLIANCE_ACTION:
                 tryDoAlliance(order);
