@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import android.util.Log;
@@ -14,6 +15,7 @@ import edu.duke.ece651.group4.RISK.shared.message.ChatMessage;
 import org.apache.commons.lang3.SerializationUtils;
 
 import static edu.duke.ece651.group4.RISK.client.Constant.LOG_FUNC_RUN;
+import static edu.duke.ece651.group4.RISK.client.RISKApplication.getUserName;
 import static edu.duke.ece651.group4.RISK.shared.Constant.CHAT_SETUP_ACTION;
 
 public class ChatClient extends Thread {
@@ -52,9 +54,9 @@ public class ChatClient extends Thread {
         }
     }
 
-    /*
+    /**
      * This keeps waiting for message from server
-     * */
+     */
     public void waitToReceive() throws IOException {
         while (!exit.get()) {
             ByteBuffer readBuffer = ByteBuffer.allocate(1024);
@@ -67,17 +69,31 @@ public class ChatClient extends Thread {
                 this.chatChannel.close();
                 System.out.println("close channel");
             }
-            ChatMessage chatMsgReceive = (ChatMessage) SerializationUtils.deserialize(readBuffer.array());
+            ChatMessage chatMsgReceive = SerializationUtils.deserialize(readBuffer.array());
             readBuffer.clear();
-            //deal with chatMsgRecV to notify android UI
+
             // TODO: syc in database
-            ChatMessageUI receivedMsg = new ChatMessageUI(0, chatMsgReceive.getChatContent(),
-                    new ChatPlayer(chatMsgReceive.getGameID(), chatMsgReceive.getSource()),chatMsgReceive.getTargetsPlayers());
-            if(receiveMsgListener != null){
-                receiveMsgListener.onSuccess(receivedMsg);
+
+            //get cahtID
+            String chatID = "";
+            Set<String> targets = chatMsgReceive.getTargetsPlayers();
+            if (targets.size() == 1) {
+                for (String name : targets) {
+                    chatID = name;
+                }
             }
-            Log.i(TAG,"ClientChat: " + username + " get from " + chatMsgReceive.getSource() + " saying " + chatMsgReceive.getChatContent());
+
+            // notify client and update UI
+            ChatMessageUI receivedMsg = new ChatMessageUI(chatID, getUserName() + ": " + chatMsgReceive.getChatContent(),
+                    new ChatPlayer(chatMsgReceive.getGameID(), chatMsgReceive.getSource()), chatMsgReceive.getTargetsPlayers());
+            if (receiveMsgListener != null) {
+                Log.i(TAG, LOG_FUNC_RUN + "ClientChat: " + username + " get from " + chatMsgReceive.getSource() + " saying " + chatMsgReceive.getChatContent());
+                receiveMsgListener.onSuccess(receivedMsg);
+            } else {
+                Log.i(TAG, LOG_FUNC_RUN + "lsm null");
+            }
         }
+
     }
 
     public void setReceiveMsgListener(onReceiveListener receiveMsgListener) {
@@ -88,16 +104,13 @@ public class ChatClient extends Thread {
     public void send(ChatMessage chatMessage) {
         byte[] chatBytes = SerializationUtils.serialize(chatMessage);
         ByteBuffer writeBuffer = ByteBuffer.wrap(chatBytes);
-        new Thread(()->{
+        new Thread(() -> {
             try {
-                Log.i(TAG,LOG_FUNC_RUN+"chatChannel");
                 chatChannel.write(writeBuffer);
-                Log.i(TAG,LOG_FUNC_RUN+"chatChannel done");
             } catch (IOException e) {
-                Log.e(TAG,e.toString());
+                Log.e(TAG, e.toString());
             }
         }).start();
-        Log.i(TAG,LOG_FUNC_RUN + "Test: " + chatMessage.getSource() + " send chat message to chatServer!");
         writeBuffer.clear();
     }
 }

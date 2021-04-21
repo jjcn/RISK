@@ -3,6 +3,7 @@ package edu.duke.ece651.group4.RISK.client.activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import android.view.MenuItem;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.stfalcon.chatkit.commons.models.IDialog;
@@ -16,6 +17,7 @@ import edu.duke.ece651.group4.RISK.client.model.ChatDialog;
 
 import java.util.*;
 
+import static edu.duke.ece651.group4.RISK.client.RISKApplication.getAllPlayersName;
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.getCurrentRoomSize;
 
 /**
@@ -30,29 +32,39 @@ public class ChatActivity extends AppCompatActivity implements DialogsListAdapte
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Chats");
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         chatList = findViewById(R.id.chatList);
         initAdapter();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void initAdapter() {
         chatListAdapter = new DialogsListAdapter(R.layout.item_dialog, null);
         chatListAdapter.setItems(getChats());
-        /**
-         * Listener for a short click
-         */
         chatListAdapter.setOnDialogClickListener(this);
         chatList.setAdapter(chatListAdapter);
     }
 
-    // TODO: chats: 1v1 & whole world
     private List<ChatDialog> getChats() {
         ArrayList<ChatDialog> chats = new ArrayList<>();
-        List<String> allPlayerNames = (List<String>) RISKApplication.getAllPlayersName();
+        List<String> allPlayerNames = new ArrayList<>();
+        allPlayerNames.addAll(getAllPlayersName());
         /**
-         * All players' chat room, id = 0
+         * All players' chat room, id = ""
          */
-        chats.add(new ChatDialog(0, "World Chat",  allPlayerNames));
+        chats.add(new ChatDialog("", "World Chat", allPlayerNames));
         /**
          * One-to-one chat room
          */
@@ -61,7 +73,8 @@ public class ChatActivity extends AppCompatActivity implements DialogsListAdapte
             calendar.add(Calendar.DAY_OF_MONTH, -(i * i));
             calendar.add(Calendar.MINUTE, -(i * i));
 
-            chats.add(new ChatDialog(i + 1, "Private Chat " + (i + 1),
+            String playerName = allPlayerNames.get(i);
+            chats.add(new ChatDialog(playerName, "Private Chat with " + playerName,
                     Arrays.asList(allPlayerNames.get(i))));
         }
         return chats;
@@ -69,16 +82,18 @@ public class ChatActivity extends AppCompatActivity implements DialogsListAdapte
 
     @Override
     public void onDialogClick(IDialog dialog) {
-        //TODO--: pass in players in chats
         Intent intent = new Intent(ChatActivity.this, MessageActivity.class);
+        intent.putExtra("TARGET", dialog.getId());
         startActivity(intent);
     }
 
     /**
      * Called on receiving new messages
+     *
      * @param dialogId is the id of dialog that receives the message
-     * @param message is the message
+     * @param message  is the message
      */
+    // todo: private msg
     private void onNewMessage(String dialogId, IMessage message) {
         boolean isUpdated = chatListAdapter.updateDialogWithMessage(dialogId, message);
         if (!isUpdated) {
@@ -88,6 +103,7 @@ public class ChatActivity extends AppCompatActivity implements DialogsListAdapte
 
     /**
      * Called on receiving new dialogs
+     *
      * @param dialog is a dialog
      */
     private void onNewDialog(IDialog dialog) {

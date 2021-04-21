@@ -97,7 +97,7 @@ public class TurnActivity extends AppCompatActivity {
     }
 
     private void goChat() {
-        Intent intent = new Intent(TurnActivity.this, MessageActivity.class);
+        Intent intent = new Intent(TurnActivity.this, ChatActivity.class);
         startActivity(intent);
     }
 
@@ -162,7 +162,6 @@ public class TurnActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                // nothing yet
             }
         });
     }
@@ -197,6 +196,10 @@ public class TurnActivity extends AppCompatActivity {
                     break;
                 case UI_ALLIANCE:
                     selectAlliance();
+                    break;
+                case UI_CHANGETYPE:
+                    intent.setComponent(new ComponentName(TurnActivity.this, TransferActivity.class));
+                    startActivity(intent);
                     break;
                 default:
                     throw new IllegalStateException("Unexpected value: " + actionType);

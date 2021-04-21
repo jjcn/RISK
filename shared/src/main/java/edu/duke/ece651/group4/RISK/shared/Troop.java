@@ -3,6 +3,7 @@ package edu.duke.ece651.group4.RISK.shared;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.NoSuchElementException;
 import java.util.Random;
 
 import static edu.duke.ece651.group4.RISK.shared.Constant.*;
@@ -12,6 +13,7 @@ public class Troop implements Serializable {
     protected static final long serialVersionUID = 17L;
     private final ArrayList<Unit> population;
     private final HashMap<String, Integer> dict;
+    private Troop ally;
 
     private Player owner;
 
@@ -20,6 +22,7 @@ public class Troop implements Serializable {
         this.population = new ArrayList<>();
         this.owner = new TextPlayer(owner.getName());
         this.dict = new HashMap<>();
+        this.ally=null;
         dict.put("Soldier LV0", number);
         for (int i = 0; i < number; i++) {
             Soldier s = new Soldier(rand);
@@ -32,6 +35,7 @@ public class Troop implements Serializable {
         this.population = new ArrayList<>();
         this.owner = new TextPlayer(owner.getName());
         this.dict = new HashMap<>();
+        this.ally=null;
         dict.put("Soldier LV0", number);
 
         for (int i = 0; i < number; i++) {
@@ -44,7 +48,7 @@ public class Troop implements Serializable {
         this.population = subTroop;
         this.owner = new TextPlayer(owner.getName());
         this.dict = new HashMap<>();
-
+        this.ally=null;
         for (Unit u : subTroop) {
             String name = u.getJobName();
             if (dict.get(name) == null) {
@@ -59,6 +63,7 @@ public class Troop implements Serializable {
         this.population = subTroop;
         this.owner = new TextPlayer(owner.getName());
         this.dict = myDict;
+        this.ally=null;
     }
 
     public Troop(HashMap<String, Integer> myDict, Player owner) {
@@ -73,6 +78,7 @@ public class Troop implements Serializable {
         }
         this.owner = new TextPlayer(owner.getName());
         this.dict = myDict;
+        this.ally=null;
     }
 
     /**
@@ -91,6 +97,8 @@ public class Troop implements Serializable {
      */
     public Troop combat(Troop enemy) {
         boolean attack = true;
+        boolean myTurn =true;
+        
         while (this.checkTroopSize() != 0 && enemy.checkTroopSize() != 0) {
 
             Unit myUnit = attack ? this.getWeakest() : this.getStrongest();
@@ -100,12 +108,12 @@ public class Troop implements Serializable {
                 enemy.loseUnit(enemyUnit);
             } else {
 
-                if(ARROW_NAMES.contains(enemyUnit.getJobName())){
+                if (ARROW_NAMES.contains(enemyUnit.getJobName())) {
                     enemy.loseUnit(enemyUnit);
                     this.loseUnit(myUnit);
-                }else if(SHIELD_NAMES.contains(enemyUnit.getJobName())){
-                    Shield s=(Shield) enemyUnit;
-                    if(!s.shieldExist()){
+                } else if (SHIELD_NAMES.contains(enemyUnit.getJobName())) {
+                    Shield s = (Shield) enemyUnit;
+                    if (!s.shieldExist()) {
                         this.loseUnit(myUnit);
                     }
                 }
@@ -269,13 +277,22 @@ public class Troop implements Serializable {
         } else {
             return new Troop(cloneList, new TextPlayer(new String(this.owner.getName())));
         }
+    }
 
-
+    /**
+     * Check if a unit exists in troop.
+     * @param name the name of unit.
+     */
+    public void checkUnitExistence(String name) {
+        if (this.dict.get(name) == null) {
+            throw new NoSuchElementException(String.format("%s does not exist in this troop.", name));
+        }
     }
 
     public int checkUnitNum(String name) {
-        if (this.dict.get(name) == null)
+        if (this.dict.get(name) == null) {
             return 0;
+        }
         return this.dict.get(name);
     }
 
@@ -336,9 +353,9 @@ public class Troop implements Serializable {
 
             if (dict.get(s) != 0) {
                 Soldier check = (Soldier) this.getUnit(s);
-                if(ARROW_NAMES.contains(check.getJobName())){
+                if (ARROW_NAMES.contains(check.getJobName())) {
                     return check;
-                }else if(BREAKER_NAMES.contains(check.getJobName())){
+                } else if (BREAKER_NAMES.contains(check.getJobName())) {
                     return check;
                 }
                 if (maxLevel < check.getLevel()) {
@@ -350,16 +367,14 @@ public class Troop implements Serializable {
         return target;
     }
 
-    public boolean rangeAttackAbility(){
-        for (String s:dict.keySet()){
-            if(ARCHER_NAMES.contains(s)&&dict.get(s)>0){
+    public boolean hasRanged() {
+        for (String s : dict.keySet()) {
+            if (ARCHER_NAMES.contains(s) && dict.get(s) > 0) {
                 return true;
             }
         }
         return false;
     }
-
-
 
     public Unit getWeakest() {
 
@@ -369,7 +384,7 @@ public class Troop implements Serializable {
 
             if (dict.get(s) != 0) {
                 Soldier check = (Soldier) this.getUnit(s);
-                if(SHIELD_NAMES.contains(check.getJobName())){
+                if (SHIELD_NAMES.contains(check.getJobName())) {
                     return check;
                 }
                 if (minLevel > check.getLevel()) {
@@ -390,71 +405,90 @@ public class Troop implements Serializable {
         return report.toString();
     }
 
-    public int transfer(String from,String to,int num){
-        if(this.checkUnitNum(from)<num){
-            throw new IllegalArgumentException("No enough Unit to transfer");
+    public int transfer(String from, String to, int unitLevel, int nUnit) {
+        String typeBefore = buildJobName(from, unitLevel);
+
+        if (this.checkUnitNum(typeBefore) < nUnit) {
+            throw new IllegalArgumentException(String.format("Not enough %s to transfer", from));
         }
 
-        int unitCost=0;
-        int totalcost=0;
-        if(to.equals(KNIGHT)){
-            unitCost=KNIGHT_COST;
-        }else if(to.equals(ARCHER)){
-            unitCost=ARCHER_COST;
-        }else if(to.equals(BREAKER)){
-            unitCost=BREAKER_COST;
-        }else if(to.equals(SHIELD)){
-            unitCost=SHIELD_COST;
+        int unitCost = 0;
+        int totalcost = 0;
+        if (to.equals(KNIGHT)) {
+            unitCost = KNIGHT_COST;
+        } else if (to.equals(ARCHER)) {
+            unitCost = ARCHER_COST;
+        } else if (to.equals(BREAKER)) {
+            unitCost = BREAKER_COST;
+        } else if (to.equals(SHIELD)) {
+            unitCost = SHIELD_COST;
         }
 
-        while(num>0){
-            Soldier target=(Soldier)this.dispatchCertainUnit(from);
-            Soldier newTarget=target.transfer(to);
+        while (nUnit > 0) {
+            Soldier target = (Soldier) this.dispatchCertainUnit(typeBefore);
+            Soldier newTarget = target.transfer(to);
             this.receiveUnit(newTarget);
-            totalcost+=unitCost;
-            num--;
+            totalcost += unitCost;
+            nUnit--;
         }
-
 
         return totalcost;
     }
 
-    public double checkSpeed(){
-        for (String s:dict.keySet()){
-            if(KNIGHT_NAMES.contains(s)&&dict.get(s)>0){
+    public double checkSpeed() {
+        for (String s : dict.keySet()) {
+            if (KNIGHT_NAMES.contains(s) && dict.get(s) > 0) {
                 return KNIGHT_SPEED;
             }
         }
         return NORM_SPEED;
     }
 
-    public Troop sendRangeAttack(Troop target){
-        if(!this.rangeAttackAbility()){
+    public Troop sendRangedAttack(Troop target) {
+        if (!this.hasRanged()) {
             throw new IllegalArgumentException("No range attack unit");
         }
 
         ArrayList<Unit> sub = new ArrayList<>();
         HashMap<String, Integer> subDict = target.getDict();
-        HashMap<String, Integer>  newDict=new HashMap<>();
+        HashMap<String, Integer> newDict = new HashMap<>();
         if (!this.checkSend(target)) {
             throw new IllegalArgumentException("Target sending troop has invalid size");
         }
 
         for (String s : subDict.keySet()) {
 
-            if(ARCHER_NAMES.contains(s)){
+            if (ARCHER_NAMES.contains(s)) {
                 int num = subDict.get(s);
+                int numReady=0;
                 int arrowLevel=ARCHER_NAMES.indexOf(s);
-
-                for (int i = 0; i < num; i++) {
-
-                    Arrow t = new Arrow(arrowLevel);
-
-                    sub.add(t);
-
+                for (int i = 0; i < this.population.size(); i++) {
+                    if(population.get(i).getJobName().equals(s)){
+                        Archer arc=(Archer)population.get(i);
+                        numReady+=(arc.checkReady()?1:0);
+                    }
                 }
-                newDict.put(ARROW_NAMES.get(arrowLevel),num);
+                if(numReady<num){
+                    throw new IllegalArgumentException("No enough archer ready to shoot");
+                }
 
+                for (int i = 0; i < this.population.size(); i++) {
+                    if(population.get(i).getJobName().equals(s)){
+                        Archer arc=(Archer)population.get(i);
+                        sub.add(arc.shoot());
+                    }
+                }
+                newDict.put(ARROW_NAMES.get(arrowLevel), num);
+
+//                for (int i = 0; i < num; i++) {
+//
+//                    Arrow t = new Arrow(arrowLevel);
+//
+//                    sub.add(t);
+//
+//                }
+
+//
             }else{
                 throw new IllegalArgumentException("Not using range attack unit");
             }
@@ -465,5 +499,60 @@ public class Troop implements Serializable {
         return r;
 
     }
+
+    public void archerReady(){
+        for (int i = 0; i < this.population.size(); i++) {
+            if(ARCHER_NAMES.contains(population.get(i).getJobName())){
+                Archer arc=(Archer)population.get(i);
+                arc.active();
+            }
+        }
+    }
+
+    public void setAlly(Troop partner){
+        this.ally=partner;
+    }
+
+    public Troop returnAlly(){
+        Troop partner=this.ally;
+        this.ally=null;
+        return partner;
+    }
+
+    /**
+     * Construct jobName like: Soldier LV0
+     *
+     * @param unitType is the type of unit defined in shared/Constant.
+     * @param unitLevel is the level of unit.
+     * @return constructed jobName.
+     */
+    protected String buildJobName(String unitType, int unitLevel) {
+        return String.format("%s LV%d",unitType, unitLevel);
+    }
+
+    public Troop doOneCombat(Troop enemy) {
+
+
+            Unit myUnit =this.getStrongest();
+            Unit enemyUnit =enemy.getWeakest();
+
+            if(myUnit.fight(enemyUnit)){
+                enemy.loseUnit(enemyUnit);
+            }else {
+
+                if (ARROW_NAMES.contains(enemyUnit.getJobName())) {
+                    enemy.loseUnit(enemyUnit);
+                    this.loseUnit(myUnit);
+                } else if (SHIELD_NAMES.contains(enemyUnit.getJobName())) {
+                    Shield s = (Shield) enemyUnit;
+                    if (!s.shieldExist()) {
+                        this.loseUnit(myUnit);
+                    }
+                }
+            }
+
+        return enemy;
+    }
+
 
 }

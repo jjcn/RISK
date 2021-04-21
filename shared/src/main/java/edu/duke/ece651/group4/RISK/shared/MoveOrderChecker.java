@@ -27,8 +27,8 @@ public class MoveOrderChecker implements Serializable {
      * Error messages
      */
     protected final String NOT_MOVE_ORDER_MSG = "This is not a move order.";
-    protected final String NOT_SAME_OWNER_MSG = 
-        "Cannot move troop to %s, which belongs to another player.";
+    protected final String NOT_PERMITTED_OWNER_MSG =
+        "Cannot move troop to %s, which belongs to another player who is not your ally.";
     protected final String NOT_REACHABLE_MSG = 
         "Cannot reach from %s to %s. " +
         "Other players' territories are blocking the way.";
@@ -47,10 +47,12 @@ public class MoveOrderChecker implements Serializable {
             Territory start = world.findTerritory(order.getSrcName());
             Territory end = world.findTerritory(order.getDesName());
             String moverName = start.getOwner().getName();
-            // if the start and end do not have the same owner
-            if (!start.getOwner().equals(end.getOwner())) {
-                return String.format(NOT_SAME_OWNER_MSG, end.getName());
+
+            // if end is not your or your allies' territory
+            if (!world.canMoveThrough(moverName, end)) {
+                return String.format(NOT_PERMITTED_OWNER_MSG, end.getName());
             }
+
             // if not reachable
             Queue<Territory> queue = new LinkedList<>();
             Set<Territory> visited = new HashSet<>();
@@ -63,32 +65,16 @@ public class MoveOrderChecker implements Serializable {
                     if (adjacent.equals(end)) {
                         return null;
                     }
-                    if (!visited.contains(adjacent)) {
-                        if (getPermittedOwnerNames(moverName, world)
-                            .contains(adjacent.getOwner().getName())) { // changed in evol3
-                                visited.add(adjacent);
-                                queue.add(adjacent);
-                            }
-                        }
+                    if (!visited.contains(adjacent) && world.canMoveThrough(moverName, adjacent)) {
+                            visited.add(adjacent);
+                            queue.add(adjacent);
+                    }
                 }
             }
             return String.format(NOT_REACHABLE_MSG, start.getName(), end.getName());
         }
         // if not move order
         return NOT_MOVE_ORDER_MSG;
-    }
-
-    /**
-     * Get the names of players whose territories allow a player's troop to move through.
-     *
-     * @param moverName is the name of the player who moves the troop.
-     * @param world is the world object.
-     * @return owner names of territories that allow a player's troop to move through.
-     */
-    protected Set<String> getPermittedOwnerNames(String moverName, World world) {
-        Set<String> ans = world.getAllianceNames(moverName);
-        ans.add(moverName);
-        return ans;
     }
 
 }

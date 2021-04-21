@@ -1,5 +1,8 @@
 package edu.duke.ece651.group4.RISK.client.model;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import com.stfalcon.chatkit.commons.models.IUser;
 
 /**
@@ -13,14 +16,20 @@ import com.stfalcon.chatkit.commons.models.IUser;
 public class ChatPlayer implements IUser {
     private String roomID;
     private String name;
+    private String Avatar;
 
     public ChatPlayer(int roomID, String name) {
         this.roomID = String.valueOf(roomID);
         this.name = name;
+        this.Avatar = name;
     }
 
     @Override
     public String getId() {
+        return name + roomID;
+    }
+
+    public String getRoomId() {
         return roomID;
     }
 
@@ -31,6 +40,6 @@ public class ChatPlayer implements IUser {
 
     @Override
     public String getAvatar() {
-        return null;
+        return Avatar;
     }
 }
