@@ -20,7 +20,7 @@ public class HibernateTool {
                         .configure(HibernateTool.class.getResource("/hibernate.cfg.xml"));
                 // TODO: manually add entity classes
                 configuration.addAnnotatedClass(UserInfo.class);
-                configuration.addAnnotatedClass(Game.class);
+                configuration.addAnnotatedClass(GameInfo.class);
                 StandardServiceRegistryBuilder serviceRegistryBuilder = new StandardServiceRegistryBuilder();
                 serviceRegistryBuilder.applySettings(configuration.getProperties());
                 ServiceRegistry serviceRegistry = serviceRegistryBuilder.build();
@@ -40,9 +40,6 @@ public class HibernateTool {
             tx = session.beginTransaction();
             session.save(userInfo);
             tx.commit();
-            tx = session.beginTransaction();
-            session.update(userInfo);
-            tx.commit();
         } catch (HibernateException e) {
             if (tx != null) {
                 tx.rollback();
@@ -60,11 +57,70 @@ public class HibernateTool {
         return usersInfo;
     }
 
-    public static void addGameInfo(){
+    public static SessionFactory getSessionFactory(){
+        return sessionFactory;
+    }
+    public static void shutdown() {
+        sessionFactory.close();
+    }
 
+    public static void addGameInfo(GameInfo gInfo){
+        Session session = sessionFactory.openSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            session.save(gInfo);
+            tx.commit();
+        } catch (HibernateException e) {
+            if (tx != null) {
+                tx.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
     }
 
     public static List<GameInfo> getGameInfoList(){
-        return null;
+        Session session = sessionFactory.openSession();
+        List<GameInfo> gamesInfo = session.createQuery("SELECT u FROM GameInfo u", GameInfo.class).getResultList();
+        session.close();
+        return gamesInfo;
+    }
+
+    public static void deleteGameInfo(GameInfo gInfo){
+        Session session = sessionFactory.openSession();
+        Transaction tx = null;
+
+        try {
+            tx = session.beginTransaction();
+            session.delete(gInfo);
+            tx.commit();
+        } catch (HibernateException e) {
+            if (tx != null) {
+                tx.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+    }
+
+    public static void deleteUserInfo(UserInfo uInfo){
+        Session session = sessionFactory.openSession();
+        Transaction tx = null;
+
+        try {
+            tx = session.beginTransaction();
+            session.delete(uInfo);
+            tx.commit();
+        } catch (HibernateException e) {
+            if (tx != null) {
+                tx.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
     }
 }

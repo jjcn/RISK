@@ -24,11 +24,11 @@
         <property name="show_sql">false</property>
 
         <!-- Create database on startup -->
-        <property name="hibernate.hbm2ddl.auto">create</property>
+<!--        <property name="hibernate.hbm2ddl.auto">create</property>-->
 
         <!-- Annotated entity classes -->
-        <mapping class="server.UserInfo"/>
-        <mapping class="server.Game"/>
+        <mapping class="edu.duke.ece651.group4.RISK.server.UserInfo"/>
+        <mapping class="edu.duke.ece651.group4.RISK.server.GameInfo"/>
 
     </session-factory>
 </hibernate-configuration>

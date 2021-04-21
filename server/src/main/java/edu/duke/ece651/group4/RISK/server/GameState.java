@@ -1,5 +1,6 @@
 package edu.duke.ece651.group4.RISK.server;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -13,7 +14,7 @@ import static edu.duke.ece651.group4.RISK.server.ServerConstant.*;
  *            2. GAME_STATE_DONE_UPDATE
  * */
 
-public class GameState extends State{
+public class GameState extends State implements Serializable {
     HashSet<PlayerState> playerStates;
     private boolean isDonePlaceUnits;
     private boolean isAlive;

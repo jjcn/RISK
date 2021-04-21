@@ -3,10 +3,12 @@ package edu.duke.ece651.group4.RISK.server;
 import javax.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
+
 @Entity
 @Getter
 @Setter
-public class UserInfo {
+public class UserInfo implements Serializable {
     final String username;
     final String password;
 

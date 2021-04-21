@@ -1,9 +1,10 @@
 package edu.duke.ece651.group4.RISK.server;
 
 
+import java.io.Serializable;
 import java.util.HashSet;
 
-public class User {
+public class User implements Serializable {
     UserInfo userInfo;
 
     /*

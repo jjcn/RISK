@@ -1,5 +1,7 @@
 package edu.duke.ece651.group4.RISK.server;
 
+import java.io.Serializable;
+
 import static edu.duke.ece651.group4.RISK.server.ServerConstant.*;
 
 /*
@@ -12,7 +14,7 @@ import static edu.duke.ece651.group4.RISK.server.ServerConstant.*;
  * 4. PLAYER_STATE_SWITCH_OUT: user switch out from this game
  * 5. PLAYER_STATE_UPDATING: after the world updates the world, do final check on state
  * */
-public class PlayerState extends State{
+public class PlayerState extends State implements Serializable {
     final String username;
     boolean isWaiting;
     /*

@@ -3,6 +3,7 @@ package edu.duke.ece651.group4.RISK.server;
 import edu.duke.ece651.group4.RISK.shared.*;
 
 import java.io.PrintStream;
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -15,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 import static edu.duke.ece651.group4.RISK.server.ServerConstant.*;
 import static edu.duke.ece651.group4.RISK.shared.Constant.*;
 
-public class Game {
+public class Game implements Serializable {
     private CyclicBarrier barrier; // Barrier is only used in PlaceUnitsPhase
     GameInfo gInfo;
 
@@ -281,6 +282,7 @@ public class Game {
                 exit = true;
                 break;
             case TRANSFER_TROOP_ACTION:
+                tryTransferTroop(order, userName);
                 break;
             case ALLIANCE_ACTION:
                 tryDoAlliance(order);
