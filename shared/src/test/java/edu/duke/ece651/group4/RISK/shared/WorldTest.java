@@ -329,6 +329,16 @@ public class WorldTest {
     }
 
     @Test
+    public void testString() {
+        String str1 = "str";
+        String str2 = "str";
+        str1 += "s";
+        str2 += "s";
+        assertFalse(str1 == str2);
+        assertTrue(str1.equals(str2));
+    }
+
+    @Test
     public void testMoveTroopValid() {
         World world = createWorldAndRegister(troopsConnected);
 
