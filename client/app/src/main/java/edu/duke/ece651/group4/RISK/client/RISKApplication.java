@@ -593,4 +593,11 @@ public class RISKApplication extends Application {
         Set<String> playerNames = theWorld.getAllPlayerNames();
         return playerNames;
     }
+
+    public static List<String> getChatPlayersName() {
+        List<String> chatPlayerNames = new ArrayList<>();
+        chatPlayerNames.addAll(getAllPlayersName());
+        chatPlayerNames.remove(userName);
+        return chatPlayerNames;
+    }
 }

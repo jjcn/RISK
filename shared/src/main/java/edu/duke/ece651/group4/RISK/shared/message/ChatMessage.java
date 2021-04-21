@@ -10,6 +10,7 @@ public class ChatMessage extends BasicMessage {
     Set<String> targetPlayers;
     int gameID;
     String chatContent;
+
     public ChatMessage(String sender, Set<String> targetPlayers, String chatContent, int gameID, String action){
         super(sender,MESS_CHAT, action);
         this.targetPlayers = targetPlayers;
