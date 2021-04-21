@@ -332,7 +332,11 @@ public class Territory implements Serializable {
         this.ownerTroop.archerReady();
     }
 
-    public Troop breakAlliance() {
+    /**
+     * Send out alliance troop on this territory.
+     * @return alliance troop
+     */
+    public Troop kickoutAlliance() {
         Troop target = this.allianceTroop;
         this.allianceTroop = null;
         return target;
