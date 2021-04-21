@@ -56,7 +56,7 @@ public class Constant {
     public static final double KNIGHT_SPEED=0.75;
     public static final int KNIGHT_COST=10;
 
-
+    //Archer information
     public static  final List<String> ARCHER_NAMES = Arrays.asList("Archer LV0","Archer LV1",
             "Archer LV2","Archer LV3","Archer LV4","Archer LV5","Archer LV6");
     public static final int ARCHER_RANGE=2;
@@ -100,4 +100,7 @@ public class Constant {
 
     //Chat
     public static final int CHAT_PORT = 5678;
+
+    //Alliance
+    public static final int MAX_ALLOWED_ALLY_NUMBER = 1;
 }
