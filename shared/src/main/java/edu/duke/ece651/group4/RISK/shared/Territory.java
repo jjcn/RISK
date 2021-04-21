@@ -27,12 +27,11 @@ public class Territory implements Serializable {
 
     private Troop ownerTroop;
 
+    protected Troop allianceTroop;
+
     private final HashMap<String, Troop> enemyOnTerritory;
 
     private Random rnd;
-
-    private Troop allianceTroop;
-
 
     public Territory(String name, Player owner, int population, Random rnd) {
         this.name = name;
@@ -182,7 +181,9 @@ public class Territory implements Serializable {
                 allianceTroop.receiveTroop(subTroop);
             }
         }
-        this.ownerTroop.receiveTroop(subTroop);
+        else {
+            this.ownerTroop.receiveTroop(subTroop);
+        }
     }
 
     /**

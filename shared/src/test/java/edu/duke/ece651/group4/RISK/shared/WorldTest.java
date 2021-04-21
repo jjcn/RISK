@@ -1,6 +1,7 @@
 package edu.duke.ece651.group4.RISK.shared;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -426,7 +427,8 @@ public class WorldTest {
         world.moveTroop(move2, "red");
         assertEquals(13 - 1, world.findTerritory("Gondor").checkPopulation());
         // TODO: Elantris should now have: a red troop of size 1, and a blue troop of size 6.
-        //assertEquals(6 + 1, world.findTerritory("Elantris").checkPopulation());
+        assertEquals(6, world.findTerritory("Elantris").checkPopulation());
+        assertEquals(1, world.findTerritory("Elantris").allianceTroop.size());
     }
 
     @Test

@@ -912,6 +912,7 @@ public class World implements Serializable {
         StringBuilder ans = new StringBuilder();
         for (Territory terr : territories.getVertices()) {
             ans.append(terr.doBattles());
+            //ans.append(terr.doBattles(getAllPlayersAlliance())); //TODO: new interface of Territory.doBattles()
         }
         this.report = ans.toString();
         return report;
