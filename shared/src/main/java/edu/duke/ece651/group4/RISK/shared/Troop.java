@@ -3,6 +3,7 @@ package edu.duke.ece651.group4.RISK.shared;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Random;
 
@@ -296,9 +297,47 @@ public class Troop implements Serializable {
         return this.dict.get(name);
     }
 
-    public int updateUnit(int levelBefore, int levelUp, int num, int resource) {
-        String from = String.format("Soldier LV%d", levelBefore); // TODO: this is hardcoded
-        return updateUnit(from, levelUp, num, resource);
+    /**
+     * Construct jobName like: Soldier LV0
+     *
+     * @param unitType is the type of unit defined in shared/Constant.
+     * @param unitLevel is the level of unit.
+     * @return constructed jobName.
+     */
+    protected String buildJobName(String unitType, int unitLevel) {
+        String jobName;
+        List<String> levelNames = Constant.JOB_DICTIONARY.get(unitType);
+        if (levelNames == null) {
+            throw new IllegalArgumentException(
+                    String.format("Type %s does not exist.", unitType)
+            );
+        }
+        try {
+            jobName = levelNames.get(unitLevel);
+        } catch (IndexOutOfBoundsException e) {
+            throw new IllegalArgumentException(
+                    String.format("Level %d for type %s does not exist.", unitLevel, unitType)
+            );
+        }
+        return jobName;
+    }
+
+    /**
+     * Upgrades troop using an upgrade troop order. Also checks if there is enough resource.
+     * @param utOrder is an upgrade troop order.
+     * @param nResource is the number of resource at hand.
+     * @return remaining resource after upgrade.
+     */
+    public int updateUnit(UpgradeTroopOrder utOrder, int nResource) {
+        int levelBefore = utOrder.getLevelBefore();
+        int levelAfter = utOrder.getLevelAfter();
+        int levelUp = levelAfter - levelBefore;
+
+        String from = buildJobName(utOrder.getTypeName(), levelBefore);
+
+        int nUnit = utOrder.getNUnit();
+
+        return updateUnit(from, levelUp, nUnit, nResource);
     }
 
     public int updateUnit(String from, int levelUp, int num, int resource) {
@@ -517,17 +556,6 @@ public class Troop implements Serializable {
         Troop partner=this.ally;
         this.ally=null;
         return partner;
-    }
-
-    /**
-     * Construct jobName like: Soldier LV0
-     *
-     * @param unitType is the type of unit defined in shared/Constant.
-     * @param unitLevel is the level of unit.
-     * @return constructed jobName.
-     */
-    protected String buildJobName(String unitType, int unitLevel) {
-        return String.format("%s LV%d",unitType, unitLevel);
     }
 
     public Troop doOneCombat(Troop enemy) {

@@ -146,6 +146,9 @@ public class PlayerInfo implements Serializable {
 
     /**
      * Try upgrade player's tech level by a number n.
+     * check if the player has enough tech resources.
+     * If so, upgrade tech level, but does not consume tech resource.
+     *
      * @param n is the number to add to player's tech level.
      *        Can be positive, 0, or negative.
      * @throws IllegalArgumentException
