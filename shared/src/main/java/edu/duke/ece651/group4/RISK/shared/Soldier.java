@@ -103,7 +103,7 @@ public class Soldier implements Unit, Serializable {
         if (cost > resource) {
             throw new IllegalArgumentException("No enough resources");
         }
-        this.setLevel(aim);
+        setLevel(aim);
         return resource - cost;
 
     }
