@@ -21,6 +21,7 @@ public class HibernateTool {
                 // TODO: manually add entity classes
                 configuration.addAnnotatedClass(UserInfo.class);
                 configuration.addAnnotatedClass(GameInfo.class);
+                configuration.addAnnotatedClass(GameInfoTrial.class);
                 StandardServiceRegistryBuilder serviceRegistryBuilder = new StandardServiceRegistryBuilder();
                 serviceRegistryBuilder.applySettings(configuration.getProperties());
                 ServiceRegistry serviceRegistry = serviceRegistryBuilder.build();
@@ -65,6 +66,23 @@ public class HibernateTool {
     }
 
     public static void addGameInfo(GameInfo gInfo){
+        Session session = sessionFactory.openSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            session.save(gInfo);
+            tx.commit();
+        } catch (HibernateException e) {
+            if (tx != null) {
+                tx.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+    }
+
+    public static void addGameInfoTrial(GameInfoTrial gInfo){
         Session session = sessionFactory.openSession();
         Transaction tx = null;
         try {

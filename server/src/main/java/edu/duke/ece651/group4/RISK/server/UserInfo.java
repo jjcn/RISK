@@ -1,7 +1,8 @@
 package edu.duke.ece651.group4.RISK.server;
 
 import javax.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 
@@ -21,6 +22,7 @@ public class UserInfo implements Serializable {
         username = "";
         password = "";
     }
+
     /*
     * This constructs a userInfo
     * */

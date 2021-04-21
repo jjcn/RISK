@@ -1,5 +1,7 @@
 package edu.duke.ece651.group4.RISK.server;
 
+import edu.duke.ece651.group4.RISK.shared.Player;
+
 import java.io.Serializable;
 
 import static edu.duke.ece651.group4.RISK.server.ServerConstant.*;
@@ -86,4 +88,13 @@ public class PlayerState extends State implements Serializable {
     public boolean isActive(){
         return !isSwitchOut();
     }
+
+//    public PlayerState clone(){
+//        PlayerState ps = new  PlayerState(username);
+//        ps.updateStateTo(this.getState());
+//        if(this.isWaiting){
+//            ps.setWaiting();
+//        }
+//        return ps;
+//    }
 }

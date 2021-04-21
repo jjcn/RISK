@@ -39,11 +39,11 @@ class HibernateToolTest {
 
     @Test
     public void test_addUserInfo(){
-//        List<UserInfo> uInfos = createUserInfos(3);
-//        tryDeleteUsers(uInfos); //empty if there has data already
-//        tryAddUsers(uInfos);
-//        List<UserInfo> usInfoRecv = HibernateTool.getUserInfoList();
-//        checkUserRes(uInfos,usInfoRecv);
+        List<UserInfo> uInfos = createUserInfos(3);
+        tryDeleteUsers(uInfos); //empty if there has data already
+        tryAddUsers(uInfos);
+        List<UserInfo> usInfoRecv = HibernateTool.getUserInfoList();
+        checkUserRes(uInfos,usInfoRecv);
         assertEquals("user1","user1");
     }
 
@@ -79,21 +79,25 @@ class HibernateToolTest {
         }
     }
 
-    private void checkGameInfoRes(List<GameInfo> uExpected, List<GameInfo> uInfos){
-        assertEquals(uExpected.size(),uInfos.size());
-        for(int i = 0; i < uExpected.size(); i++){
-
+    private void checkGameInfoRes(List<GameInfo> gExpected, List<GameInfo> gInfos){
+        assertEquals(gExpected.size(),gInfos.size());
+        for(int i = 0; i < gExpected.size(); i++){
+            GameInfo infoExpected = gExpected.get(i);
+            GameInfo info = gInfos.get(i);
+            assertEquals(infoExpected.gameID, info.gameID);
+            assertEquals(infoExpected.maxNumUsers, info.maxNumUsers);
+            assertEquals(infoExpected.gameState.getState(), info.gameState.getState());
+            assertEquals(infoExpected.gameState.playerStates.size(), info.gameState.playerStates.size());
+            assertEquals(infoExpected.theWorld.clone(), info.theWorld.clone());
         }
     }
 
 
-
     @Test void test_addGameInfo(){
-//        List<GameInfo> gamesInfo = createGameInfo(1);
-//        List<Game> games = createGames(gamesInfo);
-////        tryDeleteGameInfo(gamesInfo);
-//        tryAddGameInfo(gamesInfo);
-//        List<GameInfo> gInfoRecv = HibernateTool.getGameInfoList();
-//        assertEquals(gamesInfo.size(), gInfoRecv.size());
+        List<GameInfo> gamesInfo = createGameInfo(4);
+        tryDeleteGameInfo(gamesInfo);
+        tryAddGameInfo(gamesInfo);
+        List<GameInfo> gamesInfoRecv = HibernateTool.getGameInfoList();
+        checkGameInfoRes(gamesInfo, gamesInfoRecv);
     }
 }

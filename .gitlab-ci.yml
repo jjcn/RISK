@@ -1,3 +1,12 @@
+services:
+  - postgres:12.2-alpine
+
+variables:
+  POSTGRES_DB: risk
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: "123456"
+  POSTGRES_HOST_AUTH_METHOD: trust
+
 before_script:
   - hostname
   - whoami

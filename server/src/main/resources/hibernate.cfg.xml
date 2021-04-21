@@ -25,10 +25,13 @@
 
         <!-- Create database on startup -->
 <!--        <property name="hibernate.hbm2ddl.auto">create</property>-->
+        <property name="hibernate.hbm2ddl.auto">update</property>
 
         <!-- Annotated entity classes -->
         <mapping class="edu.duke.ece651.group4.RISK.server.UserInfo"/>
         <mapping class="edu.duke.ece651.group4.RISK.server.GameInfo"/>
+<!--        <mapping class="edu.duke.ece651.group4.RISK.server.GameInfoTrial"/>-->
+
 
     </session-factory>
 </hibernate-configuration>

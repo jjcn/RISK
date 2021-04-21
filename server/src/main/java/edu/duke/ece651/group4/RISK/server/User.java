@@ -7,6 +7,9 @@ import java.util.HashSet;
 public class User implements Serializable {
     UserInfo userInfo;
 
+    public User(){
+        userInfo = new UserInfo();
+    }
     /*
      * This construct the User
      * */

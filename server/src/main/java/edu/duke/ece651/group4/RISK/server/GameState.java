@@ -14,7 +14,7 @@ import static edu.duke.ece651.group4.RISK.server.ServerConstant.*;
  *            2. GAME_STATE_DONE_UPDATE
  * */
 
-public class GameState extends State implements Serializable {
+public class GameState extends State  implements Serializable{
     HashSet<PlayerState> playerStates;
     private boolean isDonePlaceUnits;
     private boolean isAlive;
@@ -197,4 +197,17 @@ public class GameState extends State implements Serializable {
      * */
     public boolean isWaitToUpdate(){return getState().equals(GAME_STATE_WAIT_TO_UPDATE);}
 
+//    public GameState clone(){
+//        GameState gs = new GameState();
+//        for(PlayerState ps: playerStates){
+//            gs.playerStates.add(ps.clone());
+//        }
+//        if(!gs.isAlive){
+//            gs.setGameDead();
+//        }
+//        if(gs.isDonePlaceUnits){
+//            gs.setDonePlaceUnits();
+//        }
+//        return gs;
+//    }
 }
