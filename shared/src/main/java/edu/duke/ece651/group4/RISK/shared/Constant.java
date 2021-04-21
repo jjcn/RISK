@@ -12,7 +12,7 @@ public class Constant {
     public final static String SourceClient = "Client";
 
     //socket
-    public static final String SOCKET_HOSTNAME = "localhost";
+    public static final String SOCKET_HOSTNAME = "vcm-18527.vm.duke.edu";
     public static final int SOCKET_PORT = 9999;
 
     //Message

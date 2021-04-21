@@ -75,10 +75,10 @@ public class PlaceActivity extends AppCompatActivity {
                 doPlacement(placements, new onReceiveListener() {
                     @Override
                     public void onSuccess(Object o) {
-                        if(getWorld() == null){
-                            Log.e(TAG,LOG_FUNC_FAIL+"world null");
-                        } else{
-                            Log.i(TAG,LOG_FUNC_RUN+"world not null");
+                        if (getWorld() == null) {
+                            Log.e(TAG, LOG_FUNC_FAIL + "world null");
+                        } else {
+                            Log.i(TAG, LOG_FUNC_RUN + "world not null");
                         }
                         showByToast(PlaceActivity.this, PLACEMENT_DONE);
                         Intent intent = new Intent(PlaceActivity.this, TurnActivity.class);
@@ -109,9 +109,12 @@ public class PlaceActivity extends AppCompatActivity {
 //    }
 
 
+    /**
+     * you can not return to RoomActivity at this stage
+     */
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if(keyCode == event.KEYCODE_BACK) {
+        if (keyCode == event.KEYCODE_BACK) {
             showByToast(PlaceActivity.this, "You cannot return during placement.");
         }
         return true;

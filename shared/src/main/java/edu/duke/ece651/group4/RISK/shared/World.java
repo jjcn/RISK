@@ -363,7 +363,6 @@ public class World implements Serializable {
      * @return that player's playerInfo.
      */
     public PlayerInfo getPlayerInfoByName(String playerName) {
-        assert(playerInfos.size() != 0);
         for (int i = 0; i < playerInfos.size(); i++) {
             PlayerInfo pInfo = playerInfos.get(i);
             if (pInfo.getName().equals(playerName)) {
@@ -442,24 +441,37 @@ public class World implements Serializable {
     }
 
     /**
-     * Overloaded function to Calculates the shortest path length between 2 vertices.
-     *
-     * @param startName
-     * @param endName
-     * @return
+     * Checks if a player's troop can move through a territory.
+     * @param moverName is the name of the player who tries to move through this territory
+     * @param terr is the name of the territory
+     * @return true, if this player's troop is allowed to move through this territory;
+     *         false, if not.
      */
-    protected int calculateShortestPath(String startName, String endName) {
-        return calculateShortestPath(findTerritory(startName), findTerritory(endName));
+    public boolean canMoveThrough(String moverName, Territory terr) {
+        Set<String> allowedOwnerNames = getAllianceNames(moverName);
+        allowedOwnerNames.add(moverName);
+        return allowedOwnerNames.contains(terr.getOwner().getName());
     }
 
     /**
-     * Calculates the shortest path length between 2 vertices.
-     *
-     * @param start is the starting vertex.
-     * @param end   is the ending vertex.
-     * @return length of the shortest path .
+     * Overloaded function to Calculates the shortest path length between 2 vertices.
      */
-    protected int calculateShortestPath(Territory start, Territory end) {
+    protected int calculateShortestPath(String startName, String endName, String playerName) {
+        Territory start = findTerritory(startName);
+        Territory end = findTerritory(endName);
+
+        return calculateShortestPath(start, end, playerName);
+    }
+
+    /**
+     * Calculates the shortest path length between 2 territories for a certain player.
+     *
+     * @param start is the starting territory.
+     * @param end   is the ending territory.
+     * @param playerName is the player who wants to find out the shortest path.
+     * @return length of the shortest path.
+     */
+    protected int calculateShortestPath(Territory start, Territory end, String playerName) {
         String NOT_REACHABLE_MSG = "Cannot reach from start to end.";
         /*
          * shortest distances from start to all vertices
@@ -483,17 +495,19 @@ public class World implements Serializable {
         Set<Territory> visited = new HashSet<>();
         unvisited.add(start);
         /*
-         * While the unvisited is not empty: 1. Choose an unvisited vertex, which should
-         * be the one with the lowest distance from the start, and remove it from
-         * unvisited. 2. Calculate new distances to direct neighbors by keeping the
-         * lowest distance at each evaluation. 3. Add neighbors that are not yet visited
-         * to the unvisited set.
+         * While the unvisited is not empty:
+         * 1. Choose an unvisited vertex, which should
+         * be the one with the lowest distance from the start,
+         * and remove it from unvisited.
+         * 2. Calculate new distances to direct neighbors by keeping the
+         * lowest distance at each evaluation.
+         * 3. Add neighbors that are not yet visited to the unvisited set.
          */
         while (unvisited.size() != 0) {
             Territory current = getSmallestDistanceTerr(unvisited, distances);
             unvisited.remove(current);
             for (Territory adjacent : getAdjacents(current)) {
-                if (!visited.contains(adjacent) && adjacent.getOwner().equals(start.getOwner())) {
+                if (!visited.contains(adjacent) && canMoveThrough(playerName, adjacent)) {
                     distances.put(adjacent,
                             Math.min(distances.get(current) + adjacent.getArea(), distances.get(adjacent)));
                     unvisited.add(adjacent);
@@ -543,16 +557,19 @@ public class World implements Serializable {
         Territory start = findTerritory(order.getSrcName());
         Territory end = findTerritory(order.getDesName());
         Troop troop = order.getActTroop();
+        String moverName = start.getOwner().getName();
 
-        int lengthShortestPath = calculateShortestPath(start, end);
+        int lengthShortestPath = calculateShortestPath(start, end, moverName);
         int nUnits = troop.size();
-        int nConsumedResource = lengthShortestPath * nUnits;
+        double troopSpeed = troop.checkSpeed();
+        int nConsumedResource = (int) (lengthShortestPath * nUnits * troopSpeed);
 
         return nConsumedResource;
     }
 
     /**
      * A player consume food resources of a move.
+     * Also checks if a player has enough food to consume.
      *
      * @param order      is the move order.
      * @param playerName is the name of the player who committed this order.
@@ -570,7 +587,7 @@ public class World implements Serializable {
      * @param order      is a move order.
      * @param playerName is the player's name who committed this order.
      */
-    public void moveTroop(MoveOrder order, String playerName) { // TODO: coupled upgrade and resource consumption
+    public void moveTroop(MoveOrder order, String playerName) {
         Territory start = findTerritory(order.getSrcName());
         Territory end = findTerritory(order.getDesName());
         Troop troop = order.getActTroop();
@@ -579,7 +596,7 @@ public class World implements Serializable {
         if (errorMsg != null) {
             throw new IllegalArgumentException(errorMsg);
         }
-        // also check if player has enough food
+        // check if player has enough food
         consumeResourceOfMove(order, playerName);
         // moves troop
         end.sendInTroop(start.sendOutTroop(troop));
@@ -631,7 +648,7 @@ public class World implements Serializable {
         // check if the destination is a territory of your ally, if so, break alliance with him
         if (getAllianceNames(startOwnerName).contains(endOwnerName)) {
             breakAlliance(startOwnerName, endOwnerName);
-            /* TODO: if th If A breaks an alliance
+            /* TODO: If A breaks an alliance
             with B, and B has units in A’s territories, then B’s units return to the nearest (break ties
             randomly) B-owned territory at before any other actions are resolved (i.e. are available
             to defend those territories)

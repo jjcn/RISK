@@ -250,6 +250,9 @@ public class ClientThread extends Thread {
      * place units for a new game
      * */
     protected void tryPlaceUnits(){
+        if(gameOnGoing == null){
+            return;
+        }
         out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " Place Units Phase");
         if(gameOnGoing.gameState.isDonePlaceUnits()){
             return;
@@ -283,10 +286,10 @@ public class ClientThread extends Thread {
      * Run Game for one turn
      * */
     protected void tryRunGameOneTurn() {
-        out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " action phase");
         if(gameOnGoing == null){
             return;
         }
+        out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " action phase");
         doActionPhaseOneTurn();
 
         if(gameOnGoing.gameState.getAPlayerState(ownerUser).equals(PLAYER_STATE_SWITCH_OUT)){

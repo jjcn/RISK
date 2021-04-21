@@ -42,7 +42,6 @@ public class ChatActivity extends AppCompatActivity implements DialogsListAdapte
          * Listener for a short click
          */
         chatListAdapter.setOnDialogClickListener(this);
-
         chatList.setAdapter(chatListAdapter);
     }
 
