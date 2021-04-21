@@ -49,6 +49,7 @@ public class GameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
         if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("RISK Room "+getWorld().getRoomID());
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }

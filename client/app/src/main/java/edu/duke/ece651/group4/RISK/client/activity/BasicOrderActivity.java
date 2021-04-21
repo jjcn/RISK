@@ -41,6 +41,7 @@ public class BasicOrderActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_basic_order);
         if(getSupportActionBar()!=null) {
+            getSupportActionBar().setTitle("Basic Order");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }

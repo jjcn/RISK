@@ -45,6 +45,7 @@ public class UpgradeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upgrade);
         if(getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Upgrade");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
@@ -157,7 +158,7 @@ public class UpgradeActivity extends AppCompatActivity {
             Editable text = nUnitET.getText();
             if (text == null) {
                 return;
-            } else if (text.toString() == "") {
+            } else if (text.toString().equals("")) {
                 showByToast(UpgradeActivity.this, "Please input the number.");
                 return;
             }
