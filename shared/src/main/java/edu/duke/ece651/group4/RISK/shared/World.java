@@ -430,17 +430,20 @@ public class World implements Serializable {
     }
 
     /**
-     *
-     * @param playerName
-     * @return
+     * Get the territories with a player's troop stationed on it.
+     * @param playerName is a player's name.
+     * @return all territories that is stationed by this player's troop.
      */
     public List<Territory> getTerritoriesWithMyTroop(String playerName) {
         List<Territory> ans = new ArrayList<>();
         for (Territory terr : getAllTerritories()) {
-            if (terr.getOwnerName().equals(playerName) ||
-                    terr.getAllianceName().equals(playerName)) {
-                ans.add(terr);
-            }
+            try {
+                String owner = terr.getOwnerName();
+                String alliance = terr.getAllianceName();
+                if (owner.equals(playerName) || alliance.equals(playerName)) {
+                    ans.add(terr);
+                }
+            } catch (IllegalArgumentException e) {}
         }
         return ans;
     }
