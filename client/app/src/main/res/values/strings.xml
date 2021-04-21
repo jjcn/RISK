@@ -27,18 +27,21 @@
     <string name="CONFIRM">CONFIRM</string>
     <string name="CHOOSE_SRC_INSTRU">"You want to send troop from territory: "</string>
     <string name="CHOOSE_DES_INSTRU">You want to send troop to territory:</string>
-    <string name="CHOOSE_TYPE_INSTRU">"Choose the type of soldier: "</string>
+    <string name="CHOOSE_TYPE_INSTRU">"Choose the level of soldier: "</string>
 
     <string name="UPGRADE_TERR_PROMPT">"Upgrade soldiers on which territory?"</string>
     <string name="UPGRADE_CHOOSE_TERR_INSTRU">"Choose the territory soldiers to upgraded on: "</string>
     <string name="UPGRADE_TYPE_BEFORE_PROMPT">"Which type of soldier \n would you like to upgrade?"</string>
-    <string name="UPGRADE_TYPE_AFTER_PROMPT">"Upgrade to soldiers to: "</string>
+    <string name="UPGRADE_TYPE_AFTER_PROMPT">"Upgrade the soldiers to: "</string>
     <string name="hint_enter_a_message">Enter your message here</string>
     <string name="DONE">DONE</string>
     <string name="REPORT">REPORT</string>
     <string name="UPTECH">↑TECH</string>
     <string name="ALLY">ALLY</string>
-    <!-- TODO: Remove or change this placeholder text -->
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="CHANGE_TERR_PROMPT">"Change type of soldiers in territory: "</string>
+    <string name="CHANGE_TYPE_PROMPT">"Change type of soldiers to: "</string>
+    <string name="CHANGE_TYPE_AFTER">"Change the type to: "</string>
 
 </resources>

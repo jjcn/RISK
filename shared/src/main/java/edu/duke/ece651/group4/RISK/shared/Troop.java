@@ -13,6 +13,7 @@ public class Troop implements Serializable {
     protected static final long serialVersionUID = 17L;
     private final ArrayList<Unit> population;
     private final HashMap<String, Integer> dict;
+    private Troop ally;
 
     private Player owner;
 
@@ -21,6 +22,7 @@ public class Troop implements Serializable {
         this.population = new ArrayList<>();
         this.owner = new TextPlayer(owner.getName());
         this.dict = new HashMap<>();
+        this.ally=null;
         dict.put("Soldier LV0", number);
         for (int i = 0; i < number; i++) {
             Soldier s = new Soldier(rand);
@@ -33,6 +35,7 @@ public class Troop implements Serializable {
         this.population = new ArrayList<>();
         this.owner = new TextPlayer(owner.getName());
         this.dict = new HashMap<>();
+        this.ally=null;
         dict.put("Soldier LV0", number);
 
         for (int i = 0; i < number; i++) {
@@ -45,7 +48,7 @@ public class Troop implements Serializable {
         this.population = subTroop;
         this.owner = new TextPlayer(owner.getName());
         this.dict = new HashMap<>();
-
+        this.ally=null;
         for (Unit u : subTroop) {
             String name = u.getJobName();
             if (dict.get(name) == null) {
@@ -60,6 +63,7 @@ public class Troop implements Serializable {
         this.population = subTroop;
         this.owner = new TextPlayer(owner.getName());
         this.dict = myDict;
+        this.ally=null;
     }
 
     public Troop(HashMap<String, Integer> myDict, Player owner) {
@@ -74,6 +78,7 @@ public class Troop implements Serializable {
         }
         this.owner = new TextPlayer(owner.getName());
         this.dict = myDict;
+        this.ally=null;
     }
 
     /**
@@ -92,6 +97,8 @@ public class Troop implements Serializable {
      */
     public Troop combat(Troop enemy) {
         boolean attack = true;
+        boolean myTurn =true;
+        
         while (this.checkTroopSize() != 0 && enemy.checkTroopSize() != 0) {
 
             Unit myUnit = attack ? this.getWeakest() : this.getStrongest();
@@ -453,18 +460,36 @@ public class Troop implements Serializable {
 
             if (ARCHER_NAMES.contains(s)) {
                 int num = subDict.get(s);
-                int arrowLevel = ARCHER_NAMES.indexOf(s);
+                int numReady=0;
+                int arrowLevel=ARCHER_NAMES.indexOf(s);
+                for (int i = 0; i < this.population.size(); i++) {
+                    if(population.get(i).getJobName().equals(s)){
+                        Archer arc=(Archer)population.get(i);
+                        numReady+=(arc.checkReady()?1:0);
+                    }
+                }
+                if(numReady<num){
+                    throw new IllegalArgumentException("No enough archer ready to shoot");
+                }
 
-                for (int i = 0; i < num; i++) {
-
-                    Arrow t = new Arrow(arrowLevel);
-
-                    sub.add(t);
-
+                for (int i = 0; i < this.population.size(); i++) {
+                    if(population.get(i).getJobName().equals(s)){
+                        Archer arc=(Archer)population.get(i);
+                        sub.add(arc.shoot());
+                    }
                 }
                 newDict.put(ARROW_NAMES.get(arrowLevel), num);
 
-            } else {
+//                for (int i = 0; i < num; i++) {
+//
+//                    Arrow t = new Arrow(arrowLevel);
+//
+//                    sub.add(t);
+//
+//                }
+
+//
+            }else{
                 throw new IllegalArgumentException("Not using range attack unit");
             }
 
@@ -473,6 +498,25 @@ public class Troop implements Serializable {
 
         return r;
 
+    }
+
+    public void archerReady(){
+        for (int i = 0; i < this.population.size(); i++) {
+            if(ARCHER_NAMES.contains(population.get(i).getJobName())){
+                Archer arc=(Archer)population.get(i);
+                arc.active();
+            }
+        }
+    }
+
+    public void setAlly(Troop partner){
+        this.ally=partner;
+    }
+
+    public Troop returnAlly(){
+        Troop partner=this.ally;
+        this.ally=null;
+        return partner;
     }
 
     /**
@@ -485,4 +529,6 @@ public class Troop implements Serializable {
     protected String buildJobName(String unitType, int unitLevel) {
         return String.format("%s LV%d",unitType, unitLevel);
     }
+
+
 }
