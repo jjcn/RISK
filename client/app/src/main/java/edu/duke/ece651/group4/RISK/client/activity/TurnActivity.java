@@ -97,7 +97,7 @@ public class TurnActivity extends AppCompatActivity {
     }
 
     private void goChat() {
-        Intent intent = new Intent(TurnActivity.this, MessageActivity.class);
+        Intent intent = new Intent(TurnActivity.this, ChatActivity.class);
         startActivity(intent);
     }
 

@@ -22,6 +22,7 @@ import edu.duke.ece651.group4.RISK.shared.message.ChatMessage;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
@@ -38,25 +39,26 @@ public class MessageActivity extends AppCompatActivity
 
     private MessagesListAdapter msgAdapter;
     private MessagesList msgList;
+    private String target;
 //    private static final int TOTAL_MSG = 100;
 //    private Menu menu;
 //    private int selectionCount;
 //    private Date lastLoadedDate;
 
-    //TODO: show sender name
+    //TODO: show sender name (simple string in message now) // avatar
     //TODO: get history info
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
+        this.target = getIntent().getStringExtra("TARGET");
         if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(target.equals("") ? "World":target);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-
         this.msgList = findViewById(R.id.messagesList);
         msgAdapter = new MessagesListAdapter<>(getUserName()+getRoomId(),null);
-        // todo:avatar
 
 //                new ImageLoader() {
 //            @Override
@@ -107,9 +109,14 @@ public class MessageActivity extends AppCompatActivity
     @Override
     public boolean onSubmit(CharSequence input) {
         ChatPlayer user = new ChatPlayer(getRoomId(), getUserName());
-        Set<String> targets = getAllPlayersName();
-        targets.remove(getUserName());
-        ChatMessageUI message = new ChatMessageUI(0, input.toString(), user, targets);
+        Set<String> targets = new HashSet<>();
+        if(target.equals("")) {
+            targets.addAll(getAllPlayersName());
+            targets.remove(getUserName());
+        }else {
+            targets.add(target);
+        }
+        ChatMessageUI message = new ChatMessageUI(target,input.toString(), user, targets);
 
         Log.i(TAG, LOG_FUNC_RUN + "start send mag");
         sendOneMsg(message, new onResultListener() {
@@ -136,6 +143,7 @@ public class MessageActivity extends AppCompatActivity
         }
         return bitmap;
     }
+
     // todo: load msg
 //    protected void loadMessages() {
 //        new Handler().postDelayed(() -> {
