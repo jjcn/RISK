@@ -46,14 +46,32 @@ public class UpgradeTroopOrder implements Order, Serializable {
     private String unitType;
 
     public UpgradeTroopOrder(String srcName,
-                            int levelBefore, int levelAfter, 
-                            int nUnit) {
+                             int levelBefore,
+                             int levelAfter,
+                             int nUnit,
+                             String unitType) {
         this.actionName = Constant.UPTROOP_ACTION;
         this.srcName = srcName;
         this.levelBefore = levelBefore;
         this.levelAfter = levelAfter;
         this.nUnit = nUnit;
-        this.unitType = Constant.SOLDIER;
+        this.unitType = unitType;
+    }
+
+    /**
+     * Overloaded constructor that does not specify the type of unit to upgrade.
+     *
+     * Default unit type is Constant.SOLDIER
+     */
+    public UpgradeTroopOrder(String srcName,
+                            int levelBefore,
+                            int levelAfter,
+                            int nUnit) {
+        this(srcName,
+            levelBefore,
+            levelAfter,
+            nUnit,
+            Constant.SOLDIER);
     }
 
     /**

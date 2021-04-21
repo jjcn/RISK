@@ -1,5 +1,6 @@
 package edu.duke.ece651.group4.RISK.shared;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
@@ -7,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.NoSuchElementException;
 
+import java.util.Queue;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -34,10 +36,19 @@ public class World implements Serializable {
     /**
      * Error messages
      */
-    protected final String INDIVISIBLE_MSG = "Number of territories is not divisible by number of groups.";
-    protected final String NOT_POSITIVE_MSG = "Number should be positive.";
-    protected final String TERRITORY_NOT_FOUND_MSG = "The territory specified by the name '%s' is not found.";
-    protected final String NO_PLAYERINFO_MSG = "Player info of %s is not found.";
+    protected final String INDIVISIBLE_MSG =
+            "Number of territories is not divisible by number of groups.";
+    protected final String NOT_POSITIVE_MSG =
+            "Number should be positive.";
+    protected final String TERRITORY_NOT_FOUND_MSG =
+            "The territory specified by the name '%s' is not found.";
+    protected final String NO_PLAYERINFO_MSG =
+            "Player info of %s is not found.";
+    protected static final String CANT_FORM_ALLIANCE_MSG =
+            "Cannot form alliance. %s and %s are already alliances.";
+    protected static final String CANT_BREAK_ALLIANCE_MSG =
+            "Cannot break alliance. %s and %s are not alliances.";
+
     /**
      * All territories in the world. Implemented with a graph structure.
      */
@@ -592,7 +603,7 @@ public class World implements Serializable {
         Territory end = findTerritory(order.getDesName());
         Troop troop = order.getActTroop();
         // check error of move order
-        String errorMsg = orderChecker.checkOrder(order, this);
+        String errorMsg = orderChecker.checkOrder(order, World.this);
         if (errorMsg != null) {
             throw new IllegalArgumentException(errorMsg);
         }
@@ -656,6 +667,39 @@ public class World implements Serializable {
         }
         // moves troop
         end.sendInEnemyTroop(start.sendOutTroop(troop));
+    }
+
+    /**
+     * Get a territory's nearest territory with the same owner.
+     * Checks if a path is valid through the move.
+     *
+     *  B’s units return to the nearest (break ties randomly) B-owned territory
+     *  Q1: "nearest" in terms of total territory size?
+     *  Q2: If this territory is blocked, can B move back?
+     *
+     * @param terr is a territory.
+     * @return nearest territory with the same owner.
+     */
+    protected Territory getNearestSameOwnerTerritory(Territory terr) {
+        Territory nearest = terr;
+        String playerName = terr.getOwner().getName();
+        List<Territory> allTerritories = getTerritoriesOfPlayer(playerName);
+        int smallestDistance = Integer.MAX_VALUE;
+        for (Territory terrToCheck : allTerritories) {
+            if (!terrToCheck.equals(terr)) {
+                int distance = Integer.MAX_VALUE;
+                try {
+                    distance = calculateShortestPath(terr, terrToCheck, playerName);
+                } catch (IllegalArgumentException iae) {
+
+                }
+                if (distance < smallestDistance) {
+                    smallestDistance = distance;
+                    nearest = terrToCheck;
+                }
+            }
+        }
+        return nearest;
     }
 
     /**
@@ -776,6 +820,12 @@ public class World implements Serializable {
     public void tryFormAlliance(String p1Name, String p2Name) {
         int p1Index = playerInfos.indexOf(getPlayerInfoByName(p1Name));
         int p2Index = playerInfos.indexOf(getPlayerInfoByName(p2Name));
+        // if two players already form an alliance, throw exception
+        if (allianceMatrix[p1Index][p2Index] == true) {
+            throw new IllegalArgumentException(
+                String.format(CANT_FORM_ALLIANCE_MSG, p1Name, p2Name)
+            );
+        }
         allianceMatrix[p1Index][p2Index] = true;
     }
 
@@ -813,6 +863,11 @@ public class World implements Serializable {
     public void breakAlliance(String p1Name, String p2Name) {
         int p1Index = playerInfos.indexOf(getPlayerInfoByName(p1Name));
         int p2Index = playerInfos.indexOf(getPlayerInfoByName(p2Name));
+        if (allianceMatrix[p1Index][p2Index] == false) {
+            throw new IllegalArgumentException(
+                    String.format(CANT_BREAK_ALLIANCE_MSG, p1Name, p2Name)
+            );
+        }
         allianceMatrix[p1Index][p2Index] = false;
         allianceMatrix[p2Index][p1Index] = false;
     }

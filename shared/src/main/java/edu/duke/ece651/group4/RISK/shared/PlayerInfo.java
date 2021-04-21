@@ -23,10 +23,6 @@ public class PlayerInfo implements Serializable {
             "Fails to upgrade %s's tech level.";
     protected static final String NOT_ENOUGH_RESOURCE_MSG =
             "Not enough resources.";
-    protected static final String CANT_FORM_ALLIANCE_MSG =
-            "Cannot form alliance. %s and %s are already alliances.";
-    protected static final String CANT_BREAK_ALLIANCE_MSG =
-            "Cannot break alliance. %s and %s are not alliances.";
 
     /**
      * Player's name
