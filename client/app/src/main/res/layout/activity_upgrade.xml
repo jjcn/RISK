@@ -107,7 +107,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:prompt="@string/CHOOSE_TYPE_INSTRU"
-            android:spinnerMode="dialog"
+            android:spinnerMode="dropdown"
             app:layout_constraintStart_toEndOf="@id/vguide1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/hguide3"

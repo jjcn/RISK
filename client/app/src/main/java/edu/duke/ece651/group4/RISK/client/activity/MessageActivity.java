@@ -22,7 +22,9 @@ import edu.duke.ece651.group4.RISK.shared.message.ChatMessage;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 
 import static edu.duke.ece651.group4.RISK.client.Constant.*;
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.*;
@@ -37,24 +39,33 @@ public class MessageActivity extends AppCompatActivity
 
     private MessagesListAdapter msgAdapter;
     private MessagesList msgList;
+    private String target;
 //    private static final int TOTAL_MSG = 100;
 //    private Menu menu;
 //    private int selectionCount;
 //    private Date lastLoadedDate;
 
-    //TODO: show sender name
+    //TODO: show sender name (simple string in message now) // avatar
     //TODO: get history info
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
+        this.target = getIntent().getStringExtra("TARGET");
         if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(target.equals("") ? "World":target);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-
         this.msgList = findViewById(R.id.messagesList);
-        msgAdapter = new MessagesListAdapter<>(getUserName(), null);
+        msgAdapter = new MessagesListAdapter<>(getUserName()+getRoomId(),null);
+
+//                new ImageLoader() {
+//            @Override
+//            public void loadImage(ImageView imageView, @Nullable String url, @Nullable Object payload) {
+//                imageView.setImageBitmap(stringToBitmap(url));
+//            }
+//        });
 
         msgList.setAdapter(msgAdapter);
 //        msgAdapter.setLoadMoreListener(this);
@@ -69,7 +80,6 @@ public class MessageActivity extends AppCompatActivity
             public void onSuccess(Object o) {
                 runOnUiThread(()->{
                     if (o instanceof ChatMessageUI) {
-                        Log.i(TAG, LOG_FUNC_RUN+"recv msg lsn");
                         ChatMessageUI message = (ChatMessageUI) o;
                         msgAdapter.addToStart(message, true);
                     } else {
@@ -98,20 +108,24 @@ public class MessageActivity extends AppCompatActivity
 
     @Override
     public boolean onSubmit(CharSequence input) {
-        Log.i(TAG, LOG_FUNC_RUN + "onSubmit");
         ChatPlayer user = new ChatPlayer(getRoomId(), getUserName());
-        ChatMessageUI message = new ChatMessageUI(0, input.toString(), user, getAllPlayersName());
+        Set<String> targets = new HashSet<>();
+        if(target.equals("")) {
+            targets.addAll(getAllPlayersName());
+            targets.remove(getUserName());
+        }else {
+            targets.add(target);
+        }
+        ChatMessageUI message = new ChatMessageUI(target,input.toString(), user, targets);
+
         Log.i(TAG, LOG_FUNC_RUN + "start send mag");
         sendOneMsg(message, new onResultListener() {
             @Override
-            public void onSuccess() {
-                msgAdapter.addToStart(message, true);
-            }
+            public void onSuccess() { msgAdapter.addToStart(message, true); }
 
             @Override
             public void onFailure(String errMsg) {
                 showByToast(MessageActivity.this, errMsg);
-                return;
             }
         });
         return true;
@@ -122,6 +136,7 @@ public class MessageActivity extends AppCompatActivity
         try {
             byte[] bitmapArray;
             bitmapArray = Base64.decode(string, Base64.DEFAULT);
+            Log.i(TAG,LOG_FUNC_RUN+"bitmap: "+bitmapArray);
             bitmap = BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length);
         } catch (Exception e) {
             e.printStackTrace();
@@ -169,16 +184,16 @@ public class MessageActivity extends AppCompatActivity
 //        return true;
 //    }
 
-    private MessagesListAdapter.Formatter<ChatMessageUI> getMessageStringFormatter() {
-        return message -> {
-            String createdAt = new SimpleDateFormat("MMM d, EEE 'at' h:mm a", Locale.getDefault())
-                    .format(message.getCreatedAt());
-
-            String text = message.getText();
-            if (text == null) text = "[attachment]";
-
-            return String.format(Locale.getDefault(), "%s: %s (%s)",
-                    message.getUser().getName(), text, createdAt);
-        };
-    }
+//    private MessagesListAdapter.Formatter<ChatMessageUI> getMessageStringFormatter() {
+//        return message -> {
+//            String createdAt = new SimpleDateFormat("MMM d, EEE 'at' h:mm a", Locale.getDefault())
+//                    .format(message.getCreatedAt());
+//
+//            String text = message.getText();
+//            if (text == null) text = "[attachment]";
+//
+//            return String.format(Locale.getDefault(), "%s: %s (%s)",
+//                    message.getUser().getName(), text, createdAt);
+//        };
+//    }
 }

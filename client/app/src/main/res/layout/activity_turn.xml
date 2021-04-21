@@ -34,34 +34,29 @@
             android:id="@+id/worldFG"
     />
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/refreshInfo"
+
+    <ListView
+            android:id="@+id/terrInfo"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@drawable/border"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/hguide1"
-            app:layout_constraintBottom_toBottomOf="@id/hguide2" android:layout_height="0dp"
-            android:layout_width="0dp">
-
-        <ListView
-                android:id="@+id/terrInfo"
-                android:layout_width="match_parent"
-                android:background="@drawable/border"
-                 android:layout_height="0dp">
-        </ListView>
-
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+            app:layout_constraintBottom_toBottomOf="@id/hguide2"
+            />
 
 
     <ListView
-        android:id="@+id/noticeInfo"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@drawable/border"
-        android:text="Instructions info"
-        app:layout_constraintBottom_toTopOf="@id/hguide3"
-        app:layout_constraintEnd_toEndOf="@id/vguide1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/hguide2" />
+            android:id="@+id/noticeInfo"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/border"
+            android:text="Instructions info"
+            app:layout_constraintBottom_toTopOf="@id/hguide3"
+            app:layout_constraintEnd_toEndOf="@id/vguide1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/hguide2"/>
 
     <ListView
             android:id="@+id/playerInfo"
