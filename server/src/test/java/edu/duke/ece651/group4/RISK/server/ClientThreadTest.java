@@ -101,8 +101,8 @@ class ClientThreadTest {
         assertEquals(null, ct.tryLogIn("user0","123"));
         assertEquals( null, ct.tryCreateAGame(new GameMessage(GAME_CREATE, -1, 2)));
         ct.games.get(1).addUser(users.get(1));
-        ct.games.get(1).gameState.changAPlayerStateTo(users.get(0), PLAYER_STATE_SWITCH_OUT);
-        ct.games.get(1).gameState.changAPlayerStateTo(users.get(1), PLAYER_STATE_SWITCH_OUT);
+        ct.games.get(1).gInfo.gameState.changAPlayerStateTo(users.get(0), PLAYER_STATE_SWITCH_OUT);
+        ct.games.get(1).gInfo.gameState.changAPlayerStateTo(users.get(1), PLAYER_STATE_SWITCH_OUT);
         assertEquals(2, ct.games.size());
         assertEquals(true,ct.gameOnGoing!=null);
         Game g = ct.findGame(0);
@@ -135,11 +135,11 @@ class ClientThreadTest {
         ClientThread ct = new ClientThread(games, users,null, new AtomicInteger(0));
         assertEquals( null, ct.tryLogIn("user0","123"));
         assertEquals(3, ct.getAllGameInfo().size());
-        games.get(0).gameState.setGameDead();
+        games.get(0).gInfo.gameState.setGameDead();
         assertEquals(2, ct.getAllGameInfo().size());
-        games.get(1).gameState.setGameDead();
+        games.get(1).gInfo.gameState.setGameDead();
         assertEquals(1, ct.getAllGameInfo().size());
-        games.get(2).gameState.setGameDead();
+        games.get(2).gInfo.gameState.setGameDead();
         assertEquals(0, ct.getAllGameInfo().size());
     }
 

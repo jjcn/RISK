@@ -37,7 +37,7 @@ public class GameRunner extends Thread{
     protected void notifyAllUsers(){
         boolean exit0 = false;
         while(!exit0){
-            if(game.gameState.isAllPlayersWaiting()){
+            if(game.gInfo.gameState.isAllPlayersWaiting()){
                 exit0 = true;
             }
             try {
@@ -82,7 +82,7 @@ public class GameRunner extends Thread{
         while(true){
             boolean exit2 = false;
             while(!exit2){
-                if(game.gameState.isAllPlayersDoneOneTurn()){
+                if(game.gInfo.gameState.isAllPlayersDoneOneTurn()){
                     exit2 = true;
                 }
                 try {
@@ -94,8 +94,8 @@ public class GameRunner extends Thread{
 //            while(!game.gameState.isAllPlayersDoneOneTurn()){game.waitTime(1);}
             //Update the game
             game.updateGameAfterOneTurn();
-            game.gameState.updateStateTo(GAME_STATE_DONE_UPDATE);
-            game.gameState.setActivePlayersStateToUpdating();
+            game.gInfo.gameState.updateStateTo(GAME_STATE_DONE_UPDATE);
+            game.gInfo.gameState.setActivePlayersStateToUpdating();
             out.println("Game" +game.getGameID()+" runner set all active players updating state");
 
             notifyAllUsers(); // notify all players to enter updating state
@@ -103,7 +103,7 @@ public class GameRunner extends Thread{
 
             boolean exit3 = false;
             while(!exit3){
-                if(game.gameState.isAllPlayersDoneUpdatingState()){
+                if(game.gInfo.gameState.isAllPlayersDoneUpdatingState()){
                     exit3 = true;
                 }
                 try {
@@ -119,12 +119,12 @@ public class GameRunner extends Thread{
 
 
             out.println("Game" +game.getGameID()+" runner knows all players are done updating");
-            if(game.isEndGame() || game.gameState.isAllPlayersSwitchOut()){
-                game.gameState.setGameDead();
+            if(game.isEndGame() || game.gInfo.gameState.isAllPlayersSwitchOut()){
+                game.gInfo.gameState.setGameDead();
                 out.println("Game" +game.getGameID()+" runner ends, set this game dead");
                 break;
             }
-            game.gameState.updateStateTo(GAME_STATE_WAIT_TO_UPDATE);
+            game.gInfo.gameState.updateStateTo(GAME_STATE_WAIT_TO_UPDATE);
         }
     }
 

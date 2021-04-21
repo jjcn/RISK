@@ -23,11 +23,12 @@ subprojects {
         testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.1'
         clover 'org.openclover:clover:4.3.1'
         testCompile "org.mockito:mockito-core:2.+"
-        //implementation 'org.junit.jupiter:junit-jupiter:5.4.2'
         // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
         implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.7+'
-//        compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
-
+        // https://mvnrepository.com/artifact/org.postgresql/postgresql
+        compile group: 'org.postgresql', name: 'postgresql', version: '42.2.5'
+        compile group: 'org.hibernate', name: 'hibernate-core', version: '5.4.14.Final'
+        compile group: 'org.hibernate.javax.persistence', name: 'hibernate-jpa-2.1-api', version: '1.0.0.Final'
     }
 
     clover {

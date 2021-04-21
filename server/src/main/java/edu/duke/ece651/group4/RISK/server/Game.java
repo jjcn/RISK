@@ -16,26 +16,17 @@ import static edu.duke.ece651.group4.RISK.server.ServerConstant.*;
 import static edu.duke.ece651.group4.RISK.shared.Constant.*;
 
 public class Game {
-    private final int gameID;
-    private int maxNumUsers;
-    private List<User> usersOnGame;
-    private World theWorld;
     private CyclicBarrier barrier; // Barrier is only used in PlaceUnitsPhase
-    public GameState gameState;
-    PrintStream out;
-    public boolean waitingFLAG;
-    public Game(int gameID, int maxNumUsers) {
-        this(gameID,maxNumUsers,System.out);
+    GameInfo gInfo;
+
+    public Game(GameInfo gInfo){
+        this.gInfo = gInfo;
+        this.barrier = new CyclicBarrier(gInfo.maxNumUsers);
     }
 
-    public Game(int gameID, int maxNumUsers, PrintStream out) {
-        this.gameID = gameID;
-        this.maxNumUsers = maxNumUsers;
-        this.usersOnGame =  new ArrayList<>();
-        this.theWorld = null; // This should use init function to get a world based on the number of players
+    public Game(int gameID, int maxNumUsers) {
+        this.gInfo = new GameInfo(gameID, maxNumUsers);
         this.barrier = new CyclicBarrier(maxNumUsers);
-        this.gameState = new GameState();
-        this.out = out;
     }
 
     /*
@@ -43,21 +34,21 @@ public class Game {
     * @return gameID
     * */
     public int getGameID(){
-        return this.gameID;
+        return this.gInfo.gameID;
     }
     /*
     * get the max number of users
     * @return maxNumUsers
     * */
     public int getMaxNumUsers(){
-        return maxNumUsers;
+        return gInfo.maxNumUsers;
     }
     /*
     * get the clone of a world to send to user
     * @return a clone of the world
     * */
     public World getTheWorld(){
-        return theWorld.clone();
+        return gInfo.theWorld.clone();
     }
 
     /*
@@ -66,7 +57,7 @@ public class Game {
     * */
     public ArrayList<String> getUserNames(){
         ArrayList<String> userNames = new ArrayList<>();
-        for(User u: usersOnGame){
+        for(User u: gInfo.usersOnGame){
             userNames.add(u.getUsername());
         }
         return userNames;
@@ -78,7 +69,7 @@ public class Game {
      * @return true if he is in, false if not
      * */
     public boolean isUserInGame(User u){
-        if(usersOnGame.contains(u)){
+        if(gInfo.usersOnGame.contains(u)){
             return true;
         }
         return false;
@@ -93,8 +84,8 @@ public class Game {
         if(isFull()){
             return false;
         }
-        usersOnGame.add(u);
-        gameState.addPlayerState(u);
+        gInfo.usersOnGame.add(u);
+        gInfo.gameState.addPlayerState(u);
         return true;
     }
     /*
@@ -105,8 +96,8 @@ public class Game {
         if(!isUserInGame(u)){
             return;
         }
-        gameState.changAPlayerStateTo(u, PLAYER_STATE_SWITCH_OUT);
-        out.println("Game" + gameID + ": " + u.getUsername() + " switches out");
+        gInfo.gameState.changAPlayerStateTo(u, PLAYER_STATE_SWITCH_OUT);
+        System.out.println("Game" + gInfo.gameID + ": " + u.getUsername() + " switches out");
     }
 
     /*
@@ -118,9 +109,9 @@ public class Game {
         if(!isUserInGame(u)){
             return;
         }
-        while(!gameState.isWaitToUpdate()){}
-        gameState.changAPlayerStateTo(u, PLAYER_STATE_ACTION_PHASE);
-        out.println("Game" + gameID + ": " + u.getUsername() + " switches in");
+        while(!gInfo.gameState.isWaitToUpdate()){}
+        gInfo.gameState.changAPlayerStateTo(u, PLAYER_STATE_ACTION_PHASE);
+        System.out.println("Game" + gInfo.gameID + ": " + u.getUsername() + " switches in");
     }
 
     /*
@@ -143,14 +134,14 @@ public class Game {
     * @return true if lose, false otherwise
     * */
     public boolean isUserLose(User u){
-        return this.theWorld.checkLost(u.getUsername());
+        return this.gInfo.theWorld.checkLost(u.getUsername());
     }
     /*
      * This checks if the game is full
      * @return true if full, false otherwise
      * */
     public boolean isFull(){
-        return usersOnGame.size() == maxNumUsers;
+        return gInfo.usersOnGame.size() == gInfo.maxNumUsers;
     }
 
     /*
@@ -158,14 +149,14 @@ public class Game {
     * @return true if ended, false otherwise
     * */
     public boolean isEndGame(){
-        return this.theWorld.isGameEnd();
+        return this.gInfo.theWorld.isGameEnd();
     }
 
     /*
     * This checks if all players switch out.
     * */
     public boolean isAllPlayersSwitchOut(){
-        return gameState.isAllPlayersSwitchOut();
+        return gInfo.gameState.isAllPlayersSwitchOut();
     }
 
 
@@ -176,7 +167,7 @@ public class Game {
      * same world
      * */
     synchronized protected void placeUnitsOnWorld(PlaceOrder p){
-        this.theWorld.stationTroop(p.getDesName(),p.getActTroop());
+        this.gInfo.theWorld.stationTroop(p.getDesName(),p.getActTroop());
     }
     /*
      * This is to upgrade for each player.
@@ -186,26 +177,26 @@ public class Game {
     synchronized protected void upgradeTroopOnWorld(Order order, String userName){
         UpgradeTroopOrder upgradeOrder = (UpgradeTroopOrder) order;
         try{
-            out.println(upgradeOrder.getActionName()+" upgrade from " + upgradeOrder.getLevelBefore() + " to " + upgradeOrder.getLevelAfter());
-            theWorld.upgradeTroop(upgradeOrder, userName);
-            out.println(upgradeOrder.getActionName()+upgradeOrder.getLevelAfter());
+            System.out.println(upgradeOrder.getActionName()+" upgrade from " + upgradeOrder.getLevelBefore() + " to " + upgradeOrder.getLevelAfter());
+            gInfo.theWorld.upgradeTroop(upgradeOrder, userName);
+            System.out.println(upgradeOrder.getActionName()+upgradeOrder.getLevelAfter());
         } catch (Exception e) {
             e.printStackTrace();
         }
-        out.println("Game" + gameID + ": " + userName + " upgrade Troop");
+        System.out.println("Game" + gInfo.gameID + ": " + userName + " upgrade Troop");
     }
     synchronized protected void doDoneActionFor(User u){
-        this.gameState.changAPlayerStateTo(u, PLAYER_STATE_END_ONE_TURN);
-        out.println("Game" + gameID + ": " + u.getUsername() + " Done action");
+        this.gInfo.gameState.changAPlayerStateTo(u, PLAYER_STATE_END_ONE_TURN);
+        System.out.println("Game" + gInfo.gameID + ": " + u.getUsername() + " Done action");
     }
 
     synchronized protected void upgradeTechOnWorld(String userName){
         try{
-            theWorld.upgradePlayerTechLevelBy1(userName);
+            gInfo.theWorld.upgradePlayerTechLevelBy1(userName);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        out.println("Game" + gameID + ": " + userName + " upgrade Tech");
+        System.out.println("Game" + gInfo.gameID + ": " + userName + " upgrade Tech");
     }
     /*
      * This is to do move for each player.
@@ -215,15 +206,15 @@ public class Game {
     synchronized protected void doMoveOnWorld(Order order, String userName){
         MoveOrder moveOrder = (MoveOrder) order;
         try{
-            out.println(moveOrder.getActTroop().getSummary());
-            this.theWorld.moveTroop(moveOrder, userName);
-            out.println(moveOrder.getActionName() +"Troop size:" + moveOrder.getActTroop().checkTroopSize() + "from " + moveOrder.getSrcName() + " to " + moveOrder.getDesName());
-            out.println(this.theWorld.findTerritory(moveOrder.getSrcName()).getInfo() );
-            out.println(this.theWorld.findTerritory(moveOrder.getDesName()).getInfo() );
+            System.out.println(moveOrder.getActTroop().getSummary());
+            this.gInfo.theWorld.moveTroop(moveOrder, userName);
+            System.out.println(moveOrder.getActionName() +"Troop size:" + moveOrder.getActTroop().checkTroopSize() + "from " + moveOrder.getSrcName() + " to " + moveOrder.getDesName());
+            System.out.println(this.gInfo.theWorld.findTerritory(moveOrder.getSrcName()).getInfo() );
+            System.out.println(this.gInfo.theWorld.findTerritory(moveOrder.getDesName()).getInfo() );
         } catch (Exception e) {
             e.printStackTrace();
         }
-        out.println("Game" + gameID + ": " + userName + " move action");
+        System.out.println("Game" + gInfo.gameID + ": " + userName + " move action");
     }
     /*
      * This is to do attack for each player.
@@ -233,17 +224,17 @@ public class Game {
     synchronized protected void doAttackOnWorld(Order order, String userName){
         AttackOrder attackOrder = (AttackOrder) order;
         try{
-            this.theWorld.attackATerritory(attackOrder, userName);
+            this.gInfo.theWorld.attackATerritory(attackOrder, userName);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        out.println("Game" + gameID + ": " + userName + " attack action");
+        System.out.println("Game" + gInfo.gameID + ": " + userName + " attack action");
     }
 
     synchronized protected void tryDoAlliance(Order order){
         AllianceOrder allianceOrder = (AllianceOrder) order;
-        this.theWorld.tryFormAlliance(allianceOrder.getSrcName(),allianceOrder.getDesName());
-        out.println("Game" + gameID + ": " + allianceOrder.getSrcName() + " try form alliance with " + allianceOrder.getDesName());
+        this.gInfo.theWorld.tryFormAlliance(allianceOrder.getSrcName(),allianceOrder.getDesName());
+        System.out.println("Game" + gInfo.gameID + ": " + allianceOrder.getSrcName() + " try form alliance with " + allianceOrder.getDesName());
     }
 
 
@@ -251,10 +242,10 @@ public class Game {
     * This is the final update for the whole world after one turn
     * */
     public void updateGameAfterOneTurn(){
-        this.theWorld.doAllBattles();
-        this.theWorld.doCheckIfAllianceSuccess();
-        this.theWorld.allPlayersGainResources();
-        this.theWorld.addUnitToAll(1);
+        this.gInfo.theWorld.doAllBattles();
+        this.gInfo.theWorld.doCheckIfAllianceSuccess();
+        this.gInfo.theWorld.allPlayersGainResources();
+        this.gInfo.theWorld.addUnitToAll(1);
     }
 
     /*
@@ -266,7 +257,7 @@ public class Game {
     synchronized protected boolean tryUpdateActionOnWorld(Order order, User u){
         String userName = u.getUsername();
         Character action = order.getActionName();
-        out.println("Game" + gameID + ": " + userName +  "  "+ action);
+        System.out.println("Game" + gInfo.gameID + ": " + userName +  "  "+ action);
         boolean exit = false;
         switch(action){
             case ATTACK_ACTION:
@@ -294,7 +285,7 @@ public class Game {
                 break;
             default:
                 exit = true; // when user lose the game, server will receive null from client
-                out.println("Recv a unknown");
+                System.out.println("Recv a unknown");
                 break;
         }
         return exit;
@@ -307,24 +298,24 @@ public class Game {
     * */
     public void setUpGame(){
         WorldFactory factory = new WorldFactory();
-        switch(this.maxNumUsers){
+        switch(this.gInfo.maxNumUsers){
             case 1:
             case 2:
-                this.theWorld = factory.create4TerritoryWorld();
+                this.gInfo.theWorld = factory.create4TerritoryWorld();
                 break;
             case 3:
-                this.theWorld = factory.create6TerritoryWorld();
+                this.gInfo.theWorld = factory.create6TerritoryWorld();
                 break;
             case 4:
-                this.theWorld = factory.create8TerritoryWorld();
+                this.gInfo.theWorld = factory.create8TerritoryWorld();
                 break;
             case 5:
-                this.theWorld = factory.create10TerritoryWorld();
+                this.gInfo.theWorld = factory.create10TerritoryWorld();
                 break;
             default:
                 break;
         }
-        factory.assignTerritories(this.theWorld, getUserNames());
+        factory.assignTerritories(this.gInfo.theWorld, getUserNames());
     }
 
 

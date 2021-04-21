@@ -18,7 +18,6 @@ import static edu.duke.ece651.group4.RISK.shared.Constant.CHAT_SETUP_ACTION;
 
 public class ChatClient extends Thread {
     private final String TAG = this.getClass().getSimpleName();
-
     SocketChannel chatChannel = null;
     String username;
     private final AtomicBoolean exit = new AtomicBoolean(false);

@@ -27,15 +27,15 @@ class GameRunnerTest {
         Game g = createAGameAndRunner(users);
         User u0 = users.get(0);
         User u1 = users.get(1);
-        g.gameState.askUserWaiting(u0);
-        g.gameState.askUserWaiting(u1);
-        g.gameState.changAPlayerStateTo(u0,PLAYER_STATE_END_ONE_TURN);
-        g.gameState.changAPlayerStateTo(u1,PLAYER_STATE_END_ONE_TURN);
-        g.gameState.changAPlayerStateTo(u0,PLAYER_STATE_SWITCH_OUT);
-        g.gameState.changAPlayerStateTo(u1,PLAYER_STATE_ACTION_PHASE);
-        g.gameState.changAPlayerStateTo(u1,PLAYER_STATE_SWITCH_OUT);
-        g.gameState.changAPlayerStateTo(u0,PLAYER_STATE_SWITCH_OUT);
-        g.gameState.changAPlayerStateTo(u1,PLAYER_STATE_SWITCH_OUT);
+        g.gInfo.gameState.askUserWaiting(u0);
+        g.gInfo.gameState.askUserWaiting(u1);
+        g.gInfo.gameState.changAPlayerStateTo(u0,PLAYER_STATE_END_ONE_TURN);
+        g.gInfo.gameState.changAPlayerStateTo(u1,PLAYER_STATE_END_ONE_TURN);
+        g.gInfo.gameState.changAPlayerStateTo(u0,PLAYER_STATE_SWITCH_OUT);
+        g.gInfo.gameState.changAPlayerStateTo(u1,PLAYER_STATE_ACTION_PHASE);
+        g.gInfo.gameState.changAPlayerStateTo(u1,PLAYER_STATE_SWITCH_OUT);
+        g.gInfo.gameState.changAPlayerStateTo(u0,PLAYER_STATE_SWITCH_OUT);
+        g.gInfo.gameState.changAPlayerStateTo(u1,PLAYER_STATE_SWITCH_OUT);
     }
 
 }

@@ -233,7 +233,7 @@ public class ClientThread extends Thread {
         out.println(ownerUser.getUsername() + " push refresh button and the number of games now: " + games.size());
         ArrayList<RoomInfo> roomsInfo = new ArrayList<RoomInfo>();
         for(Game g : games){
-            if(g.gameState.isAlive()){
+            if(g.gInfo.gameState.isAlive()){
 //                out.println("Game"+ g.getGameID() + " is active and should be shown in room list");
                 roomsInfo.add(createARoomInfo(g));
             }
@@ -254,7 +254,7 @@ public class ClientThread extends Thread {
             return;
         }
         out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " Place Units Phase");
-        if(gameOnGoing.gameState.isDonePlaceUnits()){
+        if(gameOnGoing.gInfo.gameState.isDonePlaceUnits()){
             return;
         }
         gameOnGoing.barrierWait();
@@ -271,7 +271,7 @@ public class ClientThread extends Thread {
         out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " finishes placing units and wait for others");
         // wait all players to finish placeUnits
         gameOnGoing.barrierWait();
-        gameOnGoing.gameState.setDonePlaceUnits(); // if user joins back, he does not need to do place unit phase
+        gameOnGoing.gInfo.gameState.setDonePlaceUnits(); // if user joins back, he does not need to do place unit phase
 
     }
 
@@ -292,7 +292,7 @@ public class ClientThread extends Thread {
         out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " action phase");
         doActionPhaseOneTurn();
 
-        if(gameOnGoing.gameState.getAPlayerState(ownerUser).equals(PLAYER_STATE_SWITCH_OUT)){
+        if(gameOnGoing.gInfo.gameState.getAPlayerState(ownerUser).equals(PLAYER_STATE_SWITCH_OUT)){
             out.println("Game" + gameOnGoing.getGameID() + ": Checking Phase :  " + ownerUser.getUsername() + " Switches Out");
             gameOnGoing = null;
             return;
@@ -301,7 +301,7 @@ public class ClientThread extends Thread {
         out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " wait for runner update the world");
         boolean exit = false;
         while(!exit){
-            if(!gameOnGoing.gameState.isDoneUpdateGame()){
+            if(!gameOnGoing.gInfo.gameState.isDoneUpdateGame()){
                 exit = true;
             }
             try {
@@ -360,11 +360,11 @@ public class ClientThread extends Thread {
             }*/
         if(gameOnGoing.isUserLose(ownerUser)){
             out.println("Game" + gameOnGoing.getGameID() + ": Checking Phase :  " + ownerUser.getUsername() + " loses");
-            gameOnGoing.gameState.changAPlayerStateTo(ownerUser, PLAYER_STATE_LOSE);
+            gameOnGoing.gInfo.gameState.changAPlayerStateTo(ownerUser, PLAYER_STATE_LOSE);
         }
         else{
             out.println("Game" + gameOnGoing.getGameID() + ": Checking Phase :  " + ownerUser.getUsername() + " go back to do action");
-            gameOnGoing.gameState.changAPlayerStateTo(ownerUser, PLAYER_STATE_ACTION_PHASE);
+            gameOnGoing.gInfo.gameState.changAPlayerStateTo(ownerUser, PLAYER_STATE_ACTION_PHASE);
         }
     }
 
@@ -377,9 +377,9 @@ public class ClientThread extends Thread {
 
             synchronized (gameOnGoing){
                 out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " wait for runner's notify");
-                gameOnGoing.gameState.askUserWaiting(ownerUser);
+                gameOnGoing.gInfo.gameState.askUserWaiting(ownerUser);
                 gameOnGoing.wait();
-                gameOnGoing.gameState.askUserDoneWaiting(ownerUser);
+                gameOnGoing.gInfo.gameState.askUserDoneWaiting(ownerUser);
                 out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " get notify from runner");
             }
         } catch (InterruptedException e) {
