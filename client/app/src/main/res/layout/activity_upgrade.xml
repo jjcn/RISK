@@ -23,21 +23,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.45"/>
+            app:layout_constraintGuide_percent="0.4"/>
 
     <androidx.constraintlayout.widget.Guideline
             android:id="@+id/hguide2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.5"/>
+            app:layout_constraintGuide_percent="0.4"/>
 
     <androidx.constraintlayout.widget.Guideline
             android:id="@+id/hguide3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.55"/>
+            app:layout_constraintGuide_percent="0.5"/>
 
     <androidx.constraintlayout.widget.Guideline
             android:id="@+id/hguide4"
@@ -103,14 +103,26 @@
             android:gravity="center_horizontal"/>
 
     <Spinner
-            android:id="@+id/unit_before_choices"
+            android:id="@+id/unit_type_choices"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:prompt="@string/CHOOSE_TYPE_INSTRU"
             android:spinnerMode="dialog"
             app:layout_constraintStart_toEndOf="@id/vguide1"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/hguide3"
+            app:layout_constraintTop_toTopOf="@id/hguide3"
+            app:layout_constraintBottom_toBottomOf="@id/unit_before_choices"
+            android:textAlignment="center"
+            android:gravity="center_horizontal"/>
+
+    <Spinner
+            android:id="@+id/unit_before_choices"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:spinnerMode="dialog"
+            app:layout_constraintStart_toEndOf="@id/vguide1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/unit_type_choices"
             app:layout_constraintBottom_toBottomOf="@id/hguide4"
             android:textAlignment="center"
             android:gravity="center_horizontal"/>
