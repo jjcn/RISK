@@ -322,6 +322,7 @@ public class Game {
                 break;
         }
         factory.assignTerritories(this.gInfo.theWorld, getUserNames());
+        this.gInfo.theWorld.setRoomID(gInfo.gameID);
     }
 
 
