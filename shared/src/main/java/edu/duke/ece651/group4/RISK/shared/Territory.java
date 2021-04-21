@@ -4,6 +4,9 @@ package edu.duke.ece651.group4.RISK.shared;
 import java.io.Serializable;
 import java.util.*;
 
+import static edu.duke.ece651.group4.RISK.shared.Constant.ARCHER_NAMES;
+import static edu.duke.ece651.group4.RISK.shared.Constant.BREAKER_NAMES;
+import static edu.duke.ece651.group4.RISK.shared.Constant.KNIGHT_NAMES;
 import static edu.duke.ece651.group4.RISK.shared.Constant.UNIT_NAMES;
 
 
@@ -409,6 +412,11 @@ public class Territory implements Serializable {
         return upgradeTroop(levelBefore, levelAfter, nUnit, nTech);
     }
 
+    /**
+     * Get all info of a territory in text form.
+     * To be displayed
+     * @return
+     */
     public String getInfo() {
         StringBuilder report = new StringBuilder();
         report.append("Owner : " + this.getOwner().getName() + "\n");
@@ -416,16 +424,24 @@ public class Territory implements Serializable {
         report.append("Size : " + this.area + "\n");
         report.append("Food production : " + this.foodSpeed + "\n");
         report.append("Tech production : " + this.techSpeed + "\n");
-        List<String> list = UNIT_NAMES;
-        HashMap<String, Integer> dict = this.ownerTroop.getDict();
-        for (String s : list) {
-            if (dict.get(s) == null) {
-                report.append(s + " : 0" + "\n");
-            } else {
-                report.append(s + " : " + dict.get(s) + "\n");
-            }
+
+        report.append(getTroopInfo(this.ownerTroop));
+        if (hasAllianceTroop()) {
+            report.append(getTroopInfo(this.allianceTroop));
         }
+
         return report.toString();
+    }
+
+    public String getTroopInfo(Troop troop) {
+        StringBuilder ans = new StringBuilder();
+        ans.append(troop.getOwner().getName() + "'s troop: " + "\n");
+        HashMap<String, Integer> dict = troop.getDict();
+        for (String jobName : dict.keySet()) {
+            int nUnit = dict.get(jobName) == null ? 0 : dict.get(jobName);
+            ans.append(jobName + " : " + nUnit + "\n");
+        }
+        return ans.toString();
     }
 
     /**
