@@ -44,6 +44,8 @@ public class World implements Serializable {
             "The territory specified by the name '%s' is not found.";
     protected final String NO_PLAYERINFO_MSG =
             "Player info of %s is not found.";
+    protected static final String CANT_ALLY_WITH_ONESELF =
+            "Cannot ally with yourself.";
     protected static final String CANT_FORM_ALLIANCE_MSG =
             "Cannot form alliance. %s has already reached a maximum number of allies: %d.";
     protected static final String CANT_BREAK_ALLIANCE_MSG =
@@ -821,7 +823,9 @@ public class World implements Serializable {
         Set<String> ans = new HashSet<>();
         int playerIndex = playerInfos.indexOf(getPlayerInfoByName(playerName));
         for (int i = 0; i < playerInfos.size(); i++) {
-            if (allianceMatrix[playerIndex][i] == true) {
+            // need mutual approval to form alliance
+            if (allianceMatrix[playerIndex][i] == true &&
+                    allianceMatrix[i][playerIndex] == true) {
                 ans.add(playerInfos.get(i).getName());
             }
         }
@@ -865,6 +869,9 @@ public class World implements Serializable {
      * @param p2Name is the name of player 2.
      */
     public void tryFormAlliance(String p1Name, String p2Name) {
+        if (p1Name.equals(p2Name)) {
+            throw new IllegalArgumentException(CANT_ALLY_WITH_ONESELF);
+        }
         int p1Index = playerInfos.indexOf(getPlayerInfoByName(p1Name));
         int p2Index = playerInfos.indexOf(getPlayerInfoByName(p2Name));
         // if either of the player already reached alliance number limit, throw exception

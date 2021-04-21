@@ -677,9 +677,9 @@ public class WorldTest {
         world.tryFormAlliance("red", "blue");
         world.tryFormAlliance("green", "blue");
         // test before resolving alliance relationships
-        assertSetEquals(newSet("blue"), world.getAllianceNames("red"));
+        assertSetEquals(new HashSet<String>(), world.getAllianceNames("red"));
         assertSetEquals(new HashSet<String>(), world.getAllianceNames("blue"));
-        assertSetEquals(newSet("blue"), world.getAllianceNames("green"));
+        assertSetEquals(new HashSet<String>(), world.getAllianceNames("green"));
         // resolve alliance results
         world.doCheckIfAllianceSuccess();
         // only unilateral requests, no alliance formed
@@ -694,22 +694,28 @@ public class WorldTest {
         // red and blue, red and green mutually send alliance requests
         world.tryFormAlliance("red", "blue");
         world.tryFormAlliance("blue", "red");
-        world.tryFormAlliance("red", "green");
-        world.tryFormAlliance("green", "red");
         // test before resolving alliance relationships
-        assertSetEquals(newSet("blue", "green"), world.getAllianceNames("red"));
+        assertSetEquals(newSet("blue"), world.getAllianceNames("red"));
         assertSetEquals(newSet("red"), world.getAllianceNames("blue"));
-        assertSetEquals(newSet("red"), world.getAllianceNames("green"));
+        assertSetEquals(new HashSet<String>(), world.getAllianceNames("green"));
         // resolve alliance results
         world.doCheckIfAllianceSuccess();
         // all mutual requests, all alliance formed4
-        assertSetEquals(newSet("blue", "green"), world.getAllianceNames("red"));
+        assertSetEquals(newSet("blue"), world.getAllianceNames("red"));
         assertSetEquals(newSet("red"), world.getAllianceNames("blue"));
-        assertSetEquals(newSet("red"), world.getAllianceNames("green"));
+        assertSetEquals(new HashSet<String>(), world.getAllianceNames("green"));
     }
 
     @Test
-    public void testTryFormAllianceTwice() {
+    public void testTryFormAllianceWithOneself() {
+        World world = createWorldAndRegister(troopsSeparated);
+        assertThrows(
+                IllegalArgumentException.class, () -> world.tryFormAlliance("red", "red")
+        );
+    }
+
+    @Test
+    public void testTryFormAllianceReachLimit() {
         World world = createWorldAndRegister(troopsSeparated);
         // red and blue, red and green mutually send alliance requests
         world.tryFormAlliance("red", "blue");
@@ -717,6 +723,12 @@ public class WorldTest {
         world.doCheckIfAllianceSuccess();
         assertThrows(
                 IllegalArgumentException.class, () -> world.tryFormAlliance("red", "blue")
+        );
+        assertThrows(
+                IllegalArgumentException.class, () -> world.tryFormAlliance("red", "green")
+        );
+        assertThrows(
+                IllegalArgumentException.class, () -> world.tryFormAlliance("green", "blue")
         );
     }
 
