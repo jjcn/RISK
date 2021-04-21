@@ -459,4 +459,12 @@ public class Territory implements Serializable {
         this.allianceTroop = ally;
     }
 
+    /**
+     * Check if this territory is stationed a troop of an alliance.
+     * @return true, if there is an alliance troop;
+     *          false, if not.
+     */
+    public boolean hasAllianceTroop() {
+        return this.allianceTroop == null;
+    }
 }

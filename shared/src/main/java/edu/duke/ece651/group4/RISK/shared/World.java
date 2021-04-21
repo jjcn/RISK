@@ -660,15 +660,21 @@ public class World implements Serializable {
         }
         // also check if player has enough food
         consumeResourceOfAttack(order, playerName);
-        // check if the destination is a territory of your ally, if so, break alliance with him
-        /*  If A breaks an alliance with B, and B has units in A’s territories,
+        // check if the destination belongs to committer's ally, if so, break they alliance
+        if (getAllianceNames(playerName).contains(endOwnerName)) {
+            /*  If A breaks an alliance with B, and B has units in A’s territories,
             then B’s units return to the nearest (break ties randomly) B-owned territory
             before any other actions are resolved (i.e. are available to defend those territories)
             */
-        if (getAllianceNames(startOwnerName).contains(endOwnerName)) {
+            // A: playerName, B: endOwnerName
+            for (Territory terr : getTerritoriesOfPlayer(playerName)) {
+                if (terr.hasAllianceTroop()) {
+                    Territory nearest = getNearestSameOwnerTerritory(terr);
+                    System.out.println("Nearest territory is " + nearest.getName());
+                    nearest.sendInTroop(end.kickOut());
+                }
+            }
             breakAlliance(startOwnerName, endOwnerName);
-            Territory nearest = getNearestSameOwnerTerritory(start);
-            nearest.sendInTroop(end.kickOut());
         }
         // moves troop
         end.sendInEnemyTroop(start.sendOutTroop(troop));

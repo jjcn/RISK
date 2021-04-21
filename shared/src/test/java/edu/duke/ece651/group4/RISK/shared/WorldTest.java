@@ -531,6 +531,25 @@ public class WorldTest {
     }
 
     @Test
+    public void testAttackWithAlliance() {
+        World world = createWorldAndRegister(troopsSeparated);
+        // red and blue form alliance
+        world.tryFormAlliance("red", "blue");
+        world.tryFormAlliance("blue", "red");
+        world.doCheckIfAllianceSuccess();
+        // blue move troop to red's territory
+        MoveOrder move1 = new MoveOrder("Scadrial", "Midkemia", new Troop(1, blue));
+        world.moveTroop(move1, "blue");
+        assertEquals(1, world.findTerritory("Midkemia").allianceTroop.size());
+        assertEquals(12, world.findTerritory("Midkemia").checkPopulation());
+        // red attack blue's territory
+        AttackOrder attack1 = new AttackOrder("Scadrial", "Mordor", new Troop(4, blue));
+        world.attackATerritory(attack1, "blue");
+        assertEquals(new HashSet<String>(), world.getAllianceNames("red"));
+        assertEquals(new HashSet<String>(), world.getAllianceNames("blue"));
+    }
+
+    @Test
     public void testUpgradeTroopValid() {
         World world = createWorldAndRegister(troopsSeparated);
         UpgradeTroopOrder utOrder1 = new UpgradeTroopOrder("Narnia", 0, 1, 1);
@@ -745,11 +764,14 @@ public class WorldTest {
     }
 
     @Test
-    public void testBreakAllianceNonexist() {
+    public void testBreakAllianceInvalid() {
         World world = createWorldAndRegister(troopsSeparated);
         // red and blue, red and green mutually send alliance requests
         assertThrows(
                 IllegalArgumentException.class, () -> world.breakAlliance("red", "blue")
+        );
+        assertThrows(
+                IllegalArgumentException.class, () -> world.breakAlliance("red", "red")
         );
     }
 
