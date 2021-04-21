@@ -45,7 +45,7 @@ public class World implements Serializable {
     protected final String NO_PLAYERINFO_MSG =
             "Player info of %s is not found.";
     protected static final String CANT_FORM_ALLIANCE_MSG =
-            "Cannot form alliance. %s and %s are already alliances.";
+            "Cannot form alliance. %s has already reached a maximum number of allies: %d.";
     protected static final String CANT_BREAK_ALLIANCE_MSG =
             "Cannot break alliance. %s and %s are not alliances.";
 
@@ -451,6 +451,7 @@ public class World implements Serializable {
         terr.setOwnerTroop(population, terr.getOwner());
     }
 
+
     /**
      * Checks if a player's troop can move through a territory.
      * @param moverName is the name of the player who tries to move through this territory
@@ -610,7 +611,10 @@ public class World implements Serializable {
         // check if player has enough food
         consumeResourceOfMove(order, playerName);
         // moves troop
-        end.sendInTroop(start.sendOutTroop(troop));
+        if (canMoveThrough(playerName, end)) {
+            end.sendInTroop(start.sendOutTroop(troop));
+        }
+
     }
 
     /**
@@ -838,9 +842,24 @@ public class World implements Serializable {
     }
 
     /**
+     * Check if a player's number of alliance has reached its limit.
+     * @param playerName is the name of the player to check alliance number.
+     * @param maxPermittedAllies is the maximum number of allies permitted.
+     */
+    protected void checkAllianceNumber(String playerName, int maxPermittedAllies) {
+        if (getAllianceNames(playerName).size() >= maxPermittedAllies) {
+            throw new IllegalArgumentException(
+                    String.format(CANT_FORM_ALLIANCE_MSG, playerName, maxPermittedAllies)
+            );
+        }
+    }
+
+    /**
      * Player 1 tries forming alliance with player 2.
+     * One player can only form an alliance of two with another player.
      * Note: Player 2 has to form alliance with player 1 ON THE SAME TURN
      * so they can form an alliance successfully.
+     *
      *
      * @param p1Name is the name of player 1.
      * @param p2Name is the name of player 2.
@@ -848,12 +867,9 @@ public class World implements Serializable {
     public void tryFormAlliance(String p1Name, String p2Name) {
         int p1Index = playerInfos.indexOf(getPlayerInfoByName(p1Name));
         int p2Index = playerInfos.indexOf(getPlayerInfoByName(p2Name));
-        // if two players already form an alliance, throw exception
-        if (allianceMatrix[p1Index][p2Index] == true) {
-            throw new IllegalArgumentException(
-                String.format(CANT_FORM_ALLIANCE_MSG, p1Name, p2Name)
-            );
-        }
+        // if either of the player already reached alliance number limit, throw exception
+        checkAllianceNumber(p1Name, Constant.MAX_ALLOWED_ALLY_NUMBER);
+        checkAllianceNumber(p2Name, Constant.MAX_ALLOWED_ALLY_NUMBER);
         allianceMatrix[p1Index][p2Index] = true;
     }
 
