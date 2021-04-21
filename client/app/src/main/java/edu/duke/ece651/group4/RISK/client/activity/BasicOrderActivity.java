@@ -75,7 +75,8 @@ public class BasicOrderActivity extends AppCompatActivity {
     }
 
     private void impUI() {
-        List<String> myTerrNames = getTerrNamesWithMyTroop();
+        List<String> myTerrNames = getMyTerrNames();
+        List<String> terrNamesWithMyTroop = getTerrNamesWithMyTroop();
         List<String> myAndAllyTerrNames = getMyAndAllyTerrNames();
         List<String> enemyTerrNames = getEnemyTerrNames();
 
@@ -84,7 +85,7 @@ public class BasicOrderActivity extends AppCompatActivity {
         SpinnerAdapter srcAdapter = new ArrayAdapter<>(
                 BasicOrderActivity.this,
                 R.layout.item_choice,
-                myTerrNames);
+                terrNamesWithMyTroop);
         srcSpinner.setAdapter(srcAdapter);
         srcSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

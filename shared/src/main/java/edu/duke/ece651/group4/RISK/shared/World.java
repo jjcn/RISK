@@ -437,10 +437,12 @@ public class World implements Serializable {
     public List<Territory> getTerritoriesWithMyTroop(String playerName) {
         List<Territory> ans = new ArrayList<>();
         for (Territory terr : getAllTerritories()) {
+            if (terr.getOwnerName().equals(playerName)) {
+                ans.add(terr);
+            }
             try {
-                String owner = terr.getOwnerName();
-                String alliance = terr.getAllianceName();
-                if (owner.equals(playerName) || alliance.equals(playerName)) {
+                String allianceName = terr.getAllianceName();
+                if (allianceName.equals(playerName)) {
                     ans.add(terr);
                 }
             } catch (IllegalArgumentException e) {}
@@ -802,8 +804,8 @@ public class World implements Serializable {
     /**
      * Consumes tech resource of an upgrade tech order.
      *
-     * @param upgradeTechOrder
-     * @param playerName
+     * @param uTechOrder is an upgrade tech order.
+     * @param playerName is the name of the player who upgrades tech level.
      */
     public void consumeResourceOfPlayerTechUpgrade(UpgradeTechOrder uTechOrder, String playerName) {
         getPlayerInfoByName(playerName).consumeResourceOfTechUpgrade(uTechOrder.getNLevel());
