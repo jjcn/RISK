@@ -74,78 +74,78 @@ class GameTest {
     }
 
 
-    @Test
-    public void test_sendWorld() throws IOException {
-        Game g = createAGame(1, 2);
-
-//        System.out.println(g.getUserNames().get(0));
-
-        g.setUpGame(); // every player now starts with 2000 food & 2000 tech
-
-        World w = g.getTheWorld();
-        User u = new User(1,"???","1");
-        User u0 = new User(1,"user0","1");
-        assertEquals(g.isUserLose(u),true);
-        assertEquals(g.isEndGame(),false);
-        g.upgradeTechOnWorld("user0");
-
-        UpgradeTroopOrder uo=new UpgradeTroopOrder("A",0,1,0);
-        g.upgradeTroopOnWorld(uo, "user0");
-
-        UpgradeTechOrder ut=new UpgradeTechOrder(0);
-        g.tryUpdateActionOnWorld(uo,u0);
-        g.tryUpdateActionOnWorld(ut,u0);
-
-        PlaceOrder p=new PlaceOrder("A",new Troop(10,new TextPlayer("user0")));
-        g.placeUnitsOnWorld(p);
-        g.tryUpdateActionOnWorld(p,u0);
-
-        MoveOrder m=new MoveOrder("A","A",new Troop(1,new TextPlayer("user0")),'M');
-        g.doMoveOnWorld(m,"user0");
-        g.tryUpdateActionOnWorld(m,u0);
-
-
-        AttackOrder a=new AttackOrder("A","A",new Troop(1,new TextPlayer("user0")),'A');
-        g.doAttackOnWorld(a,"user0");
-        g.tryUpdateActionOnWorld(a,u0);
-
-
-        BasicOrder d=new BasicOrder(null,null,null,'D');
-        g.doDoneActionFor(u0);
-        g.tryUpdateActionOnWorld(d,u0);
-
-        BasicOrder eorder=new BasicOrder(null,null,null,SWITCH_OUT_ACTION);
-        g.tryUpdateActionOnWorld(eorder,u0);
-        g.updateGameAfterOneTurn();
-
-
-
-        new Thread( ()-> {
-            try{
-                Socket s = hostSocket.accept();
-                Client clientInServer = new Client(s);
-                String strFromClient = (String) clientInServer.recvObject();
-                assertEquals(strFromClient, "Hi, this is client");
-                clientInServer.sendObject("Copy that, this is server");
-                World theWorld = (World) clientInServer.recvObject();
-                assertEquals(true, theWorld != null);
-                clientInServer.close();
-            } catch (IOException e) {
-            }
-        }
-        ).start();
-
-        Client clientSocket = new Client("127.0.0.1", PORT);
-        clientSocket.sendObject("Hi, this is client");
-        String strFromServer = (String) clientSocket.recvObject();
-        assertEquals(strFromServer, "Copy that, this is server");
-        clientSocket.sendObject(w);
-        clientSocket.close();
-
-
-
-    }
-
+//    @Test
+//    public void test_sendWorld() throws IOException {
+//        Game g = createAGame(1, 2);
+//
+////        System.out.println(g.getUserNames().get(0));
+//
+//        g.setUpGame(); // every player now starts with 2000 food & 2000 tech
+//
+//        World w = g.getTheWorld();
+//        User u = new User(1,"???","1");
+//        User u0 = new User(1,"user0","1");
+//        assertEquals(g.isUserLose(u),true);
+//        assertEquals(g.isEndGame(),false);
+//        g.upgradeTechOnWorld("user0");
+//
+//        UpgradeTroopOrder uo=new UpgradeTroopOrder("A",0,1,0);
+//        g.upgradeTroopOnWorld(uo, "user0");
+//
+//        UpgradeTechOrder ut=new UpgradeTechOrder(0);
+//        g.tryUpdateActionOnWorld(uo,u0);
+//        g.tryUpdateActionOnWorld(ut,u0);
+//
+//        PlaceOrder p=new PlaceOrder("A",new Troop(10,new TextPlayer("user0")));
+//        g.placeUnitsOnWorld(p);
+//        g.tryUpdateActionOnWorld(p,u0);
+//
+//        MoveOrder m=new MoveOrder("A","A",new Troop(1,new TextPlayer("user0")),'M');
+//        g.doMoveOnWorld(m,"user0");
+//        g.tryUpdateActionOnWorld(m,u0);
+//
+//
+//        AttackOrder a=new AttackOrder("A","A",new Troop(1,new TextPlayer("user0")),'A');
+//        g.doAttackOnWorld(a,"user0");
+//        g.tryUpdateActionOnWorld(a,u0);
+//
+//
+//        BasicOrder d=new BasicOrder(null,null,null,'D');
+//        g.doDoneActionFor(u0);
+//        g.tryUpdateActionOnWorld(d,u0);
+//
+//        BasicOrder eorder=new BasicOrder(null,null,null,SWITCH_OUT_ACTION);
+//        g.tryUpdateActionOnWorld(eorder,u0);
+//        g.updateGameAfterOneTurn();
+//
+//
+//
+//        new Thread( ()-> {
+//            try{
+//                Socket s = hostSocket.accept();
+//                Client clientInServer = new Client(s);
+//                String strFromClient = (String) clientInServer.recvObject();
+//                assertEquals(strFromClient, "Hi, this is client");
+//                clientInServer.sendObject("Copy that, this is server");
+//                World theWorld = (World) clientInServer.recvObject();
+//                assertEquals(true, theWorld != null);
+//                clientInServer.close();
+//            } catch (IOException e) {
+//            }
+//        }
+//        ).start();
+//
+//        Client clientSocket = new Client("127.0.0.1", PORT);
+//        clientSocket.sendObject("Hi, this is client");
+//        String strFromServer = (String) clientSocket.recvObject();
+//        assertEquals(strFromServer, "Copy that, this is server");
+//        clientSocket.sendObject(w);
+//        clientSocket.close();
+//
+//
+//
+//    }
+//
 
     @Test
     public void test_basic(){
@@ -184,12 +184,8 @@ class GameTest {
         g.placeUnitsOnWorld(pp);
         PlaceOrder pp1 =new PlaceOrder("B",new Troop(5,new TextPlayer("user0")));
         g.placeUnitsOnWorld(pp1);
-
         HashMap<String, Integer> myDict = new HashMap<>();
         myDict.put("Soldier LV0", 5);
-
-
-
         Troop dem = new Troop(myDict, new TextPlayer("user0"));
         MoveOrder m =new MoveOrder("A","B",dem,'M');
         g.doMoveOnWorld(m, "user0");
