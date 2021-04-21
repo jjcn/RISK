@@ -22,6 +22,9 @@ class ArcherTest {
         assertEquals(arr.getJobName(),"Arrow LV4");
         assertEquals(arch.checkReady(),false);
 
+        Archer clo=arch.clone();
+        assertEquals(clo.checkReady(),false);
+
         arch.active();
         assertEquals(arch.checkReady(),true);
 
