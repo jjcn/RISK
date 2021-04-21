@@ -678,6 +678,7 @@ public class World implements Serializable {
         }
         // moves troop
         end.sendInEnemyTroop(start.sendOutTroop(troop));
+        // TODO: add ranged attack
     }
 
     /**
@@ -769,18 +770,8 @@ public class World implements Serializable {
      * @param upgradeTechOrder
      * @param playerName
      */
-    public void consumeResourceOfPlayerTechUpgrade(UpgradeTechOrder upgradeTechOrder, String playerName) {
-        getPlayerInfoByName(playerName).consumeResourceOfTechUpgrade(upgradeTechOrder.getNLevel());
-    }
-
-    /**
-     * Try upgrade a player's tech level using an upgrade tech order.
-     *
-     * @param uTechOrder is an upgrade tech order
-     * @param playerName is a player's name.
-     */
-    public void upgradePlayerTechLevelBy(UpgradeTechOrder uTechOrder, String playerName) {
-        getPlayerInfoByName(playerName).upgradeTechLevelBy(uTechOrder.getNLevel());
+    public void consumeResourceOfPlayerTechUpgrade(UpgradeTechOrder uTechOrder, String playerName) {
+        getPlayerInfoByName(playerName).consumeResourceOfTechUpgrade(uTechOrder.getNLevel());
     }
 
     /**
@@ -791,6 +782,16 @@ public class World implements Serializable {
      */
     public void doUpgradeTechResourceConsumption(UpgradeTechOrder uTechOrder, String playerName) {
         consumeResourceOfPlayerTechUpgrade(uTechOrder, playerName);
+    }
+
+    /**
+     * Try upgrade a player's tech level using an upgrade tech order.
+     *
+     * @param uTechOrder is an upgrade tech order
+     * @param playerName is a player's name.
+     */
+    public void upgradePlayerTechLevelBy(UpgradeTechOrder uTechOrder, String playerName) {
+        getPlayerInfoByName(playerName).upgradeTechLevelBy(uTechOrder.getNLevel());
     }
 
     /**

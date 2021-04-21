@@ -45,6 +45,7 @@ public class UpgradeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upgrade);
         if(getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Upgrade Troop");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }

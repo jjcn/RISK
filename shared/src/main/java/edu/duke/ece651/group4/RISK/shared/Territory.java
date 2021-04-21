@@ -158,7 +158,8 @@ public class Territory implements Serializable {
      * @param subTroop shows the number of unit send out from territory
      */
     public Troop sendOutTroop(Troop subTroop) {
-        if (subTroop.getOwner().getName() != this.ownerTroop.getOwner().getName()) {
+        if (!subTroop.getOwner().getName()
+                .equals(this.ownerTroop.getOwner().getName())) {
             if (allianceTroop == null) {
                 throw new IllegalArgumentException("No alliance troop now");
             } else {
@@ -179,7 +180,8 @@ public class Territory implements Serializable {
      * @param subTroop shows the number of unit send in to territory
      */
     public void sendInTroop(Troop subTroop) {
-        if (subTroop.getOwner().getName() != this.ownerTroop.getOwner().getName()) {
+        if (!subTroop.getOwner().getName()
+                .equals(this.ownerTroop.getOwner().getName())) {
             if (allianceTroop == null) {
                 allianceTroop = subTroop;
             } else {
@@ -213,7 +215,6 @@ public class Territory implements Serializable {
      * @param enemy shows the enemy troop attack in
      */
     public void doOneBattle(Troop enemy) {
-
         Troop enemyRemain = this.ownerTroop.combat(enemy);
         this.ownerTroop = enemyRemain.checkWin() ? enemyRemain : this.ownerTroop;
     }
@@ -399,18 +400,16 @@ public class Territory implements Serializable {
         return this.ownerTroop.getDict();
     }
 
-    public int upgradeTroop(int levelBefore, int levelAfter, int nUnit, int nResource) {
-        int levelUp = levelAfter - levelBefore;
-        return ownerTroop.updateUnit(levelBefore, levelUp, nUnit, nResource);
+
+    public int upgradeTroop(UpgradeTroopOrder utOrder, int nResource) {
+        return ownerTroop.updateUnit(utOrder, nResource);
     }
 
-    public int upgradeTroop(UpgradeTroopOrder utOrder, int nTech) {
-        int levelBefore = utOrder.getLevelBefore();
-        int levelAfter = utOrder.getLevelAfter();
-        int nUnit = utOrder.getNUnit();
-        return upgradeTroop(levelBefore, levelAfter, nUnit, nTech);
-    }
-
+    /**
+     * Get all info of a territory in text form.
+     * To be displayed
+     * @return
+     */
     public String getInfo() {
         StringBuilder report = new StringBuilder();
         report.append("Owner : " + this.getOwner().getName() + "\n");
@@ -418,16 +417,24 @@ public class Territory implements Serializable {
         report.append("Size : " + this.area + "\n");
         report.append("Food production : " + this.foodSpeed + "\n");
         report.append("Tech production : " + this.techSpeed + "\n");
-        List<String> list = UNIT_NAMES;
-        HashMap<String, Integer> dict = this.ownerTroop.getDict();
-        for (String s : list) {
-            if (dict.get(s) == null) {
-                report.append(s + " : 0" + "\n");
-            } else {
-                report.append(s + " : " + dict.get(s) + "\n");
-            }
+
+        report.append(getTroopInfo(this.ownerTroop));
+        if (hasAllianceTroop()) {
+            report.append(getTroopInfo(this.allianceTroop));
         }
+
         return report.toString();
+    }
+
+    public String getTroopInfo(Troop troop) {
+        StringBuilder ans = new StringBuilder();
+        ans.append(troop.getOwner().getName() + "'s troop: " + "\n");
+        HashMap<String, Integer> dict = troop.getDict();
+        for (String jobName : dict.keySet()) {
+            int nUnit = dict.get(jobName) == null ? 0 : dict.get(jobName);
+            ans.append(jobName + " : " + nUnit + "\n");
+        }
+        return ans.toString();
     }
 
     /**

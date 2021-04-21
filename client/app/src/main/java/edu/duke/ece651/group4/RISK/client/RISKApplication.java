@@ -505,15 +505,16 @@ public class RISKApplication extends Application {
     public static void doOneUpgrade(onResultListener listener) {
         if (updatedTech) {
             listener.onFailure("You can only upgrade once.");
+        } else {
+            UpgradeTechOrder techOrder = new UpgradeTechOrder(1);
+            try {
+                theWorld.doUpgradeTechResourceConsumption(techOrder, userName);
+                send(techOrder);
+            } catch (Exception e) {
+                listener.onFailure(e.getMessage());
+            }
+            updatedTech = true;
         }
-        UpgradeTechOrder techOrder = new UpgradeTechOrder(1);
-        try {
-            theWorld.doUpgradeTechResourceConsumption(techOrder, userName);
-            send(techOrder);
-        } catch (Exception e) {
-            listener.onFailure(e.getMessage());
-        }
-        updatedTech = true;
     }
 
     /**
@@ -592,5 +593,12 @@ public class RISKApplication extends Application {
     public static Set<String> getAllPlayersName() {
         Set<String> playerNames = theWorld.getAllPlayerNames();
         return playerNames;
+    }
+
+    public static List<String> getChatPlayersName() {
+        List<String> chatPlayerNames = new ArrayList<>();
+        chatPlayerNames.addAll(getAllPlayersName());
+        chatPlayerNames.remove(userName);
+        return chatPlayerNames;
     }
 }
