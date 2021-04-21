@@ -531,7 +531,23 @@ public class WorldTest {
     }
 
     @Test
-    public void testAttackWithAlliance() {
+    public void testAttackAllianceJoinForce() {
+        World world = createWorldAndRegister(troopsSeparated);
+        // red and blue form alliance
+        world.tryFormAlliance("red", "blue");
+        world.tryFormAlliance("blue", "red");
+        world.doCheckIfAllianceSuccess();
+        // blue and red all attack green
+        AttackOrder redAttack = new AttackOrder("Midkemia", "Oz", new Troop(12, red));
+        AttackOrder blueAttack = new AttackOrder("Scadrial", "Oz", new Troop(5, blue));
+        world.attackATerritory(redAttack, "red");
+        world.attackATerritory(blueAttack, "blue");
+        world.doAllBattles();
+        System.out.println("Oz now belongs to " + world.findTerritory("Oz").getOwner().getName());
+    }
+
+    @Test
+    public void testAttackBreakAlliance() {
         World world = createWorldAndRegister(troopsSeparated);
         // red and blue form alliance
         world.tryFormAlliance("red", "blue");
@@ -542,7 +558,8 @@ public class WorldTest {
         world.moveTroop(move1, "blue");
         assertEquals(1, world.findTerritory("Midkemia").allianceTroop.size());
         assertEquals(12, world.findTerritory("Midkemia").checkPopulation());
-        // red attack blue's territory
+        // red attack blue's territory Scadrial,
+        // blue's troop on red's Midkemia should get back to nearest, which is Scadrial
         AttackOrder attack1 = new AttackOrder("Mordor","Scadrial",  new Troop(4, red));
         world.attackATerritory(attack1, "red");
         assertEquals(new HashSet<String>(), world.getAllianceNames("red"));
