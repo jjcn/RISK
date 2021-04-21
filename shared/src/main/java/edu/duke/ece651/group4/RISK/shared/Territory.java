@@ -160,7 +160,8 @@ public class Territory implements Serializable {
      * @param subTroop shows the number of unit send out from territory
      */
     public Troop sendOutTroop(Troop subTroop) {
-        if (subTroop.getOwner().getName() != this.ownerTroop.getOwner().getName()) {
+        if (!subTroop.getOwner().getName()
+                .equals(this.ownerTroop.getOwner().getName())) {
             if (allianceTroop == null) {
                 throw new IllegalArgumentException("No alliance troop now");
             } else {
@@ -181,7 +182,8 @@ public class Territory implements Serializable {
      * @param subTroop shows the number of unit send in to territory
      */
     public void sendInTroop(Troop subTroop) {
-        if (subTroop.getOwner().getName() != this.ownerTroop.getOwner().getName()) {
+        if (!subTroop.getOwner().getName()
+                .equals(this.ownerTroop.getOwner().getName())) {
             if (allianceTroop == null) {
                 allianceTroop = subTroop;
             } else {
@@ -215,7 +217,6 @@ public class Territory implements Serializable {
      * @param enemy shows the enemy troop attack in
      */
     public void doOneBattle(Troop enemy) {
-
         Troop enemyRemain = this.ownerTroop.combat(enemy);
         this.ownerTroop = enemyRemain.checkWin() ? enemyRemain : this.ownerTroop;
     }
