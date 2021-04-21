@@ -4,9 +4,7 @@ package edu.duke.ece651.group4.RISK.shared;
 import java.io.Serializable;
 import java.util.*;
 
-import static edu.duke.ece651.group4.RISK.shared.Constant.ARCHER_NAMES;
-import static edu.duke.ece651.group4.RISK.shared.Constant.BREAKER_NAMES;
-import static edu.duke.ece651.group4.RISK.shared.Constant.KNIGHT_NAMES;
+import static edu.duke.ece651.group4.RISK.shared.Constant.JOB_DICTIONARY;
 import static edu.duke.ece651.group4.RISK.shared.Constant.UNIT_NAMES;
 
 
@@ -477,5 +475,44 @@ public class Territory implements Serializable {
      */
     public boolean hasAllianceTroop() {
         return this.allianceTroop != null;
+    }
+
+
+    public int checkUnitNum(String jobName){
+        return this.ownerTroop.checkUnitNum(jobName);
+    }
+
+
+
+    public int checkUnitNumAlly(String jobName){
+        if(this.allianceTroop==null){
+            return 0;
+        }
+        return this.allianceTroop.checkUnitNum(jobName);
+    }
+
+
+    public Map<String,Integer> checkTypeNumSpec(String typeName,Troop target){
+        if(JOB_DICTIONARY.get(typeName)==null){
+            throw new IllegalArgumentException("Wrong Unit Type name "+typeName);
+        }
+
+        Map<String,Integer> m=new HashMap<>();
+        if(target==null){
+            return m;
+        }
+
+        for(String s:JOB_DICTIONARY.get(typeName)){
+            m.put(s,target.checkUnitNum(s));
+        }
+        return m;
+    }
+
+    public Map<String,Integer> checkTypeNum(String typeName){
+        return this.checkTypeNumSpec(typeName,this.ownerTroop);
+    }
+
+    public Map<String,Integer> checkTypeNumAllay(String typeName){
+        return this.checkTypeNumSpec(typeName,this.allianceTroop);
     }
 }
