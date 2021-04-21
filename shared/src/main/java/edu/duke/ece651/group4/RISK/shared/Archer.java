@@ -54,6 +54,11 @@ public class Archer extends Soldier {
     @Override
     public Archer clone() {
         Archer clone = new Archer(this.level);
+        if(this.ready){
+            clone.active();
+        }else{
+            clone.shoot();
+        }
         return clone;
     }
 }
