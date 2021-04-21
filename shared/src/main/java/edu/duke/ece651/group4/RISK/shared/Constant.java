@@ -1,8 +1,6 @@
 package edu.duke.ece651.group4.RISK.shared;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /*
 * This class handles the constant across all the project
@@ -85,8 +83,30 @@ public class Constant {
     public static final String SHIELD="Shield";
 
     public static final String BREAKER="Breaker";
+    public static final String ARROW="Arrow";
 
     public static final List<String> JOB_NAMES = Arrays.asList(KNIGHT,ARCHER,SHIELD,BREAKER);
+
+    public static final Map<String, List<String>> JOB_DICTIONARY;
+    static {
+        JOB_DICTIONARY = new HashMap<>();
+        JOB_DICTIONARY.put(KNIGHT, KNIGHT_NAMES);
+        JOB_DICTIONARY.put(ARCHER, ARCHER_NAMES);
+
+        JOB_DICTIONARY.put(BREAKER, BREAKER_NAMES);
+        JOB_DICTIONARY.put(SHIELD, SHIELD_NAMES);
+        JOB_DICTIONARY.put(SOLDIER, UNIT_NAMES);
+        JOB_DICTIONARY.put(ARROW, ARROW_NAMES);
+    }
+
+//    public static final Map<String,List<String>> JOB_DICTIONARY=Map.ofEntries(
+//            new AbstractMap.SimpleEntry<String, List<String>>(KNIGHT, KNIGHT_NAMES),
+//            new AbstractMap.SimpleEntry<String, List<String>>(ARCHER, ARCHER_NAMES),
+//            new AbstractMap.SimpleEntry<String, List<String>>(BREAKER, BREAKER_NAMES),
+//            new AbstractMap.SimpleEntry<String, List<String>>(SHIELD, SHIELD_NAMES),
+//            new AbstractMap.SimpleEntry<String, List<String>>(SOLDIER, UNIT_NAMES),
+//            new AbstractMap.SimpleEntry<String, List<String>>(ARROW, ARROW_NAMES)
+//    );
 
     public static final char MOVE_ACTION ='M';
     public static final char ATTACK_ACTION='A';

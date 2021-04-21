@@ -51,7 +51,7 @@ public class TroopTest {
         Troop test = new Troop(10, new TextPlayer("test"));
         assertEquals(test.checkUnitNum("Soldier LV0"), 10);
         
-        test.updateUnit(0, 2, 4, 2000); // promote 4 lv0 units by 2 levels
+        test.updateUnit("Soldier LV0", 2, 4, 2000); // promote 4 lv0 units by 2 levels
 
         assertEquals(test.checkUnitNum("Soldier LV2"), 4);
         assertEquals(test.checkUnitNum("Soldier LV0"), 6);
@@ -61,12 +61,12 @@ public class TroopTest {
 
         // promote 4 lv2 units by 2 levels
         // need 4 * 44 = 176 > 170, only upgrade 3.
-        assertThrows(new IllegalArgumentException().getClass(), () -> test.updateUnit(2, 2, 10, 170));
-        assertThrows(new IllegalArgumentException().getClass(), () -> test.updateUnit(2, 2, 4, 170)); 
+        assertThrows(new IllegalArgumentException().getClass(), () -> test.updateUnit("Soldier LV2", 2, 10, 170));
+        assertThrows(new IllegalArgumentException().getClass(), () -> test.updateUnit("Soldier LV2", 2, 4, 170));
         assertEquals(test.checkUnitNum("Soldier LV4"), 3);
         assertEquals(test.checkUnitNum("Soldier LV2"), 1);
 
-        test.updateUnit(0,5,6,2000000);
+        test.updateUnit("Soldier LV0",5,6,2000000);
 
         assertEquals(test.getWeakest().getJobName(),"Soldier LV2");
         assertEquals(test.getStrongest().getJobName(),"Soldier LV5");
@@ -75,8 +75,8 @@ public class TroopTest {
     @Test
     public void Test_receiveTroop_int() {
         Troop test = new Troop(5, new TextPlayer("test"));
-        test.updateUnit(0, 4, 4, 1000000);
-        test.updateUnit(4, 1, 2, 1000000);
+        test.updateUnit("Soldier LV0", 4, 4, 1000000);
+        test.updateUnit("Soldier LV4", 1, 2, 1000000);
         HashMap<String, Integer> dict = new HashMap<>();
         dict.put("Soldier LV0", 1);
         dict.put("Soldier LV4", 1);
