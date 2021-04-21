@@ -7,5 +7,6 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     <dimen name="fragmentMargin">10dp</dimen>
     <dimen name="largeTextSize">20</dimen>
     <dimen name="text_margin">16dp</dimen>
+    <dimen name="buttonMargin">5dp</dimen>
 
 </resources>
