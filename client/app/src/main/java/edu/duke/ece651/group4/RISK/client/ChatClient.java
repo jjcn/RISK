@@ -85,7 +85,7 @@ public class ChatClient extends Thread {
             }
 
             // notify client and update UI
-            ChatMessageUI receivedMsg = new ChatMessageUI(chatID, getUserName() + ": " + chatMsgReceive.getChatContent(),
+            ChatMessageUI receivedMsg = new ChatMessageUI(chatID, chatMsgReceive.getSource() + ": " + chatMsgReceive.getChatContent(),
                     new ChatPlayer(chatMsgReceive.getGameID(), chatMsgReceive.getSource()), chatMsgReceive.getTargetsPlayers());
             if (receiveMsgListener != null) {
                 Log.i(TAG, LOG_FUNC_RUN + "ClientChat: " + username + " get from " + chatMsgReceive.getSource() + " saying " + chatMsgReceive.getChatContent());

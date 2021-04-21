@@ -17,8 +17,7 @@ import edu.duke.ece651.group4.RISK.client.model.ChatDialog;
 
 import java.util.*;
 
-import static edu.duke.ece651.group4.RISK.client.RISKApplication.getAllPlayersName;
-import static edu.duke.ece651.group4.RISK.client.RISKApplication.getCurrentRoomSize;
+import static edu.duke.ece651.group4.RISK.client.RISKApplication.*;
 
 /**
  * Activity showing a list of chats
@@ -59,23 +58,20 @@ public class ChatActivity extends AppCompatActivity implements DialogsListAdapte
 
     private List<ChatDialog> getChats() {
         ArrayList<ChatDialog> chats = new ArrayList<>();
-        List<String> allPlayerNames = new ArrayList<>();
-        allPlayerNames.addAll(getAllPlayersName());
         /**
          * All players' chat room, id = ""
          */
-        chats.add(new ChatDialog("", "World Chat", allPlayerNames));
+        chats.add(new ChatDialog("", "World Chat", getChatPlayersName()));
         /**
          * One-to-one chat room
          */
-        for (int i = 0; i < getCurrentRoomSize(); i++) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.add(Calendar.DAY_OF_MONTH, -(i * i));
-            calendar.add(Calendar.MINUTE, -(i * i));
+        for (String playerName:getChatPlayersName()) {
+//            Calendar calendar = Calendar.getInstance();
+//            calendar.add(Calendar.DAY_OF_MONTH, -(i * i));
+//            calendar.add(Calendar.MINUTE, -(i * i));
 
-            String playerName = allPlayerNames.get(i);
             chats.add(new ChatDialog(playerName, "Private Chat with " + playerName,
-                    Arrays.asList(allPlayerNames.get(i))));
+                    Arrays.asList(playerName)));
         }
         return chats;
     }
