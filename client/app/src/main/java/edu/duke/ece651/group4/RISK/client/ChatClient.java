@@ -14,6 +14,7 @@ import edu.duke.ece651.group4.RISK.shared.message.ChatMessage;
 import org.apache.commons.lang3.SerializationUtils;
 
 import static edu.duke.ece651.group4.RISK.client.Constant.LOG_FUNC_RUN;
+import static edu.duke.ece651.group4.RISK.client.RISKApplication.getUserName;
 import static edu.duke.ece651.group4.RISK.shared.Constant.CHAT_SETUP_ACTION;
 
 public class ChatClient extends Thread {
@@ -68,16 +69,15 @@ public class ChatClient extends Thread {
                 this.chatChannel.close();
                 System.out.println("close channel");
             }
-            ChatMessage chatMsgReceive = (ChatMessage) SerializationUtils.deserialize(readBuffer.array());
+            ChatMessage chatMsgReceive = SerializationUtils.deserialize(readBuffer.array());
             readBuffer.clear();
             //deal with chatMsgRecV to notify android UI
             // TODO: syc in database
-            ChatMessageUI receivedMsg = new ChatMessageUI(0, chatMsgReceive.getChatContent(),
+            ChatMessageUI receivedMsg = new ChatMessageUI(0, getUserName()+ ": "+chatMsgReceive.getChatContent(),
                     new ChatPlayer(chatMsgReceive.getGameID(), chatMsgReceive.getSource()),chatMsgReceive.getTargetsPlayers());
             if(receiveMsgListener != null){
                 Log.i(TAG,LOG_FUNC_RUN+"ClientChat: " + username + " get from " + chatMsgReceive.getSource() + " saying " + chatMsgReceive.getChatContent());
                 receiveMsgListener.onSuccess(receivedMsg);
-                Log.i(TAG,LOG_FUNC_RUN+"not back loop");
             }else {
                 Log.i(TAG, LOG_FUNC_RUN + "lsm null");
             }
@@ -100,7 +100,6 @@ public class ChatClient extends Thread {
                 Log.e(TAG,e.toString());
             }
         }).start();
-        Log.i(TAG,LOG_FUNC_RUN + "Test: " + chatMessage.getSource() + " send chat message to chatServer!");
         writeBuffer.clear();
     }
 }

@@ -1,17 +1,15 @@
 package edu.duke.ece651.group4.RISK.client.activity;
 
+import android.os.Bundle;
 import android.text.Editable;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
-import android.os.Bundle;
 import edu.duke.ece651.group4.RISK.client.R;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static edu.duke.ece651.group4.RISK.client.Constant.LOG_CREATE_SUCCESS;
 import static edu.duke.ece651.group4.RISK.client.Constant.MAPS;
@@ -90,7 +88,7 @@ public class TransferActivity extends AppCompatActivity {
         // type spinner
         List<String> jobNames = JOB_NAMES;
 
-        typeAfterSpinner = findViewById(R.id.unit_type_choices);
+        typeAfterSpinner = findViewById(R.id.type_after_choices);
         SpinnerAdapter typeAdapter = new ArrayAdapter<>(
                 TransferActivity.this, R.layout.item_choice,
                 jobNames);
