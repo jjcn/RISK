@@ -99,6 +99,23 @@ public class Territory implements Serializable {
         return this.ownerTroop.getOwner();
     }
 
+    public String getOwnerName() {
+        return this.getOwner().getName();
+    }
+
+    public Player getAlliance() {
+        if (this.allianceTroop == null) {
+            throw new IllegalArgumentException(
+                    String.format("No alliance troop stationed on %s.", name)
+            );
+        }
+        return this.allianceTroop.getOwner();
+    }
+
+    public String getAllianceName() {
+        return this.getAlliance().getName();
+    }
+
     public int getFoodSpeed() {
         return this.foodSpeed;
     }

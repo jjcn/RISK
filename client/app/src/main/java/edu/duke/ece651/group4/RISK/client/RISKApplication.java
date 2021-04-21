@@ -125,6 +125,13 @@ public class RISKApplication extends Application {
     }
 
     /**
+     * @return list of all my and ally's territory
+     */
+    public static List<String> getMyAndAllyTerrNames() {
+        return transferToNames(theWorld.getTerritoriesOfPlayerAndAlliance(userName));
+    }
+
+    /**
      * @return list of enemy territory
      */
     public static List<String> getEnemyTerrNames() {
