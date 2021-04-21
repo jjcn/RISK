@@ -530,5 +530,29 @@ public class Troop implements Serializable {
         return String.format("%s LV%d",unitType, unitLevel);
     }
 
+    public Troop doOneCombat(Troop enemy) {
+
+
+            Unit myUnit =this.getStrongest();
+            Unit enemyUnit =enemy.getWeakest();
+
+            if(myUnit.fight(enemyUnit)){
+                enemy.loseUnit(enemyUnit);
+            }else {
+
+                if (ARROW_NAMES.contains(enemyUnit.getJobName())) {
+                    enemy.loseUnit(enemyUnit);
+                    this.loseUnit(myUnit);
+                } else if (SHIELD_NAMES.contains(enemyUnit.getJobName())) {
+                    Shield s = (Shield) enemyUnit;
+                    if (!s.shieldExist()) {
+                        this.loseUnit(myUnit);
+                    }
+                }
+            }
+
+        return enemy;
+    }
+
 
 }

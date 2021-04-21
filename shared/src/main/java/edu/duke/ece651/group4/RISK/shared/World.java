@@ -668,7 +668,7 @@ public class World implements Serializable {
         if (getAllianceNames(startOwnerName).contains(endOwnerName)) {
             breakAlliance(startOwnerName, endOwnerName);
             Territory nearest = getNearestSameOwnerTerritory(start);
-            nearest.sendInTroop(end.kickoutAlliance());
+            nearest.sendInTroop(end.kickOut());
         }
         // moves troop
         end.sendInEnemyTroop(start.sendOutTroop(troop));

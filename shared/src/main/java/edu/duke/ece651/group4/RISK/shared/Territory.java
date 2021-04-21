@@ -162,6 +162,10 @@ public class Territory implements Serializable {
                 throw new IllegalArgumentException("No alliance troop now");
             } else {
                 allianceTroop.sendTroop(subTroop);
+                if (allianceTroop.checkTroopSize() == 0) {
+                    allianceTroop = null;
+                }
+
             }
         }
 
@@ -180,8 +184,7 @@ public class Territory implements Serializable {
             } else {
                 allianceTroop.receiveTroop(subTroop);
             }
-        }
-        else {
+        } else {
             this.ownerTroop.receiveTroop(subTroop);
         }
     }
@@ -209,8 +212,117 @@ public class Territory implements Serializable {
      * @param enemy shows the enemy troop attack in
      */
     public void doOneBattle(Troop enemy) {
+
         Troop enemyRemain = this.ownerTroop.combat(enemy);
         this.ownerTroop = enemyRemain.checkWin() ? enemyRemain : this.ownerTroop;
+    }
+
+    public Troop findEnemyPartner(String targetName, Map<String, Set<String>> relation) {
+        Troop partner = null;
+        for (String n : relation.get(targetName)) {
+            if (this.enemyOnTerritory.get(n) != null) {
+                partner = this.enemyOnTerritory.get(n);
+            }
+        }
+        return partner;
+    }
+
+    public void doOneBattleMix(Troop enemy, Troop partner) {
+
+
+        boolean attack = true;
+        boolean myTurn = true;
+        boolean enemyTurn = true;
+
+
+        while (this.ownerTroop.checkTroopSize() > 0 && enemy.checkTroopSize() > 0) {
+            Troop ownerSide = myTurn ? this.ownerTroop : this.allianceTroop;
+            Troop enemySide = enemyTurn ? enemy : partner;
+            if (attack) {
+                ownerSide = enemySide.doOneCombat(ownerSide);
+            } else {
+                enemySide = ownerSide.doOneCombat(enemySide);
+            }
+
+            if (myTurn) {
+                this.ownerTroop = ownerSide;
+            } else {
+                allianceTroop = ownerSide;
+            }
+
+            if (enemyTurn) {
+                enemy = enemySide;
+            } else {
+                partner = enemySide;
+            }
+
+            if (allianceTroop == null || allianceTroop.checkTroopSize() == 0) {
+                myTurn = true;
+            } else {
+                if (this.ownerTroop.checkTroopSize() == 0) {
+                    this.ownerTroop = allianceTroop;
+                    this.allianceTroop = null;
+                    myTurn = true;
+                } else {
+                    myTurn = !myTurn;
+                }
+            }
+
+            if (partner == null || partner.checkTroopSize() == 0) {
+                enemyTurn = true;
+            } else {
+                if (enemy.checkTroopSize() == 0) {
+                    enemy = partner;
+                    partner = null;
+                    enemyTurn = true;
+                } else {
+                    enemyTurn = !enemyTurn;
+                }
+            }
+
+        }
+
+        this.ownerTroop = enemy.checkWin() ? enemy : this.ownerTroop;
+    }
+
+
+    public String doBattlesMix(Map<String, Set<String>> relation) {
+        StringBuilder report = new StringBuilder();
+
+        if (this.enemyOnTerritory.size() == 0) {
+            return "no war on Territory " + this.getName() + "\n";
+        }
+
+        ArrayList<String> enemyPlayers = new ArrayList<String>(this.enemyOnTerritory.keySet());
+        Collections.sort(enemyPlayers);
+        while (enemyPlayers.size() > 0) {
+
+            int diceResult = randInt(0, enemyPlayers.size() - 1);
+
+            String enemy = enemyPlayers.get(diceResult);
+            report.append(
+                    "Enemy " + enemy + " attack " + this.getOwner().getName() + " on " + this.getName() + " \n");
+            Troop partner = findEnemyPartner(enemy, relation);
+
+            Troop enemyTroop = this.enemyOnTerritory.get(enemy);
+            report.append(enemyTroop.getSummary());
+            if (partner != null) {
+                report.append(
+                        "Enemy ally " + partner.getOwner().getName() + " help to attack " + this.getOwner().getName() + " on " + this.getName() + " \n");
+                report.append(partner.getSummary());
+            }
+            report.append(this.ownerTroop.getSummary());
+            doOneBattleMix(enemyTroop, partner);
+            enemyPlayers.remove(diceResult);
+            if (partner != null) {
+                int ind = enemyPlayers.indexOf(partner.getOwner().getName());
+                enemyPlayers.remove(ind);
+            }
+            report.append(this.getOwner().getName() + " wins the fight and owns " + this.getName() + " \n");
+        }
+        this.enemyOnTerritory.clear();
+        this.archerReady();
+        return report.toString();
     }
 
     /**
@@ -273,6 +385,11 @@ public class Territory implements Serializable {
         clone.setArea(this.area);
         clone.setFoodSpeed(this.foodSpeed);
         clone.setTechSpeed(this.techSpeed);
+        if (this.allianceTroop != null) {
+            Troop cloneAlly = this.allianceTroop.clone();
+            clone.sendInAlly(cloneAlly);
+        }
+
         return clone;
     }
 
@@ -332,15 +449,14 @@ public class Territory implements Serializable {
         this.ownerTroop.archerReady();
     }
 
-    /**
-     * Send out alliance troop on this territory.
-     * @return alliance troop
-     */
-    public Troop kickoutAlliance() {
+    public Troop kickOut() {
         Troop target = this.allianceTroop;
         this.allianceTroop = null;
         return target;
     }
 
+    public void sendInAlly(Troop ally) {
+        this.allianceTroop = ally;
+    }
 
 }
