@@ -51,7 +51,7 @@ public class Game implements Serializable {
     public World getTheWorld(){
         return gInfo.theWorld.clone();
     }
-    public GameInfo getGameInfo(){return gInfo.clone();}
+    public GameInfo getGameInfo(){return gInfo;}
     /*
     * This is to get all usernames in this game.
     * @return a list of usernames in the game

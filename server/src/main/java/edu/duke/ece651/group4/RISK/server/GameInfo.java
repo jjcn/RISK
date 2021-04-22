@@ -43,12 +43,12 @@ public class GameInfo implements Serializable {
         this.gameState = gameState;
     }
 
-    public GameInfo clone(){
-        List<String> users = new  ArrayList<>();
-        for(String u : usersOnGame){
-            users.add(u);
-        }
-        GameInfo gInfo = new GameInfo(gameID,maxNumUsers,usersOnGame, theWorld.clone(), gameState.clone());
-        return gInfo;
-    }
+//    public GameInfo clone(){
+//        List<String> users = new  ArrayList<>();
+//        for(String u : usersOnGame){
+//            users.add(u);
+//        }
+//        GameInfo gInfo = new GameInfo(gameID,maxNumUsers,usersOnGame, theWorld.clone(), gameState.clone());
+//        return gInfo;
+//    }
 }

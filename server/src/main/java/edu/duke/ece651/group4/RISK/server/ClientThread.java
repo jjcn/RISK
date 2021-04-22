@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static edu.duke.ece651.group4.RISK.server.HostApp.printGameInfo;
 import static edu.duke.ece651.group4.RISK.server.ServerConstant.*;
 import static edu.duke.ece651.group4.RISK.shared.Constant.*;
 
@@ -373,6 +374,7 @@ public class ClientThread extends Thread {
             out.println("Game" + gameOnGoing.getGameID() + ": Checking Phase :  " + ownerUser.getUsername() + " go back to do action");
             gameOnGoing.gInfo.gameState.changAPlayerStateTo(ownerUser, PLAYER_STATE_ACTION_PHASE);
         }
+        printGameInfo(gameOnGoing.getGameInfo());
         HibernateTool.updateGameInfo(gameOnGoing.getGameInfo());
     }
 
