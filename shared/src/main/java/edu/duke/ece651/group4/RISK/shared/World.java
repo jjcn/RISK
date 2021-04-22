@@ -60,7 +60,7 @@ public class World implements Serializable {
      */
     protected Boolean[][] allianceMatrix;
     /**
-     * Battle report
+     * Battle report. Also used to check the status of the world.
      */
     protected String report;
     /**
@@ -478,7 +478,6 @@ public class World implements Serializable {
      * @param troop    is a Troop object.
      */
     public void stationTroop(String terrName, Troop troop) {
-        this.report = Constant.PLACEMENT_DONE;
         Territory terr = findTerritory(terrName);
         terr.setOwnerTroop(troop.checkTroopSize(), troop.getOwner());
     }
@@ -490,9 +489,15 @@ public class World implements Serializable {
      * @param population is the population of the troop.
      */
     public void stationTroop(String terrName, int population) {
-        this.report = Constant.PLACEMENT_DONE;
         Territory terr = findTerritory(terrName);
         terr.setOwnerTroop(population, terr.getOwner());
+    }
+
+    /**
+     * Set the report to PLACEMENT_DONE.
+     */
+    public void setReportToPlacementDone() {
+        this.report = Constant.PLACEMENT_DONE;
     }
 
     /**
