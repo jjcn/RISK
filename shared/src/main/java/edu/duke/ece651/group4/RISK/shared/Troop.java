@@ -88,7 +88,20 @@ public class Troop implements Serializable {
      * @return number of units in a troop.
      */
     public int size() {
-        return population.size();
+        return this.population.size();
+    }
+
+    /**
+     * Get the attack range of a troop.
+     * The troop MUST be consisted of units of the same type.
+     * @return
+     */
+    public int getRange() {
+        int range = 0;
+        for (Unit unit : this.population) {
+            range = unit.getRange();
+        }
+        return range;
     }
 
     /**
@@ -501,7 +514,7 @@ public class Troop implements Serializable {
 
     public Troop sendRangedAttack(Troop target) {
         if (!this.hasRanged()) {
-            throw new IllegalArgumentException("No range attack unit");
+            throw new IllegalArgumentException("No ranged attack unit");
         }
 
         ArrayList<Unit> sub = new ArrayList<>();
@@ -547,15 +560,14 @@ public class Troop implements Serializable {
 //                }
 
 //
-            }else{
-                throw new IllegalArgumentException("Not using range attack unit");
+            } else {
+                throw new IllegalArgumentException("Not using ranged attack unit");
             }
 
         }
         Troop r = new Troop(sub, newDict, this.owner);
 
         return r;
-
     }
 
     public void archerReady(){
