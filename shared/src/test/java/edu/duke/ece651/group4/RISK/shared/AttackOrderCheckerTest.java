@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
+import java.util.HashMap;
 
 public class AttackOrderCheckerTest {
     protected final String NOT_ATTACK_ORDER_MSG = "This is not an attack order.";
@@ -126,6 +127,18 @@ public class AttackOrderCheckerTest {
     public void testAttackOrderCheckerRanged() {
         // TODO
         World world = createWorld(names, troopsConnected);
+        world.registerPlayer(redInfo);
+        world.registerPlayer(greenInfo);
+        world.registerPlayer(blueInfo);
+        // transfer one Soldier LV0 -> Archer on Gondor
+        TransferTroopOrder transfer1 = new TransferTroopOrder("Gondor", Constant.ARCHER, 0, 1);
+        world.transferTroop(transfer1,"red");
+        // let it perform attack on Oz (adjacent to Gondor)
+        HashMap<String, Integer> archerTroopDict = new HashMap<>();
+        archerTroopDict.put(Troop.buildJobName(Constant.ARCHER, 0), 1);
+        Troop archerTroop = new Troop(archerTroopDict, red);
+        AttackOrder atk1 = new AttackOrder("Gondor", "Oz", archerTroop);
+        world.attackATerritory(atk1, "red");
 
 
     }

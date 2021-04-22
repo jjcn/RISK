@@ -24,10 +24,6 @@ public class ChatMessage extends BasicMessage {
         this.gameID = gameID;
     }
 
-    public ChatMessage(String sender, Set<String> targetPlayers, String chatContent, int gameID){
-        this(sender,targetPlayers,chatContent,gameID,"");
-    }
-
     public Set<String> getTargetsPlayers(){
         return targetPlayers;
     }
