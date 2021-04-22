@@ -208,12 +208,6 @@ public class ClientThread extends Thread {
         if(gameToJoin.isFull() && !gameToJoin.isUserInGame(ownerUser)){
             out.println( INVALID_JOIN);
             return INVALID_JOIN;}
-//        if(!gameToJoin.isFull()){
-//            if(gameToJoin.isUserInGame(ownerUser)){
-//                out.println( "Invalid Join: you already in this room");
-//                return  "Invalid Join: you already in this room";
-//            }
-//        }
         return null;
     }
 
@@ -270,9 +264,12 @@ public class ClientThread extends Thread {
             return;
         }
         out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " Place Units Phase");
-        gameOnGoing.barrierWait();
+//        gameOnGoing.barrierWait();
         // wait all players to join and runner to set up the game
-        waitNotifyFromRunner(); // This is to make sure runner notify all after all waits
+        if(!gameOnGoing.gInfo.gameState.isSetUp()){
+            waitNotifyFromRunner(); // This is to make sure runner notify all after all waits
+        }
+
         // send the world info
         this.theClient.sendObject(gameOnGoing.getTheWorld());
         out.println("Game" + gameOnGoing.getGameID() + ": send world to " + ownerUser.getUsername() + " wait for orders in Place Units Phase" );
@@ -283,7 +280,8 @@ public class ClientThread extends Thread {
         }
         out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " finishes placing units and wait for others");
         // wait all players to finish placeUnits
-        gameOnGoing.barrierWait();
+//        gameOnGoing.barrierWait();
+        waitNotifyFromRunner();
         gameOnGoing.gInfo.gameState.setDonePlaceUnits(); // if user joins back, he does not need to do place unit phase
     }
 
