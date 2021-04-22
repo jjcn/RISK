@@ -104,7 +104,7 @@ public class HostApp implements Runnable {
         System.out.println("         GameState: isDonePlaceUnits: " + gInfo.gameState.isDonePlaceUnits());
         System.out.println("         GameState: isWaitToUpdate: " + gInfo.gameState.isWaitToUpdate());
         System.out.println("         GameState: isAllPlayersDoneUpdatingState: " + gInfo.gameState.isAllPlayersDoneUpdatingState());
-        System.out.println("         GameState: isDoneUpdateGame: " + gInfo.gameState.isAllPlayersDoneOneTurn());
+        System.out.println("         GameState: isAllPlayersDoneOneTurn: " + gInfo.gameState.isAllPlayersDoneOneTurn());
         System.out.println("         GameState: isDoneUpdateGame: " + gInfo.gameState.isDoneUpdateGame());
         World w = gInfo.getTheWorld();
         System.out.println("         World Turn num: " + w.getTurnNumber());
