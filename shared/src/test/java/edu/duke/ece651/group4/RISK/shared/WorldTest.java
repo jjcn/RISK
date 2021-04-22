@@ -1074,7 +1074,7 @@ public class WorldTest {
         assertEquals("red", world2.getWinner());
     }
 
-    @Test
+    /*@Test
     public void testEquals() {
         World world1 = createWorld(troopsConnected);
         World world2 = createWorld(troopsSamePlayer);
@@ -1086,7 +1086,7 @@ public class WorldTest {
         assertNotEquals(world1, world4);
         assertNotEquals(world1, null);
         assertNotEquals(world1, new Graph<Territory>());
-    }
+    }*/
 
     @Test
     public void testToString_same_world_and_troop() {
