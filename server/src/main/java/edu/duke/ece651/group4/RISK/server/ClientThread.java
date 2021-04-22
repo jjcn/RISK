@@ -122,7 +122,6 @@ public class ClientThread extends Thread {
             return;
         }
         //1.send the gameInfo to Client
-//        this.theClient.sendObject(getAllGameInfo());
         //2. select an option
         while(true){
             GameMessage gameMessage = (GameMessage) this.theClient.recvObject();
@@ -137,7 +136,6 @@ public class ClientThread extends Thread {
                     res = tryJoinAGame(gameMessage);
                     break;
                 case GAME_REFRESH:
-//                    out.println("Will send a room info to players");
                     res = getAllGameInfo();
                     break;
                 case GAME_EXIT:
@@ -168,6 +166,7 @@ public class ClientThread extends Thread {
         games.add(gameOnGoing);
         GameRunner gameRunner = new GameRunner(gameOnGoing,out);
         gameOnGoing.addUser(ownerUser);
+        HibernateTool.addGameInfo(gameOnGoing.getGameInfo());
         gameRunner.start();
         out.println(ownerUser.getUsername() + " creates a game" + gameOnGoing.getGameID() + " successfully and the number of the game support is " + gameOnGoing.getMaxNumUsers());
         return null;
@@ -195,6 +194,7 @@ public class ClientThread extends Thread {
 //            out.println(ownerUser.getUsername() + " switches in  game " + gameToJoin.getGameID() + " AGAIN");
         }
         gameOnGoing = gameToJoin;
+        HibernateTool.updateGameInfo(gameOnGoing.getGameInfo());
         out.println( "Game" + gameOnGoing.getGameID() + " has " + gameOnGoing.getUserNames().size() +" users now.");
         return null;
     }
@@ -367,6 +367,7 @@ public class ClientThread extends Thread {
             out.println("Game" + gameOnGoing.getGameID() + ": Checking Phase :  " + ownerUser.getUsername() + " go back to do action");
             gameOnGoing.gInfo.gameState.changAPlayerStateTo(ownerUser, PLAYER_STATE_ACTION_PHASE);
         }
+        HibernateTool.updateGameInfo(gameOnGoing.getGameInfo());
     }
 
     /*

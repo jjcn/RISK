@@ -234,14 +234,22 @@ public class Game implements Serializable {
 
     synchronized protected void tryDoAlliance(Order order){
         AllianceOrder allianceOrder = (AllianceOrder) order;
-        this.gInfo.theWorld.tryFormAlliance(allianceOrder.getSrcName(),allianceOrder.getDesName());
-        System.out.println("Game" + gInfo.gameID + ": " + allianceOrder.getSrcName() + " try form alliance with " + allianceOrder.getDesName());
+        try{
+            this.gInfo.theWorld.tryFormAlliance(allianceOrder.getSrcName(),allianceOrder.getDesName());
+            System.out.println("Game" + gInfo.gameID + ": " + allianceOrder.getSrcName() + " try form alliance with " + allianceOrder.getDesName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     synchronized protected void tryTransferTroop(Order order, String userName){
         TransferTroopOrder transferTroopOrder = (TransferTroopOrder) order;
-        this.gInfo.theWorld.transferTroop(transferTroopOrder, userName);
-        System.out.println("Game" + gInfo.gameID + ": " + userName + " try transfer troop on " + transferTroopOrder.getSrcName() + " from " + transferTroopOrder.getTypeBefore() + " To "+ transferTroopOrder.getTypeAfter());
+        try{
+            this.gInfo.theWorld.transferTroop(transferTroopOrder, userName);
+            System.out.println("Game" + gInfo.gameID + ": " + userName + " try transfer troop on " + transferTroopOrder.getSrcName() + " from " + transferTroopOrder.getTypeBefore() + " To "+ transferTroopOrder.getTypeAfter());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     /*
     * This is the final update for the whole world after one turn
@@ -325,6 +333,7 @@ public class Game implements Serializable {
         }
         factory.assignTerritories(this.gInfo.theWorld, getUserNames());
         this.gInfo.theWorld.setRoomID(gInfo.gameID);
+        this.gInfo.gameState.DoneSetUp();
     }
 
 

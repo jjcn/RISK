@@ -18,13 +18,22 @@ public class GameState extends State  implements Serializable{
     HashSet<PlayerState> playerStates;
     private boolean isDonePlaceUnits;
     private boolean isAlive;
+    private boolean isSetUp;
     public GameState(){
         super(GAME_STATE_WAIT_TO_UPDATE);
         playerStates = new HashSet<PlayerState>();
         isDonePlaceUnits = false;
         isAlive = true;
+        isSetUp = false;
     }
 
+    public void DoneSetUp(){
+        isSetUp = true;
+    }
+
+    public boolean isSetUp(){
+        return isSetUp;
+    }
     /*
     * This set the game dead after the game ends
     * */

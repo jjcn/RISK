@@ -69,11 +69,12 @@ public class GameRunner extends Thread{
             }
         }
 //        while(!game.isFull()){game.waitTime(1);}
-        out.println("Game" +game.getGameID()+" is FULL!!!!!!");
         // wait all users to join to start the game
+        if(!game.gInfo.gameState.isSetUp()){
+            game.setUpGame();
+            out.println("Game" +game.getGameID()+" runner finishes sets up");
+        }
 
-        game.setUpGame();
-        out.println("Game" +game.getGameID()+" runner finishes sets up");
         //Initialization
         notifyAllUsers();
 
@@ -97,7 +98,6 @@ public class GameRunner extends Thread{
             game.gInfo.gameState.updateStateTo(GAME_STATE_DONE_UPDATE);
             game.gInfo.gameState.setActivePlayersStateToUpdating();
             out.println("Game" +game.getGameID()+" runner set all active players updating state");
-
             notifyAllUsers(); // notify all players to enter updating state
             out.println("Game" +game.getGameID()+" runner notifies all players");
 
@@ -121,6 +121,7 @@ public class GameRunner extends Thread{
             if(game.isEndGame() || game.gInfo.gameState.isAllPlayersSwitchOut()){
                 game.gInfo.gameState.setGameDead();
                 out.println("Game" +game.getGameID()+" runner ends, set this game dead");
+                HibernateTool.deleteGameInfo(game.gInfo);
                 break;
             }
             game.gInfo.gameState.updateStateTo(GAME_STATE_WAIT_TO_UPDATE);
