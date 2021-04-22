@@ -8,11 +8,14 @@ import java.io.*;
 
 public class AttackOrderCheckerTest {
     protected final String NOT_ATTACK_ORDER_MSG = "This is not an attack order.";
-    protected final String SAME_OWNER_MSG = 
-        "Cannot attack %s, which belongs to you.";
-    protected final String NOT_ADJACENT_MSG = 
-        "You tried to attack from %s to %s, which are not adjacent territories. %n" +
-        "You can only attack territories directly adjacent to your territories.";
+    protected final String SAME_OWNER_MSG =
+            "Cannot attack %s, which belongs to you.";
+    protected final String MELEE_CANT_ATTACK_MSG =
+            "Your melee units tried to attack %s from %s, which are not adjacent territories. %n" +
+                    "Melee units can only attack territories directly adjacent to your territories.";
+    protected final String RANGED_OUT_OF_REACH_MSG =
+            "Your ranged units tried to attack %s from %s, which is out of reach. %n" +
+                    "Ranged units can only attack territories within their attack range.";
 
     PrintStream out = null;
     Reader inputReader = null;
@@ -107,16 +110,21 @@ public class AttackOrderCheckerTest {
     }
 
     @Test
-    public void testAttackOrderCheckerNotAdjacent() {
+    public void testAttackOrderCheckerMelee() {
         World world = createWorld(names, troopsConnected);
 
         BasicOrder order1 = new BasicOrder("Narnia", "Scadrial", new Troop(3, green), 'A');
-        assertEquals(String.format(NOT_ADJACENT_MSG, "Scadrial", "Narnia"),
+
+        assertEquals(String.format(MELEE_CANT_ATTACK_MSG, "Scadrial", "Narnia"),
                     aoc.checkMyOrder(order1, world));
 
         BasicOrder order2 = new BasicOrder("Scadrial", "Gondor", new Troop(3, blue), 'A');
-        assertEquals(String.format(NOT_ADJACENT_MSG, "Gondor", "Scadrial"),
+        assertEquals(String.format(MELEE_CANT_ATTACK_MSG, "Gondor", "Scadrial"),
                     aoc.checkMyOrder(order2, world));
     }
 
+    @Test
+    public void testAttackOrderCheckerRanged() {
+        // TODO
+    }
 }
