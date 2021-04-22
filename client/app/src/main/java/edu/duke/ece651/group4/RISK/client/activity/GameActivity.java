@@ -48,7 +48,7 @@ public class GameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("RISK Room "+getWorld().getRoomID());
+            getSupportActionBar().setTitle("RISK Room " + getWorld().getRoomID());
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
@@ -111,20 +111,32 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void impReportBT() {
-        reportBT.setOnClickListener(v->{
+        reportBT.setOnClickListener(v -> {
             StringBuilder report = new StringBuilder();
-            for(String item: noticeInfo){
+            for (String item : noticeInfo) {
                 report.append(item);
                 report.append("\n");
             }
-            showByReport(GameActivity.this,"Battle report", report.toString());
+            showByReport(GameActivity.this, "Battle report", report.toString());
         });
     }
 
     // todo: alert to confirm actions.
     private void impUpTechBT() {
         upTechBT.setOnClickListener(v -> {
-            upTechBT.setEnabled(false);
+            upTechBT.setEnabled(false); // can only upgrade tech once in a turn
+            // TODO
+            showUpConfirmDialog(UPTECH_CONFIRM, "You will consume ");
+        });
+    }
+
+    private void showUpConfirmDialog(String title, String msg) {
+        Log.i(TAG, LOG_FUNC_RUN + "enter up confirm");
+        AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
+        builder.setTitle(title);
+        builder.setMessage(msg);
+        builder.setPositiveButton("Yes", (dialog, which) -> {
+            Log.i(TAG, LOG_FUNC_RUN + "click yes");
             doOneUpgrade(new onResultListener() {
                 @Override
                 public void onSuccess() {
@@ -134,9 +146,14 @@ public class GameActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(String errMsg) {
                     showByToast(GameActivity.this, errMsg);
+                    upTechBT.setEnabled(true);
                 }
             });
         });
+        builder.setNegativeButton("No", (dialog, which) -> {
+            upTechBT.setEnabled(true);
+        });
+        builder.show();
     }
 
     private void impAllyBT() {
@@ -203,23 +220,6 @@ public class GameActivity extends AppCompatActivity {
 
     private void showDoneDialog(String title, String msg) {
         Log.i(TAG, LOG_FUNC_RUN + "enter done");
-        AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
-        builder.setTitle(title);
-        builder.setMessage(msg);
-        builder.setPositiveButton("Yes", (dialog, which) -> {
-            Log.i(TAG, LOG_FUNC_RUN + "click yes");
-            waitNextTurn();
-        });
-        builder.setNegativeButton("No", (dialog, which) -> {
-            if (isWatch) {
-                switchGame();
-            }
-        });
-        builder.show();
-    }
-
-    private void showUpConfirmDialog(String title, String msg) {
-        Log.i(TAG, LOG_FUNC_RUN + "enter confirm");
         AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
         builder.setTitle(title);
         builder.setMessage(msg);
