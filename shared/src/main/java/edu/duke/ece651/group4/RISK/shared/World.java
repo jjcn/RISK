@@ -1,6 +1,5 @@
 package edu.duke.ece651.group4.RISK.shared;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
@@ -8,14 +7,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.NoSuchElementException;
 
-import java.util.Queue;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.io.Serializable;
-
-import static edu.duke.ece651.group4.RISK.shared.Constant.PLACEMENT_DONE;
 
 /**
  * This class models the world which constitutes a certain number of territories
@@ -64,7 +60,7 @@ public class World implements Serializable {
      */
     protected Boolean[][] allianceMatrix;
     /**
-     * Battle report
+     * Battle report. Also used to check the status of the world.
      */
     protected String report;
     /**
@@ -482,7 +478,6 @@ public class World implements Serializable {
      * @param troop    is a Troop object.
      */
     public void stationTroop(String terrName, Troop troop) {
-        this.report = PLACEMENT_DONE;
         Territory terr = findTerritory(terrName);
         terr.setOwnerTroop(troop.checkTroopSize(), troop.getOwner());
     }
@@ -494,9 +489,15 @@ public class World implements Serializable {
      * @param population is the population of the troop.
      */
     public void stationTroop(String terrName, int population) {
-        this.report = PLACEMENT_DONE;
         Territory terr = findTerritory(terrName);
         terr.setOwnerTroop(population, terr.getOwner());
+    }
+
+    /**
+     * Set the report to PLACEMENT_DONE.
+     */
+    public void setReportToPlacementDone() {
+        this.report = Constant.PLACEMENT_DONE;
     }
 
     /**
