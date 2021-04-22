@@ -283,6 +283,25 @@ public class World implements Serializable {
     }
 
     /**
+     * Get all the territories within a range from a territory.
+     * @param start is the name of a territory.
+     * @param range is the max distance from this territory.
+     * @return a list of all territories whose distance from the a territory
+     *         is smaller or equal to range.
+     */
+    public List<Territory> getAllTerritoriesWithinRange(Territory start, int range) {
+        List<Territory> ans = new ArrayList<>();
+        Set<Territory> allTerritoriesSet = new HashSet<>();
+        allTerritoriesSet.addAll(getAllTerritories());
+        for (Territory end : getAllTerritories()) {
+            if (calculateShortestPath(start, end, allTerritoriesSet) <= range) {
+                ans.add(end);
+            }
+        }
+        return ans;
+    }
+
+    /**
      * Set a random seed on a territory.
      *
      * @param terr is the territory to set random seed.
@@ -501,25 +520,58 @@ public class World implements Serializable {
 
     /**
      * Checks if a player's troop can move through a territory.
-     * @param moverName is the name of the player who tries to move through this territory
-     * @param terr is the name of the territory
+     * @param moverName is the name of the player who tries to move through this territory.
+     * @param terr is the name of the territory.
      * @return true, if this player's troop is allowed to move through this territory;
      *         false, if not.
      */
     public boolean canMoveThrough(String moverName, Territory terr) {
-        Set<String> allowedOwnerNames = getAllianceNames(moverName);
-        allowedOwnerNames.add(moverName);
-        return allowedOwnerNames.contains(terr.getOwnerName());
+        return getAllowedOwnerNames(moverName).contains(terr.getOwnerName());
     }
 
     /**
-     * Overloaded function to Calculates the shortest path length between 2 vertices.
+     * Get all names of players that allow a player to move through their territories.
+     * @param playerName is the name of a player.
+     * @return a set that contains the names of all players that
+     *         allow a player to move through their territories.
+     */
+    public Set<String> getAllowedOwnerNames(String playerName) {
+        Set<String> allowedOwnerNames = getAllianceNames(playerName);
+        allowedOwnerNames.add(playerName);
+        return allowedOwnerNames;
+    }
+
+    /**
+     * Get all the territories that allows a player to move through.
+     * @param playerName is the name a of player.
+     * @return A set of all the territories that allows a player to move through.
+     */
+    public Set<Territory> getAllowedTerritories(String playerName) {
+        Set<Territory> ans = new HashSet<>();
+        Set<String> allowedOwnerNames = getAllowedOwnerNames(playerName);
+        for (Territory terr : getAllTerritories()) {
+            if (allowedOwnerNames.contains(terr.getOwnerName())) {
+                ans.add(terr);
+            }
+        }
+        return ans;
+    }
+
+    /**
+     * Overloaded function to calculate the shortest path length between 2 vertices for a certain player.
      */
     protected int calculateShortestPath(String startName, String endName, String playerName) {
         Territory start = findTerritory(startName);
         Territory end = findTerritory(endName);
+        Set<Territory> allowedTerrs = getAllowedTerritories(playerName);
 
-        return calculateShortestPath(start, end, playerName);
+        return calculateShortestPath(start, end, allowedTerrs);
+    }
+
+    protected int calculateShortestPath(Territory start, Territory end, String playerName) {
+        Set<Territory> allowedTerrs = getAllowedTerritories(playerName);
+
+        return calculateShortestPath(start, end, allowedTerrs);
     }
 
     /**
@@ -527,10 +579,10 @@ public class World implements Serializable {
      *
      * @param start is the starting territory.
      * @param end   is the ending territory.
-     * @param playerName is the player who wants to find out the shortest path.
+     * @param allowedTerrs is the territories allowed to move through.
      * @return length of the shortest path.
      */
-    protected int calculateShortestPath(Territory start, Territory end, String playerName) {
+    protected int calculateShortestPath(Territory start, Territory end, Set<Territory> allowedTerrs) {
         String NOT_REACHABLE_MSG = "Cannot reach from start to end.";
         /*
          * shortest distances from start to all vertices
@@ -566,7 +618,7 @@ public class World implements Serializable {
             Territory current = getSmallestDistanceTerr(unvisited, distances);
             unvisited.remove(current);
             for (Territory adjacent : getAdjacents(current)) {
-                if (!visited.contains(adjacent) && canMoveThrough(playerName, adjacent)) {
+                if (!visited.contains(adjacent) && allowedTerrs.contains(adjacent)) {
                     distances.put(adjacent,
                             Math.min(distances.get(current) + adjacent.getArea(), distances.get(adjacent)));
                     unvisited.add(adjacent);
@@ -737,6 +789,7 @@ public class World implements Serializable {
             sendBackAllianceTroop(startOwnerName, endOwnerName);
         }
         // moves troop
+        // TODO: can only attack adjacent territories now
         Troop sendout = start.sendOutTroop(troop);
         if (troop.hasRanged()) {
             // if it HAS ranged units, send ranged attack to end territory
