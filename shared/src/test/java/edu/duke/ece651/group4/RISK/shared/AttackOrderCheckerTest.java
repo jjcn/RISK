@@ -113,18 +113,20 @@ public class AttackOrderCheckerTest {
     public void testAttackOrderCheckerMelee() {
         World world = createWorld(names, troopsConnected);
 
-        BasicOrder order1 = new BasicOrder("Narnia", "Scadrial", new Troop(3, green), 'A');
-
+        AttackOrder atk1 = new AttackOrder("Narnia", "Scadrial", new Troop(3, green));
         assertEquals(String.format(MELEE_CANT_ATTACK_MSG, "Scadrial", "Narnia"),
-                    aoc.checkMyOrder(order1, world));
+                    aoc.checkMyOrder(atk1, world));
 
-        BasicOrder order2 = new BasicOrder("Scadrial", "Gondor", new Troop(3, blue), 'A');
+        AttackOrder atk2 = new AttackOrder("Scadrial", "Gondor", new Troop(3, blue));
         assertEquals(String.format(MELEE_CANT_ATTACK_MSG, "Gondor", "Scadrial"),
-                    aoc.checkMyOrder(order2, world));
+                    aoc.checkMyOrder(atk2, world));
     }
 
     @Test
     public void testAttackOrderCheckerRanged() {
         // TODO
+        World world = createWorld(names, troopsConnected);
+
+
     }
 }
