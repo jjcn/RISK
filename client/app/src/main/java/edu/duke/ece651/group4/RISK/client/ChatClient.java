@@ -117,11 +117,15 @@ public class ChatClient extends Thread {
     }
 
     public void setMsgListener(onReceiveListener receiveMsgListener) {
-        this.chatReceiveListener = receiveMsgListener;
+        new Thread(()->{
+            this.chatReceiveListener = receiveMsgListener;
+        }).start();
     }
 
     public void setChatListener(onReceiveListener receiveMsgListener) {
-        this.msgReceiveListener = receiveMsgListener;
+        new Thread(()->{
+            this.msgReceiveListener = receiveMsgListener;
+        }).start();
     }
 
     //send a chatMessage to Server
