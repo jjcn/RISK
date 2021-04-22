@@ -139,6 +139,15 @@ public class Constant {
     public static final List<Integer> TECH_LEVEL_UPGRADE_COSTS =
             Arrays.asList(new Integer[]{0, 50, 75, 125, 200, 300});
 
+    /**
+     * Get the cost to upgrade tech level by 1 from a certain tech level.
+     * @param currentTechLevel is the currentTechLevel.
+     * @return the cost to upgrade tech level by 1 at this tech level.
+     */
+    public static int getTechLevelUpgradeCost(int currentTechLevel) {
+        return TECH_LEVEL_UPGRADE_COSTS.get(currentTechLevel);
+    }
+
     /*
     public static List<Integer> initTechLevelUpgradeCosts(List<Integer> cumTechLevelUpgradeCosts) {
         List<Integer> ans = new ArrayList<>();
