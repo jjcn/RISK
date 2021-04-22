@@ -99,7 +99,9 @@ public class HostApp implements Runnable {
 
     protected static void printGameInfo(GameInfo gInfo){
         System.out.println("Loading: Game" + gInfo.gameID + "'s Info: ");
-        System.out.println("         GameState:" + gInfo.gameState);
+        System.out.println("         GameState: isAive:" + gInfo.gameState.isAlive());
+        System.out.println("         GameState: isSetUp:" + gInfo.gameState.isSetUp());
+        System.out.println("         GameState: isDonePlaceUnits:" + gInfo.gameState.isDonePlaceUnits());
         World w = gInfo.getTheWorld();
         System.out.println("         World Turn num:" + w.getTurnNumber());
         System.out.println("         World Report:" + w.getReport());

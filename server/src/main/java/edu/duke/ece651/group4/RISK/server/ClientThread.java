@@ -259,16 +259,16 @@ public class ClientThread extends Thread {
         if(gameOnGoing == null){
             return;
         }
-        out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " Place Units Phase");
         if(gameOnGoing.gInfo.gameState.isDonePlaceUnits()){
             return;
         }
+        out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " Place Units Phase");
         gameOnGoing.barrierWait();
         // wait all players to join and runner to set up the game
         waitNotifyFromRunner(); // This is to make sure runner notify all after all waits
         // send the world info
         this.theClient.sendObject(gameOnGoing.getTheWorld());
-        out.println("Game" + gameOnGoing.getGameID() + ": send world to " + ownerUser.getUsername() + " wait for orders" );
+        out.println("Game" + gameOnGoing.getGameID() + ": send world to " + ownerUser.getUsername() + " wait for orders in Place Units Phase" );
         // start to place Units
         List<PlaceOrder> placeOrders = (List<PlaceOrder> )this.theClient.recvObject();
         for(PlaceOrder p: placeOrders){
@@ -278,7 +278,6 @@ public class ClientThread extends Thread {
         // wait all players to finish placeUnits
         gameOnGoing.barrierWait();
         gameOnGoing.gInfo.gameState.setDonePlaceUnits(); // if user joins back, he does not need to do place unit phase
-
     }
 
 
@@ -334,7 +333,7 @@ public class ClientThread extends Thread {
         while(!exit){
             if(start){
                 this.theClient.sendObject(gameOnGoing.getTheWorld());
-                out.println("Game" + gameOnGoing.getGameID() + ": send world to " + ownerUser.getUsername() + " wait for orders" );
+                out.println("Game" + gameOnGoing.getGameID() + ": send world to " + ownerUser.getUsername() + " wait for orders in action phase" );
                 start = false;
             }
 
