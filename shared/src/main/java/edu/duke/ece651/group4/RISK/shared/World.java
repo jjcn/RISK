@@ -218,6 +218,9 @@ public class World implements Serializable {
         return cpy;
     }
 
+    /**
+     * Expand the alliance matrix by 1 on both dimensions.
+     */
     protected void expandAllianceMatrixBy1() {
         int n = allianceMatrix.length;
         boolean[][] newAllianceMatrix = new boolean[n + 1][n + 1];
