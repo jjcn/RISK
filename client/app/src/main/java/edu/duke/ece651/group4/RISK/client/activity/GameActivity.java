@@ -125,8 +125,8 @@ public class GameActivity extends AppCompatActivity {
     private void impUpTechBT() {
         upTechBT.setOnClickListener(v -> {
             upTechBT.setEnabled(false); // can only upgrade tech once in a turn
-            // TODO
-            showUpConfirmDialog(UPTECH_CONFIRM, "You will consume ");
+            // TODO ++: show how much resource consume
+            showUpConfirmDialog(UPTECH_CONFIRM, "Upgrade will take effect next turn.");
         });
     }
 

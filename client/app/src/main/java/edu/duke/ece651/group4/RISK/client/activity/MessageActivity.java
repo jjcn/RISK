@@ -58,7 +58,7 @@ public class MessageActivity extends AppCompatActivity
          * keep receive via chatClient
          */
         Log.i(TAG, LOG_FUNC_RUN + "start set lsn");
-        getChatClient().setMsgListener(new onReceiveListener() {
+        setMsgListener(new onReceiveListener() {
             @Override
             public void onSuccess(Object o) {
                 runOnUiThread(() -> {
@@ -124,7 +124,7 @@ public class MessageActivity extends AppCompatActivity
         ChatMessageUI message = new ChatMessageUI(target, input.toString(), user, targets);
 
         Log.i(TAG, LOG_FUNC_RUN + "start send msg");
-        getChatClient().sendOneMsg(message, new onResultListener() {
+        sendOneMsg(message, new onResultListener() {
             @Override
             public void onSuccess() {
                 addMsg(message);

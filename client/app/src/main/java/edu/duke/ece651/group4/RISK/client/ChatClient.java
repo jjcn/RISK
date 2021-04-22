@@ -16,6 +16,7 @@ import edu.duke.ece651.group4.RISK.shared.message.ChatMessage;
 import org.apache.commons.lang3.SerializationUtils;
 
 import static edu.duke.ece651.group4.RISK.client.Constant.LOG_FUNC_RUN;
+import static edu.duke.ece651.group4.RISK.client.Constant.WORLD_CHAT;
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.*;
 import static edu.duke.ece651.group4.RISK.shared.Constant.CHAT_SETUP_ACTION;
 
@@ -57,6 +58,9 @@ public class ChatClient extends Thread {
         }
     }
 
+    /**
+     * should send a notification to serer at start.
+     */
     private void initReceive() {
         ChatMessage message = new ChatMessage(username, null, null, 0, CHAT_SETUP_ACTION);
         byte[] chatBytes = SerializationUtils.serialize(message);
@@ -72,7 +76,7 @@ public class ChatClient extends Thread {
     }
 
     /**
-     * This keeps waiting for message from server
+     * This keeps waiting for message from server.
      */
     public void waitToReceive() throws IOException {
         while (!exit.get()) {
@@ -82,6 +86,7 @@ public class ChatClient extends Thread {
                 continue;
             }
 
+            // wait here until get message
             if (readBytes == -1) {
                 this.chatChannel.close();
                 System.out.println("close channel");
@@ -89,8 +94,10 @@ public class ChatClient extends Thread {
             ChatMessage chatMsgReceive = SerializationUtils.deserialize(readBuffer.array());
             readBuffer.clear();
 
-            //get chatID
-            String chatID = "";
+            /**
+             * get chatID: constant for chat with whole world, the target player's name otherwise.
+             */
+            String chatID = WORLD_CHAT;
             Set<String> targets = chatMsgReceive.getTargetsPlayers();
             if (targets.size() == 1) {
                 for (String name : targets) {
@@ -105,7 +112,7 @@ public class ChatClient extends Thread {
             if (chatReceiveListener != null) {
                 Log.i(TAG, LOG_FUNC_RUN + "ClientChat: " + username + " get from " + chatMsgReceive.getSource() + " saying " + chatMsgReceive.getChatContent());
                 chatReceiveListener.onSuccess(receivedMsg);
-                if(msgReceiveListener != null){
+                if (msgReceiveListener != null) {
                     msgReceiveListener.onSuccess(receivedMsg);
                 }
             } else {
@@ -116,31 +123,32 @@ public class ChatClient extends Thread {
     }
 
     public void setMsgListener(onReceiveListener receiveMsgListener) {
-        this.chatReceiveListener = receiveMsgListener;
-    }
-
-    public void setChatListener(onReceiveListener receiveMsgListener) {
         this.msgReceiveListener = receiveMsgListener;
     }
 
-    //send a chatMessage to Server
-    public void sendOneMsg(ChatMessageUI message, onResultListener listener) {
-        ChatMessage chatMessage = new ChatMessage(username, message.getTargets(), message.getText(), getRoomId());
-        byte[] chatBytes = SerializationUtils.serialize(chatMessage);
-        ByteBuffer writeBuffer = ByteBuffer.wrap(chatBytes);
+    public void setChatListener(onReceiveListener receiveMsgListener) {
+        this.chatReceiveListener = receiveMsgListener;
+    }
+
+    /**
+     * send a chatMessage to Server. refresh the MessageActivity by listener and ChatActivity by existed chatListener.
+     *
+     * @param message to send.
+     */
+    public void send(ChatMessageUI message) {
         new Thread(() -> {
+            ChatMessage chatMessage = new ChatMessage(username, message.getTargets(), message.getText(), getRoomId());
+            Log.i(TAG,LOG_FUNC_RUN+message.getTargets().size());
+            byte[] chatBytes = SerializationUtils.serialize(chatMessage);
+            ByteBuffer writeBuffer = ByteBuffer.wrap(chatBytes);
             try {
+                Log.i(TAG, LOG_FUNC_RUN + "start chat channel");
                 chatChannel.write(writeBuffer);
-                if(listener != null) {
-                    listener.onSuccess();
-                }
-                if(chatReceiveListener!=null) {
-                    chatReceiveListener.onSuccess(message);
-                }
+                Log.i(TAG, LOG_FUNC_RUN + "end chat channel");
             } catch (IOException e) {
                 Log.e(TAG, e.toString());
             }
+            writeBuffer.clear();
         }).start();
-        writeBuffer.clear();
     }
 }
