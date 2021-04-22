@@ -37,12 +37,12 @@ public class GameActivity extends AppCompatActivity {
     ImageButton allyBT;
     ImageButton upTechBT;
     ImageButton reportBT;
+    ArrayList<String> noticeInfo;
     ListView worldInfoRC;
     ArrayAdapter worldInfoAdapter;
     List<String> worldInfo;
     Button doneBT;
     FloatingActionButton chatBT;
-    ArrayList<String> noticeInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +83,7 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
-    // TODO: historyInfo button, upTech button
+    // TODO: historyInfo button
     private void impUI() {
         playerInfo = findViewById(R.id.playerInfo);
         allyBT = findViewById(R.id.ally);
@@ -128,11 +128,11 @@ public class GameActivity extends AppCompatActivity {
         upTechBT.setOnClickListener(v -> {
             upTechBT.setEnabled(false); // can only upgrade tech once in a turn
             String msg = "(Upgrade will take effect next turn.)\n" + "To upgrade you will consume: " + TECH_LEVEL_UPGRADE_COSTS.get(getTechLevel());
-            showUpConfirmDialog(UPTECH_CONFIRM, msg);
+            showUpTechConfirmDialog(UPTECH_CONFIRM, msg);
         });
     }
 
-    private void showUpConfirmDialog(String title, String msg) {
+    private void showUpTechConfirmDialog(String title, String msg) {
         Log.i(TAG, LOG_FUNC_RUN + "enter up confirm");
         AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
         builder.setTitle(title);
