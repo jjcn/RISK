@@ -97,12 +97,12 @@ public class ChatActivity extends AppCompatActivity implements DialogsListAdapte
         }
     }
 
-    /**
-     * Called on receiving new dialogs
-     *
-     * @param dialog is a dialog
-     */
-    private void onNewDialog(IDialog dialog) {
-        chatListAdapter.addItem(dialog);
-    }
+//    /**
+//     * Called on receiving new dialogs
+//     *
+//     * @param dialog is a dialog
+//     */
+//    private void onNewDialog(IDialog dialog) {
+//        chatListAdapter.addItem(dialog);
+//    }
 }

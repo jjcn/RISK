@@ -56,6 +56,18 @@
                  app:layout_constraintTop_toTopOf="parent"
                  app:layout_constraintBottom_toTopOf="@id/hguide1"
                  app:layout_constraintStart_toEndOf="@id/upgradeTech"
+                 app:layout_constraintEnd_toStartOf="@id/report"
+    />
+
+    <ImageButton android:id="@+id/report"
+                 android:background="@drawable/button_style"
+                 android:src="@drawable/ic_baseline_description_24"
+                 android:padding="@dimen/buttonMargin"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 app:layout_constraintTop_toTopOf="parent"
+                 app:layout_constraintBottom_toTopOf="@id/hguide1"
+                 app:layout_constraintStart_toEndOf="@id/ally"
                  app:layout_constraintEnd_toEndOf="parent"
     />
 
