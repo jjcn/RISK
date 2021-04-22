@@ -111,11 +111,11 @@ public class AttackOrderCheckerTest {
         World world = createWorld(names, troopsConnected);
 
         BasicOrder order1 = new BasicOrder("Narnia", "Scadrial", new Troop(3, green), 'A');
-        assertEquals(String.format(NOT_ADJACENT_MSG, "Narnia", "Scadrial"), 
+        assertEquals(String.format(NOT_ADJACENT_MSG, "Scadrial", "Narnia"),
                     aoc.checkMyOrder(order1, world));
 
         BasicOrder order2 = new BasicOrder("Scadrial", "Gondor", new Troop(3, blue), 'A');
-        assertEquals(String.format(NOT_ADJACENT_MSG, "Scadrial", "Gondor"),
+        assertEquals(String.format(NOT_ADJACENT_MSG, "Gondor", "Scadrial"),
                     aoc.checkMyOrder(order2, world));
     }
 
