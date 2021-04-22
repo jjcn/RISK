@@ -347,4 +347,9 @@ public class Game implements Serializable {
             e.printStackTrace();
         }
     }
+
+    synchronized public void setDonePlacementPhase(){
+        gInfo.gameState.setDonePlaceUnits();
+        gInfo.theWorld.setReportToPlacementDone();
+    }
 }

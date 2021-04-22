@@ -74,8 +74,6 @@ public class GameRunner extends Thread{
         // wait all users to join to start the game
         if(!game.gInfo.gameState.isSetUp()){
             game.setUpGame();
-//            GameInfo gInfo = game.getGameInfo();
-//            World w = game.getTheWorld();
             HibernateTool.updateGameInfo(game.getGameInfo());
             out.println("Game" +game.getGameID()+" runner finishes sets up");
             notifyAllUsers(); //Initialization
@@ -84,10 +82,9 @@ public class GameRunner extends Thread{
         if(!game.gInfo.gameState.isDonePlaceUnits()){
             notifyAllUsers(); //notify all users to place units
         }
-        else{
-            out.println("Game"+game.getGameID()+ " is loaded to enter action phase!");
+        else {
+            out.println("Game" + game.getGameID() + " is loaded to enter action phase!");
         }
-
 
 
 

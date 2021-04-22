@@ -282,7 +282,7 @@ public class ClientThread extends Thread {
         // wait all players to finish placeUnits
 //        gameOnGoing.barrierWait();
         waitNotifyFromRunner();
-        gameOnGoing.gInfo.gameState.setDonePlaceUnits(); // if user joins back, he does not need to do place unit phase
+        gameOnGoing.setDonePlacementPhase(); // if user joins back, he does not need to do place unit phase
     }
 
 
