@@ -21,13 +21,13 @@ public class Arrow extends Soldier {
     @Override
     public void setLevel(int lv) {
         this.level = lv;
-        this.jobName = BREAKER_NAMES.get(lv);
+        this.jobName = ARROW_NAMES.get(lv);
     }
 
     @Override
     public void setJob(String newJob) {
         this.jobName = newJob;
-        this.level = BREAKER_NAMES.indexOf(newJob);
+        this.level = ARROW_NAMES.indexOf(newJob);
     }
 
 
