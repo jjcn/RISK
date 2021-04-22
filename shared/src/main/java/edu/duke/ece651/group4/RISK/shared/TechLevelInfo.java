@@ -27,9 +27,8 @@ public class TechLevelInfo implements Serializable {
      * Cumulative costs of upgrading from tech level 1 to N.
      * Two 0's are put at the start for easy indexing by techLevel.
      */
-    protected static final List<Integer> CUM_TECH_LEVEL_UPGRADE_COSTS
-            = Arrays.asList(new Integer[]{0, 0, 50, 125, 250, 450, 750});
-    // TODO: this is hardcoded for now, may put in a file?
+    protected static final List<Integer> CUM_TECH_LEVEL_UPGRADE_COSTS =
+            Constant.CUM_TECH_LEVEL_UPGRADE_COSTS;
 
     public TechLevelInfo(int techLevel) {
         checkTechLevelValidity(techLevel);

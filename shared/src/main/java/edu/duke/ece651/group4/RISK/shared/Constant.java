@@ -111,9 +111,25 @@ public class Constant {
 
     public static final String PLACEMENT_DONE="Placement Done\n";
 
-    //Chat
+    // Chat
     public static final int CHAT_PORT = 5678;
 
-    //Alliance
+    // Alliance
     public static final int MAX_ALLOWED_ALLY_NUMBER = 1;
+
+    // Tech level upgrade costs
+    /**
+     * Cumulative tech level upgrade costs.
+     * The i-th entry is the total cost to upgrade tech level from 1 to i. (i starts from 0)
+     */
+    public static final List<Integer> CUM_TECH_LEVEL_UPGRADE_COSTS =
+            Arrays.asList(new Integer[]{0, 0, 50, 125, 250, 450, 750}); // TODO: should depend on tech upgrade costs
+
+    /**
+     * Tech level upgrade costs.
+     * The i-th entry is the cost to upgrade tech level from i to i + 1. (i starts from 0)
+     */
+    public static final List<Integer> TECH_LEVEL_UPGRADE_COSTS =
+        Arrays.asList(new Integer[]{0, 50, 75, 125, 200, 300});
+
 }
