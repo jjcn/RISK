@@ -57,10 +57,6 @@ public class Game implements Serializable {
     * @return a list of usernames in the game
     * */
     public List<String> getUserNames(){
-//        ArrayList<String> userNames = new ArrayList<>();
-//        for(User u: gInfo.usersOnGame){
-//            userNames.add(u.getUsername());
-//        }
         List<String> usernames = new ArrayList<>();
         for(String n: gInfo.usersOnGame){
             usernames.add(n);
@@ -74,10 +70,6 @@ public class Game implements Serializable {
      * @return true if he is in, false if not
      * */
     public boolean isUserInGame(User u){
-//        if(gInfo.usersOnGame.contains(u)){
-//            return true;
-//        }
-//        return false;
         String username = u.getUsername();
         for(String uName : gInfo.usersOnGame){
             if(username.equals(uName)){

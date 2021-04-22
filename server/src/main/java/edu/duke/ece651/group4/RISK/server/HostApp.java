@@ -89,12 +89,22 @@ public class HostApp implements Runnable {
         for(GameInfo gInfo: gamesInfo){
             if(gInfo.gameState.isAlive()){
                 Game g =new Game(gInfo);
+                printGameInfo(gInfo);
                 games.add(g);
                 GameRunner gameRunner = new GameRunner(g,out);
                 gameRunner.start();
             }
         }
     }
+
+    protected static void printGameInfo(GameInfo gInfo){
+        System.out.println("Loading: Game" + gInfo.gameID + "'s Info: ");
+        System.out.println("         GameState:" + gInfo.gameState);
+        World w = gInfo.getTheWorld();
+        System.out.println("         World Turn num:" + w.getTurnNumber());
+        System.out.println("         World Report:" + w.getReport());
+    }
+
 //    public void loadGames(){
 //
 //    }

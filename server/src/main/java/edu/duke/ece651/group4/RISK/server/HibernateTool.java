@@ -81,12 +81,12 @@ public class HibernateTool {
         }
     }
 
-    public static void updateGameInfo(GameInfo GameInfo) {
+    synchronized public static void updateGameInfo(GameInfo GameInfo) {
         Session session = sessionFactory.openSession();
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
-            session.merge(GameInfo);
+            session.update(GameInfo);
             tx.commit();
         } catch (HibernateException e) {
             if (tx != null) {

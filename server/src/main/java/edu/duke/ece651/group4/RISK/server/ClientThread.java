@@ -200,11 +200,6 @@ public class ClientThread extends Thread {
     }
 
     protected String checkJoinGame (Game gameToJoin){
-//        out.println( "Game" + gameOnGoing.getGameID() + ownerUser + "tries to join.");
-//        out.println( "Game" + gameOnGoing.getGameID() + " has: ");
-//        for(String u : gameToJoin.getUserNames()){
-//            out.println(u);
-//        }
         if(gameToJoin == null){ return "Invalid Join: Game is null";}
         if(gameToJoin.isFull() && !gameToJoin.isUserInGame(ownerUser)){return INVALID_JOIN;}
         if(!gameToJoin.isFull()){
@@ -240,7 +235,6 @@ public class ClientThread extends Thread {
         ArrayList<RoomInfo> roomsInfo = new ArrayList<RoomInfo>();
         for(Game g : games){
             if(g.gInfo.gameState.isAlive()){
-//                out.println("Game"+ g.getGameID() + " is active and should be shown in room list");
                 roomsInfo.add(createARoomInfo(g));
             }
         }
@@ -250,7 +244,6 @@ public class ClientThread extends Thread {
 
     protected RoomInfo createARoomInfo(Game g){
         List<String> names =  g.getUserNames();
-        out.println("Game" + g.getGameID() + " has names " );
         for(String n : names){
             out.println(n);
         }
