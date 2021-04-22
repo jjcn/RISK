@@ -38,16 +38,17 @@ public class HostApp implements Runnable {
         this.test_mode = test_mode;
 
     }
+
     public HostApp(ServerSocket s){
         this(s,false);
     }
 
-    protected void addTestUsers(){
-        users.add(new User(0,"xs","1"));
-        users.add(new User(1,"ws","1"));
-        users.add(new User(2,"jin","1"));
-        users.add(new User(3,"sj","1"));
-    }
+//    protected void addTestUsers(){
+//        users.add(new User(0,"xs","1"));
+//        users.add(new User(1,"wx","1"));
+//        users.add(new User(2,"jin","1"));
+//        users.add(new User(3,"sj","1"));
+//    }
 
     /*
      * This setup connection between server and clients
@@ -59,8 +60,7 @@ public class HostApp implements Runnable {
      *  */
 
     public void acceptConnection(){
-        addTestUsers();
-
+//        addTestUsers();
         while(true) {
             try {
                 Socket s = hostSocket.accept();
@@ -77,8 +77,50 @@ public class HostApp implements Runnable {
         }
     }
 
+    public void tryLoadUsersFromDatabase(){
+        List<UserInfo> usInfo = HibernateTool.getUserInfoList();
+        for(UserInfo uInfo: usInfo){
+            users.add(new User(uInfo));
+        }
+    }
+
+    public void tryLoadGamesFromDatabase(){
+        List<GameInfo> gamesInfo = HibernateTool.getGameInfoList();
+        for(GameInfo gInfo: gamesInfo){
+            if(gInfo.gameState.isAlive()){
+                if(!gInfo.gameState.isDonePlaceUnits()){
+//                    gInfo.gameState.setGameDead(); // set this game dead if it has not started action phase
+                }
+                Game g =new Game(gInfo);
+                printGameInfo(gInfo);
+                games.add(g);
+                GameRunner gameRunner = new GameRunner(g,out);
+                gameRunner.start();
+            }
+        }
+    }
+
+    protected static void printGameInfo(GameInfo gInfo){
+        System.out.println("Loading: Game" + gInfo.gameID + "'s Info: ");
+        System.out.println("         GameState: isAive: " + gInfo.gameState.isAlive());
+        System.out.println("         GameState: isSetUp: " + gInfo.gameState.isSetUp());
+        System.out.println("         GameState: isDonePlaceUnits: " + gInfo.gameState.isDonePlaceUnits());
+        System.out.println("         GameState: isWaitToUpdate: " + gInfo.gameState.isWaitToUpdate());
+        System.out.println("         GameState: isAllPlayersDoneUpdatingState: " + gInfo.gameState.isAllPlayersDoneUpdatingState());
+        System.out.println("         GameState: isAllPlayersDoneOneTurn: " + gInfo.gameState.isAllPlayersDoneOneTurn());
+        System.out.println("         GameState: isDoneUpdateGame: " + gInfo.gameState.isDoneUpdateGame());
+        World w = gInfo.getTheWorld();
+        System.out.println("         World Turn num: " + w.getTurnNumber());
+        System.out.println("         World Report: " + w.getReport());
+    }
+
+//    public void loadGames(){
+//
+//    }
     public void run() {
         out.println("Server starts to run");
+        tryLoadUsersFromDatabase();
+        tryLoadGamesFromDatabase();
         acceptConnection();
     }
 

@@ -1,6 +1,8 @@
 package edu.duke.ece651.group4.RISK.server;
 
-public class State {
+import java.io.Serializable;
+
+public class State implements Serializable {
     String state;
 
     State(String s){

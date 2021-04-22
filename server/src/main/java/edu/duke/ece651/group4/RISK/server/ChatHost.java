@@ -8,10 +8,7 @@ import java.io.PrintStream;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.nio.ByteBuffer;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
-import java.nio.channels.ServerSocketChannel;
-import java.nio.channels.SocketChannel;
+import java.nio.channels.*;
 import java.util.*;
 
 import static edu.duke.ece651.group4.RISK.shared.Constant.CHAT_PORT;
@@ -42,6 +39,7 @@ public class ChatHost extends Thread {
         selector = Selector.open();
         serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
         out.println("ChatHost finishes init");
+
     }
 
     /*
@@ -106,7 +104,7 @@ public class ChatHost extends Thread {
                     }
                 }
             }
-        } catch (IOException e) {
+        } catch (IOException | org.apache.commons.lang3.SerializationException e) {
             out.println("Key is cancelled");
             key.cancel();
             e.printStackTrace();
@@ -131,10 +129,13 @@ public class ChatHost extends Thread {
                 out.println("ChatHost: no channel exits for " + target);
                 continue;
             }
-            out.println("ChatHost: " + sender + " send a message to " + target + " successfully -- " + chatMessage.getChatContent());
             ByteBuffer sendBuffer = ByteBuffer.wrap(SerializationUtils.serialize(chatMessage));
             clientChannel.write(sendBuffer);
             sendBuffer.clear();
+            out.println("ChatHost: " + sender + " send a message to " + target + " successfully -- " + chatMessage.getChatContent());
+        }
+        if(targets.size()==0){
+            out.println("ChatHost: Recv a message but targets size is 0");
         }
     }
 

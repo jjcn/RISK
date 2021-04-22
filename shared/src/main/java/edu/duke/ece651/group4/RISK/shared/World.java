@@ -1244,15 +1244,19 @@ public class World implements Serializable {
         throw new NoSuchElementException(String.format(TERRITORY_NOT_FOUND_MSG, terrName));
     }
 
-    /*@Override
-    public boolean equals(Object other) {
-        if (other != null && other.getClass().equals(getClass())) {
-            World otherWorld = (World) other;
-            return otherWorld.territories.equals(territories);
-        } else {
-            return false;
-        }
-    }*/
+
+
+//    @Override
+//    public boolean equals(Object other) {
+//        if (other != null && other.getClass().equals(getClass())) {
+//            World otherWorld = (World) other;
+//            return otherWorld.territories.equals(territories);
+//        } else {
+//            return false;
+//        }
+//    }
+
+
 
     /**
      * Calls Territory & PlayerInfo toString function

@@ -1,11 +1,15 @@
 package edu.duke.ece651.group4.RISK.server;
 
 
+import java.io.Serializable;
 import java.util.HashSet;
 
-public class User {
+public class User implements Serializable {
     UserInfo userInfo;
 
+    public User(){
+        userInfo = new UserInfo();
+    }
     /*
      * This construct the User
      * */
@@ -56,6 +60,10 @@ public class User {
             return false;
         }
         return true;
+    }
+
+    public User clone(){
+        return new User(userInfo.userID,userInfo.getUsername(),userInfo.getPassword());
     }
 
 }
