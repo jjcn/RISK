@@ -87,7 +87,6 @@ public class GameRunner extends Thread{
         }
 
 
-
         //ActionPhase
         while(true){
             boolean exit2 = false;

@@ -136,6 +136,9 @@ public class ChatHost extends Thread {
             sendBuffer.clear();
             out.println("ChatHost: " + sender + " send a message to " + target + " successfully -- " + chatMessage.getChatContent());
         }
+        if(targets.size()==0){
+            out.println("ChatHost: Recv a message but targets size is 0");
+        }
     }
 
     @Override
