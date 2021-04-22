@@ -1,7 +1,5 @@
 package edu.duke.ece651.group4.RISK.shared;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
@@ -222,12 +220,12 @@ public class GraphTest {
         expected.add(-1);
         assertTrue(graph.getVertices().containsAll(expected));
     }
-    
+
     /**
-     * Helper function that tests if adjacents of a vertex is as expected. 
+     * Helper function that tests if adjacents of a vertex is as expected.
      * @param graph is the graph
-     * @param data is the vertex to find adjacents
-     * @param expectedAdjs is the expected adjacents
+     * @param key is the vertex to find adjacents
+     * @param expectedAdjs are the expected adjacents
      */
     public void assertEqualAdjacents(Graph<Integer> graph, int key, List<Integer> expectedAdjs) {
         assertTrue(graph.getAdjacentVertices(key).containsAll(expectedAdjs));

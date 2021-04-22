@@ -179,9 +179,12 @@ public class Graph<T> implements Serializable {
     protected void expandAdjMatrixBy1() {
         int n = adjMatrix.length;
         Boolean[][] newAdjMatrix = new Boolean[n + 1][n + 1];
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                newAdjMatrix[i][j] = adjMatrix[i][j];
+        for (int i = 0; i < n + 1; i++) {
+            for (int j = 0; j < n + 1; j++) {
+                newAdjMatrix[i][j] = false;
+                if (i < n && j < n) {
+                    newAdjMatrix[i][j] = adjMatrix[i][j];
+                }
             }
         }
         adjMatrix = newAdjMatrix;
@@ -317,6 +320,7 @@ public class Graph<T> implements Serializable {
             }
         }
         return false;
+
     }
 
     /**

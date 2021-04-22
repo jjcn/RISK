@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Random;
 
+import static edu.duke.ece651.group4.RISK.shared.Constant.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class TerritoryTest {
 
@@ -108,12 +110,41 @@ class TerritoryTest {
         Player p4 = new TextPlayer(null, null, "p4");
         Territory test = new Territory("test", p1, 10, new Random(0));
 
+        assertEquals(test.checkUnitNum(UNIT_NAMES.get(0)),10);
+        assertEquals(test.checkUnitNumAlly(UNIT_NAMES.get(0)),0);
+        test.checkTypeNum(SOLDIER);
+        test.checkTypeNumAllay(SOLDIER);
+        assertThrows(new IllegalArgumentException().getClass(), () -> test.checkTypeNum("wrong"));
+
+        test.transfer(SOLDIER,ARCHER, 0,2);
+        test.transfer(SOLDIER,SHIELD, 0,4);
+
+        assertEquals(test.hasRangedTroop(),true);
+
+        HashMap<String, Integer> tmpDict=new HashMap<>();
+        tmpDict.put(ARCHER_NAMES.get(0),2);
+        Troop tmp=new Troop(tmpDict,test.getOwner());
+
+        test.sendRangedAttack(tmp);
+        assertThrows(new IllegalArgumentException().getClass(),() ->test.sendRangedAttack(tmp));
+        System.out.println(test.doBattles());
+        test.sendRangedAttack(tmp);
+
+
         Troop enemy=new Troop(10,p2,new Random(1));
+        enemy.transfer(SOLDIER,BREAKER, 0,2);
+        enemy.transfer(SOLDIER,ARCHER, 0,2);
+        Troop dem=new Troop(tmpDict,enemy.getOwner());
+        Troop sent=enemy.sendRangedAttack(dem);
+        enemy.receiveTroop(sent);
+
         Troop ally=new Troop(4,p3,new Random(2));
         Troop partner=new Troop(2,p4,new Random(3));
         test.sendInTroop(ally);
+        assertEquals(test.checkUnitNumAlly(UNIT_NAMES.get(0)),4);
 
         test.doOneBattleMix(enemy,partner);
+
         System.out.println(test.getInfo());
 
 

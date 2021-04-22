@@ -247,6 +247,7 @@ public class ClientThread extends Thread {
         out.println(ownerUser.getUsername() + " push refresh button and the number of games now: " + roomsInfo.size());
         return roomsInfo;
     }
+
     protected RoomInfo createARoomInfo(Game g){
         return new RoomInfo(g.getGameID(), g.getUserNames(), g.getMaxNumUsers());
     }
