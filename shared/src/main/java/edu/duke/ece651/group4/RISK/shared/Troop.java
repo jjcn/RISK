@@ -88,7 +88,20 @@ public class Troop implements Serializable {
      * @return number of units in a troop.
      */
     public int size() {
-        return population.size();
+        return this.population.size();
+    }
+
+    /**
+     * Get the attack range of a troop.
+     * The troop MUST be consisted of units of the same type.
+     * @return
+     */
+    public int getRange() {
+        int range = 0;
+        for (Unit unit : this.population) {
+            range = unit.getRange();
+        }
+        return range;
     }
 
     /**
