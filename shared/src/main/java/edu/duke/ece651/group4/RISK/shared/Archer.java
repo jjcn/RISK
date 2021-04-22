@@ -46,7 +46,7 @@ public class Archer extends Soldier {
     public Arrow shoot(){
 
         this.ready=false;
-        Arrow t = new Arrow(this.level);
+        Arrow t = new Arrow(this.dice,this.level);
         return t;
     }
 

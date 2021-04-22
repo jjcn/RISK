@@ -170,7 +170,7 @@ public class Territory implements Serializable {
     public int getTroopSize(String playerName) throws IllegalArgumentException {
         if (ownerTroop.getOwner().getName().equals(playerName)) {
             return ownerTroop.checkTroopSize();
-        } else if (allianceTroop.getOwner().getName().equals(playerName)) {
+        } else if (allianceTroop != null && allianceTroop.getOwner().getName().equals(playerName)) {
             return allianceTroop.checkTroopSize();
         } else {
             throw new IllegalArgumentException(
@@ -269,6 +269,15 @@ public class Territory implements Serializable {
         boolean attack = true;
         boolean myTurn = true;
         boolean enemyTurn = true;
+        System.out.println(ownerTroop.getSummary());
+        System.out.println(enemy.getSummary());
+        if(allianceTroop!=null){
+            System.out.println(allianceTroop.getSummary());
+        }
+
+        if(partner!=null){
+            System.out.println(partner.getSummary());
+        }
 
 
         while (this.ownerTroop.checkTroopSize() > 0 && enemy.checkTroopSize() > 0) {
@@ -302,6 +311,7 @@ public class Territory implements Serializable {
             if(partner!=null){
                 System.out.println(partner.getSummary());
             }
+
             if (allianceTroop == null || allianceTroop.checkTroopSize() == 0) {
                 myTurn = true;
                 this.allianceTroop =null;
@@ -339,6 +349,7 @@ public class Territory implements Serializable {
         StringBuilder report = new StringBuilder();
 
         if (this.enemyOnTerritory.size() == 0) {
+            this.archerReady();
             return "no war on Territory " + this.getName() + "\n";
         }
 
@@ -384,6 +395,7 @@ public class Territory implements Serializable {
         StringBuilder report = new StringBuilder();
 
         if (this.enemyOnTerritory.size() == 0) {
+            this.archerReady();
             return "no war on Territory " + this.getName() + "\n";
         }
 
