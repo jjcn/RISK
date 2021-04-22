@@ -8,18 +8,18 @@ import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import edu.duke.ece651.group4.RISK.client.R;
+import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
 
 import java.util.List;
 
-import static edu.duke.ece651.group4.RISK.client.Constant.LOG_CREATE_SUCCESS;
-import static edu.duke.ece651.group4.RISK.client.Constant.MAPS;
+import static edu.duke.ece651.group4.RISK.client.Constant.*;
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.*;
 import static edu.duke.ece651.group4.RISK.client.utility.Notice.showByToast;
 import static edu.duke.ece651.group4.RISK.shared.Constant.JOB_NAMES;
 import static edu.duke.ece651.group4.RISK.shared.Constant.UNIT_NAMES;
 
 public class TransferActivity extends AppCompatActivity {
-    
+
     private final String TAG = this.getClass().getSimpleName();
     private String terrName;
     private String typeAfter;
@@ -38,7 +38,7 @@ public class TransferActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transfer);
-        if(getSupportActionBar() != null) {
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle("Transfer");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -132,6 +132,7 @@ public class TransferActivity extends AppCompatActivity {
         commitBT.setOnClickListener(v -> {
             Editable text = nUnitET.getText();
             if (text == null) {
+                Log.e(TAG,LOG_FUNC_FAIL+"input text null");
                 return;
             } else if (text.toString().equals("")) {
                 showByToast(TransferActivity.this, "Please input the number.");
@@ -139,13 +140,18 @@ public class TransferActivity extends AppCompatActivity {
             }
             nUnit = Integer.parseInt(text.toString());
 
-            String result = doSoldierTransfer(
-                    buildTransferTroopOrder(terrName, typeAfter, level, nUnit));
-            if (result == null) {
-                finish();
-            } else {
-                showByToast(this, result);
-            }
+            doSoldierTransfer(
+                    buildTransferTroopOrder(terrName, typeAfter, level, nUnit), new onResultListener() {
+                        @Override
+                        public void onSuccess() {
+                            finish();
+                        }
+
+                        @Override
+                        public void onFailure(String errMsg) {
+                            showByToast(TransferActivity.this, errMsg);
+                        }
+                    });
         });
     }
 }

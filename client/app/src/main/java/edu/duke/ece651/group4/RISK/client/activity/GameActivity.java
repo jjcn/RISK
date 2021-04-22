@@ -2,7 +2,6 @@ package edu.duke.ece651.group4.RISK.client.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Html;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,7 +12,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import edu.duke.ece651.group4.RISK.client.R;
-import edu.duke.ece651.group4.RISK.client.fragment.ActionsFragment;
 import edu.duke.ece651.group4.RISK.client.fragment.TerrFragment;
 import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
 import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
@@ -69,10 +67,10 @@ public class GameActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                exitGame();
+                switchGame();
                 return true;
             case R.id.menu_rooms:
-                exitGame();
+                switchGame();
                 finish();
                 return true;
             case R.id.menu_devinfo:
@@ -214,7 +212,7 @@ public class GameActivity extends AppCompatActivity {
         });
         builder.setNegativeButton("No", (dialog, which) -> {
             if (isWatch) {
-                exitGame();
+                switchGame();
             }
         });
         builder.show();
@@ -231,7 +229,7 @@ public class GameActivity extends AppCompatActivity {
         });
         builder.setNegativeButton("No", (dialog, which) -> {
             if (isWatch) {
-                exitGame();
+                switchGame();
             }
         });
         builder.show();
@@ -297,7 +295,7 @@ public class GameActivity extends AppCompatActivity {
                     });
                 })
                 .setNegativeButton("No", (dialog, which) -> {
-                    exitGame();
+                    switchGame();
                 });
         builder.show();
     }
