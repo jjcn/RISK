@@ -32,20 +32,20 @@ public class Graph<T> implements Serializable {
      * boolean matrix that stores adjacency relationship between vertices.
      * true: two vertices are adjacent.
      */
-    protected boolean[][] adjMatrix;
+    protected Boolean[][] adjMatrix;
     
-    public Graph(List<T> vertices, List<Integer> weights, boolean[][] adjMatrix) {
+    public Graph(List<T> vertices, List<Integer> weights, Boolean[][] adjMatrix) {
         this.vertices = vertices;
         this.weights = weights;
         this.adjMatrix = adjMatrix;
     }
 
-    public Graph(List<T> vertices, boolean[][] adjMatrix) {
+    public Graph(List<T> vertices, Boolean[][] adjMatrix) {
         this(vertices, new ArrayList<>(vertices.size()), adjMatrix);
     }
     
     public Graph() {
-        this(new ArrayList<>(), new ArrayList<>(), new boolean[0][0]);
+        this(new ArrayList<>(), new ArrayList<>(), new Boolean[0][0]);
     }
 
     public List<Integer> cloneWeights() {
@@ -58,8 +58,8 @@ public class Graph<T> implements Serializable {
      * Get a deep copy of adjacency matrix.
      * @return a deep copy of adjacency matrix.s
      */
-    public boolean[][] cloneAdjMatrix() {
-        boolean[][] adjMatrixCopy = new boolean[size()][size()];
+    public Boolean[][] cloneAdjMatrix() {
+        Boolean[][] adjMatrixCopy = new Boolean[size()][size()];
         for (int i = 0; i < size(); i++) {
             for (int j = 0; j < size(); j++) {
                 adjMatrixCopy[i][j] = adjMatrix[i][j];
@@ -178,7 +178,7 @@ public class Graph<T> implements Serializable {
 
     protected void expandAdjMatrixBy1() {
         int n = adjMatrix.length;
-        boolean[][] newAdjMatrix = new boolean[n + 1][n + 1];
+        Boolean[][] newAdjMatrix = new Boolean[n + 1][n + 1];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 newAdjMatrix[i][j] = adjMatrix[i][j];
