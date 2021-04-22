@@ -162,7 +162,8 @@ public class ClientThread extends Thread {
         if(maxNumPlayers < 1 || maxNumPlayers > 5){
             return INVALID_CREATE;
         }
-        this.gameOnGoing = new Game(globalID.getAndIncrement(), maxNumPlayers);
+//        this.gameOnGoing = new Game(globalID.getAndIncrement(), maxNumPlayers);
+        this.gameOnGoing = new Game(games.size(), maxNumPlayers);
         games.add(gameOnGoing);
         GameRunner gameRunner = new GameRunner(gameOnGoing,out);
         gameOnGoing.addUser(ownerUser);
