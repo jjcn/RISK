@@ -78,15 +78,16 @@ public class GameRunner extends Thread{
             World w = game.getTheWorld();
             HibernateTool.updateGameInfo(game.getGameInfo());
             out.println("Game" +game.getGameID()+" runner finishes sets up");
+            notifyAllUsers(); //Initialization
+            out.println("Game" +game.getGameID()+" runner notifies all players before action phase");
         }
         else{
-            out.println("Game is loaded " +game.getGameID()+" with set up!");
+            out.println("Game"+game.getGameID()+ " is loaded  with set up!");
         }
 
-        //Initialization
-        notifyAllUsers();
 
-        out.println("Game" +game.getGameID()+" runner notifies all players");
+
+
         //ActionPhase
         while(true){
             boolean exit2 = false;

@@ -99,15 +99,16 @@ public class HostApp implements Runnable {
 
     protected static void printGameInfo(GameInfo gInfo){
         System.out.println("Loading: Game" + gInfo.gameID + "'s Info: ");
-        System.out.println("         GameState: isAive:" + gInfo.gameState.isAlive());
-        System.out.println("         GameState: isSetUp:" + gInfo.gameState.isSetUp());
-        System.out.println("         GameState: isDonePlaceUnits:" + gInfo.gameState.isDonePlaceUnits());
-        System.out.println("         GameState: isWaitToUpdate:" + gInfo.gameState.isWaitToUpdate());
-        System.out.println("         GameState: isAllPlayersDoneUpdatingState:" + gInfo.gameState.isAllPlayersDoneUpdatingState());
-        System.out.println("         GameState: isDoneUpdateGame" + gInfo.gameState.isDoneUpdateGame());
+        System.out.println("         GameState: isAive: " + gInfo.gameState.isAlive());
+        System.out.println("         GameState: isSetUp: " + gInfo.gameState.isSetUp());
+        System.out.println("         GameState: isDonePlaceUnits: " + gInfo.gameState.isDonePlaceUnits());
+        System.out.println("         GameState: isWaitToUpdate: " + gInfo.gameState.isWaitToUpdate());
+        System.out.println("         GameState: isAllPlayersDoneUpdatingState: " + gInfo.gameState.isAllPlayersDoneUpdatingState());
+        System.out.println("         GameState: isDoneUpdateGame: " + gInfo.gameState.isAllPlayersDoneOneTurn());
+        System.out.println("         GameState: isDoneUpdateGame: " + gInfo.gameState.isDoneUpdateGame());
         World w = gInfo.getTheWorld();
-        System.out.println("         World Turn num:" + w.getTurnNumber());
-        System.out.println("         World Report:" + w.getReport());
+        System.out.println("         World Turn num: " + w.getTurnNumber());
+        System.out.println("         World Report: " + w.getReport());
     }
 
 //    public void loadGames(){
