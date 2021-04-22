@@ -194,7 +194,7 @@ public class ClientThread extends Thread {
             gameToJoin.switchInUser(ownerUser); // this is synchronized function
         }
         gameOnGoing = gameToJoin;
-//        HibernateTool.updateGameInfo(gameOnGoing.getGameInfo());
+        HibernateTool.updateGameInfo(gameOnGoing.getGameInfo());
         out.println( "Game" + gameOnGoing.getGameID() + " has " + gameOnGoing.getUserNames().size() +" users now.");
         return null;
     }
@@ -329,9 +329,10 @@ public class ClientThread extends Thread {
         while(!exit){
             if(start){
                 this.theClient.sendObject(gameOnGoing.getTheWorld());
+                out.println("Game" + gameOnGoing.getGameID() + ": send world to " + ownerUser.getUsername() + " wait for orders" );
                 start = false;
             }
-            out.println("Game" + gameOnGoing.getGameID() + ": send world to " + ownerUser.getUsername() + " wait for orders" );
+
             Order order = (Order) this.theClient.recvObject();
             out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " has a order: " + order.getActionName());
             exit = gameOnGoing.tryUpdateActionOnWorld(order,ownerUser);
@@ -351,6 +352,7 @@ public class ClientThread extends Thread {
             out.println("Game" + gameOnGoing.getGameID() + ": Checking Phase :  game END!!!! and winner is " + gameOnGoing.getTheWorld().getWinner() );
             this.theClient.sendObject(gameOnGoing.getTheWorld());
             gameOnGoing.switchOutUser(ownerUser);
+            HibernateTool.updateGameInfo(gameOnGoing.getGameInfo());
             gameOnGoing = null;
             return;
         }
@@ -367,7 +369,7 @@ public class ClientThread extends Thread {
             out.println("Game" + gameOnGoing.getGameID() + ": Checking Phase :  " + ownerUser.getUsername() + " go back to do action");
             gameOnGoing.gInfo.gameState.changAPlayerStateTo(ownerUser, PLAYER_STATE_ACTION_PHASE);
         }
-//        HibernateTool.updateGameInfo(gameOnGoing.getGameInfo());
+        HibernateTool.updateGameInfo(gameOnGoing.getGameInfo());
     }
 
     /*

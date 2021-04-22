@@ -21,7 +21,6 @@ public class HibernateTool {
                 // TODO: manually add entity classes
                 configuration.addAnnotatedClass(UserInfo.class);
                 configuration.addAnnotatedClass(GameInfo.class);
-                configuration.addAnnotatedClass(GameInfoTrial.class);
                 StandardServiceRegistryBuilder serviceRegistryBuilder = new StandardServiceRegistryBuilder();
                 serviceRegistryBuilder.applySettings(configuration.getProperties());
                 ServiceRegistry serviceRegistry = serviceRegistryBuilder.build();

@@ -24,7 +24,7 @@
         <property name="show_sql">false</property>
 
         <!-- Create database on startup -->
-<!--        <property name="hibernate.hbm2ddl.auto">create</property>-->
+        <property name="hibernate.hbm2ddl.auto">create</property>
         <property name="hibernate.hbm2ddl.auto">update</property>
 
         <!-- Annotated entity classes -->
