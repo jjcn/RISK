@@ -703,6 +703,28 @@ public class WorldTest {
     }
 
     @Test
+    public void testCheckCanFormAlliance() {
+        World world = createWorldAndRegister(troopsSeparated);
+
+        assertDoesNotThrow(() -> world.checkCanFormAlliance("red"));
+        world.tryFormAlliance("red", "blue");
+        world.tryFormAlliance("red", "green");
+        assertDoesNotThrow(() -> world.checkCanFormAlliance("red"));
+        world.tryFormAlliance("blue", "red");
+        world.doCheckIfAllianceSuccess();
+
+        assertThrows(IllegalArgumentException.class, () -> world.checkCanFormAlliance("red"));
+        assertThrows(IllegalArgumentException.class, () -> world.checkCanFormAlliance("blue"));
+        assertDoesNotThrow(() -> world.checkCanFormAlliance("green"));
+
+        world.breakAlliance("red", "blue");
+        assertEquals(new HashSet<String>(), world.getAllianceNames("red"));
+        assertEquals(new HashSet<String>(), world.getAllianceNames("blue"));
+
+        assertDoesNotThrow(() -> world.checkCanFormAlliance("red"));
+    }
+
+    @Test
     public void testGetAllPlayersAlliance() {
         World world = createWorldAndRegister(troopsSeparated);
 
@@ -807,7 +829,9 @@ public class WorldTest {
     @Test
     public void testDoAllBattles() {
         World world = createWorld(troopsSeparated);
+        assertEquals(1, world.getTurnNumber());
         world.doAllBattles();
+        assertEquals(2, world.getTurnNumber());
     }
 
     @Test
