@@ -14,6 +14,7 @@ class ArcherTest {
     public void test_upgrade() {
         Random rnd = new Random(0);
         Archer arch=new Archer(1);
+        Archer c=arch.clone();
 
         arch.upGrade(4,1000);
         assertEquals(arch.getJobName(),"Archer LV4");

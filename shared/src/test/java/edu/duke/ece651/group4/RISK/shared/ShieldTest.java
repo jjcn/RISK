@@ -13,7 +13,7 @@ class ShieldTest {
     @Test
     public void test_upgrade() {
         Random rnd = new Random(0);
-        Shield test=new Shield(1);
+        Shield test=new Shield(rnd,1);
 
         test.upGrade(4,1000);
         assertEquals(test.getJobName(),"Shield LV4");
@@ -28,15 +28,37 @@ class ShieldTest {
         assertEquals(clo.shieldExist(),false);
         test.setJob("Shield LV5");
         assertEquals(test.getJobName(),"Shield LV5");
-//
-//        arch.active();
-//        assertEquals(arch.checkReady(),true);
-//
-//        arch.setJob("Archer LV6");
-//        assertEquals(arch.getLevel(),6);
-//
-//        String testnames=JOB_DICTIONARY.get(ARCHER).get(4);
-//        assertEquals(testnames,"Archer LV4");
+
+        test.setLP(40);
+
+
     }
+
+    @Test
+    public void test_fight() {
+        Random rnd = new Random(0);
+        Shield test=new Shield(rnd,1);
+        Breaker b=new Breaker(rnd,0);
+        test.fight(b);
+        assertEquals(test.shieldExist(),true);
+        test.fight(b);
+        assertEquals(test.shieldExist(),false);
+
+        Shield test2=new Shield(rnd,0);
+        Knight k=new Knight(rnd,3);
+
+        assertEquals(test2.fight(k),false);
+        assertEquals(test2.fight(k),false);
+
+
+        assertEquals(test2.shieldExist(),true);
+
+        assertEquals(test2.fight(k),false);
+
+
+        assertEquals(test2.shieldExist(),false);
+
+    }
+
 
 }

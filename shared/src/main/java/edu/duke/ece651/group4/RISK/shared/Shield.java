@@ -61,6 +61,7 @@ public class Shield extends Soldier {
 
     public void defend(int damage) {
         this.defendPoint -= damage;
+        if( this.defendPoint<0)  this.defendPoint=0;
     }
 
     @Override
@@ -68,5 +69,9 @@ public class Shield extends Soldier {
         Shield clone = new Shield(this.level);
         clone.setLP(this.defendPoint);
         return clone;
+    }
+
+    public int checkLP(){
+        return this.defendPoint;
     }
 }
