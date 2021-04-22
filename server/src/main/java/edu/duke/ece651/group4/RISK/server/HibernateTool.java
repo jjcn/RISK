@@ -58,12 +58,12 @@ public class HibernateTool {
         return usersInfo;
     }
 
-    public static SessionFactory getSessionFactory(){
-        return sessionFactory;
-    }
-    public static void shutdown() {
-        sessionFactory.close();
-    }
+//    public static SessionFactory getSessionFactory(){
+//        return sessionFactory;
+//    }
+//    public static void shutdown() {
+//        sessionFactory.close();
+//    }
 
     public static void addGameInfo(GameInfo gInfo){
         Session session = sessionFactory.openSession();
@@ -82,12 +82,12 @@ public class HibernateTool {
         }
     }
 
-    public static void addGameInfoTrial(GameInfoTrial gInfo){
+    public static void updateGameInfo(GameInfo GameInfo) {
         Session session = sessionFactory.openSession();
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
-            session.save(gInfo);
+            session.update(GameInfo);
             tx.commit();
         } catch (HibernateException e) {
             if (tx != null) {
@@ -98,6 +98,7 @@ public class HibernateTool {
             session.close();
         }
     }
+
 
     public static List<GameInfo> getGameInfoList(){
         Session session = sessionFactory.openSession();
@@ -123,6 +124,26 @@ public class HibernateTool {
             session.close();
         }
     }
+
+
+
+//    public static void updateUserInfo(UserInfo userInfo) {
+//        Session session = sessionFactory.openSession();
+//        Transaction tx = null;
+//
+//        try {
+//            tx = session.beginTransaction();
+//            session.update(userInfo);
+//            tx.commit();
+//        } catch (HibernateException e) {
+//            if (tx != null) {
+//                tx.rollback();
+//            }
+//            e.printStackTrace();
+//        } finally {
+//            session.close();
+//        }
+//    }
 
     public static void deleteUserInfo(UserInfo uInfo){
         Session session = sessionFactory.openSession();

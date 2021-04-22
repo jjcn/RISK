@@ -38,16 +38,17 @@ public class HostApp implements Runnable {
         this.test_mode = test_mode;
 
     }
+
     public HostApp(ServerSocket s){
         this(s,false);
     }
 
-    protected void addTestUsers(){
-        users.add(new User(0,"xs","1"));
-        users.add(new User(1,"wx","1"));
-        users.add(new User(2,"jin","1"));
-        users.add(new User(3,"sj","1"));
-    }
+//    protected void addTestUsers(){
+//        users.add(new User(0,"xs","1"));
+//        users.add(new User(1,"wx","1"));
+//        users.add(new User(2,"jin","1"));
+//        users.add(new User(3,"sj","1"));
+//    }
 
     /*
      * This setup connection between server and clients
@@ -59,8 +60,7 @@ public class HostApp implements Runnable {
      *  */
 
     public void acceptConnection(){
-        addTestUsers();
-
+//        addTestUsers();
         while(true) {
             try {
                 Socket s = hostSocket.accept();
@@ -77,8 +77,19 @@ public class HostApp implements Runnable {
         }
     }
 
+    public void tryLoadUsersFromDatabase(){
+        List<UserInfo> usInfo = HibernateTool.getUserInfoList();
+        for(UserInfo uInfo: usInfo){
+            users.add(new User(uInfo));
+        }
+    }
+
+//    public void loadGames(){
+//
+//    }
     public void run() {
         out.println("Server starts to run");
+        tryLoadUsersFromDatabase();
         acceptConnection();
     }
 

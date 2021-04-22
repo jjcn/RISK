@@ -86,6 +86,7 @@ public class ClientThread extends Thread {
         }
         User newUser = new User(users.size(), username, password);
         users.add(newUser);
+        HibernateTool.addUserInfo(newUser.userInfo); //store this userInfo into database
         out.println("This user signs up successfully");
         return null;
     }
