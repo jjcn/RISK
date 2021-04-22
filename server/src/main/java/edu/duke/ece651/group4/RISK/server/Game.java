@@ -76,7 +76,7 @@ public class Game implements Serializable {
 //        return false;
         String username = u.getUsername();
         for(String uName : gInfo.usersOnGame){
-            if(u.equals(uName)){
+            if(username.equals(uName)){
                 return true;
             }
         }

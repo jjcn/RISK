@@ -200,6 +200,11 @@ public class ClientThread extends Thread {
     }
 
     protected String checkJoinGame (Game gameToJoin){
+//        out.println( "Game" + gameOnGoing.getGameID() + ownerUser + "tries to join.");
+//        out.println( "Game" + gameOnGoing.getGameID() + " has: ");
+//        for(String u : gameToJoin.getUserNames()){
+//            out.println(u);
+//        }
         if(gameToJoin == null){ return "Game is null";}
         if(gameToJoin.isFull() && !gameToJoin.isUserInGame(ownerUser)){return INVALID_JOIN;}
         if(!gameToJoin.isFull()){
