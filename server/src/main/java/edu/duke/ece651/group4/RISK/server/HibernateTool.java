@@ -87,7 +87,7 @@ public class HibernateTool {
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
-            session.update(GameInfo);
+            session.merge(GameInfo);
             tx.commit();
         } catch (HibernateException e) {
             if (tx != null) {
