@@ -62,7 +62,7 @@ public class World implements Serializable {
     /**
      * A matrix storing the alliance relationship of players.
      */
-    protected boolean[][] allianceMatrix;
+    protected Boolean[][] allianceMatrix;
     /**
      * Battle report
      */
@@ -107,12 +107,12 @@ public class World implements Serializable {
      * @param random is the random seed.
      */
     public World(Graph<Territory> terrs, Random random) {
-        this(terrs, new ArrayList<PlayerInfo>(), new boolean[0][0], random, "");
+        this(terrs, new ArrayList<PlayerInfo>(), new Boolean[0][0], random, "");
     }
 
     protected World(Graph<Territory> terrs,
                     List<PlayerInfo> playerInfos,
-                    boolean[][] allianceMatrix,
+                    Boolean[][] allianceMatrix,
                     Random random,
                     String report) {
         this.territories = terrs;
@@ -128,7 +128,7 @@ public class World implements Serializable {
     /**
      * Creates a world, specify a number of total territories and a random seed. The
      * territories created will share a random seed with the world. Territory names
-     * are: 1, 2, 3, ... Number of total connections is random, and is propotional
+     * are: 1, 2, 3, ... Number of total connections is random, and is proportional
      * to number of territories.
      *
      * @param numTerrs is the number of territories.
@@ -180,15 +180,16 @@ public class World implements Serializable {
             cpy.add(item.clone());
         }
         List<Integer> weightsCopy = territories.cloneWeights();
-        boolean[][] adjMatrixCopy = territories.cloneAdjMatrix();
+        Boolean[][] adjMatrixCopy = territories.cloneAdjMatrix();
         List<PlayerInfo> playerInfoCopy = clonePlayerInfos();
-        boolean[][] allianceMatrixCopy = cloneAllianceMatrix();
+        Boolean[][] allianceMatrixCopy = cloneAllianceMatrix();
         World cpyWorld = new World(new Graph<>(cpy, weightsCopy, adjMatrixCopy),
                 playerInfoCopy,
                 allianceMatrixCopy,
                 this.rnd,
                 new String(this.report == null ? null : new String(this.report)));
         cpyWorld.setRoomID(this.roomID);
+        cpyWorld.setTurnNumber(this.nTurn);
         return cpyWorld;
     }
 
@@ -206,9 +207,9 @@ public class World implements Serializable {
     /**
      * Creates a deep copy of allianceMatrix.
      */
-    protected boolean[][] cloneAllianceMatrix() {
+    protected Boolean[][] cloneAllianceMatrix() {
         int n = allianceMatrix.length;
-        boolean[][] cpy = new boolean[n][n];
+        Boolean[][] cpy = new Boolean[n][n];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 cpy[i][j] = allianceMatrix[i][j];
@@ -217,12 +218,18 @@ public class World implements Serializable {
         return cpy;
     }
 
+    /**
+     * Expand the alliance matrix by 1 on both dimensions.
+     */
     protected void expandAllianceMatrixBy1() {
         int n = allianceMatrix.length;
-        boolean[][] newAllianceMatrix = new boolean[n + 1][n + 1];
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                newAllianceMatrix[i][j] = allianceMatrix[i][j];
+        Boolean[][] newAllianceMatrix = new Boolean[n + 1][n + 1];
+        for (int i = 0; i < n + 1; i++) {
+            for (int j = 0; j < n + 1; j++) {
+                newAllianceMatrix[i][j] = false;
+                if (i < n && j < n) {
+                    newAllianceMatrix[i][j] = allianceMatrix[i][j];
+                }
             }
         }
         allianceMatrix = newAllianceMatrix;
@@ -319,6 +326,8 @@ public class World implements Serializable {
     public int getTurnNumber() {
         return nTurn;
     }
+
+    public void setTurnNumber(int nTurn) { this.nTurn = nTurn; }
 
     /**
      * Add a territory to the world.
@@ -885,37 +894,37 @@ public class World implements Serializable {
     }
 
     /**
-     * Check if a player's number of alliance has reached its limit.
-     * @param playerName is the name of the player to check alliance number.
-     * @param maxPermittedAllies is the maximum number of allies permitted.
+     * Check if a player can form another alliance
+     * by checking if his number of alliance has reached a limit.
+     *
+     * @param playerName is the name of the player to check if he can form another alliance.
      */
-    protected void checkAllianceNumber(String playerName, int maxPermittedAllies) {
-        if (getAllianceNames(playerName).size() >= maxPermittedAllies) {
+    protected void checkCanFormAlliance(String playerName) {
+        if (getAllianceNames(playerName).size() >= Constant.MAX_ALLOWED_ALLY_NUMBER) {
             throw new IllegalArgumentException(
-                    String.format(CANT_FORM_ALLIANCE_MSG, playerName, maxPermittedAllies)
+                    String.format(CANT_FORM_ALLIANCE_MSG, playerName, Constant.MAX_ALLOWED_ALLY_NUMBER)
             );
         }
     }
 
     /**
      * Player 1 tries forming alliance with player 2.
-     * One player can only form an alliance of two with another player.
+     * A player can only form ONE alliance of two with another player.
      * Note: Player 2 has to form alliance with player 1 ON THE SAME TURN
      * so they can form an alliance successfully.
-     *
      *
      * @param p1Name is the name of player 1.
      * @param p2Name is the name of player 2.
      */
-    public void tryFormAlliance(String p1Name, String p2Name) {
+    public void tryFormAlliance(String p1Name, String p2Name) throws IllegalArgumentException {
         if (p1Name.equals(p2Name)) {
             throw new IllegalArgumentException(CANT_ALLY_WITH_ONESELF);
         }
         int p1Index = playerInfos.indexOf(getPlayerInfoByName(p1Name));
         int p2Index = playerInfos.indexOf(getPlayerInfoByName(p2Name));
         // if either of the player already reached alliance number limit, throw exception
-        checkAllianceNumber(p1Name, Constant.MAX_ALLOWED_ALLY_NUMBER);
-        checkAllianceNumber(p2Name, Constant.MAX_ALLOWED_ALLY_NUMBER);
+        checkCanFormAlliance(p1Name);
+        checkCanFormAlliance(p2Name);
         allianceMatrix[p1Index][p2Index] = true;
     }
 
@@ -1147,7 +1156,7 @@ public class World implements Serializable {
         throw new NoSuchElementException(String.format(TERRITORY_NOT_FOUND_MSG, terrName));
     }
 
-    @Override
+    /*@Override
     public boolean equals(Object other) {
         if (other != null && other.getClass().equals(getClass())) {
             World otherWorld = (World) other;
@@ -1155,7 +1164,7 @@ public class World implements Serializable {
         } else {
             return false;
         }
-    }
+    }*/
 
     /**
      * Calls Territory & PlayerInfo toString function

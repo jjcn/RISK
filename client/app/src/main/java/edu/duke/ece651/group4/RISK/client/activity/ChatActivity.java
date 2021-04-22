@@ -3,6 +3,7 @@ package edu.duke.ece651.group4.RISK.client.activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.MenuItem;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,11 +13,13 @@ import com.stfalcon.chatkit.dialogs.DialogsList;
 import com.stfalcon.chatkit.dialogs.DialogsListAdapter;
 
 import edu.duke.ece651.group4.RISK.client.R;
-import edu.duke.ece651.group4.RISK.client.RISKApplication;
+import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
 import edu.duke.ece651.group4.RISK.client.model.ChatDialog;
+import edu.duke.ece651.group4.RISK.client.model.ChatMessageUI;
 
 import java.util.*;
 
+import static edu.duke.ece651.group4.RISK.client.Constant.*;
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.*;
 
 /**
@@ -38,12 +41,41 @@ public class ChatActivity extends AppCompatActivity implements DialogsListAdapte
         }
         chatList = findViewById(R.id.chatList);
         initAdapter();
+        setListener();
+        Log.i(TAG, SUCCESS_CREATE);
+    }
+
+    /**
+     * keep receive via chatClient
+     */
+    private void setListener() {
+        Log.i(TAG, LOG_FUNC_RUN + "start set chat lsn");
+        setChatReceiveListener(new onReceiveListener() {
+            @Override
+            public void onSuccess(Object o) {
+                runOnUiThread(() -> {
+                    Log.i(TAG, LOG_FUNC_RUN + "receive incoming msg success");
+                    if (o instanceof ChatMessageUI) {
+                        ChatMessageUI message = (ChatMessageUI) o;
+                        // call function to deal with new incoming msg
+                        onNewMessage(message.getChatId(), message);
+                    } else {
+                        onFailure("receive not ChatMessageUI");
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(String errMsg) {
+                Log.e(TAG, LOG_FUNC_FAIL + errMsg);
+            }
+        });
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
+            moveTaskToBack(true);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -58,18 +90,10 @@ public class ChatActivity extends AppCompatActivity implements DialogsListAdapte
 
     private List<ChatDialog> getChats() {
         ArrayList<ChatDialog> chats = new ArrayList<>();
-        /**
-         * All players' chat room, id = ""
-         */
+        // World chat room, id = ""
         chats.add(new ChatDialog("", "World Chat", getChatPlayersName()));
-        /**
-         * One-to-one chat room
-         */
-        for (String playerName:getChatPlayersName()) {
-//            Calendar calendar = Calendar.getInstance();
-//            calendar.add(Calendar.DAY_OF_MONTH, -(i * i));
-//            calendar.add(Calendar.MINUTE, -(i * i));
-
+        // private chat
+        for (String playerName : getChatPlayersName()) {
             chats.add(new ChatDialog(playerName, "Private Chat with " + playerName,
                     Arrays.asList(playerName)));
         }
@@ -79,7 +103,7 @@ public class ChatActivity extends AppCompatActivity implements DialogsListAdapte
     @Override
     public void onDialogClick(IDialog dialog) {
         Intent intent = new Intent(ChatActivity.this, MessageActivity.class);
-        intent.putExtra("TARGET", dialog.getId());
+        intent.putExtra("CHATID", dialog.getId());
         startActivity(intent);
     }
 
@@ -94,15 +118,16 @@ public class ChatActivity extends AppCompatActivity implements DialogsListAdapte
         boolean isUpdated = chatListAdapter.updateDialogWithMessage(dialogId, message);
         if (!isUpdated) {
             //Dialog with this ID doesn't exist, so you can create new Dialog or update all dialogs list
+            Log.e(TAG,LOG_FUNC_FAIL+"chatID not exist");
         }
     }
 
-    /**
-     * Called on receiving new dialogs
-     *
-     * @param dialog is a dialog
-     */
-    private void onNewDialog(IDialog dialog) {
-        chatListAdapter.addItem(dialog);
-    }
+//    /**
+//     * Called on receiving new dialogs
+//     *
+//     * @param dialog is a dialog
+//     */
+//    private void onNewDialog(IDialog dialog) {
+//        chatListAdapter.addItem(dialog);
+//    }
 }

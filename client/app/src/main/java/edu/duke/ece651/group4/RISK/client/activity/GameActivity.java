@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import edu.duke.ece651.group4.RISK.client.R;
-import edu.duke.ece651.group4.RISK.client.fragment.ActionsFragment;
 import edu.duke.ece651.group4.RISK.client.fragment.TerrFragment;
 import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
 import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
@@ -35,11 +34,13 @@ public class GameActivity extends AppCompatActivity {
     TextView playerInfo;
     ImageButton allyBT;
     ImageButton upTechBT;
+    ImageButton reportBT;
     ListView worldInfoRC;
     ArrayAdapter worldInfoAdapter;
     List<String> worldInfo;
     Button doneBT;
     FloatingActionButton chatBT;
+    ArrayList<String> noticeInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +54,7 @@ public class GameActivity extends AppCompatActivity {
         }
         isWatch = false;
         waitDG = new WaitDialog(GameActivity.this);
+        noticeInfo = new ArrayList<>();
         impUI();
         updateAllInfo();
         Log.i(TAG, LOG_CREATE_SUCCESS);
@@ -65,10 +67,10 @@ public class GameActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                exitGame();
+                switchGame();
                 return true;
             case R.id.menu_rooms:
-                exitGame();
+                switchGame();
                 finish();
                 return true;
             case R.id.menu_devinfo:
@@ -87,6 +89,7 @@ public class GameActivity extends AppCompatActivity {
         doneBT = findViewById(R.id.done);
         worldInfoRC = findViewById(R.id.worldInfo);
         chatBT = findViewById(R.id.chatButton);
+        reportBT = findViewById(R.id.report);
 
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.terrInfo_container);
@@ -99,6 +102,7 @@ public class GameActivity extends AppCompatActivity {
         //addFragment(fm, R.id.terrInfo_container);
         //addFragment(fm, R.id.fragment_enemyTerr_container);
 
+        impReportBT();
         impUpTechBT();
         impAllyBT();
         impDoneButton();
@@ -106,8 +110,15 @@ public class GameActivity extends AppCompatActivity {
         impChatBT();
     }
 
-    protected void addFragment(FragmentManager fm, int container_id) {
-
+    private void impReportBT() {
+        reportBT.setOnClickListener(v->{
+            StringBuilder report = new StringBuilder();
+            for(String item: noticeInfo){
+                report.append(item);
+                report.append("\n");
+            }
+            showByReport(GameActivity.this,"Battle report", report.toString());
+        });
     }
 
     // todo: alert to confirm actions.
@@ -201,7 +212,7 @@ public class GameActivity extends AppCompatActivity {
         });
         builder.setNegativeButton("No", (dialog, which) -> {
             if (isWatch) {
-                exitGame();
+                switchGame();
             }
         });
         builder.show();
@@ -218,7 +229,7 @@ public class GameActivity extends AppCompatActivity {
         });
         builder.setNegativeButton("No", (dialog, which) -> {
             if (isWatch) {
-                exitGame();
+                switchGame();
             }
         });
         builder.show();
@@ -232,7 +243,7 @@ public class GameActivity extends AppCompatActivity {
             public void onSuccess(Object o) {
                 World world = (World) o;
                 if (world.isGameEnd()) {
-                    // todo: show history / can stay after finish
+                    // todo: can stay after finish
                     showByReport(GameActivity.this, "Game end!", world.getWinner() + " won the game!");
                     Intent backRoom = new Intent(GameActivity.this, RoomActivity.class);
                     startActivity(backRoom);
@@ -284,7 +295,7 @@ public class GameActivity extends AppCompatActivity {
                     });
                 })
                 .setNegativeButton("No", (dialog, which) -> {
-                    exitGame();
+                    switchGame();
                 });
         builder.show();
     }
@@ -297,6 +308,7 @@ public class GameActivity extends AppCompatActivity {
             if (getAllianceName().equals(NO_ALLY)) {
                 allyBT.setEnabled(true);
             }
+            noticeInfo.add("Turn " + getWorld().getTurnNumber() + ": \n" + getWorld().getReport());
             waitDG.cancel();
         });
     }

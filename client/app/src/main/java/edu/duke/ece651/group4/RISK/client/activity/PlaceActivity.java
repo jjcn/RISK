@@ -43,9 +43,16 @@ public class PlaceActivity extends AppCompatActivity {
     private void impUI() {
         instr = findViewById(R.id.placeInstru);
         instr.append("\n You have total of " + PLACE_TOTAL + " soldiers.");
+
+        /**
+         * set World map for whole game here.
+         */
         mapIV = findViewById(R.id.world_image_view);
         mapIV.setImageResource(MAPS.get(getCurrentRoomSize()));
 
+        /**
+         * for reading two input place number.
+         */
         List<Territory> myTerr = getMyTerritory(); // two for each player
 
         LinearLayout terrA = findViewById(R.id.terrA);
@@ -59,6 +66,9 @@ public class PlaceActivity extends AppCompatActivity {
         TextView terrBTV = terrB.findViewById(R.id.placeinstrTV);
         terrBTV.append(myTerr.get(1).getName());
 
+        /**
+         * commit button
+         */
         Button commitBT = findViewById(R.id.buttonCommitPlace);
         commitBT.setOnClickListener(v -> {
             commitBT.setClickable(false);
@@ -74,14 +84,10 @@ public class PlaceActivity extends AppCompatActivity {
                 placements.add(new PlaceOrder(myTerr.get(1).getName(), new Troop(numTerrB, new TextPlayer(getUserName()))));
                 waitDG.show();
 
+                Log.i(TAG,LOG_FUNC_RUN+"start to send placement");
                 doPlacement(placements, new onReceiveListener() {
                     @Override
                     public void onSuccess(Object o) {
-                        if (getWorld() == null) {
-                            Log.e(TAG, LOG_FUNC_FAIL + "world null");
-                        } else {
-                            Log.i(TAG, LOG_FUNC_RUN + "world not null");
-                        }
                         showByToast(PlaceActivity.this, PLACEMENT_DONE);
                         Intent intent = new Intent(PlaceActivity.this, TurnActivity.class);
                         startActivity(intent);
@@ -102,14 +108,6 @@ public class PlaceActivity extends AppCompatActivity {
             }
         });
     }
-
-//    /**
-//     * set up UI for placing the territory list with number of players to choose.
-//     */
-//    private void impPlaceList() {
-//
-//    }
-
 
     /**
      * you can not return to RoomActivity at this stage
