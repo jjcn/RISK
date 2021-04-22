@@ -1,6 +1,7 @@
 package edu.duke.ece651.group4.RISK.client.activity;
 
 import android.content.Intent;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -75,7 +76,7 @@ public class GameActivity extends AppCompatActivity {
                 finish();
                 return true;
             case R.id.menu_devinfo:
-                showByToast(GameActivity.this, COLOR_EGG);
+                showColorEgg();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -323,6 +324,12 @@ public class GameActivity extends AppCompatActivity {
                     worldInfoAdapter.notifyDataSetChanged();
                 }
         );
+    }
+
+    private void showColorEgg() {
+        showByReport(GameActivity.this,"\\^^/" ,COLOR_EGG);
+//        soundPool = new SoundPool.Builder().build();
+//        soundID = soundPool.load(this, R.raw.qipao, 1);
     }
 
     @Override

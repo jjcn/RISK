@@ -66,5 +66,11 @@ public class Constant {
             put(0, R.drawable.terrtest);
         }
     };
-    public static final String COLOR_EGG = "Group4 in ECE651\n Special thanks to the best TA in the world: Kewei Xia \\^^/";
+    public static final String COLOR_EGG =
+            "Developers in Group4 in ECE651: Xian Sun\n Zian Geng\n Shenxi Jin\n Wenxin Xu\n"+
+                    "*************************************" +
+                    "*********** Special thanks **********" +
+                    "**** to the best TA in the world ****" +
+                    "************* Kewei Xia *************" +
+                    "*************************************";
 }
