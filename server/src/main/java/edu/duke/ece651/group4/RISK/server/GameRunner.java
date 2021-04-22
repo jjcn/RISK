@@ -134,6 +134,7 @@ public class GameRunner extends Thread{
                 break;
             }
             game.gInfo.gameState.updateStateTo(GAME_STATE_WAIT_TO_UPDATE);
+            HibernateTool.updateGameInfo(game.getGameInfo());
         }
     }
 
