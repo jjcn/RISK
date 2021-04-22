@@ -61,7 +61,11 @@ public class Game implements Serializable {
 //        for(User u: gInfo.usersOnGame){
 //            userNames.add(u.getUsername());
 //        }
-        return gInfo.usersOnGame;
+        List<String> usernames = new ArrayList<>();
+        for(String n: gInfo.usersOnGame){
+            usernames.add(n);
+        }
+        return usernames;
     }
 
 
