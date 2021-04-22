@@ -52,19 +52,21 @@ public class MessageActivity extends AppCompatActivity
         this.msgList = findViewById(R.id.messagesList);
 
         initAdapter();
-        getHistoryInfo(target);
+        getHistoryInfo();
 
         /**
          * keep receive via chatClient
          */
         Log.i(TAG, LOG_FUNC_RUN + "start set lsn");
-        getChatClient().setMsgListener(new onReceiveListener() {
+        setMsgListener(new onReceiveListener() {
             @Override
             public void onSuccess(Object o) {
                 runOnUiThread(() -> {
                     if (o instanceof ChatMessageUI) {
                         ChatMessageUI message = (ChatMessageUI) o;
-                        msgAdapter.addToStart(message, true);
+                        if(message.getChatId().equals(target)) {
+                            msgAdapter.addToStart(message, true);
+                        }
                     } else {
                         onFailure("receive not ChatMessageUI");
                     }
@@ -97,9 +99,15 @@ public class MessageActivity extends AppCompatActivity
 //        input.setTypingListener(this);
     }
 
-    private void getHistoryInfo(String chatID) {
-        List<ChatMessageUI> stored = getStoredMsg(chatID);
-        msgAdapter.addToEnd(stored,false);
+    /**
+     * read from RISKApplication to syc the history messages.
+     */
+    private void getHistoryInfo() {
+        Log.i(TAG,LOG_FUNC_RUN+"get history: id "+target);
+        List<ChatMessageUI> stored = getStoredMsg(target);
+        for(ChatMessageUI message:stored){
+                msgAdapter.addToStart(message, true);
+        }
     }
 
     @Override
@@ -124,7 +132,7 @@ public class MessageActivity extends AppCompatActivity
         ChatMessageUI message = new ChatMessageUI(target, input.toString(), user, targets);
 
         Log.i(TAG, LOG_FUNC_RUN + "start send msg");
-        getChatClient().sendOneMsg(message, new onResultListener() {
+        sendOneMsg(message, new onResultListener() {
             @Override
             public void onSuccess() {
                 addMsg(message);

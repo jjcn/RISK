@@ -29,9 +29,7 @@ public class ChatPlayer implements IUser {
         return name + roomID;
     }
 
-    public String getRoomId() {
-        return roomID;
-    }
+    public String getRoomId() { return roomID; }
 
     @Override
     public String getName() {

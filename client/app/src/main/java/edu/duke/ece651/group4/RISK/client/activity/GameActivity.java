@@ -1,6 +1,7 @@
 package edu.duke.ece651.group4.RISK.client.activity;
 
 import android.content.Intent;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -25,6 +26,7 @@ import java.util.List;
 import static edu.duke.ece651.group4.RISK.client.Constant.*;
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.*;
 import static edu.duke.ece651.group4.RISK.client.utility.Notice.*;
+import static edu.duke.ece651.group4.RISK.shared.Constant.TECH_LEVEL_UPGRADE_COSTS;
 
 public class GameActivity extends AppCompatActivity {
     private final String TAG = GameActivity.class.getSimpleName();
@@ -74,7 +76,7 @@ public class GameActivity extends AppCompatActivity {
                 finish();
                 return true;
             case R.id.menu_devinfo:
-                showByToast(GameActivity.this, COLOR_EGG);
+                showColorEgg();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -125,8 +127,8 @@ public class GameActivity extends AppCompatActivity {
     private void impUpTechBT() {
         upTechBT.setOnClickListener(v -> {
             upTechBT.setEnabled(false); // can only upgrade tech once in a turn
-            // TODO
-            showUpConfirmDialog(UPTECH_CONFIRM, "You will consume ");
+            String msg = "(Upgrade will take effect next turn.)\n" + "To upgrade you will consume: " + TECH_LEVEL_UPGRADE_COSTS.get(getTechLevel());
+            showUpConfirmDialog(UPTECH_CONFIRM, msg);
         });
     }
 
@@ -322,6 +324,12 @@ public class GameActivity extends AppCompatActivity {
                     worldInfoAdapter.notifyDataSetChanged();
                 }
         );
+    }
+
+    private void showColorEgg() {
+        showByReport(GameActivity.this,"\\^^/" ,COLOR_EGG);
+//        soundPool = new SoundPool.Builder().build();
+//        soundID = soundPool.load(this, R.raw.qipao, 1);
     }
 
     @Override
