@@ -18,7 +18,7 @@ public class GameInfo implements Serializable {
     @Id
     public final int gameID;
     @ElementCollection(fetch=FetchType.EAGER)
-    public List<User> usersOnGame;
+    public List<String> usersOnGame;
     @Lob
     public World theWorld;
     @Lob
@@ -34,13 +34,8 @@ public class GameInfo implements Serializable {
 
     public GameInfo(int gameID, int maxNumUsers) {
         this(gameID,maxNumUsers,new ArrayList<>(),new World(),new GameState());
-//        this.gameID = gameID;
-//        this.maxNumUsers = maxNumUsers;
-//        this.usersOnGame =  new ArrayList<>();
-//        this.theWorld = new World();
-//        this.gameState = new GameState();
     }
-    public GameInfo(int gameID, int maxNumUsers, List<User> usersOnGame,World theWorld,GameState gameState){
+    public GameInfo(int gameID, int maxNumUsers, List<String> usersOnGame,World theWorld,GameState gameState){
         this.gameID = gameID;
         this.maxNumUsers = maxNumUsers;
         this.usersOnGame =  usersOnGame;
@@ -49,9 +44,9 @@ public class GameInfo implements Serializable {
     }
 
     public GameInfo clone(){
-        List<User> users = new  ArrayList<>();
-        for(User u : usersOnGame){
-            users.add(u.clone());
+        List<String> users = new  ArrayList<>();
+        for(String u : usersOnGame){
+            users.add(u);
         }
         GameInfo gInfo = new GameInfo(gameID,maxNumUsers,usersOnGame, theWorld.clone(), gameState.clone());
         return gInfo;

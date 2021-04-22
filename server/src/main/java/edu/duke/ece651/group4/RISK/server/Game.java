@@ -56,12 +56,12 @@ public class Game implements Serializable {
     * This is to get all usernames in this game.
     * @return a list of usernames in the game
     * */
-    public ArrayList<String> getUserNames(){
-        ArrayList<String> userNames = new ArrayList<>();
-        for(User u: gInfo.usersOnGame){
-            userNames.add(u.getUsername());
-        }
-        return userNames;
+    public List<String> getUserNames(){
+//        ArrayList<String> userNames = new ArrayList<>();
+//        for(User u: gInfo.usersOnGame){
+//            userNames.add(u.getUsername());
+//        }
+        return gInfo.usersOnGame;
     }
 
 
@@ -70,8 +70,15 @@ public class Game implements Serializable {
      * @return true if he is in, false if not
      * */
     public boolean isUserInGame(User u){
-        if(gInfo.usersOnGame.contains(u)){
-            return true;
+//        if(gInfo.usersOnGame.contains(u)){
+//            return true;
+//        }
+//        return false;
+        String username = u.getUsername();
+        for(String uName : gInfo.usersOnGame){
+            if(u.equals(uName)){
+                return true;
+            }
         }
         return false;
     }
@@ -85,7 +92,7 @@ public class Game implements Serializable {
         if(isFull()){
             return false;
         }
-        gInfo.usersOnGame.add(u);
+        gInfo.usersOnGame.add(u.getUsername());
         gInfo.gameState.addPlayerState(u);
         return true;
     }
