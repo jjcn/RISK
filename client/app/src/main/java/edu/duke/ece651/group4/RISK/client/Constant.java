@@ -15,6 +15,7 @@ public class Constant {
     public static final String LOG_FUNC_RUN = "//////////// Function running ///////////";
 
     //*************FOR USAGE IN CODE**************//
+    // for notices
     public static final String SUCCESS_SIGNUP = "Sign up a new account successfully";
     public static final String SUCCESS_JOIN = "Join a room successfully";
     public static final String SUCCESS_CREATE = "Create a new room successfully";
@@ -33,7 +34,7 @@ public class Constant {
     public static final String CHOOSE_USER_INSTR = "Please choose the user you want to ally with";
     public static final String NO_ALLY = "None";
     public static final String SEND_CHAT_FAIL = "Failed to send the message";
-
+    // actions
     public static final String UI_MOVE = "Move";
     public static final String UI_DONE = "Done";
     public static final String UI_ATK = "Attack";
@@ -42,10 +43,8 @@ public class Constant {
     public static final String UI_SWITCH_OUT = "SwitchOut";
     public static final String UI_ALLIANCE = "Alliance";
     public static final String UI_CHANGETYPE = "Change soldier type";
-
-    public static final String USER_INFO_TV = "userInfoTV";
-    public static final String NOTICE_ADP = "noticeAdapter";
-    public static final String WORLD_INFO_ADP= "worldInfoAdapter";
+    // For data transfer
+    public static final String TERR = "Territory";
 
     //**************check receive type***************//
     public static final String ROOMS = "roomInfo";

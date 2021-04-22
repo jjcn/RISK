@@ -43,19 +43,19 @@ public class UpgradeTroopOrder implements Order, Serializable {
     /**
      * Type of unit to upgrade.
      */
-    private String unitType;
+    private String typeName;
 
     public UpgradeTroopOrder(String srcName,
                              int levelBefore,
                              int levelAfter,
                              int nUnit,
-                             String unitType) {
+                             String typeName) {
         this.actionName = Constant.UPTROOP_ACTION;
         this.srcName = srcName;
         this.levelBefore = levelBefore;
         this.levelAfter = levelAfter;
         this.nUnit = nUnit;
-        this.unitType = unitType;
+        this.typeName = typeName;
     }
 
     /**
@@ -76,11 +76,11 @@ public class UpgradeTroopOrder implements Order, Serializable {
 
     /**
      * Set the unit type to upgrade.
-     * @param unitType is a string indicating the type of unit,
+     * @param typeName is a string indicating the type of unit,
      *                 defined in shared/Constant.
      */
-    public void setUnitType(String unitType) {
-        this.unitType = unitType;
+    public void setUnitType(String typeName) {
+        this.typeName = typeName;
     }
 
     @Override
@@ -114,4 +114,6 @@ public class UpgradeTroopOrder implements Order, Serializable {
     public int getNUnit() {
         return nUnit;
     }
-} 
+
+    public String getTypeName() { return typeName; }
+}

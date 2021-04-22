@@ -84,6 +84,15 @@ public class HostApp implements Runnable {
         }
     }
 
+    public void tryLoadGamesFromDatabase(){
+        List<GameInfo> gamesInfo = HibernateTool.getGameInfoList();
+        for(GameInfo gInfo: gamesInfo){
+            if(gInfo.gameState.isAlive()){
+                games.add(new Game(gInfo));
+
+            }
+        }
+    }
 //    public void loadGames(){
 //
 //    }

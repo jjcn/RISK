@@ -95,7 +95,10 @@ class TerritoryTest {
         Territory test = new Territory("test", p1, 4, new Random(0));
         System.out.println(test.getInfo());
 
+        test.sendInAlly(new Troop(1, new TextPlayer(null, null, "p2")));
+        System.out.println(test.getInfo());
     }
+
 
 
 

@@ -12,11 +12,11 @@
         tools:context=".activity.BasicOrderActivity" android:orientation="vertical">
 
     <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/vguide1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.7"/>
+        android:id="@+id/vguide1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.66" />
 
     <androidx.constraintlayout.widget.Guideline
             android:id="@+id/hguide1"
@@ -40,17 +40,18 @@
             app:layout_constraintGuide_percent="0.5"/>
 
     <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/hguide4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.65"/>
+        android:id="@+id/hguide4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.73" />
+
     <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/hguide5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.7"/>
+        android:id="@+id/hguide5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.8" />
 
     <fragment
             android:layout_width="match_parent"
@@ -102,31 +103,34 @@
             app:layout_constraintBottom_toBottomOf="@id/hguide4"
             android:gravity="center_horizontal"/>
 
-    <Spinner
-            android:id="@+id/unit_type_choices"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:prompt="@string/CHOOSE_TYPE_INSTRU"
-            android:spinnerMode="dropdown"
-            app:layout_constraintStart_toEndOf="@id/vguide1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/hguide3"
-            app:layout_constraintBottom_toBottomOf="@id/unit_before_choices"
-            android:textAlignment="center"
-            android:gravity="center_horizontal"/>
 
     <Spinner
-            android:id="@+id/unit_before_choices"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:spinnerMode="dialog"
-            app:layout_constraintStart_toEndOf="@id/vguide1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/unit_type_choices"
-            app:layout_constraintBottom_toBottomOf="@id/hguide4"
-            android:textAlignment="center"
-            android:gravity="center_horizontal"/>
+        android:id="@+id/unit_type_choices"
+        android:layout_width="132dp"
+        android:layout_height="24dp"
+        android:gravity="center_horizontal"
+        android:prompt="@string/CHOOSE_TYPE_INSTRU"
+        android:spinnerMode="dropdown"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@+id/hguide4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@id/vguide1"
+        app:layout_constraintTop_toTopOf="@id/hguide3"
+        app:layout_constraintVertical_bias="0.285" />
 
+    <Spinner
+        android:id="@+id/unit_before_choices"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:spinnerMode="dialog"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@+id/hguide4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@id/vguide1"
+        app:layout_constraintTop_toBottomOf="@+id/unit_type_choices" />
 
     <TextView
             android:id="@+id/unit_after_prompt"
@@ -153,35 +157,39 @@
             android:gravity="center_horizontal"/>
 
 
-
     <TextView
-            android:id="@+id/ma_num_TV"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="@id/vguide1"
-            app:layout_constraintTop_toTopOf="@id/hguide5"
-            app:layout_constraintBottom_toBottomOf="@id/inputNum"
-            android:layout_marginTop="@dimen/fragmentMargin"
-            android:text="@string/INPUT_NUM_INSTRU"
-            android:layout_width="wrap_content"/>
+        android:id="@+id/ma_num_TV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/fragmentMargin"
+        android:text="@string/INPUT_NUM_INSTRU"
+        app:layout_constraintBottom_toBottomOf="@id/inputNum"
+        app:layout_constraintEnd_toEndOf="@id/vguide1"
+        app:layout_constraintHorizontal_bias="0.466"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/hguide5"
+        app:layout_constraintVertical_bias="0.25" />
 
-    <EditText android:id="@+id/inputNum"
-              android:layout_height="wrap_content"
-              android:inputType="number"
-              android:layout_width="50dp"
-              app:layout_constraintStart_toStartOf="@id/vguide1"
-              app:layout_constraintEnd_toEndOf="parent"
-              app:layout_constraintTop_toBottomOf="@id/hguide5"/>
+    <EditText
+        android:id="@+id/inputNum"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:inputType="number"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/vguide1"
+        app:layout_constraintTop_toBottomOf="@id/hguide5" />
 
     <Button
-            android:id="@+id/commit_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/COMMIT"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/inputNum"
-        />
+        android:id="@+id/commit_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="@string/COMMIT"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.529"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/inputNum" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

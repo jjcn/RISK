@@ -4,9 +4,7 @@ package edu.duke.ece651.group4.RISK.shared;
 import java.io.Serializable;
 import java.util.*;
 
-import static edu.duke.ece651.group4.RISK.shared.Constant.ARCHER_NAMES;
-import static edu.duke.ece651.group4.RISK.shared.Constant.BREAKER_NAMES;
-import static edu.duke.ece651.group4.RISK.shared.Constant.KNIGHT_NAMES;
+import static edu.duke.ece651.group4.RISK.shared.Constant.JOB_DICTIONARY;
 import static edu.duke.ece651.group4.RISK.shared.Constant.UNIT_NAMES;
 
 
@@ -99,6 +97,23 @@ public class Territory implements Serializable {
         return this.ownerTroop.getOwner();
     }
 
+    public String getOwnerName() {
+        return this.getOwner().getName();
+    }
+
+    public Player getAlliance() throws IllegalArgumentException {
+        if (this.allianceTroop == null) {
+            throw new IllegalArgumentException(
+                    String.format("No alliance troop stationed on %s.", name)
+            );
+        }
+        return this.allianceTroop.getOwner();
+    }
+
+    public String getAllianceName() {
+        return this.getAlliance().getName();
+    }
+
     public int getFoodSpeed() {
         return this.foodSpeed;
     }
@@ -148,7 +163,24 @@ public class Territory implements Serializable {
     }
 
     /**
-     * Check population of territory
+     * Check the size of the troop that belongs to a player on this territory
+     * @param playerName is the name of player
+     * @return the size of troop this payer stationed on this territory
+     */
+    public int getTroopSize(String playerName) throws IllegalArgumentException {
+        if (ownerTroop.getOwner().getName().equals(playerName)) {
+            return ownerTroop.checkTroopSize();
+        } else if (allianceTroop.getOwner().getName().equals(playerName)) {
+            return allianceTroop.checkTroopSize();
+        } else {
+            throw new IllegalArgumentException(
+                    String.format("%s does not have troop stationed on %s", playerName, this.name)
+            );
+        }
+    }
+
+    /**
+     * Check population of the territory's owner troop
      */
     public int checkPopulation() {
         return this.ownerTroop.checkTroopSize();
@@ -160,7 +192,8 @@ public class Territory implements Serializable {
      * @param subTroop shows the number of unit send out from territory
      */
     public Troop sendOutTroop(Troop subTroop) {
-        if (subTroop.getOwner().getName() != this.ownerTroop.getOwner().getName()) {
+        if (!subTroop.getOwner().getName()
+                .equals(this.ownerTroop.getOwner().getName())) {
             if (allianceTroop == null) {
                 throw new IllegalArgumentException("No alliance troop now");
             } else {
@@ -181,7 +214,8 @@ public class Territory implements Serializable {
      * @param subTroop shows the number of unit send in to territory
      */
     public void sendInTroop(Troop subTroop) {
-        if (subTroop.getOwner().getName() != this.ownerTroop.getOwner().getName()) {
+        if (!subTroop.getOwner().getName()
+                .equals(this.ownerTroop.getOwner().getName())) {
             if (allianceTroop == null) {
                 allianceTroop = subTroop;
             } else {
@@ -215,7 +249,6 @@ public class Territory implements Serializable {
      * @param enemy shows the enemy troop attack in
      */
     public void doOneBattle(Troop enemy) {
-
         Troop enemyRemain = this.ownerTroop.combat(enemy);
         this.ownerTroop = enemyRemain.checkWin() ? enemyRemain : this.ownerTroop;
     }
@@ -286,6 +319,7 @@ public class Territory implements Serializable {
         }
 
         this.ownerTroop = enemy.checkWin() ? enemy : this.ownerTroop;
+        this.allianceTroop=enemy.checkWin() ?partner:allianceTroop;
     }
 
 
@@ -400,22 +434,15 @@ public class Territory implements Serializable {
         return this.ownerTroop.getDict();
     }
 
-    public int upgradeTroop(int levelBefore, int levelAfter, int nUnit, int nResource) {
-        int levelUp = levelAfter - levelBefore;
-        return ownerTroop.updateUnit(levelBefore, levelUp, nUnit, nResource);
-    }
 
-    public int upgradeTroop(UpgradeTroopOrder utOrder, int nTech) {
-        int levelBefore = utOrder.getLevelBefore();
-        int levelAfter = utOrder.getLevelAfter();
-        int nUnit = utOrder.getNUnit();
-        return upgradeTroop(levelBefore, levelAfter, nUnit, nTech);
+    public int upgradeTroop(UpgradeTroopOrder utOrder, int nResource) {
+        return ownerTroop.updateUnit(utOrder, nResource);
     }
 
     /**
      * Get all info of a territory in text form.
-     * To be displayed
-     * @return
+     * To be displayed on in TurnActivity UI.
+     * @return a String displaying the info of a territory.
      */
     public String getInfo() {
         StringBuilder report = new StringBuilder();
@@ -433,6 +460,11 @@ public class Territory implements Serializable {
         return report.toString();
     }
 
+    /**
+     * Get all info of a troop in text form.
+     * @param troop is a troop.
+     * @return a String displaying the info of a troop.
+     */
     public String getTroopInfo(Troop troop) {
         StringBuilder ans = new StringBuilder();
         ans.append(troop.getOwner().getName() + "'s troop: " + "\n");
@@ -482,5 +514,44 @@ public class Territory implements Serializable {
      */
     public boolean hasAllianceTroop() {
         return this.allianceTroop != null;
+    }
+
+
+    public int checkUnitNum(String jobName){
+        return this.ownerTroop.checkUnitNum(jobName);
+    }
+
+
+
+    public int checkUnitNumAlly(String jobName){
+        if(this.allianceTroop==null){
+            return 0;
+        }
+        return this.allianceTroop.checkUnitNum(jobName);
+    }
+
+
+    public Map<String,Integer> checkTypeNumSpec(String typeName,Troop target){
+        if(JOB_DICTIONARY.get(typeName)==null){
+            throw new IllegalArgumentException("Wrong Unit Type name "+typeName);
+        }
+
+        Map<String,Integer> m=new HashMap<>();
+        if(target==null){
+            return m;
+        }
+
+        for(String s:JOB_DICTIONARY.get(typeName)){
+            m.put(s,target.checkUnitNum(s));
+        }
+        return m;
+    }
+
+    public Map<String,Integer> checkTypeNum(String typeName){
+        return this.checkTypeNumSpec(typeName,this.ownerTroop);
+    }
+
+    public Map<String,Integer> checkTypeNumAllay(String typeName){
+        return this.checkTypeNumSpec(typeName,this.allianceTroop);
     }
 }

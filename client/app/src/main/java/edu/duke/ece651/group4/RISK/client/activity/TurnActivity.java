@@ -59,7 +59,7 @@ public class TurnActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_turn);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("RISK/Room "+getWorld().getRoomID());
+            getSupportActionBar().setTitle("RISK Room "+getWorld().getRoomID());
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
@@ -129,6 +129,17 @@ public class TurnActivity extends AppCompatActivity {
         impNoticeInfoRC();
         impUserInfoRC();
         impCommitBT();
+        // TODO
+        impNEWUIBT();
+    }
+
+    private void impNEWUIBT() {
+        Button newUIBT = findViewById(R.id.newUIFeature);
+        newUIBT.setOnClickListener(v->{
+            Intent intent = new Intent(TurnActivity.this,GameActivity.class);
+            startActivity(intent);
+            finish();
+        });
     }
 
     private void impUserInfoRC() {

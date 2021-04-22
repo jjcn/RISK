@@ -117,7 +117,6 @@ public class GameRunner extends Thread{
 //            }
             // wait until all players finish updating their state
 
-
             out.println("Game" +game.getGameID()+" runner knows all players are done updating");
             if(game.isEndGame() || game.gInfo.gameState.isAllPlayersSwitchOut()){
                 game.gInfo.gameState.setGameDead();

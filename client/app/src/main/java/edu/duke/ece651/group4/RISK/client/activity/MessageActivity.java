@@ -63,6 +63,7 @@ public class MessageActivity extends AppCompatActivity
 //                new ImageLoader() {
 //            @Override
 //            public void loadImage(ImageView imageView, @Nullable String url, @Nullable Object payload) {
+        // Picasso.with(MessagesListActivity.this).load(url).into(imageView);
 //                imageView.setImageBitmap(stringToBitmap(url));
 //            }
 //        });
