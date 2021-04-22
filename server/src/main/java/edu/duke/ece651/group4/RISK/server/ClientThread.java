@@ -146,7 +146,6 @@ public class ClientThread extends Thread {
                     res = "Invalid Action";
             }
             this.theClient.sendObject(res);
-            out.println("Game");
             if(res == null){
                 return;
             }
