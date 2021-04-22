@@ -684,6 +684,33 @@ public class World implements Serializable {
     }
 
     /**
+     * Try to send all the troop of player B stationed on player A's territories
+     * back to the nearest territory owned by B.
+     *
+     * A and B are in one alliance.
+     * A: name of the attacker, attackerName
+     * B: name of player who is attacked, allyName
+     *
+     * If A breaks an alliance with B, and B has units in A’s territories,
+     * then B’s units return to the nearest (break ties randomly) B-owned territory
+     * before any other actions are resolved (i.e. are available to defend those territories)
+     *
+     * @param attackerName is the name of the player who attacks
+     * @param allyName is the name of the player who is attacked
+     */
+    protected void sendBackAllianceTroop(String attackerName, String allyName) {
+        for (Territory terr : getTerritoriesOfPlayer(attackerName)) {
+            if (terr.hasAllianceTroop()) {
+                Territory nearest = getNearestTerritory(terr, allyName);
+                Troop kickedOutTroop = terr.kickOut();
+                assert(kickedOutTroop != null);
+                nearest.sendInTroop(kickedOutTroop);
+            }
+        }
+        breakAlliance(attackerName, allyName);
+    }
+
+    /**
      * Sends a troop to a territory with different owner, in order to engage in
      * battle on that territory. Also checks if the troop size is valid to send from
      * the starting territory.
@@ -707,24 +734,18 @@ public class World implements Serializable {
         consumeResourceOfAttack(order, playerName);
         // check if the destination belongs to committer's ally, if so, break they alliance
         if (getAllianceNames(playerName).contains(endOwnerName)) {
-            /*  If A breaks an alliance with B, and B has units in A’s territories,
-            then B’s units return to the nearest (break ties randomly) B-owned territory
-            before any other actions are resolved (i.e. are available to defend those territories)
-            */
-            // A: playerName, B: endOwnerName
-            for (Territory terr : getTerritoriesOfPlayer(playerName)) {
-                if (terr.hasAllianceTroop()) {
-                    Territory nearest = getNearestTerritory(terr, endOwnerName);
-                    Troop kickedOutTroop = terr.kickOut();
-                    assert(kickedOutTroop != null);
-                    nearest.sendInTroop(kickedOutTroop);
-                }
-            }
-            breakAlliance(startOwnerName, endOwnerName);
+            sendBackAllianceTroop(startOwnerName, endOwnerName);
         }
         // moves troop
-        end.sendInEnemyTroop(start.sendOutTroop(troop));
-        // TODO: add ranged attack
+        Troop sendout = start.sendOutTroop(troop);
+        if (troop.hasRanged()) {
+            // if it HAS ranged units, send ranged attack to end territory
+            end.sendRangedAttack(sendout);
+        }
+        else {
+            // it not, move to enemy territory
+            end.sendInEnemyTroop(sendout);
+        }
     }
 
     /**

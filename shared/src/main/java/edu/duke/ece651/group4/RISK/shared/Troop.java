@@ -501,7 +501,7 @@ public class Troop implements Serializable {
 
     public Troop sendRangedAttack(Troop target) {
         if (!this.hasRanged()) {
-            throw new IllegalArgumentException("No range attack unit");
+            throw new IllegalArgumentException("No ranged attack unit");
         }
 
         ArrayList<Unit> sub = new ArrayList<>();
@@ -547,15 +547,14 @@ public class Troop implements Serializable {
 //                }
 
 //
-            }else{
-                throw new IllegalArgumentException("Not using range attack unit");
+            } else {
+                throw new IllegalArgumentException("Not using ranged attack unit");
             }
 
         }
         Troop r = new Troop(sub, newDict, this.owner);
 
         return r;
-
     }
 
     public void archerReady(){
