@@ -208,12 +208,12 @@ public class ClientThread extends Thread {
         if(gameToJoin.isFull() && !gameToJoin.isUserInGame(ownerUser)){
             out.println( INVALID_JOIN);
             return INVALID_JOIN;}
-        if(!gameToJoin.isFull()){
-            if(gameToJoin.isUserInGame(ownerUser)){
-                out.println( "Invalid Join: you already in this room");
-                return  "Invalid Join: you already in this room";
-            }
-        }
+//        if(!gameToJoin.isFull()){
+//            if(gameToJoin.isUserInGame(ownerUser)){
+//                out.println( "Invalid Join: you already in this room");
+//                return  "Invalid Join: you already in this room";
+//            }
+//        }
         return null;
     }
 
