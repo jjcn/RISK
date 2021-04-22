@@ -2,7 +2,6 @@ package edu.duke.ece651.group4.RISK.client;
 
 import android.app.Application;
 import android.util.Log;
-import com.stfalcon.chatkit.commons.models.IMessage;
 import edu.duke.ece651.group4.RISK.client.listener.onJoinRoomListener;
 import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
 import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
@@ -25,13 +24,13 @@ public class RISKApplication extends Application {
     private static final String TAG = RISKApplication.class.getSimpleName();
     private static Client playerClient;
     private static World theWorld;
-    private Random rnd;
     static ArrayList<RoomInfo> roomInfo;
     static String userName;
     static int currentRoomSize;
     static boolean updatedTech;
     private static ThreadPoolExecutor threadPool;
     private static ChatClient chatClient;
+    private static List<ChatMessageUI> storedMsg;
 
     @Override
     public void onCreate() {
@@ -44,15 +43,15 @@ public class RISKApplication extends Application {
                 e.printStackTrace();
             }
         }).start();
-        this.theWorld = null;
-        this.rnd = new Random();
-        this.roomInfo = new ArrayList<>();
-        this.userName = null;
-        this.currentRoomSize = 0;
-        this.updatedTech = false;
-        this.chatClient = null;
-        this.threadPool = new ThreadPoolExecutor(2, 5, 1,
+        theWorld = null;
+        roomInfo = new ArrayList<>();
+        userName = null;
+        currentRoomSize = 0;
+        updatedTech = false;
+        chatClient = null;
+        threadPool = new ThreadPoolExecutor(2, 5, 1,
                 TimeUnit.MINUTES, new LinkedBlockingDeque<>(10));
+        storedMsg = new ArrayList<>();
         Log.i(TAG, LOG_CREATE_SUCCESS);
     }
 
@@ -111,7 +110,7 @@ public class RISKApplication extends Application {
         StringBuilder names = new StringBuilder();
         String sep = "";
         for (String allis : allyNames) {
-            names.append(sep + allis);
+            names.append(sep).append(allis);
             sep = ", ";
         }
         return names.toString();
@@ -183,11 +182,11 @@ public class RISKApplication extends Application {
         }
         PlayerInfo info = theWorld.getPlayerInfoByName(userName);
         StringBuilder result = new StringBuilder();
-        result.append("Player name:  " + userName + "\n");
-        result.append("Tech Level: " + getTechLevel() + "\n");
-        result.append("Alliance: " + getAllianceName() + "\n");
-        result.append("Food Resource: " + info.getFoodQuantity() + "\n");
-        result.append("Tech Resource: " + info.getTechQuantity() + "\n");
+        result.append("Player name:  ").append(userName).append("\n");
+        result.append("Tech Level: ").append(getTechLevel()).append("\n");
+        result.append("Alliance: ").append(getAllianceName()).append("\n");
+        result.append("Food Resource: ").append(info.getFoodQuantity()).append("\n");
+        result.append("Tech Resource: ").append(info.getTechQuantity()).append("\n");
 //        result.append("My Territories: ");
 //        Log.i(TAG,LOG_FUNC_RUN+"start add terr names");
 //        List<Territory> terrs = theWorld.getTerritoriesOfPlayer(userName);
@@ -206,14 +205,16 @@ public class RISKApplication extends Application {
      * Android blocks direct send and receive.
      * new thread works parallel to the main thread (UI thread) thus objects should not be directly stored in Client.
      */
-    public synchronized static void send(Object toSendO) {
-        new Thread(() -> {
+    public synchronized static void send(Object toSendO, onResultListener listener) {
+        threadPool.execute(() -> {
             try {
                 playerClient.sendObject(toSendO);
+                listener.onSuccess();
             } catch (Exception e) {
                 Log.e(TAG, LOG_FUNC_FAIL + "send function: " + e.toString());
+                listener.onFailure(e.toString());
             }
-        }).start();
+        });
     }
 
     /**
@@ -222,21 +223,21 @@ public class RISKApplication extends Application {
      * @param listener reminds main thread to get received info if success.
      */
     public synchronized static void receive(onReceiveListener listener) {
-        new Thread(() -> {
+        threadPool.execute(() -> {
             try {
                 Object receivedO = playerClient.recvObject();
                 listener.onSuccess(receivedO);
             } catch (Exception e) {
                 Log.e(TAG, LOG_FUNC_FAIL + e.toString());
             }
-        }).start();
+        });
     }
 
     /**
      * called when you want to send an object then receive null if success otherwise receive String explain why fail.
      */
     public synchronized static void sendAndReceiveResult(Object toSendO, onResultListener listener) {
-        new Thread(() -> {
+        threadPool.execute(() -> {
             Log.i(TAG, LOG_FUNC_RUN + "sendReceiveResult called");
             try {
                 playerClient.sendObject(toSendO);
@@ -251,14 +252,14 @@ public class RISKApplication extends Application {
             } catch (Exception e) {
                 Log.e(TAG, e.toString());
             }
-        }).start();
+        });
     }
 
     /**
      * called when you want to send an object then receive a World if success otherwise receive String explain why fail.
      */
     public synchronized static void sendAndReceiveWorld(Object toSendO, onReceiveListener listener) {
-        new Thread(() -> {
+        threadPool.execute(() -> {
             Log.i(TAG, "sendReceiveAndReceiveWorld called");
             try {
                 playerClient.sendObject(toSendO);
@@ -269,12 +270,12 @@ public class RISKApplication extends Application {
                     theWorld = (World) receivedO;
                     listener.onSuccess(theWorld);
                 } else {
-                    Log.e(TAG, LOG_FUNC_RUN + "receive not a world: "+receivedO.getClass());
+                    Log.e(TAG, LOG_FUNC_RUN + "receive not a world: " + receivedO.getClass());
                 }
             } catch (Exception e) {
                 Log.e(TAG, e.toString());
             }
-        }).start();
+        });
     }
 
     /**
@@ -282,7 +283,7 @@ public class RISKApplication extends Application {
      * type: ROOM: receive a RoomInfo list for displaying of room activity.
      */
     public synchronized static void sendAndReceiveList(Object toSendO, onReceiveListener listener, String type) {
-        new Thread(() -> {
+        threadPool.execute(() -> {
             Log.e(TAG, "sendReceiveAndReceiveList called");
             try {
                 playerClient.sendObject(toSendO);
@@ -291,7 +292,7 @@ public class RISKApplication extends Application {
                     listener.onFailure((String) receivedO);
                     listener.onFailure((String) receivedO);
                 } else if (receivedO instanceof List) {
-                    if (type == ROOMS) {
+                    if (type.equals(ROOMS)) {
                         roomInfo = (ArrayList<RoomInfo>) receivedO;
                         listener.onSuccess(roomInfo);
                     }
@@ -301,7 +302,7 @@ public class RISKApplication extends Application {
             } catch (Exception e) {
                 Log.e(TAG, e.toString());
             }
-        }).start();
+        });
     }
 
 
@@ -315,7 +316,7 @@ public class RISKApplication extends Application {
     }
 
     /**
-     * This send SignIn info
+     * This send LogIn info
      *
      * @param name is username
      * @param pwd  is the password
@@ -336,7 +337,7 @@ public class RISKApplication extends Application {
     }
 
 
-    /*******function used for room activity******/
+    /******function used for room activity******/
 
     /**
      * Used to update the list of game rooms
@@ -357,20 +358,14 @@ public class RISKApplication extends Application {
                 currentRoomSize = room.getMaxNumPlayers();
             }
         }
-        new Thread(() -> {
-            try {
-                sendAndReceiveResult(m, listenerString);
-            } catch (Exception e) {
-                Log.e(TAG, e.toString());
-            }
-        }).start();
+        sendAndReceiveResult(m, listenerString);
     }
 
     /**
      * receive World from server and decide if this is a new game or not by checking report.
      * If new game call onJoinNew in listener and onBack if the player is join back.
      *
-     * @param listenerWorld
+     * @param listenerWorld listener for receiving a World to start game
      */
     public static void waitGameStart(onJoinRoomListener listenerWorld) {
         try {
@@ -379,7 +374,7 @@ public class RISKApplication extends Application {
                 Log.i(TAG, LOG_FUNC_RUN + "World received");
                 theWorld = (World) receivedWorld;
                 String report = theWorld.getReport();
-                if (report == "") { //new game
+                if (report.equals("")) { //new game
                     listenerWorld.onJoinNew();
                 } else {
                     listenerWorld.onBack();
@@ -399,13 +394,7 @@ public class RISKApplication extends Application {
     public static void createGame(int playerNum, onResultListener listenerString) {
         GameMessage m = new GameMessage(GAME_CREATE, -1, playerNum);
         currentRoomSize = playerNum;
-        new Thread(() -> {
-            try {
-                sendAndReceiveResult(m, listenerString);
-            } catch (Exception e) {
-                Log.e(TAG, e.toString());
-            }
-        }).start();
+        sendAndReceiveResult(m, listenerString);
     }
 
 
@@ -434,16 +423,14 @@ public class RISKApplication extends Application {
     /**
      * Used to send a move order
      */
-    public static String doOneMove(MoveOrder order, onResultListener listener) {
+    public static void doOneMove(MoveOrder order, onResultListener listener) {
         try {
             MoveOrder tmp = new MoveOrder(order.getSrcName(), order.getDesName(), order.getActTroop().clone(), MOVE_ACTION);
             theWorld.moveTroop(order, userName);
-            send(tmp);
-            listener.onSuccess();
+            send(tmp, listener);
         } catch (Exception e) {
-            return e.getMessage();
+            listener.onFailure(e.getMessage());
         }
-        return null;
     }
 
 
@@ -461,16 +448,14 @@ public class RISKApplication extends Application {
     /**
      * Used to send an attack order
      */
-    public static String doOneAttack(AttackOrder order, onResultListener listener) {
+    public static void doOneAttack(AttackOrder order, onResultListener listener) {
         try {
             AttackOrder tmp = new AttackOrder(order.getSrcName(), order.getDesName(), order.getActTroop().clone(), ATTACK_ACTION);
             theWorld.attackATerritory(order, userName);
-            send(tmp);
-            listener.onSuccess();
+            send(tmp, listener);
         } catch (Exception e) {
-            return e.getMessage();
+            listener.onFailure(e.getMessage());
         }
-        return null;
     }
 
     /**
@@ -490,28 +475,31 @@ public class RISKApplication extends Application {
     }
 
     /**
-     * Used to send a soldier level upgrade order
+     * First check if can upgrade: World throw exception if cannot,
+     * otherwise send a soldier level upgrade order to server.
      */
-    public static String doSoldierUpgrade(UpgradeTroopOrder order) {
+    public static void doSoldierUpgrade(UpgradeTroopOrder order, onResultListener listener) {
         try {
             UpgradeTroopOrder tmp = new UpgradeTroopOrder(order.getSrcName(), order.getLevelBefore(), order.getLevelAfter(), order.getNUnit());
             theWorld.upgradeTroop(order, userName);
-            send(tmp);
+            send(tmp, listener);
         } catch (Exception e) {
-            return e.getMessage();
+            listener.onFailure(e.getMessage());
         }
-        return null;
     }
 
-    public static String doSoldierTransfer(TransferTroopOrder order) {
+    /**
+     * First check if can transfer: World throw exception if cannot.
+     * Send a soldier transfer order.
+     */
+    public static void doSoldierTransfer(TransferTroopOrder order, onResultListener listener) {
         try {
             TransferTroopOrder tmp = new TransferTroopOrder(order.getSrcName(), order.getTypeAfter(), order.getUnitLevel(), order.getNUnit());
-            theWorld.transferTroop(tmp,userName);
-            send(tmp);
+            theWorld.transferTroop(tmp, userName);
+            send(tmp, listener);
         } catch (Exception e) {
-            return e.getMessage();
+            listener.onFailure(e.getMessage());
         }
-        return null;
     }
 
 
@@ -525,7 +513,7 @@ public class RISKApplication extends Application {
             UpgradeTechOrder techOrder = new UpgradeTechOrder(1);
             try {
                 theWorld.doUpgradeTechResourceConsumption(techOrder, userName);
-                send(techOrder);
+                send(techOrder, listener);
             } catch (Exception e) {
                 listener.onFailure(e.getMessage());
             }
@@ -550,13 +538,26 @@ public class RISKApplication extends Application {
         sendAndReceiveWorld(order, listener);
     }
 
-    public static void exitGame() {
-        send(new BasicOrder(null, null, null, SWITCH_OUT_ACTION));
+    public static void switchGame() {
+        send(new BasicOrder(null, null, null, SWITCH_OUT_ACTION),
+                new onResultListener() {
+                    @Override
+                    public void onSuccess() { }
+
+                    @Override
+                    public void onFailure(String errMsg) { }
+                });
     }
 
     public static void backLogin() {
         GameMessage m = new GameMessage(GAME_EXIT, -1, -1);
-        send(m);
+        send(m,new onResultListener() {
+            @Override
+            public void onSuccess() { }
+
+            @Override
+            public void onFailure(String errMsg) { }
+        });
     }
 
     public static List<Territory> getEnemyTerritory() {
@@ -565,15 +566,21 @@ public class RISKApplication extends Application {
 
     public static void requireAlliance(String allyName) {
         Order allyOrder = new AllianceOrder(userName, allyName);
-        send(allyOrder);
-    }
+        send(allyOrder,new onResultListener() {
+            @Override
+            public void onSuccess() { }
 
-    public static int getRoomId() {
-        return theWorld.getRoomID();
+            @Override
+            public void onFailure(String errMsg) { }
+        });
     }
 
 
     /*************** function for chat **************/
+
+    public static int getRoomId() {
+        return theWorld.getRoomID();
+    }
 
     public static void initChat() {
         new Thread(() -> {
@@ -586,10 +593,8 @@ public class RISKApplication extends Application {
         }).start();
     }
 
-    public static void setReceiveListener(onReceiveListener listener) {
-        new Thread(() -> {
-            chatClient.setReceiveMsgListener(listener);
-        }).start();
+    public static void setChatReceiveListener(onReceiveListener listener) {
+        new Thread(() -> chatClient.setReceiveMsgListener(listener)).start();
     }
 
     public static void sendOneMsg(ChatMessageUI message, onResultListener listener) {
@@ -603,17 +608,26 @@ public class RISKApplication extends Application {
         }
     }
 
-    public static void getHistoryMsg() {
+    public static void addMsg(ChatMessageUI msg) {
+        storedMsg.add(msg);
+    }
+
+    public static List<ChatMessageUI> getStoredMsg(String chatID) {
+        List historyMsg = new ArrayList();
+        for(ChatMessageUI msg:storedMsg){
+            if(msg.getChatId().equals(chatID)) {
+                historyMsg.add(msg);
+            }
+        }
+        return historyMsg;
     }
 
     public static Set<String> getAllPlayersName() {
-        Set<String> playerNames = theWorld.getAllPlayerNames();
-        return playerNames;
+        return theWorld.getAllPlayerNames();
     }
 
     public static List<String> getChatPlayersName() {
-        List<String> chatPlayerNames = new ArrayList<>();
-        chatPlayerNames.addAll(getAllPlayersName());
+        List<String> chatPlayerNames = new ArrayList<>(getAllPlayersName());
         chatPlayerNames.remove(userName);
         return chatPlayerNames;
     }
