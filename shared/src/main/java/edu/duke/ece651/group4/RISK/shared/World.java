@@ -719,6 +719,9 @@ public class World implements Serializable {
         // moves troop
         end.sendInEnemyTroop(start.sendOutTroop(troop));
         // TODO: add ranged attack
+        if (troop.hasRanged()) {
+            end.
+        }
     }
 
     /**
