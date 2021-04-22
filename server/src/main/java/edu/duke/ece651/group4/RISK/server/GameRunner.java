@@ -1,5 +1,7 @@
 package edu.duke.ece651.group4.RISK.server;
 
+import edu.duke.ece651.group4.RISK.shared.World;
+
 import java.io.PrintStream;
 import java.util.concurrent.TimeUnit;
 
@@ -72,6 +74,10 @@ public class GameRunner extends Thread{
         // wait all users to join to start the game
         if(!game.gInfo.gameState.isSetUp()){
             game.setUpGame();
+            GameInfo gInfo = game.getGameInfo();
+            World w = game.getTheWorld();
+
+
             HibernateTool.updateGameInfo(game.getGameInfo());
             out.println("Game" +game.getGameID()+" runner finishes sets up");
         }

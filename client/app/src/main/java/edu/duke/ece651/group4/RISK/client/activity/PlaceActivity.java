@@ -74,6 +74,7 @@ public class PlaceActivity extends AppCompatActivity {
                 placements.add(new PlaceOrder(myTerr.get(1).getName(), new Troop(numTerrB, new TextPlayer(getUserName()))));
                 waitDG.show();
 
+                Log.i(TAG,LOG_FUNC_RUN+"start to send placement");
                 doPlacement(placements, new onReceiveListener() {
                     @Override
                     public void onSuccess(Object o) {

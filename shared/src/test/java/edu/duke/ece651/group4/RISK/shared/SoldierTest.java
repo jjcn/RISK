@@ -1,5 +1,6 @@
 package edu.duke.ece651.group4.RISK.shared;
 
+import static edu.duke.ece651.group4.RISK.shared.Constant.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.EOFException;
@@ -51,6 +52,18 @@ public class SoldierTest {
         mySoldier.setJob("Soldier LV2");
         remain=mySoldier.upGrade(4,100);
         assertEquals(remain,56);
+    }
+
+    @Test
+    public void test_transfer(){
+        Soldier mySoldier= new Soldier();
+        Soldier mySoldier2= new Soldier();
+        Soldier b=mySoldier.transfer(BREAKER);
+        Soldier s=mySoldier2.transfer(SHIELD);
+        s.fight(b);
+        Shield ss=(Shield)s;
+//        System.out.println(ss.checkLP());
+
     }
 
 }

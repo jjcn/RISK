@@ -719,6 +719,9 @@ public class World implements Serializable {
         // moves troop
         end.sendInEnemyTroop(start.sendOutTroop(troop));
         // TODO: add ranged attack
+        if (troop.hasRanged()) {
+//            end.
+        }
     }
 
     /**
@@ -807,8 +810,6 @@ public class World implements Serializable {
     /**
      * Consumes tech resource of an upgrade tech order.
      *
-     * @param uTechOrder is an upgrade tech order.
-     * @param playerName is the name of the player who upgrades tech level.
      */
     public void consumeResourceOfPlayerTechUpgrade(UpgradeTechOrder uTechOrder, String playerName) {
         getPlayerInfoByName(playerName).consumeResourceOfTechUpgrade(uTechOrder.getNLevel());

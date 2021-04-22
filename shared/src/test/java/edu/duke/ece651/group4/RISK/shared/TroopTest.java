@@ -1,10 +1,11 @@
 package edu.duke.ece651.group4.RISK.shared;
 
-import static edu.duke.ece651.group4.RISK.shared.Constant.UNIT_NAMES;
+import static edu.duke.ece651.group4.RISK.shared.Constant.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -145,8 +146,89 @@ public class TroopTest {
     @Test
     public void Test_transfer() {
         Troop troop1 = new Troop(5, new TextPlayer("test"), new Random(0));
-        troop1.transfer(Constant.SOLDIER, Constant.KNIGHT, 0,1);
+        troop1.transfer(Constant.SOLDIER, KNIGHT, 0,1);
         assertEquals(1, troop1.checkUnitNum("Knight LV0"));
         assertEquals(4, troop1.checkUnitNum("Soldier LV0"));
+    }
+
+    @Test
+    public void Test_newBattle() {
+        Troop troop1 = new Troop(5, new TextPlayer("test1"), new Random(0));
+        troop1.transfer(SOLDIER,BREAKER, 0,2);
+
+        Troop troop2 = new Troop(3, new TextPlayer("test2"), new Random(1));
+        troop2.transfer(SOLDIER,SHIELD, 0,2);
+
+//        troop2.updateUnit(SHIELD_NAMES.get(0),1,1,100);
+
+
+        System.out.println(troop1.getSummary());
+        System.out.println(troop2.getSummary());
+
+
+        troop2=troop1.doOneCombat(troop2);
+        System.out.println(troop1.getSummary());
+        System.out.println(troop2.getSummary());
+
+
+        troop2=troop1.doOneCombat(troop2);
+        System.out.println(troop1.getSummary());
+        System.out.println(troop2.getSummary());
+
+        troop2=troop1.doOneCombat(troop2);
+        System.out.println(troop1.getSummary());
+        System.out.println(troop2.getSummary());
+
+        troop2=troop1.doOneCombat(troop2);
+        System.out.println(troop1.getSummary());
+        System.out.println(troop2.getSummary());
+
+        troop2=troop1.doOneCombat(troop2);
+        System.out.println(troop1.getSummary());
+        System.out.println(troop2.getSummary());
+        assertEquals(troop2.checkTroopSize(),2);
+        assertEquals(troop1.checkTroopSize(),2);
+
+
+    }
+
+    @Test
+    public void Test_newBattleRange() {
+
+        Troop troop1 = new Troop(3, new TextPlayer("test1"), new Random(0));
+        troop1.transfer(SOLDIER,ARCHER, 0,2);
+        Troop troop2 = new Troop(3, new TextPlayer("test2"), new Random(1));
+//        troop2.transfer(SOLDIER,SHIELD, 0,2);
+
+        System.out.println(troop1.getSummary());
+        System.out.println(troop2.getSummary());
+        HashMap<String, Integer> tmpDict=new HashMap<>();
+        tmpDict.put(ARCHER_NAMES.get(0),2);
+        Troop tmp=new Troop(tmpDict,troop1.getOwner());
+        Troop troopRange=troop1.sendRangedAttack(tmp);
+
+        System.out.println(troop2.getSummary());
+        System.out.println(troopRange.getSummary());
+        troopRange=troop2.doOneCombat(troopRange);
+        System.out.println(troop2.getSummary());
+        System.out.println(troopRange.getSummary());
+
+        troopRange=troop2.doOneCombat(troopRange);
+        System.out.println(troop2.getSummary());
+        System.out.println(troopRange.getSummary());
+       }
+
+    @Test
+    public void Test_newBattleSimple(){
+
+        Troop troop1 = new Troop(10, new TextPlayer("test1"), new Random(0));
+
+        Troop troop2 = new Troop(3, new TextPlayer("test2"), new Random(1));
+
+        while(troop1.size()>0&&troop2.size()>0){
+            System.out.println(troop1.getSummary());
+            System.out.println(troop2.getSummary());
+            troop2=troop1.doOneCombat(troop2);
+        }
     }
 }

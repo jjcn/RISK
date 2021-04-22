@@ -59,11 +59,11 @@ public class TurnActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_turn);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("RISK Room "+getWorld().getRoomID());
+            getSupportActionBar().setTitle("RISK Room " + getWorld().getRoomID());
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-        actions = new ArrayList<>(Arrays.asList(UI_MOVE, UI_ATK, UI_UPTECH, UI_UPTROOP, UI_ALLIANCE,UI_CHANGETYPE, UI_DONE));
+        actions = new ArrayList<>(Arrays.asList(UI_MOVE, UI_ATK, UI_UPTECH, UI_UPTROOP, UI_ALLIANCE, UI_CHANGETYPE, UI_DONE));
         actionType = UI_MOVE; // default: move
         isWatch = false;
         waitDG = new WaitDialog(TurnActivity.this);
@@ -135,8 +135,8 @@ public class TurnActivity extends AppCompatActivity {
 
     private void impNEWUIBT() {
         Button newUIBT = findViewById(R.id.newUIFeature);
-        newUIBT.setOnClickListener(v->{
-            Intent intent = new Intent(TurnActivity.this,GameActivity.class);
+        newUIBT.setOnClickListener(v -> {
+            Intent intent = new Intent(TurnActivity.this, GameActivity.class);
             startActivity(intent);
             finish();
         });
@@ -296,10 +296,12 @@ public class TurnActivity extends AppCompatActivity {
             waitDG.show();
         }
         commitBT.setClickable(false);
+        Log.i(TAG, LOG_FUNC_RUN + "start to send done order");
         doDone(new onReceiveListener() {
             @Override
             public void onSuccess(Object o) {
                 World world = (World) o;
+                Log.i(TAG,LOG_FUNC_RUN+"turn "+world.getTurnNumber());
                 if (world.isGameEnd()) {
                     showByToast(TurnActivity.this, world.getWinner() + " won the game!");
                     Intent joinGame = new Intent(TurnActivity.this, RoomActivity.class);
@@ -313,6 +315,7 @@ public class TurnActivity extends AppCompatActivity {
                         commitBT.performClick();
                     });
                 } else {
+                    Log.i(TAG, LOG_FUNC_RUN + "start update after turn");
                     updateAfterTurn();
                     showByToast(TurnActivity.this, TURN_END);
                 }
@@ -335,10 +338,13 @@ public class TurnActivity extends AppCompatActivity {
                     userInfo.clear();
                     userInfo.add(getPlayerInfo());
                     userInfoAdapter.notifyDataSetChanged();
+
                     noticeInfo.clear();
-                    noticeInfo.add(getPlayerInfo());
-                    noticeInfo.add(getWorld().getReport());
+                    int currTurn = getWorld().getTurnNumber();
+                    String notice = "Turn " + (currTurn - 1) + ":\n" + getWorld().getReport() + "Turn: " + currTurn + " in progress";
+                    noticeInfo.add(notice);
                     noticesAdapter.notifyDataSetChanged();
+
                     worldInfo.clear();
                     worldInfo.addAll(getWorldInfo());
                     worldInfoAdapter.notifyDataSetChanged();
