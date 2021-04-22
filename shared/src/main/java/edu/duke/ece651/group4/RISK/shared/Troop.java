@@ -134,7 +134,7 @@ public class Troop implements Serializable {
     /**
      * delete a specific unit from troop
      */
-    private void loseUnit(Unit loss) {
+    public void loseUnit(Unit loss) {
         String name = loss.getJobName();
         this.dict.put(name, this.dict.get(name) - 1);
         this.population.remove(loss);
@@ -439,7 +439,15 @@ public class Troop implements Serializable {
         StringBuilder report = new StringBuilder();
         report.append("Troop of " + this.owner.getName() + " with :\n");
         for (String s : this.dict.keySet()) {
+
             report.append(s + " : " + dict.get(s) + "\n");
+        }
+        for(int i=0;i<this.population.size();i++){
+
+                if(this.checkIsShield(population.get(i))){
+                    Shield s=(Shield) population.get(i);
+                    report.append(s.getJobName()+"   LP: "+s.checkLP()+ "\n");
+                }
         }
         return report.toString();
     }
@@ -504,6 +512,9 @@ public class Troop implements Serializable {
                 for (int i = 0; i < this.population.size(); i++) {
                     if(population.get(i).getJobName().equals(s)){
                         Archer arc=(Archer)population.get(i);
+
+
+
                         numReady+=(arc.checkReady()?1:0);
                     }
                 }
@@ -552,26 +563,59 @@ public class Troop implements Serializable {
     public Troop doOneCombat(Troop enemy) {
 
 
+
             Unit myUnit =this.getStrongest();
             Unit enemyUnit =enemy.getWeakest();
+            boolean result=false;
 
-            if(myUnit.fight(enemyUnit)){
-                enemy.loseUnit(enemyUnit);
-            }else {
+            if(checkIsShield(enemyUnit)){
 
-                if (ARROW_NAMES.contains(enemyUnit.getJobName())) {
+                result=enemyUnit.fight(myUnit);
+            }else{
+
+                result=myUnit.fight(enemyUnit);
+            }
+
+
+            if(result){
+                if (ARROW_NAMES.contains(myUnit.getJobName())) {
                     enemy.loseUnit(enemyUnit);
                     this.loseUnit(myUnit);
                 } else if (SHIELD_NAMES.contains(enemyUnit.getJobName())) {
                     Shield s = (Shield) enemyUnit;
                     if (!s.shieldExist()) {
+                        enemy.loseUnit(enemyUnit);
+                    }
+                }else{
+                    enemy.loseUnit(enemyUnit);
+                }
+
+
+
+            }else {
+
+                if (ARROW_NAMES.contains(enemyUnit.getJobName())) {
+                    enemy.loseUnit(enemyUnit);
+                    this.loseUnit(myUnit);
+                } else if (SHIELD_NAMES.contains(myUnit.getJobName())) {
+                    Shield s = (Shield) myUnit;
+                    if (!s.shieldExist()) {
                         this.loseUnit(myUnit);
                     }
+                }else{
+                    this.loseUnit(myUnit);
                 }
             }
 
         return enemy;
     }
 
+    boolean checkIsShield(Unit target){
+        return SHIELD_NAMES.contains(target.getJobName());
+    }
+
+    public ArrayList<Unit> getPopulation(){
+        return this.population;
+    }
 
 }

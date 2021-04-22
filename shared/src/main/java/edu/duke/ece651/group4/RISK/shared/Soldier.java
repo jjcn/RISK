@@ -77,6 +77,7 @@ public class Soldier implements Unit, Serializable {
             enemyRoll = enemy.attackPoint();
         }
 
+
         return myRoll > enemyRoll;
     }
 
@@ -132,13 +133,13 @@ public class Soldier implements Unit, Serializable {
         }
 
         if (newJob.equals(KNIGHT)) {
-            return new Knight(this.level);
+            return new Knight(this.dice,this.level);
         } else if (newJob.equals(ARCHER)) {
-            return new Archer(this.level);
+            return new Archer(this.dice,this.level);
         } else if (newJob.equals(BREAKER)) {
-            return new Breaker(this.level);
+            return new Breaker(this.dice,this.level);
         } else if (newJob.equals(SHIELD)) {
-            return new Shield(this.level);
+            return new Shield(this.dice,this.level);
         }
 
         return null;

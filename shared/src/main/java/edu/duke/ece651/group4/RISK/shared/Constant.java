@@ -99,14 +99,6 @@ public class Constant {
         JOB_DICTIONARY.put(ARROW, ARROW_NAMES);
     }
 
-//    public static final Map<String,List<String>> JOB_DICTIONARY=Map.ofEntries(
-//            new AbstractMap.SimpleEntry<String, List<String>>(KNIGHT, KNIGHT_NAMES),
-//            new AbstractMap.SimpleEntry<String, List<String>>(ARCHER, ARCHER_NAMES),
-//            new AbstractMap.SimpleEntry<String, List<String>>(BREAKER, BREAKER_NAMES),
-//            new AbstractMap.SimpleEntry<String, List<String>>(SHIELD, SHIELD_NAMES),
-//            new AbstractMap.SimpleEntry<String, List<String>>(SOLDIER, UNIT_NAMES),
-//            new AbstractMap.SimpleEntry<String, List<String>>(ARROW, ARROW_NAMES)
-//    );
 
     public static final char MOVE_ACTION ='M';
     public static final char ATTACK_ACTION='A';
