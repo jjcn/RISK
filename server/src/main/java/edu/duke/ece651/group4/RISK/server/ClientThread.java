@@ -249,6 +249,11 @@ public class ClientThread extends Thread {
     }
 
     protected RoomInfo createARoomInfo(Game g){
+        List<String> names =  g.getUserNames();
+        out.println("Game" + g.getGameID() + " has names " );
+        for(String n : names){
+            out.println(n);
+        }
         return new RoomInfo(g.getGameID(), g.getUserNames(), g.getMaxNumUsers());
     }
 
