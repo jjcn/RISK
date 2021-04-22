@@ -372,6 +372,11 @@ public class Territory implements Serializable {
                 report.append(partner.getSummary());
             }
             report.append(this.ownerTroop.getSummary());
+            if (this.allianceTroop != null) {
+                report.append(
+                        "Owner ally " + this.allianceTroop.getOwner().getName() + " help to defend  on " + this.getName() + " \n");
+                report.append(this.allianceTroop.getSummary());
+            }
             doOneBattleMix(enemyTroop, partner);
             enemyPlayers.remove(diceResult);
             if (partner != null) {
