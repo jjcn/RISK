@@ -76,7 +76,7 @@ public class GameRunner extends Thread{
             game.setUpGame();
             GameInfo gInfo = game.getGameInfo();
             World w = game.getTheWorld();
-
+            w.
 
             HibernateTool.updateGameInfo(game.getGameInfo());
             out.println("Game" +game.getGameID()+" runner finishes sets up");
