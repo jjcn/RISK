@@ -15,6 +15,7 @@ import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
 import java.util.Objects;
 
 import static edu.duke.ece651.group4.RISK.client.Constant.*;
+import static edu.duke.ece651.group4.RISK.client.RISKApplication.getAllPlayersName;
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.sendSignUp;
 import static edu.duke.ece651.group4.RISK.client.utility.Notice.showByToast;
 
@@ -35,6 +36,7 @@ public class SignupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
         if(getSupportActionBar()!=null) {
+            getSupportActionBar().setTitle("Sign up");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
