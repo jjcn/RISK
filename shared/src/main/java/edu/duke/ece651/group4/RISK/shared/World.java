@@ -575,6 +575,19 @@ public class World implements Serializable {
     }
 
     /**
+     * Calculate the shortest path between two territories.
+     *
+     * @param start is the starting territory.
+     * @param end is the ending territory.
+     * @return the shortest path between two territories.
+     */
+    protected int calculateShortestPath(Territory start, Territory end) {
+        Set<Territory> allTerrs = new HashSet<>();
+        allTerrs.addAll(getAllTerritories());
+        return calculateShortestPath(start, end, allTerrs);
+    }
+
+    /**
      * Calculates the shortest path length between 2 territories for a certain player.
      *
      * @param start is the starting territory.
