@@ -45,39 +45,40 @@ public class MessageActivity extends AppCompatActivity
         setContentView(R.layout.activity_message);
         this.target = getIntent().getStringExtra("TARGET");
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(target.equals("") ? "World" : target);
+            getSupportActionBar().setTitle(target.equals(WORLD_CHAT) ? "World" : target);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         this.msgList = findViewById(R.id.messagesList);
-        String chatID = getIntent().getStringExtra("CHATID");
 
         initAdapter();
-        getHistoryInfo(chatID);
+        getHistoryInfo();
 
         /**
          * keep receive via chatClient
          */
         Log.i(TAG, LOG_FUNC_RUN + "start set lsn");
-//        setChatReceiveListener(new onReceiveListener() {
-//            @Override
-//            public void onSuccess(Object o) {
-//                runOnUiThread(() -> {
-//                    if (o instanceof ChatMessageUI) {
-//                        ChatMessageUI message = (ChatMessageUI) o;
-//                        msgAdapter.addToStart(message, true);
-//                    } else {
-//                        onFailure("receive not ChatMessageUI");
-//                    }
-//                    Log.i(TAG, LOG_FUNC_RUN + "recv msg lsn done success");
-//                });
-//            }
-//
-//            @Override
-//            public void onFailure(String errMsg) {
-//                Log.e(TAG, LOG_FUNC_FAIL + errMsg);
-//            }
-//        });
+        setMsgListener(new onReceiveListener() {
+            @Override
+            public void onSuccess(Object o) {
+                runOnUiThread(() -> {
+                    if (o instanceof ChatMessageUI) {
+                        ChatMessageUI message = (ChatMessageUI) o;
+                        if(message.getChatId().equals(target)) {
+                            msgAdapter.addToStart(message, true);
+                        }
+                    } else {
+                        onFailure("receive not ChatMessageUI");
+                    }
+                    Log.i(TAG, LOG_FUNC_RUN + "recv msg lsn done success");
+                });
+            }
+
+            @Override
+            public void onFailure(String errMsg) {
+                Log.e(TAG, LOG_FUNC_FAIL + errMsg);
+            }
+        });
         Log.i(TAG, SUCCESS_CREATE);
     }
 
@@ -98,9 +99,15 @@ public class MessageActivity extends AppCompatActivity
 //        input.setTypingListener(this);
     }
 
-    private void getHistoryInfo(String chatID) {
-        List<ChatMessageUI> stored = getStoredMsg(chatID);
-        msgAdapter.addToEnd(stored,false);
+    /**
+     * read from RISKApplication to syc the history messages.
+     */
+    private void getHistoryInfo() {
+        Log.i(TAG,LOG_FUNC_RUN+"get history: id "+target);
+        List<ChatMessageUI> stored = getStoredMsg(target);
+        for(ChatMessageUI message:stored){
+                msgAdapter.addToStart(message, true);
+        }
     }
 
     @Override
@@ -124,10 +131,11 @@ public class MessageActivity extends AppCompatActivity
         }
         ChatMessageUI message = new ChatMessageUI(target, input.toString(), user, targets);
 
-        Log.i(TAG, LOG_FUNC_RUN + "start send mag");
+        Log.i(TAG, LOG_FUNC_RUN + "start send msg");
         sendOneMsg(message, new onResultListener() {
             @Override
             public void onSuccess() {
+                addMsg(message);
                 msgAdapter.addToStart(message, true);
             }
 

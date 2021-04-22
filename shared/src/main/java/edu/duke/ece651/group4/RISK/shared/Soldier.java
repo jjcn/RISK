@@ -53,6 +53,8 @@ public class Soldier implements Unit, Serializable {
         return UNIT_BONUS.get(this.level);
     }
 
+    public int getRange() { return range; }
+
     public void setLevel(int lv) {
         this.level = lv;
         this.jobName = UNIT_NAMES.get(lv);

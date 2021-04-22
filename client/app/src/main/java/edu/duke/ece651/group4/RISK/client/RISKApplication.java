@@ -374,6 +374,7 @@ public class RISKApplication extends Application {
                 Log.i(TAG, LOG_FUNC_RUN + "World received");
                 theWorld = (World) receivedWorld;
                 String report = theWorld.getReport();
+                Log.i(TAG, LOG_FUNC_RUN + report);
                 if (report.equals("")) { //new game
                     listenerWorld.onJoinNew();
                 } else {
@@ -542,21 +543,25 @@ public class RISKApplication extends Application {
         send(new BasicOrder(null, null, null, SWITCH_OUT_ACTION),
                 new onResultListener() {
                     @Override
-                    public void onSuccess() { }
+                    public void onSuccess() {
+                    }
 
                     @Override
-                    public void onFailure(String errMsg) { }
+                    public void onFailure(String errMsg) {
+                    }
                 });
     }
 
     public static void backLogin() {
         GameMessage m = new GameMessage(GAME_EXIT, -1, -1);
-        send(m,new onResultListener() {
+        send(m, new onResultListener() {
             @Override
-            public void onSuccess() { }
+            public void onSuccess() {
+            }
 
             @Override
-            public void onFailure(String errMsg) { }
+            public void onFailure(String errMsg) {
+            }
         });
     }
 
@@ -566,12 +571,14 @@ public class RISKApplication extends Application {
 
     public static void requireAlliance(String allyName) {
         Order allyOrder = new AllianceOrder(userName, allyName);
-        send(allyOrder,new onResultListener() {
+        send(allyOrder, new onResultListener() {
             @Override
-            public void onSuccess() { }
+            public void onSuccess() {
+            }
 
             @Override
-            public void onFailure(String errMsg) { }
+            public void onFailure(String errMsg) {
+            }
         });
     }
 
@@ -593,19 +600,17 @@ public class RISKApplication extends Application {
         }).start();
     }
 
-    public static void setChatReceiveListener(onReceiveListener listener) {
-        new Thread(() -> chatClient.setReceiveMsgListener(listener)).start();
+    public static void setChatListener(onReceiveListener listener) {
+        new Thread(() -> chatClient.setChatListener(listener)).start();
+    }
+
+    public static void setMsgListener(onReceiveListener listener) {
+        new Thread(() -> chatClient.setMsgListener(listener)).start();
     }
 
     public static void sendOneMsg(ChatMessageUI message, onResultListener listener) {
-        ChatMessage msgSent = new ChatMessage(userName, message.getTargets(), message.getText(), getRoomId());
-        try {
-            chatClient.send(msgSent);
-            listener.onSuccess();
-        } catch (Exception e) {
-            Log.e(TAG, e.toString());
-            listener.onFailure(SEND_CHAT_FAIL);
-        }
+        chatClient.send(message);
+        listener.onSuccess();
     }
 
     public static void addMsg(ChatMessageUI msg) {
@@ -614,8 +619,8 @@ public class RISKApplication extends Application {
 
     public static List<ChatMessageUI> getStoredMsg(String chatID) {
         List historyMsg = new ArrayList();
-        for(ChatMessageUI msg:storedMsg){
-            if(msg.getChatId().equals(chatID)) {
+        for (ChatMessageUI msg : storedMsg) {
+            if (msg.getChatId().equals(chatID)) {
                 historyMsg.add(msg);
             }
         }

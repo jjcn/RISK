@@ -45,12 +45,13 @@ public class ChatActivity extends AppCompatActivity implements DialogsListAdapte
         Log.i(TAG, SUCCESS_CREATE);
     }
 
+
     /**
      * keep receive via chatClient
      */
     private void setListener() {
         Log.i(TAG, LOG_FUNC_RUN + "start set chat lsn");
-        setChatReceiveListener(new onReceiveListener() {
+        setChatListener(new onReceiveListener() {
             @Override
             public void onSuccess(Object o) {
                 runOnUiThread(() -> {
@@ -72,15 +73,6 @@ public class ChatActivity extends AppCompatActivity implements DialogsListAdapte
         });
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            moveTaskToBack(true);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     private void initAdapter() {
         chatListAdapter = new DialogsListAdapter(R.layout.item_dialog, null);
         chatListAdapter.setItems(getChats());
@@ -88,14 +80,19 @@ public class ChatActivity extends AppCompatActivity implements DialogsListAdapte
         chatList.setAdapter(chatListAdapter);
     }
 
+    /**
+     * chatID: constant for chat with whole world, the target player's name otherwise.
+     * @return world chat room and private chat room.
+     */
     private List<ChatDialog> getChats() {
         ArrayList<ChatDialog> chats = new ArrayList<>();
         // World chat room, id = ""
-        chats.add(new ChatDialog("", "World Chat", getChatPlayersName()));
+        chats.add(new ChatDialog(WORLD_CHAT, "World Chat", new ArrayList<>(getAllPlayersName())));
         // private chat
         for (String playerName : getChatPlayersName()) {
-            chats.add(new ChatDialog(playerName, "Private Chat with " + playerName,
-                    Arrays.asList(playerName)));
+            ArrayList<String> target = new ArrayList();
+            target.add(playerName);
+            chats.add(new ChatDialog(playerName, "Private Chat with " + playerName, target));
         }
         return chats;
     }
@@ -103,7 +100,7 @@ public class ChatActivity extends AppCompatActivity implements DialogsListAdapte
     @Override
     public void onDialogClick(IDialog dialog) {
         Intent intent = new Intent(ChatActivity.this, MessageActivity.class);
-        intent.putExtra("CHATID", dialog.getId());
+        intent.putExtra("TARGET", dialog.getId());
         startActivity(intent);
     }
 
@@ -113,15 +110,22 @@ public class ChatActivity extends AppCompatActivity implements DialogsListAdapte
      * @param dialogId is the id of dialog that receives the message
      * @param message  is the message
      */
-    // todo: private msg
     private void onNewMessage(String dialogId, IMessage message) {
         boolean isUpdated = chatListAdapter.updateDialogWithMessage(dialogId, message);
         if (!isUpdated) {
             //Dialog with this ID doesn't exist, so you can create new Dialog or update all dialogs list
-            Log.e(TAG,LOG_FUNC_FAIL+"chatID not exist");
+            Log.e(TAG, LOG_FUNC_FAIL + "chatID not exist: "+dialogId);
         }
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 //    /**
 //     * Called on receiving new dialogs
 //     *

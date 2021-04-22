@@ -11,5 +11,7 @@ public interface Unit {
     public int attackPoint();
 
     public String getJobName();
+
+    public int getRange();
 }
 

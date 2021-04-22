@@ -12,6 +12,7 @@ import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
 
 import java.util.List;
 
+import static edu.duke.ece651.group4.RISK.client.Constant.CHOOSE_USER_INSTR;
 import static edu.duke.ece651.group4.RISK.client.utility.Notice.showByToast;
 
 public class SimpleSelector extends Dialog {
@@ -31,6 +32,7 @@ public class SimpleSelector extends Dialog {
         builder.setTitle(title)
                 .setSingleChoiceItems(adapter, 0, (dialog, which) -> {
                     chosen = choices.get(which);
+                    builder.setTitle(CHOOSE_USER_INSTR+"\n"+chosen+" chosen now");
                     showByToast((Activity) context,"You have choose: "+chosen);
                 })
                 .setPositiveButton("Confirm", (dialog, which) -> {

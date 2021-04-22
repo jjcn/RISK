@@ -2,6 +2,7 @@ package edu.duke.ece651.group4.RISK.client.activity;
 
 import android.content.ComponentName;
 import android.content.Intent;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -24,6 +25,7 @@ import java.util.List;
 
 import static edu.duke.ece651.group4.RISK.client.Constant.*;
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.*;
+import static edu.duke.ece651.group4.RISK.client.utility.Notice.showByReport;
 import static edu.duke.ece651.group4.RISK.client.utility.Notice.showByToast;
 
 /**
@@ -88,11 +90,17 @@ public class TurnActivity extends AppCompatActivity {
                 switchOut();
                 return true;
             case R.id.menu_devinfo:
-                showByToast(TurnActivity.this, COLOR_EGG);
+                showColorEgg();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void showColorEgg() {
+        showByReport(TurnActivity.this,"\\^^/" ,COLOR_EGG);
+//        soundPool = new SoundPool.Builder().build();
+//        soundID = soundPool.load(this, R.raw.qipao, 1);
     }
 
     private void goChat() {

@@ -111,9 +111,50 @@ public class Constant {
 
     public static final String PLACEMENT_DONE="Placement Done\n";
 
-    //Chat
+    // Chat
     public static final int CHAT_PORT = 5678;
 
-    //Alliance
+    // Alliance
     public static final int MAX_ALLOWED_ALLY_NUMBER = 1;
+
+    // Tech level upgrade costs
+    /**
+     * Cumulative tech level upgrade costs.
+     * The i-th entry is the total cost to upgrade tech level from 1 to i. (i starts from 0)
+     */
+    public static final List<Integer> CUM_TECH_LEVEL_UPGRADE_COSTS =
+            Arrays.asList(new Integer[]{0, 0, 50, 125, 250, 450, 750});
+    // TODO: should be dependent on tech upgrade costs
+
+    /**
+     * Tech level upgrade costs.
+     * The i-th entry is the cost to upgrade tech level from i to i + 1. (i starts from 0)
+     *
+     * 1 -> 2 : 50
+     * 2 -> 3 : 75
+     * 3 -> 4 : 125
+     * 4 -> 5 : 200
+     * 5 -> 6 : 300
+     */
+    public static final List<Integer> TECH_LEVEL_UPGRADE_COSTS =
+            Arrays.asList(new Integer[]{0, 50, 75, 125, 200, 300});
+
+    /**
+     * Get the cost to upgrade tech level by 1 from a certain tech level.
+     * @param currentTechLevel is the currentTechLevel.
+     * @return the cost to upgrade tech level by 1 at this tech level.
+     */
+    public static int getTechLevelUpgradeCost(int currentTechLevel) {
+        return TECH_LEVEL_UPGRADE_COSTS.get(currentTechLevel);
+    }
+
+    /*
+    public static List<Integer> initTechLevelUpgradeCosts(List<Integer> cumTechLevelUpgradeCosts) {
+        List<Integer> ans = new ArrayList<>();
+        for (int i = 0; i < cumTechLevelUpgradeCosts.size() - 1; i++) {
+            ans.add(cumTechLevelUpgradeCosts.get(i + 1) - cumTechLevelUpgradeCosts.get(i));
+        }
+        return ans;
+    }*/
+
 }

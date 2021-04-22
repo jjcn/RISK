@@ -24,9 +24,13 @@ public class AttackOrderChecker implements Serializable {
     protected final String NOT_ATTACK_ORDER_MSG = "This is not an attack order.";
     protected final String SAME_OWNER_MSG = 
         "Cannot attack %s, which belongs to you.";
-    protected final String NOT_ADJACENT_MSG = 
-        "You tried to attack from %s to %s, which are not adjacent territories. %n" +
-        "You can only attack territories directly adjacent to your territories.";
+    protected final String MELEE_CANT_ATTACK_MSG =
+        "Your melee units tried to attack %s from %s, which are not adjacent territories. %n" +
+        "Melee units can only attack territories directly adjacent to your territories.";
+    protected final String RANGED_OUT_OF_REACH_MSG =
+        "Your ranged units tried to attack %s from %s, which is out of reach. %n" +
+        "Ranged units can only attack territories within their attack range.";
+
 
     public AttackOrderChecker() {}
 
@@ -41,16 +45,26 @@ public class AttackOrderChecker implements Serializable {
         if (Character.toUpperCase(order.getActionName()) == 'A') {
             Territory start = world.findTerritory(order.getSrcName());
             Territory end = world.findTerritory(order.getDesName());
+            Troop troop = order.getActTroop();
             // if the start and end have the same owner
             if (start.getOwner().equals(end.getOwner())) {
-                return String.format(SAME_OWNER_MSG, 
-                                    end.getName());
+                return String.format(SAME_OWNER_MSG, end.getName());
             }
-            // if not adjacent
-            if (!world.getAdjacents(start).contains(end)) {
-                return String.format(NOT_ADJACENT_MSG,
-                                    start.getName(), 
-                                    end.getName());
+            // melee units can only attack adjacent territories
+            if (!troop.hasRanged()) {
+                if (!world.getAdjacents(start).contains(end)) {
+                    return String.format(MELEE_CANT_ATTACK_MSG,
+                            end.getName(),
+                            start.getName());
+                }
+            }
+            // ranged units can only attack territories within range
+            else {
+                if (world.calculateShortestPath(start, end) > troop.getRange()) {
+                    return String.format(RANGED_OUT_OF_REACH_MSG,
+                            end.getName(),
+                            start.getName());
+                }
             }
             return null;
         }

@@ -31,9 +31,10 @@ public class Constant {
     public static final String STAY_INSTR = "Do you want to stay in this room?";
     public static final String CONFIRM = "Do you want to finish this turn?";
     public static final String CONFIRM_ACTION = "(You cannot perform further action this turn if choose yes.)";
-    public static final String CHOOSE_USER_INSTR = "Please choose the user you want to ally with";
+    public static final String CHOOSE_USER_INSTR = "You want to ally with: ";
     public static final String NO_ALLY = "None";
     public static final String SEND_CHAT_FAIL = "Failed to send the message";
+    public static final String UPTECH_CONFIRM = "Do you want to upgrade tech?";
     // actions
     public static final String UI_MOVE = "Move";
     public static final String UI_DONE = "Done";
@@ -46,6 +47,7 @@ public class Constant {
     // For data transfer
     public static final String TERR = "Territory";
 
+    public static final String WORLD_CHAT = "";
     //**************check receive type***************//
     public static final String ROOMS = "roomInfo";
     public static final String NAME = "name";
@@ -64,5 +66,11 @@ public class Constant {
             put(0, R.drawable.terrtest);
         }
     };
-    public static final String COLOR_EGG = "Group4 in ECE651\n Special thanks to the best TA in the world: Kewei Xia \\^^/";
+    public static final String COLOR_EGG =
+            "Developers in Group4 in ECE651:\n Xian Sun\n Zian Geng\n Shenxi Jin\n Wenxin Xu\n\n"+
+                    "*************************************" +
+                    "*********** Special thanks **********" +
+                    "**** to the best TA in the world ****" +
+                    "************* Kewei Xia *************" +
+                    "*************************************";
 }
