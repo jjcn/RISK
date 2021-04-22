@@ -111,7 +111,8 @@ public class ChatClient extends Thread {
                     new ChatPlayer(chatMsgReceive.getGameID(), chatMsgReceive.getSource()), chatMsgReceive.getTargetsPlayers());
             addMsg(receivedMsg);
             if (chatReceiveListener != null) {
-                Log.i(TAG, LOG_FUNC_RUN + "ClientChat: " + username + " get from " + chatMsgReceive.getSource() + " saying " + chatMsgReceive.getChatContent());
+                Log.i(TAG, LOG_FUNC_RUN + "ClientChat: " + username + " get from " + chatMsgReceive.getSource()
+                        + " saying " + chatMsgReceive.getChatContent());
                 chatReceiveListener.onSuccess(receivedMsg);
                 if (msgReceiveListener != null) {
                     msgReceiveListener.onSuccess(receivedMsg);
