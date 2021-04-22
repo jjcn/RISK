@@ -359,7 +359,7 @@ public class GraphTest {
                      () -> graph.calculateShortestPath("A", "E"));
     }
     
-    @Test
+    /*@Test
     public void testEquals() {
         assertEquals(new Graph<Integer>(), new Graph<Integer>());
         assertNotEquals(new Graph<String>(), null);
@@ -378,7 +378,7 @@ public class GraphTest {
         Graph<Integer> g21 = new Graph<>(list2, adjMatrix1);
         assertNotEquals(g11, g12);
         assertNotEquals(g21, g12);
-    }
+    }*/
 
     @Test
     public void testToString() {
