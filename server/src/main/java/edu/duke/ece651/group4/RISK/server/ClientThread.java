@@ -236,7 +236,7 @@ public class ClientThread extends Thread {
      * @return a arrayList<RoomInfo> that will be sent to this client
      * */
     protected ArrayList<RoomInfo> getAllGameInfo(){
-        out.println(ownerUser.getUsername() + " push refresh button and the number of games now: " + games.size());
+
         ArrayList<RoomInfo> roomsInfo = new ArrayList<RoomInfo>();
         for(Game g : games){
             if(g.gInfo.gameState.isAlive()){
@@ -244,6 +244,7 @@ public class ClientThread extends Thread {
                 roomsInfo.add(createARoomInfo(g));
             }
         }
+        out.println(ownerUser.getUsername() + " push refresh button and the number of games now: " + roomsInfo.size());
         return roomsInfo;
     }
     protected RoomInfo createARoomInfo(Game g){
