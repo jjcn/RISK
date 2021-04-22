@@ -124,7 +124,7 @@ public class ChatClient extends Thread {
      */
     public void send(ChatMessageUI message) {
         new Thread(() -> {
-            ChatMessage chatMessage = new ChatMessage(message.getChatId(), message.getTargets(), message.getText(), getRoomId());
+            ChatMessage chatMessage = new ChatMessage(message.getChatId(), username, message.getTargets(), message.getText(), getRoomId());
             Log.i(TAG,LOG_FUNC_RUN+message.getTargets().size());
             byte[] chatBytes = SerializationUtils.serialize(chatMessage);
             ByteBuffer writeBuffer = ByteBuffer.wrap(chatBytes);
