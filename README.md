@@ -5,7 +5,7 @@ ECE651 Group4 Project1 RISK
 This is for ece651-project1 from group4
 
 ## Evolution3 Unit Type Transfer Feature
-https://docs.google.com/document/d/1Eq7WhHRm9pHENmj2BFmbJVP-4G_BPkXP8gR0egzKDyI/edit?usp=sharing 
+https://docs.google.com/document/d/1wXK5LZViY2bjV5_rukBXYH6OmmX61kb4wLNCzdQJhsQ/edit?usp=sharing
 
 ## Evolution2 UX prototype
 https://docs.google.com/presentation/d/176PTTRUj4xIX26alagKeaRLKd9goiVSM8KMmkJsWLHA/edit?usp=sharing
