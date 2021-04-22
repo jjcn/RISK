@@ -188,7 +188,7 @@ public class ClientThread extends Thread {
         Game gameToJoin = findGame(gameID);
         String res = checkJoinGame(gameToJoin);
         if(res != null){return res;}
-        if(!gameToJoin.isFull()){
+        if(!gameToJoin.isFull() && !gameToJoin.isUserInGame(ownerUser)){
             gameToJoin.addUser(ownerUser); // this is synchronized function
         }
         else{
