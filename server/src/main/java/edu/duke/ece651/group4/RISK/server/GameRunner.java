@@ -72,6 +72,7 @@ public class GameRunner extends Thread{
         // wait all users to join to start the game
         if(!game.gInfo.gameState.isSetUp()){
             game.setUpGame();
+            HibernateTool.updateGameInfo(game.getGameInfo());
             out.println("Game" +game.getGameID()+" runner finishes sets up");
         }
 
