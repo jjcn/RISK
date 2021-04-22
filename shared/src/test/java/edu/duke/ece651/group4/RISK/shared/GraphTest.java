@@ -1,5 +1,7 @@
 package edu.duke.ece651.group4.RISK.shared;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
@@ -17,8 +19,16 @@ public class GraphTest {
 	                  "Hogwarts", "Scadrial", "Elantris", "Roshar"};
 
     @Test
+    public void testBoolean() {
+        assertEquals(true, Boolean.TRUE);
+        Boolean b = true;
+        assertEquals(true, b);
+        assertEquals(Boolean.TRUE, b);
+    }
+
+    @Test
     public void testCreation() {
-    	boolean[][] emptyAdjMatrix = new boolean[0][0];
+        Boolean[][] emptyAdjMatrix = new Boolean[0][0];
     	
         Graph<Integer> intGraph = new Graph<>();
         assertEquals(intGraph.size(), 0);
@@ -31,7 +41,7 @@ public class GraphTest {
         assertArrayEquals(terrGraph.adjMatrix, emptyAdjMatrix);
         
         List<Character> vertices = new ArrayList<>(Arrays.asList('a', 'b', 'c'));
-        boolean adjMatrix[][] = {{false, true, true}, {true, false, true}, {true, true, false}};
+        Boolean adjMatrix[][] = {{false, true, true}, {true, false, true}, {true, true, false}};
         Graph<Character> charGraph = new Graph<>(vertices, adjMatrix);
         assertEquals(charGraph.size(), 3);
         assertEquals(charGraph.weights.size(), 0);
@@ -41,8 +51,8 @@ public class GraphTest {
     @Test
     public void testArrayCopyOf() {
         int size = 2;
-        boolean[][] mat = {{true, false}, {true, true}};
-        boolean[][] copy = Arrays.copyOf(mat, size);
+        Boolean[][] mat = {{true, false}, {true, true}};
+        Boolean[][] copy = Arrays.copyOf(mat, size);
 
         assertNotEquals(mat, copy);
     }
@@ -58,9 +68,9 @@ public class GraphTest {
 
     /**
      * Helper function that prints out adjacent matrix as 0's and 1's.
-     * @param matrix is a boolean adjacent matrix
+     * @param mat is a boolean adjacency matrix
      */
-    public void print2dArray(boolean[][] mat) {
+    public void print2dArray(Boolean[][] mat) {
         for (int i = 0; i < mat[0].length; i++) {
             for (int j = 0; j < mat[0].length; j++) {
                 System.out.print((mat[i][j] == true ? 1 : 0) + " ");
@@ -74,7 +84,7 @@ public class GraphTest {
      * @param mat
      * @return
      */
-    public boolean isDiagonalSymmetric(boolean[][] mat) {
+    public boolean isDiagonalSymmetric(Boolean[][] mat) {
         for (int i = 0; i < mat.length; i++) {
             for (int j = 0; j < mat[0].length; j++) {
                 if (mat[i][j] != mat[j][i]) {
@@ -90,7 +100,7 @@ public class GraphTest {
      * @param mat
      * @return
      */
-    public boolean isDiagonalTrue(boolean[][] mat) {
+    public boolean isDiagonalTrue(Boolean[][] mat) {
         for (int i = 0; i < mat.length; i++) {
             if (mat[i][i] == true) {
                 return true;
@@ -358,9 +368,9 @@ public class GraphTest {
 
         List<Integer> list1 = new ArrayList<>(Arrays.asList(1, 2, 3));
         List<Integer> list2 = new ArrayList<>(Arrays.asList(5, 6, 7));
-        boolean[][] adjMatrix1 = new boolean[3][3];
+        Boolean[][] adjMatrix1 = new Boolean[3][3];
         adjMatrix1[1][2] = true; adjMatrix1[2][1] = true;
-        boolean[][] adjMatrix2 = new boolean[3][3];
+        Boolean[][] adjMatrix2 = new Boolean[3][3];
         adjMatrix1[0][1] = true; adjMatrix1[1][0] = true;
 
         Graph<Integer> g11 = new Graph<>(list1, adjMatrix1);
