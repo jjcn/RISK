@@ -62,4 +62,8 @@ public class User implements Serializable {
         return true;
     }
 
+    public User clone(){
+        return new User(userInfo.userID,userInfo.getUsername(),userInfo.getPassword());
+    }
+
 }

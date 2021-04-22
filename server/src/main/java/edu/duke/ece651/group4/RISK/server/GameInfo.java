@@ -33,10 +33,27 @@ public class GameInfo implements Serializable {
     }
 
     public GameInfo(int gameID, int maxNumUsers) {
+        this(gameID,maxNumUsers,new ArrayList<>(),new World(),new GameState());
+//        this.gameID = gameID;
+//        this.maxNumUsers = maxNumUsers;
+//        this.usersOnGame =  new ArrayList<>();
+//        this.theWorld = new World();
+//        this.gameState = new GameState();
+    }
+    public GameInfo(int gameID, int maxNumUsers, List<User> usersOnGame,World theWorld,GameState gameState){
         this.gameID = gameID;
         this.maxNumUsers = maxNumUsers;
-        this.usersOnGame =  new ArrayList<>();
-        this.theWorld = new World();
-        this.gameState = new GameState();
+        this.usersOnGame =  usersOnGame;
+        this.theWorld = theWorld;
+        this.gameState = gameState;
+    }
+
+    public GameInfo clone(){
+        List<User> users = new  ArrayList<>();
+        for(User u : usersOnGame){
+            users.add(u.clone());
+        }
+        GameInfo gInfo = new GameInfo(gameID,maxNumUsers,usersOnGame, theWorld.clone(), gameState.clone());
+        return gInfo;
     }
 }

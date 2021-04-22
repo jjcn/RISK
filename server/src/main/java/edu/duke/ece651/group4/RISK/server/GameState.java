@@ -205,17 +205,17 @@ public class GameState extends State implements Serializable{
      * */
     public boolean isWaitToUpdate(){return getState().equals(GAME_STATE_WAIT_TO_UPDATE);}
 
-//    public GameState clone(){
-//        GameState gs = new GameState();
-//        for(PlayerState ps: playerStates){
-//            gs.playerStates.add(ps.clone());
-//        }
-//        if(!gs.isAlive){
-//            gs.setGameDead();
-//        }
-//        if(gs.isDonePlaceUnits){
-//            gs.setDonePlaceUnits();
-//        }
-//        return gs;
-//    }
+    public GameState clone(){
+        GameState gs = new GameState();
+        for(PlayerState ps: playerStates){
+            gs.playerStates.add(ps.clone());
+        }
+        if(!gs.isAlive){
+            gs.setGameDead();
+        }
+        if(gs.isDonePlaceUnits){
+            gs.setDonePlaceUnits();
+        }
+        return gs;
+    }
 }
