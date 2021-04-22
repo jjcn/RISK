@@ -1,23 +1,21 @@
 package edu.duke.ece651.group4.RISK.client;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.nio.ByteBuffer;
-import java.nio.channels.SocketChannel;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import android.util.Log;
 import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
-import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
 import edu.duke.ece651.group4.RISK.client.model.ChatMessageUI;
 import edu.duke.ece651.group4.RISK.client.model.ChatPlayer;
 import edu.duke.ece651.group4.RISK.shared.message.ChatMessage;
 import org.apache.commons.lang3.SerializationUtils;
 
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
+import java.nio.channels.SocketChannel;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import static edu.duke.ece651.group4.RISK.client.Constant.LOG_FUNC_RUN;
-import static edu.duke.ece651.group4.RISK.client.Constant.WORLD_CHAT;
-import static edu.duke.ece651.group4.RISK.client.RISKApplication.*;
+import static edu.duke.ece651.group4.RISK.client.RISKApplication.addMsg;
+import static edu.duke.ece651.group4.RISK.client.RISKApplication.getRoomId;
 import static edu.duke.ece651.group4.RISK.shared.Constant.CHAT_SETUP_ACTION;
 
 public class ChatClient extends Thread {
@@ -55,7 +53,6 @@ public class ChatClient extends Thread {
             System.out.println("chat client exits");
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
         }
     }
 
@@ -95,9 +92,8 @@ public class ChatClient extends Thread {
             ChatMessage chatMsgReceive = SerializationUtils.deserialize(readBuffer.array());
             readBuffer.clear();
 
-            /**
-             * notify client and update UI
-             */
+
+            // notify client and update UI
             ChatMessageUI receivedMsg = new ChatMessageUI(chatMsgReceive.getChatID(), chatMsgReceive.getSource() + ": " + chatMsgReceive.getChatContent(),
                     new ChatPlayer(chatMsgReceive.getGameID(), chatMsgReceive.getSource()), chatMsgReceive.getTargetsPlayers());
             addMsg(receivedMsg);
