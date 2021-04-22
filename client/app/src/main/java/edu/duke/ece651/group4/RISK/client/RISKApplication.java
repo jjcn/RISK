@@ -618,9 +618,6 @@ public class RISKApplication extends Application {
     }
 
     public static List<ChatMessageUI> getStoredMsg(String chatID) {
-        if (chatID.equals(WORLD_CHAT)) {
-            return storedMsg;
-        }
         List historyMsg = new ArrayList();
         for (ChatMessageUI msg : storedMsg) {
             if (msg.getChatId().equals(chatID)) {

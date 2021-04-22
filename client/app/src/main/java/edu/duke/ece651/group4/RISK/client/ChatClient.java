@@ -95,22 +95,14 @@ public class ChatClient extends Thread {
             readBuffer.clear();
 
             /**
-             * get chatID: constant for chat with whole world, the target player's name otherwise.
+             * notify client and update UI
              */
-            String chatID = WORLD_CHAT;
-            Set<String> targets = chatMsgReceive.getTargetsPlayers();
-            if (targets.size() == 1) {
-                for (String name : targets) {
-                    chatID = name;
-                }
-            }
-
-            // notify client and update UI
-            ChatMessageUI receivedMsg = new ChatMessageUI(chatID, chatMsgReceive.getSource() + ": " + chatMsgReceive.getChatContent(),
+            ChatMessageUI receivedMsg = new ChatMessageUI(chatMsgReceive.getChatID(), chatMsgReceive.getSource() + ": " + chatMsgReceive.getChatContent(),
                     new ChatPlayer(chatMsgReceive.getGameID(), chatMsgReceive.getSource()), chatMsgReceive.getTargetsPlayers());
             addMsg(receivedMsg);
             if (chatReceiveListener != null) {
-                Log.i(TAG, LOG_FUNC_RUN + "ClientChat: " + username + " get from " + chatMsgReceive.getSource() + " saying " + chatMsgReceive.getChatContent());
+                Log.i(TAG, LOG_FUNC_RUN + "ClientChat: " + username + " get from " + chatMsgReceive.getSource()
+                        + " saying " + chatMsgReceive.getChatContent());
                 chatReceiveListener.onSuccess(receivedMsg);
                 if (msgReceiveListener != null) {
                     msgReceiveListener.onSuccess(receivedMsg);
@@ -119,7 +111,6 @@ public class ChatClient extends Thread {
                 Log.i(TAG, LOG_FUNC_RUN + "lsm null");
             }
         }
-
     }
 
     public void setMsgListener(onReceiveListener receiveMsgListener) {
@@ -137,14 +128,12 @@ public class ChatClient extends Thread {
      */
     public void send(ChatMessageUI message) {
         new Thread(() -> {
-            ChatMessage chatMessage = new ChatMessage(username, message.getTargets(), message.getText(), getRoomId());
+            ChatMessage chatMessage = new ChatMessage(message.getChatId(), message.getTargets(), message.getText(), getRoomId());
             Log.i(TAG,LOG_FUNC_RUN+message.getTargets().size());
             byte[] chatBytes = SerializationUtils.serialize(chatMessage);
             ByteBuffer writeBuffer = ByteBuffer.wrap(chatBytes);
             try {
-                Log.i(TAG, LOG_FUNC_RUN + "start chat channel");
                 chatChannel.write(writeBuffer);
-                Log.i(TAG, LOG_FUNC_RUN + "end chat channel");
             } catch (IOException e) {
                 Log.e(TAG, e.toString());
             }
