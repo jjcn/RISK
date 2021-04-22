@@ -62,7 +62,7 @@ public class World implements Serializable {
     /**
      * A matrix storing the alliance relationship of players.
      */
-    protected boolean[][] allianceMatrix;
+    protected Boolean[][] allianceMatrix;
     /**
      * Battle report
      */
@@ -107,12 +107,12 @@ public class World implements Serializable {
      * @param random is the random seed.
      */
     public World(Graph<Territory> terrs, Random random) {
-        this(terrs, new ArrayList<PlayerInfo>(), new boolean[0][0], random, "");
+        this(terrs, new ArrayList<PlayerInfo>(), new Boolean[0][0], random, "");
     }
 
     protected World(Graph<Territory> terrs,
                     List<PlayerInfo> playerInfos,
-                    boolean[][] allianceMatrix,
+                    Boolean[][] allianceMatrix,
                     Random random,
                     String report) {
         this.territories = terrs;
@@ -180,9 +180,9 @@ public class World implements Serializable {
             cpy.add(item.clone());
         }
         List<Integer> weightsCopy = territories.cloneWeights();
-        boolean[][] adjMatrixCopy = territories.cloneAdjMatrix();
+        Boolean[][] adjMatrixCopy = territories.cloneAdjMatrix();
         List<PlayerInfo> playerInfoCopy = clonePlayerInfos();
-        boolean[][] allianceMatrixCopy = cloneAllianceMatrix();
+        Boolean[][] allianceMatrixCopy = cloneAllianceMatrix();
         World cpyWorld = new World(new Graph<>(cpy, weightsCopy, adjMatrixCopy),
                 playerInfoCopy,
                 allianceMatrixCopy,
@@ -207,9 +207,9 @@ public class World implements Serializable {
     /**
      * Creates a deep copy of allianceMatrix.
      */
-    protected boolean[][] cloneAllianceMatrix() {
+    protected Boolean[][] cloneAllianceMatrix() {
         int n = allianceMatrix.length;
-        boolean[][] cpy = new boolean[n][n];
+        Boolean[][] cpy = new Boolean[n][n];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 cpy[i][j] = allianceMatrix[i][j];
@@ -223,10 +223,13 @@ public class World implements Serializable {
      */
     protected void expandAllianceMatrixBy1() {
         int n = allianceMatrix.length;
-        boolean[][] newAllianceMatrix = new boolean[n + 1][n + 1];
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                newAllianceMatrix[i][j] = allianceMatrix[i][j];
+        Boolean[][] newAllianceMatrix = new Boolean[n + 1][n + 1];
+        for (int i = 0; i < n + 1; i++) {
+            for (int j = 0; j < n + 1; j++) {
+                newAllianceMatrix[i][j] = false;
+                if (i < n && j < n) {
+                    newAllianceMatrix[i][j] = allianceMatrix[i][j];
+                }
             }
         }
         allianceMatrix = newAllianceMatrix;
