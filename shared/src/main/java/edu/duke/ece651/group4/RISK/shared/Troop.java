@@ -390,16 +390,24 @@ public class Troop implements Serializable {
 
         for (String s : this.dict.keySet()) {
 
-            if (dict.get(s) != 0) {
+            if (dict.get(s)!= 0) {
                 Soldier check = (Soldier) this.getUnit(s);
                 if (ARROW_NAMES.contains(check.getJobName())) {
                     return check;
                 } else if (BREAKER_NAMES.contains(check.getJobName())) {
-                    return check;
-                }
-                if (maxLevel < check.getLevel()) {
-                    maxLevel = check.getLevel();
-                    target = check;
+                    if(target==null||!BREAKER_NAMES.contains(target.getJobName())) {
+                        maxLevel = check.getLevel();
+                        target = check;
+                    }else if(BREAKER_NAMES.contains(check.getJobName())&&maxLevel < check.getLevel()){
+                        maxLevel = check.getLevel();
+                        target = check;
+                    }
+
+                }else if (maxLevel < check.getLevel()) {
+                    if(target==null||!BREAKER_NAMES.contains(check.getJobName())) {
+                        maxLevel = check.getLevel();
+                        target = check;
+                    }
                 }
             }
         }
@@ -568,20 +576,23 @@ public class Troop implements Serializable {
             Unit enemyUnit =enemy.getWeakest();
             boolean result=false;
 
-            if(checkIsShield(enemyUnit)){
 
+            if(checkIsShield(enemyUnit)){
+                System.out.println(enemyUnit.getJobName()+" defend "+myUnit.getJobName());
                 result=enemyUnit.fight(myUnit);
             }else{
-
+                System.out.println(myUnit.getJobName()+" defend "+enemyUnit.getJobName());
                 result=myUnit.fight(enemyUnit);
             }
 
 
             if(result){
                 if (ARROW_NAMES.contains(myUnit.getJobName())) {
-                    enemy.loseUnit(enemyUnit);
+
                     this.loseUnit(myUnit);
-                } else if (SHIELD_NAMES.contains(enemyUnit.getJobName())) {
+                }
+
+                if (SHIELD_NAMES.contains(enemyUnit.getJobName())) {
                     Shield s = (Shield) enemyUnit;
                     if (!s.shieldExist()) {
                         enemy.loseUnit(enemyUnit);
@@ -596,8 +607,10 @@ public class Troop implements Serializable {
 
                 if (ARROW_NAMES.contains(enemyUnit.getJobName())) {
                     enemy.loseUnit(enemyUnit);
-                    this.loseUnit(myUnit);
-                } else if (SHIELD_NAMES.contains(myUnit.getJobName())) {
+
+                }
+
+                if (SHIELD_NAMES.contains(myUnit.getJobName())) {
                     Shield s = (Shield) myUnit;
                     if (!s.shieldExist()) {
                         this.loseUnit(myUnit);

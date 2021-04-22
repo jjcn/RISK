@@ -25,7 +25,7 @@ class BreakerTest {
 
         Breaker clone=b.clone();
         assertEquals(clone.getBreakBonus(),20);
-        test.setJob(BREAKER_NAMES.get(5));
-        assertEquals(test.getJobName(),BREAKER_NAMES.get(5));
+        b.setJob(BREAKER_NAMES.get(5));
+        assertEquals(b.getJobName(),BREAKER_NAMES.get(5));
     }
 }
