@@ -95,6 +95,7 @@ public class GameRunner extends Thread{
 //            while(!game.gameState.isAllPlayersDoneOneTurn()){game.waitTime(1);}
             //Update the game
             game.updateGameAfterOneTurn();
+            out.println("Game" +game.getGameID() +" turn number is " + game.gInfo.getTheWorld().getTurnNumber());
             game.gInfo.gameState.updateStateTo(GAME_STATE_DONE_UPDATE);
             game.gInfo.gameState.setActivePlayersStateToUpdating();
             out.println("Game" +game.getGameID()+" runner set all active players updating state");

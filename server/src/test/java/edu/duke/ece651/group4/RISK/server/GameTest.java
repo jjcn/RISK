@@ -203,4 +203,15 @@ class GameTest {
         World theWorld = g.getTheWorld();
         PlayerInfo pInfo = theWorld.getPlayerInfoByName("user0");
     }
+
+    @Test
+    public void test_Turn(){
+        Game g=new Game(2,2);
+        g.addUser(new User(0,"user0","1"));
+        g.addUser(new User(1,"user1","1"));
+        g.setUpGame();
+        assertEquals(1,g.gInfo.theWorld.getTurnNumber());
+        g.updateGameAfterOneTurn();
+        assertEquals(2,g.gInfo.theWorld.getTurnNumber());
+    }
 }

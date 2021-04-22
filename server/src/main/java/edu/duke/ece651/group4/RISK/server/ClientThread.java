@@ -145,6 +145,7 @@ public class ClientThread extends Thread {
                     res = "Invalid Action";
             }
             this.theClient.sendObject(res);
+            out.println("Game");
             if(res == null){
                 return;
             }
@@ -429,7 +430,7 @@ public class ClientThread extends Thread {
             trySetUpUser(); //part1 above
             trySetUpGame(); //part2 above
             tryPlaceUnits(); //part3 above
-            tryRunGameOneTurn();//part4 above
+            tryRunGameOneTurn(); //part4 above
         }
     }
 }
