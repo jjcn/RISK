@@ -9,13 +9,13 @@ import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import edu.duke.ece651.group4.RISK.client.R;
 import edu.duke.ece651.group4.RISK.client.RISKApplication;
+import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static edu.duke.ece651.group4.RISK.client.Constant.LOG_CREATE_SUCCESS;
-import static edu.duke.ece651.group4.RISK.client.Constant.MAPS;
+import static edu.duke.ece651.group4.RISK.client.Constant.*;
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.*;
 import static edu.duke.ece651.group4.RISK.client.utility.Notice.showByToast;
 import static edu.duke.ece651.group4.RISK.shared.Constant.JOB_NAMES;
@@ -155,8 +155,10 @@ public class UpgradeActivity extends AppCompatActivity {
         Button commitBT = findViewById(R.id.commit_button);
         commitBT.setOnClickListener(v -> {
 
+            // get number
             Editable text = nUnitET.getText();
             if (text == null) {
+                Log.e(TAG,LOG_FUNC_FAIL+"input text null");
                 return;
             } else if (text.toString().equals("")) {
                 showByToast(UpgradeActivity.this, "Please input the number.");
@@ -164,13 +166,18 @@ public class UpgradeActivity extends AppCompatActivity {
             }
             nUnit = Integer.parseInt(text.toString());
 
-            String result = doSoldierUpgrade(
-                    buildUpOrder(terrName, levelBefore, levelAfter, nUnit, type));
-            if (result == null) {
-                finish();
-            } else {
-                showByToast(this, result);
-            }
+            doSoldierUpgrade(buildUpOrder(terrName, levelBefore, levelAfter, nUnit, type),
+                    new onResultListener() {
+                @Override
+                public void onSuccess() {
+                    finish();
+                }
+
+                @Override
+                public void onFailure(String errMsg) {
+                    showByToast(UpgradeActivity.this, errMsg);
+                }
+            });
         });
     }
 }

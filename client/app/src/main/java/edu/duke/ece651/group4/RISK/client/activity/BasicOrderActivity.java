@@ -40,28 +40,24 @@ public class BasicOrderActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_basic_order);
-        if(getSupportActionBar()!=null) {
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle("Basic Order");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-
-        worldImageView = findViewById(R.id.world_image_view);
-        worldImageView.setImageResource(MAPS.get(getCurrentRoomSize()));
-
         srcName = "";
         desName = "";
         typeName = "";
         nUnit = -1;
 
+        // read action type from activity
         Bundle bundle = getIntent().getExtras();
-        if (bundle != null){
+        if (bundle != null) {
             actionType = bundle.getString(EXTRA_ACTION_TYPE);
         }
-
         String actionType = getIntent().getStringExtra("actionType");
+        Log.i(TAG, LOG_FUNC_RUN + "ACT TYPE: " + actionType);
 
-        Log.i(TAG, LOG_FUNC_RUN + "ACT TYPE" + actionType);
         impUI();
     }
 
@@ -145,49 +141,53 @@ public class BasicOrderActivity extends AppCompatActivity {
 
         nUnitET = findViewById(R.id.numUnit);
 
+        /**
+         * commit Button
+         */
         commitBT = findViewById(R.id.commit_button);
         commitBT.setOnClickListener(v -> {
             Editable text = nUnitET.getText();
-            if(text == null){
+            if (text == null) {
                 return;
-            }else if(text.toString()==""){
-                showByToast(BasicOrderActivity.this,"Please input number.");
+            } else if (text.toString() == "") {
+                showByToast(BasicOrderActivity.this, "Please input number.");
                 return;
             }
             nUnit = Integer.parseInt(text.toString());
             Log.d(TAG, LOG_FUNC_RUN + "User selected: from " + srcName + " to " + desName
                     + " move " + nUnit + " " + typeName);
             String result = "";
+            // move action
             if (actionType.equals(UI_MOVE)) {
-                result = doOneMove(buildMoveOrder(srcName, desName, nUnit, typeName),
+                doOneMove(buildMoveOrder(srcName, desName, nUnit, typeName),
                         new onResultListener() {
                             @Override
                             public void onSuccess() {
+                                finish();
                             }
 
                             @Override
                             public void onFailure(String errMsg) {
-                                Log.e(TAG, errMsg);
-                            }
-                        });
-            } else if (actionType.equals(UI_ATK)) {
-                result = doOneAttack(buildAttackOrder(srcName, desName, nUnit, typeName),
-                        new onResultListener() {
-                            @Override
-                            public void onSuccess() {
-                            }
-
-                            @Override
-                            public void onFailure(String errMsg) {
+                                showByToast(BasicOrderActivity.this, errMsg);
                                 Log.e(TAG, errMsg);
                             }
                         });
             }
+            // attack action
+            else if (actionType.equals(UI_ATK)) {
+                doOneAttack(buildAttackOrder(srcName, desName, nUnit, typeName),
+                        new onResultListener() {
+                            @Override
+                            public void onSuccess() {
+                                finish();
+                            }
 
-            if (result == null) {
-                finish();
-            } else {
-                showByToast(this, result);
+                            @Override
+                            public void onFailure(String errMsg) {
+                                showByToast(BasicOrderActivity.this, errMsg);
+                                Log.e(TAG, errMsg);
+                            }
+                        });
             }
         });
     }

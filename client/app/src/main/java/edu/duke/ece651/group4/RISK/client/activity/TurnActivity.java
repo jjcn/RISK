@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import edu.duke.ece651.group4.RISK.client.ChatClient;
 import edu.duke.ece651.group4.RISK.client.R;
 import edu.duke.ece651.group4.RISK.client.utility.SimpleSelector;
 import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
@@ -102,7 +101,7 @@ public class TurnActivity extends AppCompatActivity {
     }
 
     private void switchOut() {
-        exitGame();
+        switchGame();
         Intent intent = new Intent(TurnActivity.this, RoomActivity.class);
         startActivity(intent);
         finish();
@@ -127,9 +126,10 @@ public class TurnActivity extends AppCompatActivity {
         impActionSpinner();
         impWorldInfoRC();
         impNoticeInfoRC();
+        Log.i(TAG,LOG_FUNC_RUN+"notice info UI done");
         impUserInfoRC();
+        Log.i(TAG,LOG_FUNC_RUN+"user info UI done");
         impCommitBT();
-        // TODO
         impNEWUIBT();
     }
 
@@ -259,7 +259,6 @@ public class TurnActivity extends AppCompatActivity {
         builder.show();
     }
 
-
     private void showStayDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(TurnActivity.this);
         builder.setTitle(LOSE_MSG)
@@ -268,7 +267,7 @@ public class TurnActivity extends AppCompatActivity {
                     waitNextTurn();
                 })
                 .setNegativeButton("No", (dialog, which) -> {
-                    exitGame();
+                    switchGame();
                 });
         builder.show();
     }
