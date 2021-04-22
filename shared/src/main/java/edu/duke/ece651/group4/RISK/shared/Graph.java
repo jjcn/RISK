@@ -404,8 +404,7 @@ public class Graph<T> implements Serializable {
                     }
                 }
             }
-            return otherGraph.vertices.equals(vertices) &&
-                    adjMatrixEquals;
+            return otherGraph.vertices.equals(vertices) && adjMatrixEquals;
         }
         else {
             return false;

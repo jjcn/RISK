@@ -429,17 +429,19 @@ public class WorldTest {
         world.tryFormAlliance("blue", "red");
         world.doCheckIfAllianceSuccess();
 
+        // can move through ally's territories
         MoveOrder move1 = new MoveOrder("Mordor", "Midkemia", new Troop(1, red));
         world.moveTroop(move1, "red");
         assertEquals(14 - 1, world.findTerritory("Mordor").checkPopulation());
         assertEquals(12 + 1, world.findTerritory("Midkemia").checkPopulation());
 
+        // move troop to ally's territory
         MoveOrder move2 = new MoveOrder("Gondor", "Elantris", new Troop(1, red));
         world.moveTroop(move2, "red");
         assertEquals(13 - 1, world.findTerritory("Gondor").checkPopulation());
-        // TODO: Elantris should now have: a red troop of size 1, and a blue troop of size 6.
-        assertEquals(6, world.findTerritory("Elantris").checkPopulation());
-        assertEquals(1, world.findTerritory("Elantris").allianceTroop.size());
+        // Elantris should now have: a red troop of size 1, and a blue troop of size 6.
+        assertEquals(6, world.findTerritory("Elantris").getTroopSize("blue"));
+        assertEquals(1, world.findTerritory("Elantris").getTroopSize("red"));
     }
 
     @Test
@@ -554,6 +556,7 @@ public class WorldTest {
         world.attackATerritory(redAttack, "red");
         world.attackATerritory(blueAttack, "blue");
         world.doAllBattles();
+        // red and blue form a larger force based on who
         System.out.println("Oz now belongs to " + world.findTerritory("Oz").getOwner().getName());
     }
 
@@ -567,15 +570,19 @@ public class WorldTest {
         // blue move troop to red's territory
         MoveOrder move1 = new MoveOrder("Scadrial", "Midkemia", new Troop(1, blue));
         world.moveTroop(move1, "blue");
-        assertEquals(1, world.findTerritory("Midkemia").allianceTroop.size());
-        assertEquals(12, world.findTerritory("Midkemia").checkPopulation());
+        assertEquals(1, world.findTerritory("Midkemia").getTroopSize("blue"));
+        assertEquals(12, world.findTerritory("Midkemia").getTroopSize("red"));
         // red attack blue's territory Scadrial,
         // blue's troop on red's Midkemia should get back to nearest, which is Scadrial
         AttackOrder attack1 = new AttackOrder("Mordor","Scadrial",  new Troop(4, red));
         world.attackATerritory(attack1, "red");
         assertEquals(new HashSet<String>(), world.getAllianceNames("red"));
         assertEquals(new HashSet<String>(), world.getAllianceNames("blue"));
-        assertEquals(5, world.findTerritory("Scadrial").checkPopulation());
+        assertEquals(12, world.findTerritory("Midkemia").getTroopSize("red"));
+        assertThrows(IllegalArgumentException.class,
+                () -> world.findTerritory("Midkemia").getTroopSize("blue")
+        );
+        assertEquals(5, world.findTerritory("Scadrial").getTroopSize("blue"));
     }
 
     @Test

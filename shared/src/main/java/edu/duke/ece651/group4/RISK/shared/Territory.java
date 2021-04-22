@@ -170,7 +170,7 @@ public class Territory implements Serializable {
     public int getTroopSize(String playerName) throws IllegalArgumentException {
         if (ownerTroop.getOwner().getName().equals(playerName)) {
             return ownerTroop.checkTroopSize();
-        } else if (allianceTroop.getOwner().getName().equals(playerName)) {
+        } else if (allianceTroop != null && allianceTroop.getOwner().getName().equals(playerName)) {
             return allianceTroop.checkTroopSize();
         } else {
             throw new IllegalArgumentException(
