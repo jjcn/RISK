@@ -767,8 +767,6 @@ public class World implements Serializable {
     /**
      * Consumes tech resource of an upgrade tech order.
      *
-     * @param upgradeTechOrder
-     * @param playerName
      */
     public void consumeResourceOfPlayerTechUpgrade(UpgradeTechOrder uTechOrder, String playerName) {
         getPlayerInfoByName(playerName).consumeResourceOfTechUpgrade(uTechOrder.getNLevel());

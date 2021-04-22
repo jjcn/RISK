@@ -252,14 +252,25 @@ public class Territory implements Serializable {
                 allianceTroop = ownerSide;
             }
 
+
             if (enemyTurn) {
                 enemy = enemySide;
             } else {
                 partner = enemySide;
             }
 
+            System.out.println(ownerTroop.getSummary());
+            System.out.println(enemy.getSummary());
+            if(allianceTroop!=null){
+                System.out.println(allianceTroop.getSummary());
+            }
+
+            if(partner!=null){
+                System.out.println(partner.getSummary());
+            }
             if (allianceTroop == null || allianceTroop.checkTroopSize() == 0) {
                 myTurn = true;
+                this.allianceTroop =null;
             } else {
                 if (this.ownerTroop.checkTroopSize() == 0) {
                     this.ownerTroop = allianceTroop;
@@ -272,6 +283,7 @@ public class Territory implements Serializable {
 
             if (partner == null || partner.checkTroopSize() == 0) {
                 enemyTurn = true;
+                partner=null;
             } else {
                 if (enemy.checkTroopSize() == 0) {
                     enemy = partner;

@@ -100,6 +100,26 @@ class TerritoryTest {
     }
 
 
+    @Test
+    void Test_newBattle() throws IOException {
+        Player p1 = new TextPlayer(null, null, "p1");
+        Player p2 = new TextPlayer(null, null, "p2");
+        Player p3 = new TextPlayer(null, null, "p3");
+        Player p4 = new TextPlayer(null, null, "p4");
+        Territory test = new Territory("test", p1, 10, new Random(0));
+
+        Troop enemy=new Troop(10,p2,new Random(1));
+        Troop ally=new Troop(4,p3,new Random(2));
+        Troop partner=new Troop(2,p4,new Random(3));
+        test.sendInTroop(ally);
+
+        test.doOneBattleMix(enemy,partner);
+        System.out.println(test.getInfo());
+
+
+    }
+
+
 
 
 
