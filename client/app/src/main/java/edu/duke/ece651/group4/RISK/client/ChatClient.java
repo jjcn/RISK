@@ -15,6 +15,7 @@ import edu.duke.ece651.group4.RISK.shared.message.ChatMessage;
 import org.apache.commons.lang3.SerializationUtils;
 
 import static edu.duke.ece651.group4.RISK.client.Constant.LOG_FUNC_RUN;
+import static edu.duke.ece651.group4.RISK.client.RISKApplication.addMsg;
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.getUserName;
 import static edu.duke.ece651.group4.RISK.shared.Constant.CHAT_SETUP_ACTION;
 
@@ -72,8 +73,6 @@ public class ChatClient extends Thread {
             ChatMessage chatMsgReceive = SerializationUtils.deserialize(readBuffer.array());
             readBuffer.clear();
 
-            // TODO: syc in database
-
             //get cahtID
             String chatID = "";
             Set<String> targets = chatMsgReceive.getTargetsPlayers();
@@ -88,6 +87,8 @@ public class ChatClient extends Thread {
                     new ChatPlayer(chatMsgReceive.getGameID(), chatMsgReceive.getSource()), chatMsgReceive.getTargetsPlayers());
             if (receiveMsgListener != null) {
                 Log.i(TAG, LOG_FUNC_RUN + "ClientChat: " + username + " get from " + chatMsgReceive.getSource() + " saying " + chatMsgReceive.getChatContent());
+                // todo: syc in database
+                addMsg(receivedMsg);
                 receiveMsgListener.onSuccess(receivedMsg);
             } else {
                 Log.i(TAG, LOG_FUNC_RUN + "lsm null");

@@ -6,10 +6,8 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.ImageView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import com.stfalcon.chatkit.commons.ImageLoader;
 import com.stfalcon.chatkit.messages.MessageInput;
 import com.stfalcon.chatkit.messages.MessagesList;
 import com.stfalcon.chatkit.messages.MessagesListAdapter;
@@ -18,13 +16,8 @@ import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
 import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
 import edu.duke.ece651.group4.RISK.client.model.ChatMessageUI;
 import edu.duke.ece651.group4.RISK.client.model.ChatPlayer;
-import edu.duke.ece651.group4.RISK.shared.message.ChatMessage;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 
 import static edu.duke.ece651.group4.RISK.client.Constant.*;
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.*;
@@ -46,20 +39,50 @@ public class MessageActivity extends AppCompatActivity
 //    private Date lastLoadedDate;
 
     //TODO: show sender name (simple string in message now) // avatar
-    //TODO: get history info
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
         this.target = getIntent().getStringExtra("TARGET");
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(target.equals("") ? "World":target);
+            getSupportActionBar().setTitle(target.equals("") ? "World" : target);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         this.msgList = findViewById(R.id.messagesList);
-        msgAdapter = new MessagesListAdapter<>(getUserName()+getRoomId(),null);
+        String chatID = getIntent().getStringExtra("CHATID");
 
+        initAdapter();
+        getHistoryInfo(chatID);
+
+        /**
+         * keep receive via chatClient
+         */
+        Log.i(TAG, LOG_FUNC_RUN + "start set lsn");
+//        setChatReceiveListener(new onReceiveListener() {
+//            @Override
+//            public void onSuccess(Object o) {
+//                runOnUiThread(() -> {
+//                    if (o instanceof ChatMessageUI) {
+//                        ChatMessageUI message = (ChatMessageUI) o;
+//                        msgAdapter.addToStart(message, true);
+//                    } else {
+//                        onFailure("receive not ChatMessageUI");
+//                    }
+//                    Log.i(TAG, LOG_FUNC_RUN + "recv msg lsn done success");
+//                });
+//            }
+//
+//            @Override
+//            public void onFailure(String errMsg) {
+//                Log.e(TAG, LOG_FUNC_FAIL + errMsg);
+//            }
+//        });
+        Log.i(TAG, SUCCESS_CREATE);
+    }
+
+    private void initAdapter() {
+        msgAdapter = new MessagesListAdapter<>(getUserName() + getRoomId(), null);
 //                new ImageLoader() {
 //            @Override
 //            public void loadImage(ImageView imageView, @Nullable String url, @Nullable Object payload) {
@@ -67,35 +90,17 @@ public class MessageActivity extends AppCompatActivity
 //                imageView.setImageBitmap(stringToBitmap(url));
 //            }
 //        });
-
         msgList.setAdapter(msgAdapter);
 //        msgAdapter.setLoadMoreListener(this);
 
         MessageInput input = findViewById(R.id.input);
         input.setInputListener(this);
 //        input.setTypingListener(this);
+    }
 
-        Log.i(TAG, LOG_FUNC_RUN + "start set lsn");
-        setReceiveListener(new onReceiveListener() {
-            @Override
-            public void onSuccess(Object o) {
-                runOnUiThread(()->{
-                    if (o instanceof ChatMessageUI) {
-                        ChatMessageUI message = (ChatMessageUI) o;
-                        msgAdapter.addToStart(message, true);
-                    } else {
-                        onFailure("receive not ChatMessageUI");
-                    }
-                    Log.i(TAG, LOG_FUNC_RUN+"recv msg lsn done success");
-                });
-            }
-
-            @Override
-            public void onFailure(String errMsg) {
-                Log.e(TAG, LOG_FUNC_FAIL + errMsg);
-            }
-        });
-        Log.i(TAG, SUCCESS_CREATE);
+    private void getHistoryInfo(String chatID) {
+        List<ChatMessageUI> stored = getStoredMsg(chatID);
+        msgAdapter.addToEnd(stored,false);
     }
 
     @Override
@@ -111,18 +116,20 @@ public class MessageActivity extends AppCompatActivity
     public boolean onSubmit(CharSequence input) {
         ChatPlayer user = new ChatPlayer(getRoomId(), getUserName());
         Set<String> targets = new HashSet<>();
-        if(target.equals("")) {
+        if (target.equals("")) {
             targets.addAll(getAllPlayersName());
             targets.remove(getUserName());
-        }else {
+        } else {
             targets.add(target);
         }
-        ChatMessageUI message = new ChatMessageUI(target,input.toString(), user, targets);
+        ChatMessageUI message = new ChatMessageUI(target, input.toString(), user, targets);
 
         Log.i(TAG, LOG_FUNC_RUN + "start send mag");
         sendOneMsg(message, new onResultListener() {
             @Override
-            public void onSuccess() { msgAdapter.addToStart(message, true); }
+            public void onSuccess() {
+                msgAdapter.addToStart(message, true);
+            }
 
             @Override
             public void onFailure(String errMsg) {
@@ -137,7 +144,7 @@ public class MessageActivity extends AppCompatActivity
         try {
             byte[] bitmapArray;
             bitmapArray = Base64.decode(string, Base64.DEFAULT);
-            Log.i(TAG,LOG_FUNC_RUN+"bitmap: "+bitmapArray);
+            Log.i(TAG, LOG_FUNC_RUN + "bitmap: " + bitmapArray);
             bitmap = BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length);
         } catch (Exception e) {
             e.printStackTrace();
