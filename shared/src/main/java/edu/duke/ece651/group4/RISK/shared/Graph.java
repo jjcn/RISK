@@ -135,7 +135,9 @@ public class Graph<T> implements Serializable {
     public int getWeight(T vertex) {
     	return weights.get(indexOfVertex(vertex));
     }
-    
+
+
+
     /**
      * Assign an integer weight to a vertex.
      * @param vertex is the vertex to set weight.

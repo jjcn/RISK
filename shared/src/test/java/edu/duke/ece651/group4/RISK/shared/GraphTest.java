@@ -1,5 +1,7 @@
 package edu.duke.ece651.group4.RISK.shared;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
@@ -15,6 +17,14 @@ public class GraphTest {
     
     String[] names = {"Narnia", "Midkemia", "Oz", "Gondor", "Mordor",
 	                  "Hogwarts", "Scadrial", "Elantris", "Roshar"};
+
+    @Test
+    public void testBoolean() {
+        assertEquals(true, Boolean.TRUE);
+        Boolean b = true;
+        assertEquals(true, b);
+        assertEquals(Boolean.TRUE, b);
+    }
 
     @Test
     public void testCreation() {
