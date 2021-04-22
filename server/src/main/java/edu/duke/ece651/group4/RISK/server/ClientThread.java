@@ -187,24 +187,22 @@ public class ClientThread extends Thread {
         if(res != null){return res;}
         if(!gameToJoin.isFull()){
             gameToJoin.addUser(ownerUser); // this is synchronized function
-//            out.println(ownerUser.getUsername() + " joins a new game " + gameToJoin.getGameID());
         }
         else{
             gameToJoin.switchInUser(ownerUser); // this is synchronized function
-//            out.println(ownerUser.getUsername() + " switches in  game " + gameToJoin.getGameID() + " AGAIN");
         }
         gameOnGoing = gameToJoin;
-        HibernateTool.updateGameInfo(gameOnGoing.getGameInfo());
+//        HibernateTool.updateGameInfo(gameOnGoing.getGameInfo());
         out.println( "Game" + gameOnGoing.getGameID() + " has " + gameOnGoing.getUserNames().size() +" users now.");
         return null;
     }
 
     protected String checkJoinGame (Game gameToJoin){
-        if(gameToJoin == null){ return INVALID_JOIN;}
+        if(gameToJoin == null){ return "Game is null";}
         if(gameToJoin.isFull() && !gameToJoin.isUserInGame(ownerUser)){return INVALID_JOIN;}
         if(!gameToJoin.isFull()){
             if(gameToJoin.isUserInGame(ownerUser)){
-                return  INVALID_JOIN;
+                return  "Invalid Join: ";
             }
         }
         return null;
@@ -367,7 +365,7 @@ public class ClientThread extends Thread {
             out.println("Game" + gameOnGoing.getGameID() + ": Checking Phase :  " + ownerUser.getUsername() + " go back to do action");
             gameOnGoing.gInfo.gameState.changAPlayerStateTo(ownerUser, PLAYER_STATE_ACTION_PHASE);
         }
-        HibernateTool.updateGameInfo(gameOnGoing.getGameInfo());
+//        HibernateTool.updateGameInfo(gameOnGoing.getGameInfo());
     }
 
     /*

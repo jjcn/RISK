@@ -121,7 +121,7 @@ public class GameRunner extends Thread{
             if(game.isEndGame() || game.gInfo.gameState.isAllPlayersSwitchOut()){
                 game.gInfo.gameState.setGameDead();
                 out.println("Game" +game.getGameID()+" runner ends, set this game dead");
-                HibernateTool.deleteGameInfo(game.gInfo);
+//                HibernateTool.deleteGameInfo(game.gInfo);
                 break;
             }
             game.gInfo.gameState.updateStateTo(GAME_STATE_WAIT_TO_UPDATE);
