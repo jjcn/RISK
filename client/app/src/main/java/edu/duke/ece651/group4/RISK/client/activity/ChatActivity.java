@@ -50,7 +50,7 @@ public class ChatActivity extends AppCompatActivity implements DialogsListAdapte
      */
     private void setListener() {
         Log.i(TAG, LOG_FUNC_RUN + "start set chat lsn");
-        getChatClient().setChatListener(new onReceiveListener() {
+        setChatListener(new onReceiveListener() {
             @Override
             public void onSuccess(Object o) {
                 runOnUiThread(() -> {
@@ -91,7 +91,7 @@ public class ChatActivity extends AppCompatActivity implements DialogsListAdapte
     private List<ChatDialog> getChats() {
         ArrayList<ChatDialog> chats = new ArrayList<>();
         // World chat room, id = ""
-        chats.add(new ChatDialog(WORLD_CHAT, "World Chat", getChatPlayersName()));
+        chats.add(new ChatDialog(WORLD_CHAT, "World Chat", new ArrayList<>(getAllPlayersName())));
         // private chat
         for (String playerName : getChatPlayersName()) {
             chats.add(new ChatDialog(playerName, "Private Chat with " + playerName,

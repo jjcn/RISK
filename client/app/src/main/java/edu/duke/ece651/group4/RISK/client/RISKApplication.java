@@ -600,8 +600,17 @@ public class RISKApplication extends Application {
         }).start();
     }
 
-    public static ChatClient getChatClient(){
-        return chatClient;
+    public static void setChatListener(onReceiveListener listener) {
+        new Thread(() -> chatClient.setChatListener(listener)).start();
+    }
+
+    public static void setMsgListener(onReceiveListener listener) {
+        new Thread(() -> chatClient.setMsgListener(listener)).start();
+    }
+
+    public static void sendOneMsg(ChatMessageUI message, onResultListener listener) {
+        chatClient.send(message);
+        listener.onSuccess();
     }
 
     public static void addMsg(ChatMessageUI msg) {
