@@ -4,7 +4,9 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 import static edu.duke.ece651.group4.RISK.shared.Constant.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -147,6 +149,52 @@ class TerritoryTest {
 
         System.out.println(test.getInfo());
 
+
+    }
+
+    @Test
+    void Test_newBattleAll() throws IOException {
+        Player p1 = new TextPlayer(null, null, "p1");
+        Player p2 = new TextPlayer(null, null, "p2");
+        Player p3 = new TextPlayer(null, null, "p3");
+        Player p4 = new TextPlayer(null, null, "p4");
+        Territory test = new Territory("test", p1, 4, new Random(0));
+
+        test.transfer(SOLDIER,ARCHER, 0,2);
+        test.transfer(SOLDIER,SHIELD, 0,2);
+
+
+        HashMap<String, Integer> tmpDict=new HashMap<>();
+        tmpDict.put(ARCHER_NAMES.get(0),2);
+
+
+        Troop enemy=new Troop(10,p2,new Random(1));
+        enemy.transfer(SOLDIER,BREAKER, 0,4);
+        enemy.transfer(SOLDIER,ARCHER, 0,2);
+        Troop dem=new Troop(tmpDict,enemy.getOwner());
+        Troop sent=enemy.sendRangedAttack(dem);
+
+
+        Troop ally=new Troop(2,p3,new Random(2));
+        Troop partner=new Troop(10,p4,new Random(3));
+        partner.transfer(SOLDIER,BREAKER, 0,4);
+        test.sendInTroop(ally);
+        test.sendInEnemyTroop(sent);
+        test.sendInEnemyTroop(enemy);
+        test.sendInEnemyTroop(partner);
+
+        HashMap<String, Set<String>> relation =new HashMap<>();
+        HashSet<String> r2=new HashSet<>();
+        r2.add("p4");
+
+        HashSet<String> r4=new HashSet<>();
+        r4.add("p2");
+
+        relation.put("p2",r2);
+        relation.put("p4",r4);
+        String rep=test.doBattlesMix(relation);
+        System.out.println(rep);
+        System.out.println(test.getInfo());
 
     }
 
