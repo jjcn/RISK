@@ -39,7 +39,7 @@ public class TransferActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transfer);
         if(getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Transfer Troop");
+            getSupportActionBar().setTitle("Transfer");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
@@ -133,7 +133,7 @@ public class TransferActivity extends AppCompatActivity {
             Editable text = nUnitET.getText();
             if (text == null) {
                 return;
-            } else if (text.toString() == "") {
+            } else if (text.toString().equals("")) {
                 showByToast(TransferActivity.this, "Please input the number.");
                 return;
             }

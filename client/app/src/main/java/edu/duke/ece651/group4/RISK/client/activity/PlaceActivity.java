@@ -42,9 +42,10 @@ public class PlaceActivity extends AppCompatActivity {
 
     private void impUI() {
         instr = findViewById(R.id.placeInstru);
-        instr.append("You have total of " + PLACE_TOTAL + " soldiers.");
+        instr.append("\n You have total of " + PLACE_TOTAL + " soldiers.");
         mapIV = findViewById(R.id.world_image_view);
         mapIV.setImageResource(MAPS.get(getCurrentRoomSize()));
+
         List<Territory> myTerr = getMyTerritory(); // two for each player
 
         LinearLayout terrA = findViewById(R.id.terrA);
@@ -71,6 +72,7 @@ public class PlaceActivity extends AppCompatActivity {
                 List<PlaceOrder> placements = new ArrayList<>();
                 placements.add(new PlaceOrder(myTerr.get(0).getName(), new Troop(numTerrA, new TextPlayer(getUserName()))));
                 placements.add(new PlaceOrder(myTerr.get(1).getName(), new Troop(numTerrB, new TextPlayer(getUserName()))));
+                waitDG.show();
 
                 doPlacement(placements, new onReceiveListener() {
                     @Override

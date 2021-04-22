@@ -406,7 +406,7 @@ public class World implements Serializable {
     public List<Territory> getTerritoriesOfPlayer(String playerName) {
         List<Territory> ans = new ArrayList<>();
         for (Territory terr : getAllTerritories()) {
-            if (terr.getOwner().getName().equals(playerName)) {
+            if (terr.getOwnerName().equals(playerName)) {
                 ans.add(terr);
             }
         }
@@ -422,7 +422,44 @@ public class World implements Serializable {
     public List<Territory> getTerritoriesNotOfPlayer(String playerName) {
         List<Territory> ans = new ArrayList<>();
         for (Territory terr : getAllTerritories()) {
-            if (!terr.getOwner().getName().equals(playerName)) {
+            if (!terr.getOwnerName().equals(playerName)) {
+                ans.add(terr);
+            }
+        }
+        return ans;
+    }
+
+    /**
+     * Get the territories with a player's troop stationed on it.
+     * @param playerName is a player's name.
+     * @return all territories that is stationed by this player's troop.
+     */
+    public List<Territory> getTerritoriesWithMyTroop(String playerName) {
+        List<Territory> ans = new ArrayList<>();
+        for (Territory terr : getAllTerritories()) {
+            if (terr.getOwnerName().equals(playerName)) {
+                ans.add(terr);
+            }
+            try {
+                String allianceName = terr.getAllianceName();
+                if (allianceName.equals(playerName)) {
+                    ans.add(terr);
+                }
+            } catch (IllegalArgumentException e) {}
+        }
+        return ans;
+    }
+
+    /**
+     * Get a list of all territories a player is allowed to move through.
+     *
+     * @param playerName is a player's name.
+     * @return all territories owned by a player and his alliance.
+     */
+    public List<Territory> getTerritoriesOfPlayerAndAlliance(String playerName) {
+        List<Territory> ans = new ArrayList<>();
+        for (Territory terr : getAllTerritories()) {
+            if (canMoveThrough(playerName, terr)) {
                 ans.add(terr);
             }
         }
@@ -463,7 +500,7 @@ public class World implements Serializable {
     public boolean canMoveThrough(String moverName, Territory terr) {
         Set<String> allowedOwnerNames = getAllianceNames(moverName);
         allowedOwnerNames.add(moverName);
-        return allowedOwnerNames.contains(terr.getOwner().getName());
+        return allowedOwnerNames.contains(terr.getOwnerName());
     }
 
     /**
@@ -570,7 +607,7 @@ public class World implements Serializable {
         Territory start = findTerritory(order.getSrcName());
         Territory end = findTerritory(order.getDesName());
         Troop troop = order.getActTroop();
-        String moverName = start.getOwner().getName();
+        String moverName = start.getOwnerName();
 
         int lengthShortestPath = calculateShortestPath(start, end, moverName);
         int nUnits = troop.size();
@@ -605,7 +642,7 @@ public class World implements Serializable {
         Territory end = findTerritory(order.getDesName());
         Troop troop = order.getActTroop();
         // check error of move order
-        String errorMsg = orderChecker.checkOrder(order, World.this);
+        String errorMsg = orderChecker.checkOrder(order, playerName, World.this);
         if (errorMsg != null) {
             throw new IllegalArgumentException(errorMsg);
         }
@@ -648,12 +685,12 @@ public class World implements Serializable {
      */
     public void attackATerritory(AttackOrder order, String playerName) { // TODO: coupled upgrade and resource consumption
         Territory start = findTerritory(order.getSrcName());
-        String startOwnerName = start.getOwner().getName();
+        String startOwnerName = start.getOwnerName();
         Territory end = findTerritory(order.getDesName());
-        String endOwnerName = end.getOwner().getName();
+        String endOwnerName = end.getOwnerName();
         Troop troop = order.getActTroop();
         // check error of attack order
-        String errorMsg = orderChecker.checkOrder(order, this);
+        String errorMsg = orderChecker.checkOrder(order, playerName, this);
         if (errorMsg != null) {
             throw new IllegalArgumentException(errorMsg);
         }
@@ -984,7 +1021,7 @@ public class World implements Serializable {
             throw new IllegalArgumentException(NOT_POSITIVE_MSG);
         }
         Territory terr = findTerritory(terrName);
-        if (!playerName.equals(terr.getOwner().getName())) {
+        if (!playerName.equals(terr.getOwnerName())) {
             throw new IllegalArgumentException("Not your territory.");
         }
         terr.addUnit(num);
@@ -1057,7 +1094,7 @@ public class World implements Serializable {
      */
     public boolean checkLost(String playerName) {
         for (Territory terr : getAllTerritories()) {
-            if (terr.getOwner().getName().equals(playerName)) {
+            if (terr.getOwnerName().equals(playerName)) {
                 return false;
             }
         }
@@ -1089,7 +1126,7 @@ public class World implements Serializable {
      */
     public String getWinner() {
         if (isGameEnd()) {
-            return territories.getVertices().get(0).getOwner().getName();
+            return territories.getVertices().get(0).getOwnerName();
         }
         return null;
     }
