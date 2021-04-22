@@ -94,6 +94,10 @@ public class ChatActivity extends AppCompatActivity implements DialogsListAdapte
             target.add(playerName);
             chats.add(new ChatDialog(playerName, "Private Chat with " + playerName, target));
         }
+        // update latest message info
+        for(ChatMessageUI msg:getStoredMsg(null)){
+            onNewMessage(msg.getChatId(),msg);
+        }
         return chats;
     }
 
