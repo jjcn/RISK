@@ -190,6 +190,5 @@ public class BasicOrderActivity extends AppCompatActivity {
                 showByToast(this, result);
             }
         });
-
     }
 }
