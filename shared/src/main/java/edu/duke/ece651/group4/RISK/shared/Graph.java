@@ -394,24 +394,24 @@ public class Graph<T> implements Serializable {
         return smallestDistanceVertex;
     }
 
-    @Override
-    public boolean equals(Object other) {
-        if (other != null && other.getClass().equals(getClass())) {
-            Graph<T> otherGraph = (Graph<T>)other;
-            boolean adjMatrixEquals = true;
-            for (int i = 0; i < adjMatrix.length; i++) {
-                for (int j = 0; j < adjMatrix.length; j++) {
-                    if (otherGraph.adjMatrix[i][j] != adjMatrix[i][j]) {
-                        adjMatrixEquals = false;
-                    }
-                }
-            }
-            return otherGraph.vertices.equals(vertices) && adjMatrixEquals;
-        }
-        else {
-            return false;
-        }
-    }
+//    @Override
+//    public boolean equals(Object other) {
+//        if (other != null && other.getClass().equals(getClass())) {
+//            Graph<T> otherGraph = (Graph<T>)other;
+//            boolean adjMatrixEquals = true;
+//            for (int i = 0; i < adjMatrix.length; i++) {
+//                for (int j = 0; j < adjMatrix.length; j++) {
+//                    if (otherGraph.adjMatrix[i][j] != adjMatrix[i][j]) {
+//                        adjMatrixEquals = false;
+//                    }
+//                }
+//            }
+//            return otherGraph.vertices.equals(vertices) && adjMatrixEquals;
+//        }
+//        else {
+//            return false;
+//        }
+//    }
 
     @Override
     public String toString() {
