@@ -43,7 +43,7 @@ public class ChatActivity extends AppCompatActivity implements DialogsListAdapte
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
+            moveTaskToBack(true);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -69,7 +69,6 @@ public class ChatActivity extends AppCompatActivity implements DialogsListAdapte
 //            Calendar calendar = Calendar.getInstance();
 //            calendar.add(Calendar.DAY_OF_MONTH, -(i * i));
 //            calendar.add(Calendar.MINUTE, -(i * i));
-
             chats.add(new ChatDialog(playerName, "Private Chat with " + playerName,
                     Arrays.asList(playerName)));
         }

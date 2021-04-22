@@ -269,7 +269,7 @@ public class RISKApplication extends Application {
                     theWorld = (World) receivedO;
                     listener.onSuccess(theWorld);
                 } else {
-                    Log.e(TAG, LOG_FUNC_RUN + "receive not a world");
+                    Log.e(TAG, LOG_FUNC_RUN + "receive not a world: "+receivedO.getClass());
                 }
             } catch (Exception e) {
                 Log.e(TAG, e.toString());
@@ -438,7 +438,8 @@ public class RISKApplication extends Application {
         try {
             MoveOrder tmp = new MoveOrder(order.getSrcName(), order.getDesName(), order.getActTroop().clone(), MOVE_ACTION);
             theWorld.moveTroop(order, userName);
-            sendAndReceiveResult(tmp, listener);
+            send(tmp);
+            listener.onSuccess();
         } catch (Exception e) {
             return e.getMessage();
         }
@@ -464,7 +465,8 @@ public class RISKApplication extends Application {
         try {
             AttackOrder tmp = new AttackOrder(order.getSrcName(), order.getDesName(), order.getActTroop().clone(), ATTACK_ACTION);
             theWorld.attackATerritory(order, userName);
-            sendAndReceiveResult(tmp, listener);
+            send(tmp);
+            listener.onSuccess();
         } catch (Exception e) {
             return e.getMessage();
         }
