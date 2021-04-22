@@ -89,7 +89,7 @@ public class HostApp implements Runnable {
         for(GameInfo gInfo: gamesInfo){
             if(gInfo.gameState.isAlive()){
                 if(!gInfo.gameState.isDonePlaceUnits()){
-                    gInfo.gameState.setGameDead(); // set this game dead if it has not started action phase
+//                    gInfo.gameState.setGameDead(); // set this game dead if it has not started action phase
                 }
                 Game g =new Game(gInfo);
                 printGameInfo(gInfo);
