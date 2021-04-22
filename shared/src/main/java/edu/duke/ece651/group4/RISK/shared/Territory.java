@@ -97,6 +97,23 @@ public class Territory implements Serializable {
         return this.ownerTroop.getOwner();
     }
 
+    public String getOwnerName() {
+        return this.getOwner().getName();
+    }
+
+    public Player getAlliance() throws IllegalArgumentException {
+        if (this.allianceTroop == null) {
+            throw new IllegalArgumentException(
+                    String.format("No alliance troop stationed on %s.", name)
+            );
+        }
+        return this.allianceTroop.getOwner();
+    }
+
+    public String getAllianceName() {
+        return this.getAlliance().getName();
+    }
+
     public int getFoodSpeed() {
         return this.foodSpeed;
     }
@@ -146,7 +163,24 @@ public class Territory implements Serializable {
     }
 
     /**
-     * Check population of territory
+     * Check the size of the troop that belongs to a player on this territory
+     * @param playerName is the name of player
+     * @return the size of troop this payer stationed on this territory
+     */
+    public int getTroopSize(String playerName) throws IllegalArgumentException {
+        if (ownerTroop.getOwner().getName().equals(playerName)) {
+            return ownerTroop.checkTroopSize();
+        } else if (allianceTroop.getOwner().getName().equals(playerName)) {
+            return allianceTroop.checkTroopSize();
+        } else {
+            throw new IllegalArgumentException(
+                    String.format("%s does not have troop stationed on %s", playerName, this.name)
+            );
+        }
+    }
+
+    /**
+     * Check population of the territory's owner troop
      */
     public int checkPopulation() {
         return this.ownerTroop.checkTroopSize();
@@ -407,8 +441,8 @@ public class Territory implements Serializable {
 
     /**
      * Get all info of a territory in text form.
-     * To be displayed
-     * @return
+     * To be displayed on in TurnActivity UI.
+     * @return a String displaying the info of a territory.
      */
     public String getInfo() {
         StringBuilder report = new StringBuilder();
@@ -426,6 +460,11 @@ public class Territory implements Serializable {
         return report.toString();
     }
 
+    /**
+     * Get all info of a troop in text form.
+     * @param troop is a troop.
+     * @return a String displaying the info of a troop.
+     */
     public String getTroopInfo(Troop troop) {
         StringBuilder ans = new StringBuilder();
         ans.append(troop.getOwner().getName() + "'s troop: " + "\n");

@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class WorldTest {
     /**
@@ -702,6 +703,28 @@ public class WorldTest {
     }
 
     @Test
+    public void testCheckCanFormAlliance() {
+        World world = createWorldAndRegister(troopsSeparated);
+
+        assertDoesNotThrow(() -> world.checkCanFormAlliance("red"));
+        world.tryFormAlliance("red", "blue");
+        world.tryFormAlliance("red", "green");
+        assertDoesNotThrow(() -> world.checkCanFormAlliance("red"));
+        world.tryFormAlliance("blue", "red");
+        world.doCheckIfAllianceSuccess();
+
+        assertThrows(IllegalArgumentException.class, () -> world.checkCanFormAlliance("red"));
+        assertThrows(IllegalArgumentException.class, () -> world.checkCanFormAlliance("blue"));
+        assertDoesNotThrow(() -> world.checkCanFormAlliance("green"));
+
+        world.breakAlliance("red", "blue");
+        assertEquals(new HashSet<String>(), world.getAllianceNames("red"));
+        assertEquals(new HashSet<String>(), world.getAllianceNames("blue"));
+
+        assertDoesNotThrow(() -> world.checkCanFormAlliance("red"));
+    }
+
+    @Test
     public void testGetAllPlayersAlliance() {
         World world = createWorldAndRegister(troopsSeparated);
 
@@ -806,7 +829,9 @@ public class WorldTest {
     @Test
     public void testDoAllBattles() {
         World world = createWorld(troopsSeparated);
+        assertEquals(1, world.getTurnNumber());
         world.doAllBattles();
+        assertEquals(2, world.getTurnNumber());
     }
 
     @Test
@@ -864,6 +889,37 @@ public class WorldTest {
             redList.add(new Territory(name));
         }
     	assertEquals(redList, world.getTerritoriesNotOfPlayer("red"));
+    }
+
+    @Test
+    public void testGetTerritoriesWithMyTroop() {
+        World world = createWorldAndRegister(troopsConnected);
+        world.tryFormAlliance("red", "blue");
+        world.tryFormAlliance("blue", "red");
+        world.doCheckIfAllianceSuccess();
+
+        world.findTerritory("Mordor").sendInAlly(new Troop(1, blue));
+        assertEquals(1, world.findTerritory("Mordor").allianceTroop.size());
+        assertEquals(14, world.findTerritory("Mordor").checkPopulation());
+
+        assertListContentEquals(new ArrayList<String>(Arrays.asList("Elantris", "Scadrial", "Roshar", "Mordor")),
+                world.getTerritoriesWithMyTroop("blue")
+                        .stream()
+                        .map(terr -> terr.getName())
+                        .collect(Collectors.toList())
+        );
+    }
+
+    /**
+     * Assert that the contents of two lists are equal.
+     * @param list1
+     * @param list2
+     * @param <T>
+     */
+    protected <T> void assertListContentEquals(List<T> list1, List<T> list2) {
+        assertEquals(list1.size(), list2.size());
+        assertTrue(list1.containsAll(list2));
+        assertTrue(list2.containsAll(list1));
     }
 
     @Test
