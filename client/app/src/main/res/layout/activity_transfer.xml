@@ -66,7 +66,7 @@
                 android:id="@+id/terr_prompt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/CHANGE_TERR_PROMPT"
+                android:text="@string/TRANSFER_CHOOSE_TERR_INSTRU"
                 app:layout_constraintTop_toTopOf="@id/hguide2"
                 app:layout_constraintBottom_toBottomOf="@id/hguide3"
                 app:layout_constraintStart_toStartOf="parent"
@@ -99,7 +99,7 @@
         />
 
         <Spinner
-                android:id="@+id/type_after_choices"
+                android:id="@+id/type_choices"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:spinnerMode="dialog"
@@ -114,7 +114,7 @@
                 android:id="@+id/unit_level"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/CHOOSE_TYPE_INSTRU"
+                android:text="@string/CHOOSE_LEVEL_INSTRU"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="@id/vguide1"
                 app:layout_constraintTop_toBottomOf="@id/hguide4"
@@ -156,6 +156,7 @@
                 android:id="@+id/commit_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="@dimen/buttonMargin"
                 android:text="@string/COMMIT"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

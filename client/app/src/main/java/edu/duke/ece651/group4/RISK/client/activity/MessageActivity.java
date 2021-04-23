@@ -44,6 +44,7 @@ public class MessageActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
         this.target = getIntent().getStringExtra("TARGET");
+        Log.i(TAG, LOG_FUNC_RUN + "target: " + target);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(target.equals(WORLD_CHAT) ? "World" : target);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -57,7 +58,6 @@ public class MessageActivity extends AppCompatActivity
         /**
          * keep receive via chatClient
          */
-        Log.i(TAG, LOG_FUNC_RUN + "start set lsn");
         setMsgListener(new onReceiveListener() {
             @Override
             public void onSuccess(Object o) {
@@ -123,15 +123,15 @@ public class MessageActivity extends AppCompatActivity
     public boolean onSubmit(CharSequence input) {
         ChatPlayer user = new ChatPlayer(getRoomId(), getUserName());
         Set<String> targets = new HashSet<>();
-        if (target.equals("")) {
+        if (target.equals(WORLD_CHAT)) {
             targets.addAll(getAllPlayersName());
             targets.remove(getUserName());
         } else {
             targets.add(target);
         }
-        ChatMessageUI message = new ChatMessageUI(target, input.toString(), user, targets);
+        ChatMessageUI message = new ChatMessageUI(WORLD_CHAT.equals(target)? WORLD_CHAT : getUserName(), input.toString(), user, targets);
 
-        Log.i(TAG, LOG_FUNC_RUN + "start send msg");
+        Log.i(TAG, LOG_FUNC_RUN + "start send msg target: " + target);
         sendOneMsg(message, new onResultListener() {
             @Override
             public void onSuccess() {

@@ -120,7 +120,7 @@ public class WorldTest {
         for (int i = 0; i < troops.length; i++) {
             world.stationTroop(names[i], troops[i]);
         }
-        
+
         return world;
     }
 
