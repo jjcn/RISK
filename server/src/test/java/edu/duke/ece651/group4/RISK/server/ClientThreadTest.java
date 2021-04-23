@@ -155,119 +155,110 @@ class ClientThreadTest {
     }
 
 
-    private void simulateOneClientCreate(User u, Client theClient){
-        Object res = null;
-        //logIn
-        theClient.sendObject(new LogMessage(LOG_SIGNIN,u.getUsername(),u.getPassword()));
-        assertEquals(null,theClient.recvObject());
-        //Game
-        theClient.sendObject(new GameMessage(GAME_CREATE,-1,2));
-        assertEquals(null,theClient.recvObject());
-
-        //Place Units
-        World theWorld = (World) theClient.recvObject();
-        assertEquals(true, theWorld instanceof World);
-        assertEquals(true, theWorld != null);
-        List<Order> placeOrders = makePlaceOrders(theWorld,u);
-        theClient.sendObject(placeOrders);
-
-        //Start Do Action Phase
-        theWorld = (World) theClient.recvObject();
-        assertEquals(true, theWorld instanceof World);
-        assertEquals(true, theWorld != null);
-        BasicOrder bp = new BasicOrder(null,null,null,SWITCH_OUT_ACTION);
-        theClient.sendObject(bp);
-    }
-
-    private void simulateOneClientJoin(User u, Client theClient){
-        Object res = null;
-        //logIn
-        theClient.sendObject(new LogMessage(LOG_SIGNIN,u.getUsername(),u.getPassword()));
-        assertEquals(null,theClient.recvObject());
-        //Game
-        theClient.sendObject(new GameMessage(GAME_JOIN,10001,2));
-        assertEquals(null,theClient.recvObject());
-
-        //Place Units
-        World theWorld = (World) theClient.recvObject();
-        assertEquals(true, theWorld instanceof World);
-        assertEquals(true, theWorld != null);
-        List<Order> placeOrders = makePlaceOrders(theWorld,u);
-        theClient.sendObject(placeOrders);
-
-        //Start Do Action Phase
-        theWorld = (World) theClient.recvObject();
-        assertEquals(true, theWorld instanceof World);
-        assertEquals(true, theWorld != null);
-        BasicOrder bp = new BasicOrder(null,null,null,SWITCH_OUT_ACTION);
-        theClient.sendObject(bp);
-    }
-    private List<Order> makePlaceOrders(World theWorld, User u){
-        List<Territory> terrs = theWorld.getTerritoriesOfPlayer(u.getUsername());
-        List<Order>  placeOrders = new ArrayList<>();
-        int total = 15;
-        for(Territory t: terrs){
-            PlaceOrder p =new PlaceOrder(t.getName(),new Troop(total,new TextPlayer(u.getUsername())));
-            total = 0;
-            placeOrders.add(p);
-        }
-        return placeOrders;
-    }
-    @Test
-    public void test_wholeProcess(){
-        List<User> users =  createUsers(2);
-        List<Game> games = createGames(1, 2);
-        new Thread(() -> {
-            try {
-                Socket socket = hostSocket.accept();
-                this.theClient = new Client(socket);
-                ClientThread ct = new ClientThread(games, users,null, new AtomicInteger(0));
-                ct.start();
-            } catch (IOException ignored) {
-            }
-        }).start();
-
-        new Thread(() -> {
-            try {
-                Client theClient = new Client(hostname, PORT);
-                simulateOneClientCreate(users.get(0),theClient);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }).start();
-
-        new Thread(() -> {
-            try {
-                Client theClient = new Client(hostname, PORT);
-//                synchronized (games) {
-//                    games.notify();
+//    private void simulateOneClientCreate(User u, Client theClient){
+//        Object res = null;
+//        //logIn
+//        theClient.sendObject(new LogMessage(LOG_SIGNIN,u.getUsername(),u.getPassword()));
+//        assertEquals(null,theClient.recvObject());
+//        //Game
+//        theClient.sendObject(new GameMessage(GAME_CREATE,-1,2));
+//        assertEquals(null,theClient.recvObject());
+//
+//        //Place Units
+//        World theWorld = (World) theClient.recvObject();
+//        assertEquals(true, theWorld instanceof World);
+//        assertEquals(true, theWorld != null);
+//        List<Order> placeOrders = makePlaceOrders(theWorld,u);
+//        theClient.sendObject(placeOrders);
+//
+//        //Start Do Action Phase
+//        theWorld = (World) theClient.recvObject();
+//        assertEquals(true, theWorld instanceof World);
+//        assertEquals(true, theWorld != null);
+//        BasicOrder bp = new BasicOrder(null,null,null,SWITCH_OUT_ACTION);
+//        theClient.sendObject(bp);
+//    }
+//
+//    private void simulateOneClientJoin(User u, Client theClient){
+//        Object res = null;
+//        //logIn
+//        theClient.sendObject(new LogMessage(LOG_SIGNIN,u.getUsername(),u.getPassword()));
+//        assertEquals(null,theClient.recvObject());
+//        //Game
+//        theClient.sendObject(new GameMessage(GAME_JOIN,10001,2));
+//        assertEquals(null,theClient.recvObject());
+//
+//        //Place Units
+//        World theWorld = (World) theClient.recvObject();
+//        assertEquals(true, theWorld instanceof World);
+//        assertEquals(true, theWorld != null);
+//        List<Order> placeOrders = makePlaceOrders(theWorld,u);
+//        theClient.sendObject(placeOrders);
+//
+//        //Start Do Action Phase
+//        theWorld = (World) theClient.recvObject();
+//        assertEquals(true, theWorld instanceof World);
+//        assertEquals(true, theWorld != null);
+//        BasicOrder bp = new BasicOrder(null,null,null,SWITCH_OUT_ACTION);
+//        theClient.sendObject(bp);
+//    }
+//    private List<Order> makePlaceOrders(World theWorld, User u){
+//        List<Territory> terrs = theWorld.getTerritoriesOfPlayer(u.getUsername());
+//        List<Order>  placeOrders = new ArrayList<>();
+//        int total = 15;
+//        for(Territory t: terrs){
+//            PlaceOrder p =new PlaceOrder(t.getName(),new Troop(total,new TextPlayer(u.getUsername())));
+//            total = 0;
+//            placeOrders.add(p);
+//        }
+//        return placeOrders;
+//    }
+//
+//    @Test
+//    public void test_wholeProcess(){
+//        List<User> users =  createUsers(2);
+//        List<Game> games = createGames(1, 2);
+//        new Thread(() -> {
+//            try {
+//                Socket socket = hostSocket.accept();
+//                this.theClient = new Client(socket);
+//                ClientThread ct = new ClientThread(games, users,null, new AtomicInteger(0));
+//                ct.start();
+//            } catch (IOException ignored) {
+//            }
+//        }).start();
+//
+//        new Thread(() -> {
+//            try {
+//                Client theClient = new Client(hostname, PORT);
+//                simulateOneClientCreate(users.get(0),theClient);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }).start();
+//
+//        new Thread(() -> {
+//            try {
+//                Client theClient = new Client(hostname, PORT);
+//                simulateOneClientCreate(users.get(0),theClient);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }).start();
+//
+//        new Thread(() -> {
+//            try {
+//                try {
+//                    TimeUnit.SECONDS.sleep(5);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
 //                }
-                simulateOneClientCreate(users.get(0),theClient);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }).start();
-
-        new Thread(() -> {
-            try {
-//                synchronized (games){
-//                    try {
-//                        games.wait();
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-                try {
-                    TimeUnit.SECONDS.sleep(5);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                Client theClient = new Client(hostname, PORT);
-                simulateOneClientJoin(users.get(1),theClient);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }).start();
-    }
+//                Client theClient = new Client(hostname, PORT);
+//                simulateOneClientJoin(users.get(1),theClient);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }).start();
+//    }
 
 }
