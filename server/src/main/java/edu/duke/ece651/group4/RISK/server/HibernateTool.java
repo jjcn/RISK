@@ -9,16 +9,21 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.Session.*;
 public class HibernateTool {
-    private static SessionFactory sessionFactory = buildSessionFactory();
+    protected static SessionFactory sessionFactory = buildSessionFactory("/hibernate.cfg.xml");
+    protected static boolean isStartTest = false;
     public HibernateTool() {
 
     }
 
-    private static SessionFactory buildSessionFactory() {
+
+    protected static SessionFactory buildSessionFactory(String configureFile) {
         try {
-            if (sessionFactory == null) {
+            if(!isStartTest){
+                if(configureFile.equals("/hibernate_toolTest.cfg.xml")){
+                    isStartTest = true;
+                }
                 Configuration configuration = new Configuration()
-                        .configure(HibernateTool.class.getResource("/hibernate.cfg.xml"));
+                        .configure(HibernateTool.class.getResource(configureFile));
                 // TODO: manually add entity classes
                 configuration.addAnnotatedClass(UserInfo.class);
                 configuration.addAnnotatedClass(GameInfo.class);
@@ -58,12 +63,7 @@ public class HibernateTool {
         return usersInfo;
     }
 
-//    public static SessionFactory getSessionFactory(){
-//        return sessionFactory;
-//    }
-//    public static void shutdown() {
-//        sessionFactory.close();
-//    }
+
 
     public static void addGameInfo(GameInfo gInfo){
         Session session = sessionFactory.openSession();
