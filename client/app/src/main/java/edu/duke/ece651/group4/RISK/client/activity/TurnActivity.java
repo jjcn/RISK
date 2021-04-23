@@ -1,6 +1,8 @@
 package edu.duke.ece651.group4.RISK.client.activity;
 
+import android.app.Dialog;
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.SoundPool;
 import android.os.Bundle;
@@ -12,6 +14,7 @@ import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 import edu.duke.ece651.group4.RISK.client.R;
 import edu.duke.ece651.group4.RISK.client.utility.SimpleSelector;
 import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
@@ -64,8 +67,9 @@ public class TurnActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-        actions = new ArrayList<>(Arrays.asList(UI_MOVE, UI_ATK, UI_UPTECH, UI_UPTROOP, UI_ALLIANCE, UI_CHANGETYPE, UI_DONE));
-        if(getCurrentRoomSize() < 3){
+        actions = new ArrayList<>(Arrays.asList(UI_MOVE, UI_ATK, UI_UPTECH, UI_UPTROOP,
+                UI_ALLIANCE, UI_CHANGETYPE, UI_UNLOCKTYPE, UI_DONE));
+        if (getCurrentRoomSize() < 3) {
             actions.remove(UI_ALLIANCE);
         }
         actionType = UI_MOVE; // default: move
@@ -223,6 +227,9 @@ public class TurnActivity extends AppCompatActivity {
                     intent.setComponent(new ComponentName(TurnActivity.this, TransferActivity.class));
                     startActivity(intent);
                     break;
+                case UI_UNLOCKTYPE:
+                    selectType();
+                    break;
                 default:
                     throw new IllegalStateException("Unexpected value: " + actionType);
             }
@@ -231,15 +238,19 @@ public class TurnActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Select an alliance from a selector.
+     */
     private void selectAlliance() {
-        ArrayList<String> choices = new ArrayList<>();
+        List<String> choices = new ArrayList<>();
         // you can not ally with yourself
         for (String playerName : getAllPlayersName()) {
             if (!playerName.equals(getUserName())) {
                 choices.add(playerName);
             }
         }
-        SimpleSelector selector = new SimpleSelector(TurnActivity.this, CHOOSE_USER_INSTR, choices, new onReceiveListener() {
+        SimpleSelector selector = new SimpleSelector(TurnActivity.this,
+                CHOOSE_USER_INSTR, choices, new onReceiveListener() {
             @Override
             public void onSuccess(Object o) {
                 if (o instanceof String) {
@@ -256,6 +267,54 @@ public class TurnActivity extends AppCompatActivity {
             }
         });
         selector.show();
+    }
+
+    /**
+     * Select a unit type from an alert dialog.
+     */
+    private void selectType() {
+        List<String> types = new ArrayList<>();
+        types.addAll(getUnlockableTypes());
+
+        SimpleSelector selector = new SimpleSelector(TurnActivity.this,
+                CHOOSE_TYPE_INSTR, types, new onReceiveListener() {
+            @Override
+            public void onSuccess(Object o) {
+                if (o instanceof String) {
+                    String type = (String) o;
+                    Log.d(TAG, "User selected in type dialog: " + type);
+                    try {
+                        unlockType(type);
+                    } catch (IllegalArgumentException iae) {
+                        showByToast(TurnActivity.this, iae.getMessage());
+                    }
+                } else {
+                    onFailure("not String name");
+                }
+            }
+
+            @Override
+            public void onFailure(String errMsg) {
+                Log.e(TAG, errMsg);
+            }
+        });
+        selector.show();
+
+        /*ListAdapter choicesAdapter = new ArrayAdapter<String>(TurnActivity.this, R.layout.item_choice, types);
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(CHOOSE_TYPE_INSTR)
+                .setSingleChoiceItems(choicesAdapter, 0, (dialog1, which) -> {
+                    String type = types.get(which);
+                    Log.d(TAG, "User selected in type dialog: " + type);
+                    try {
+                        unlockType(type);
+                    } catch (IllegalArgumentException iae) {
+                        showByToast(TurnActivity.this, iae.getMessage());
+                    }
+                    dialog1.dismiss();
+                })
+                .create();
+        dialog.show();*/
     }
 
     private void showConfirmDialog() {

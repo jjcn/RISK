@@ -131,6 +131,7 @@ public class AttackOrderCheckerTest {
         world.registerPlayer(greenInfo);
         world.registerPlayer(blueInfo);
         world.getPlayerInfoByName("red").gainTech(9999);
+        world.getPlayerInfoByName("red").unlockAllTypes();
         // transfer one Soldier LV0 -> Archer on Gondor
         TransferTroopOrder transfer1 = new TransferTroopOrder("Gondor", Constant.ARCHER, 0, 13);
         world.transferTroop(transfer1,"red");

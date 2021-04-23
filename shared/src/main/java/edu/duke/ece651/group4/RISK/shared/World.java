@@ -871,27 +871,22 @@ public class World implements Serializable {
     }
 
     /**
-     * Construct jobName like: Soldier LV0
-     *
-     * @param unitType is the type of unit defined in shared/Constant.
-     * @param unitLevel is the level of unit.
-     * @return constructed jobName.
-     */
-    protected String buildJobName(String unitType, int unitLevel) {
-        return String.format("%s LV%d",unitType, unitLevel);
-    }
-
-    /**
      * Transfer units to another type via a transfer troop order.
      * Level of units stay the same.
      *
      * @param ttOrder is a transfer troop order.
      * @param playerName is the name of the player who gives this order.
      */
-    public void transferTroop(TransferTroopOrder ttOrder, String playerName) {
+    public void transferTroop(TransferTroopOrder ttOrder, String playerName) throws IllegalArgumentException {
         Territory terr = findTerritory(ttOrder.getSrcName());
         String typeBefore = ttOrder.getTypeBefore();
         String typeAfter = ttOrder.getTypeAfter();
+        // check if a player can transfer to this type
+        if (!isTypeUnlocked(playerName, typeAfter)) {
+            throw new IllegalArgumentException(
+                    String.format("%s has not unlocked %s.", playerName, typeAfter)
+            );
+        }
         int unitLevel = ttOrder.getUnitLevel();
         int nUnit = ttOrder.getNUnit();
 
@@ -1058,6 +1053,46 @@ public class World implements Serializable {
         }
         allianceMatrix[p1Index][p2Index] = false;
         allianceMatrix[p2Index][p1Index] = false;
+    }
+
+    /**
+     * A Player tries to unlock a new type.
+     * @param playerName is the name of a player.
+     * @param type is a type name.
+     * @throws IllegalArgumentException
+     */
+    public void unlockType(String playerName, String type) throws IllegalArgumentException {
+        getPlayerInfoByName(playerName).unlockType(type);
+    }
+
+    /**
+     * Get the types a player is allowed to have now.
+     * @param playerName is the name of a player.
+     * @return a set of all types the player can have now.
+     */
+    public Set<String> getUnlockedTypes(String playerName) throws IllegalArgumentException {
+        return getPlayerInfoByName(playerName).getUnlockedTypes();
+    }
+
+    /**
+     * Get the types a player can unlock.
+     * @param playerName  is the name of a player.
+     * @return a set of all types the player can unlock now.
+     */
+    public Set<String> getUnlockableTypes(String playerName) throws IllegalArgumentException {
+        return getPlayerInfoByName(playerName).getUnlockableTypes();
+    }
+
+    /**
+     * Check if a type is unlocked for a certain player.
+     *
+     * @param playerName is the name of the player.
+     * @param type is a type name.
+     * @return true, if the type is already unlocked for that player.
+     *          false, if not.
+     */
+    public boolean isTypeUnlocked(String playerName, String type) {
+        return getPlayerInfoByName(playerName).isTypeUnlocked(type);
     }
 
     /**
