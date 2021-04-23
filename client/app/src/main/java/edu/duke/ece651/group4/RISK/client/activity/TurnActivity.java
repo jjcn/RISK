@@ -270,7 +270,7 @@ public class TurnActivity extends AppCompatActivity {
     }
 
     /**
-     * Select a unit type from an alert dialog.
+     * Select a unit type from an alert dialog to unlock.
      */
     private void selectType() {
         List<String> types = new ArrayList<>();
