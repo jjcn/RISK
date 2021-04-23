@@ -120,7 +120,7 @@ public class ChatHost extends Thread {
         out.println("ChatHost: " + sender + " sets up successfully");
     }
 
-    protected void handleChatMessage(ChatMessage chatMessage) throws IOException {
+    protected void handleChatMessage(ChatMessage chatMessage){
         String sender = chatMessage.getSource();
         Set<String> targets = chatMessage.getTargetsPlayers();
         for(String target : targets){
@@ -130,7 +130,11 @@ public class ChatHost extends Thread {
                 continue;
             }
             ByteBuffer sendBuffer = ByteBuffer.wrap(SerializationUtils.serialize(chatMessage));
-            clientChannel.write(sendBuffer);
+            try {
+                clientChannel.write(sendBuffer);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             sendBuffer.clear();
             out.println("ChatHost: " + sender + " send a message to " + target + " successfully -- " + chatMessage.getChatContent());
         }
