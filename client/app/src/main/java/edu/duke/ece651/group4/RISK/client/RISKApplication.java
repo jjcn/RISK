@@ -527,7 +527,8 @@ public class RISKApplication extends Application {
 
 
     /**
-     * Used to send an tech level upgrade order
+     * Used to consume resource when user try to upgrade and send to server.
+     * Check if it's valid first:if one have already try to upgrade this turn.
      */
     public static void doOneUpgrade(onResultListener listener) {
         if (updatedTech) {
@@ -561,6 +562,9 @@ public class RISKApplication extends Application {
         sendAndReceiveWorld(order, listener);
     }
 
+    /**
+     * you don't need to receive anything from server when switch game.
+     */
     public static void switchGame() {
         send(new BasicOrder(null, null, null, SWITCH_OUT_ACTION),
                 new onResultListener() {
@@ -639,14 +643,20 @@ public class RISKApplication extends Application {
         storedMsg.add(msg);
     }
 
+    /**
+     *
+     * @param chatID the chatID you want check. if null then get all message in current game.
+     * @return
+     */
     public static List<ChatMessageUI> getStoredMsg(String chatID) {
-        if(chatID == null){
-            return storedMsg;
-        }
         List historyMsg = new ArrayList();
         for (ChatMessageUI msg : storedMsg) {
-            if (msg.getChatId().equals(chatID)) {
-                historyMsg.add(msg);
+            if(msg.getRoomId().equals(getRoomId())){
+                if(chatID == null){
+                    historyMsg.add(msg);
+                } else if (msg.getChatId().equals(chatID)) {
+                    historyMsg.add(msg);
+                }
             }
         }
         return historyMsg;
