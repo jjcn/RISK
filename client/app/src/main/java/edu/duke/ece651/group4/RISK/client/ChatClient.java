@@ -14,6 +14,7 @@ import java.nio.channels.SocketChannel;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static edu.duke.ece651.group4.RISK.client.Constant.LOG_FUNC_RUN;
+import static edu.duke.ece651.group4.RISK.client.Constant.WORLD_CHAT;
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.addMsg;
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.getRoomId;
 import static edu.duke.ece651.group4.RISK.shared.Constant.CHAT_SETUP_ACTION;
@@ -131,6 +132,15 @@ public class ChatClient extends Thread {
             ByteBuffer writeBuffer = ByteBuffer.wrap(chatBytes);
             try {
                 chatChannel.write(writeBuffer);
+                // for one player himself, the chatID is the target for him to send
+                String chatID = WORLD_CHAT;
+                if(!chatID.equals(message.getChatId())) {
+                    for(String target: message.getTargets()) {
+                        message.setChatId(target);
+                    }
+                    Log.i(TAG,LOG_FUNC_RUN+"change id to "+message.getChatId());
+                }
+                Log.i(TAG,LOG_FUNC_RUN+"when update msg I send, id = "+message.getChatId());
                 chatReceiveListener.onSuccess(message); // update msg in chat from user himself
             } catch (IOException e) {
                 Log.e(TAG, e.toString());
