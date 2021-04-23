@@ -42,11 +42,7 @@ public class GameRunner extends Thread{
             if(game.gInfo.gameState.isAllPlayersWaiting()){
                 exit0 = true;
             }
-            try {
-                TimeUnit.SECONDS.sleep(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            game.waitTime(1);
         }
 //        while(!game.gameState.isAllPlayersWaiting()){} // This is to make sure runner notify all after all waits
         synchronized(game){
@@ -64,11 +60,12 @@ public class GameRunner extends Thread{
                 out.println("Game" +game.getGameID()+" is FULL!!!!!!");
                 exit = true;
             }
-            try {
-                TimeUnit.SECONDS.sleep(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+//            try {
+//                TimeUnit.SECONDS.sleep(1);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+            game.waitTime(1);
         }
 //        while(!game.isFull()){game.waitTime(1);}
         // wait all users to join to start the game
@@ -94,11 +91,12 @@ public class GameRunner extends Thread{
                 if(game.gInfo.gameState.isAllPlayersDoneOneTurn()){
                     exit2 = true;
                 }
-                try {
-                  TimeUnit.SECONDS.sleep(1);
-                } catch (InterruptedException e) {
-                  e.printStackTrace();
-                }
+//                try {
+//                  TimeUnit.SECONDS.sleep(1);
+//                } catch (InterruptedException e) {
+//                  e.printStackTrace();
+//                }
+                game.waitTime(1);
             }
 //            while(!game.gameState.isAllPlayersDoneOneTurn()){game.waitTime(1);}
             //Update the game
@@ -115,11 +113,12 @@ public class GameRunner extends Thread{
                 if(game.gInfo.gameState.isAllPlayersDoneUpdatingState()){
                     exit3 = true;
                 }
-                try {
-                    TimeUnit.SECONDS.sleep(1);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                game.waitTime(1);
+//                try {
+//                    TimeUnit.SECONDS.sleep(1);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
             }
 //            while(!game.gameState.isAllPlayersDoneUpdatingState()){
 //                game.waitTime(1);
