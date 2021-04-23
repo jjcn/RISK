@@ -31,7 +31,7 @@ class HibernateToolTest {
     private void tryAddUsers(List<UserInfo> uInfos){
         for(UserInfo u : uInfos){
             HibernateTool.addUserInfo(u);
-            assertThrows(HibernateException.class, ()->HibernateTool.addUserInfo(u));
+            assertThrows(javax.persistence.PersistenceException.class, ()->HibernateTool.addUserInfo(u));
         }
     }
 
@@ -109,7 +109,7 @@ class HibernateToolTest {
         HibernateTool.deleteGameInfo(gameInfo);
         Game g  = new Game(gameInfo);
         HibernateTool.addGameInfo(g.gInfo);
-        assertThrows(HibernateException.class, ()->HibernateTool.addGameInfo(g.gInfo)); //exceptions
+        assertThrows(javax.persistence.PersistenceException.class, ()->HibernateTool.addGameInfo(g.gInfo)); //exceptions
         g.addUser(new User(1,"u1","1"));
         HibernateTool.updateGameInfo(g.gInfo);
         g.addUser(new User(0,"u0","1"));
