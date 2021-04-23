@@ -146,6 +146,7 @@ public class ClientThread extends Thread {
                     res = "Invalid Action";
             }
             this.theClient.sendObject(res);
+
             if(res == null){
                 return;
             }
@@ -338,6 +339,9 @@ public class ClientThread extends Thread {
             Order order = (Order) this.theClient.recvObject();
             out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " has a order: " + order.getActionName());
             exit = gameOnGoing.tryUpdateActionOnWorld(order,ownerUser);
+//            if(order.getActionName().equals(SWITCH_OUT_ACTION)){
+//                this.theClient.sendObject(null);
+//            }
         }
     }
 

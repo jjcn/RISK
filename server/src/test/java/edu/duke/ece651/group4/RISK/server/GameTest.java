@@ -10,7 +10,10 @@ import java.net.Socket;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
+import static edu.duke.ece651.group4.RISK.server.ClientThreadTest.createUsers;
+import static edu.duke.ece651.group4.RISK.server.ServerConstant.PLAYER_STATE_LOSE;
 import static edu.duke.ece651.group4.RISK.shared.Constant.SWITCH_OUT_ACTION;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -36,6 +39,16 @@ class GameTest {
         return g;
     }
 
+
+    public static Game createGame(int gid, List<User> users){
+        Game g = new Game(gid+10000,users.size());
+        assertEquals(false, g.isFull());
+        for(User u: users){
+            g.addUser(u);
+        }
+        g.gInfo.gameState.setGameDead();
+        return g;
+    }
     @Test
     public void test_barrier(){
         this.g = createAGame(1,3);
@@ -58,9 +71,11 @@ class GameTest {
 
     @Test
     public void test_setUpGame(){
-        Game g = createAGame(1,3);
-        g.gInfo.gameState.setGameDead();
-        g.setUpGame();
+        for(int num = 0; num <= 6; num++){
+            Game g = createAGame(1,3);
+            g.gInfo.gameState.setGameDead();
+            g.setUpGame();
+        }
     }
 
 
@@ -73,7 +88,8 @@ class GameTest {
 
     @Test
     public void test_basic(){
-        Game g = createAGame(1,3);
+        List<User> users = createUsers(3);
+        Game g = createGame(1,users);
         assertEquals(10001,g.getGameID());
         assertEquals(3,g.getMaxNumUsers());
         g.setUpGame();
@@ -81,12 +97,151 @@ class GameTest {
         assertEquals(true, g.getTheWorld()!=null);
         assertEquals(true, g.getGameInfo()!=null);
         assertEquals(true, g.getUserNames()!=null);
+        User user0 = users.get(0);
+        assertEquals(false, g.isUserLose(user0));
+        assertEquals(true, g.isFull());
+        assertEquals(false, g.isEndGame());
+        assertEquals(false, g.isAllPlayersSwitchOut());
+        g.waitTime(1);
     }
 
     @Test
-    public void test_isUserInGame() {}
+    public void test_isUserInGame() {
+        Game g = createAGame(1,3);
+        g.setUpGame();
+        assertEquals(true, g.isUserInGame(new User(10000,"user0","1234")));
+        assertEquals(false, g.isUserInGame(new User(40000,"user40000","1234")));
+    }
 
+    @Test
+    public void test_switchOutAndInUser(){
+        Game g = createAGame(1,3);
+        g.setUpGame();
+        g.switchOutUser(new User(10000,"user0","1234"));
+        g.switchOutUser(new User(1000,"userxxx","1234"));
+        g.switchInUser(new User(10000,"user0","1234"));
+        g.switchInUser(new User(1000,"userxxx","1234"));
+    }
 
+    @Test
+    public void test_placeUnits(){
+        Game g = createAGame(1,3);
+        g.setUpGame();
+        PlaceOrder p = new PlaceOrder("A",new Troop(2,new TextPlayer("user0")));
+        g.placeUnitsOnWorld(p);
+        assertEquals(false, g.gInfo.gameState.isDonePlaceUnits());
+        g.setDonePlacementPhase();
+        assertEquals(true, g.gInfo.gameState.isDonePlaceUnits());
+    }
+
+    private void placeUnitsFor2Users(Game g, List<User> users){
+        PlaceOrder p0 = new PlaceOrder("A",new Troop(5,new TextPlayer("user0")));
+        PlaceOrder p1 = new PlaceOrder("B",new Troop(10,new TextPlayer("user0")));
+        PlaceOrder p2 = new PlaceOrder("C",new Troop(5,new TextPlayer("user1")));
+        PlaceOrder p3 = new PlaceOrder("D",new Troop(10,new TextPlayer("user1")));
+        g.placeUnitsOnWorld(p0);
+        g.placeUnitsOnWorld(p1);
+        g.placeUnitsOnWorld(p2);
+        g.placeUnitsOnWorld(p3);
+    }
+
+    @Test
+    public void test_moveOrder(){
+        List<User> users = createUsers(2);
+        Game g = createGame(1,users);
+        g.setUpGame();
+        placeUnitsFor2Users(g,users);
+        MoveOrder m= new MoveOrder("A","B",new Troop(1,new TextPlayer("user0")),'M');
+        MoveOrder m_invalid= new MoveOrder("A","B",new Troop(10000,new TextPlayer("user0")),'M');
+        assertEquals(false, g.tryUpdateActionOnWorld(m,users.get(0)));
+        assertEquals(false, g.tryUpdateActionOnWorld(m_invalid,users.get(0)));
+    }
+
+    @Test
+    public void test_attackOrder(){
+        List<User> users = createUsers(2);
+        Game g = createGame(1,users);
+        g.setUpGame();
+        placeUnitsFor2Users(g,users);
+        AttackOrder a =new AttackOrder("A","C",new Troop(1,new TextPlayer("user0")),'A');
+        AttackOrder a_invalid =new AttackOrder("A","A",new Troop(1,new TextPlayer("user0")),'A');
+        g.updateGameAfterOneTurn();
+        assertEquals(false, g.tryUpdateActionOnWorld(a,users.get(0)));
+        assertEquals(false, g.tryUpdateActionOnWorld(a_invalid,users.get(0)));
+    }
+
+    @Test
+    public void test_UPTECH_ACTION(){
+        List<User> users = createUsers(2);
+        Game g = createGame(1,users);
+        g.setUpGame();
+        placeUnitsFor2Users(g,users);
+        UpgradeTechOrder ut= new UpgradeTechOrder(1);
+        for(int i = 0; i< 6; i++){
+            assertEquals(false, g.tryUpdateActionOnWorld(ut,users.get(0)));
+        }
+    }
+
+    @Test
+    public void test_UPTROOP_ACTION(){
+        List<User> users = createUsers(2);
+        Game g = createGame(1,users);
+        g.setUpGame();
+        placeUnitsFor2Users(g,users);
+        UpgradeTroopOrder o=new UpgradeTroopOrder("A",0,1,1);
+        UpgradeTroopOrder o_invalid=new UpgradeTroopOrder("A",0,100,100);
+        g.updateGameAfterOneTurn();
+        assertEquals(false, g.tryUpdateActionOnWorld(o,users.get(0)));
+        assertEquals(false, g.tryUpdateActionOnWorld(o_invalid,users.get(0)));
+    }
+
+    @Test
+    public void test_EXIT_ACTION(){
+        List<User> users = createUsers(2);
+        Game g = createGame(1,users);
+        g.setUpGame();
+        placeUnitsFor2Users(g,users);
+        BasicOrder o=new BasicOrder(null,null,null,'D');
+        BasicOrder o_switch=new BasicOrder(null,null,null,SWITCH_OUT_ACTION);
+        assertEquals(true, g.tryUpdateActionOnWorld(o,users.get(0)));
+        assertEquals(true, g.tryUpdateActionOnWorld(o_switch,users.get(0)));
+    }
+
+    @Test
+    public void test_ALLIANCE_ACTION(){
+        List<User> users = createUsers(2);
+        Game g = createGame(1,users);
+        g.setUpGame();
+        placeUnitsFor2Users(g,users);
+        AllianceOrder o = new AllianceOrder("user0","user1");
+        AllianceOrder o_invalid = new AllianceOrder("user0123","user12");
+        g.updateGameAfterOneTurn();
+        assertEquals(false, g.tryUpdateActionOnWorld(o,users.get(0)));
+        assertEquals(false, g.tryUpdateActionOnWorld(o_invalid,users.get(0)));
+    }
+
+    @Test
+    public void test_TRANSFER_TROOP_ACTION(){
+        List<User> users = createUsers(2);
+        Game g = createGame(1,users);
+        g.setUpGame();
+        placeUnitsFor2Users(g,users);
+        TransferTroopOrder o = new TransferTroopOrder("A", Constant.SOLDIER, Constant.KNIGHT, 0, 1);
+        TransferTroopOrder o_invalid = new TransferTroopOrder("A", Constant.SOLDIER, Constant.KNIGHT, 100, 2);
+        assertEquals(false, g.tryUpdateActionOnWorld(o,users.get(0)));
+        assertEquals(false, g.tryUpdateActionOnWorld(o_invalid,users.get(0)));
+    }
+
+    @Test
+    public void test_tryUpdateActionOnWorld(){
+        List<User> users = createUsers(2);
+        Game g = createGame(1,users);
+        g.setUpGame();
+        placeUnitsFor2Users(g,users);
+        BasicOrder o=new BasicOrder(null,null,null,'S');
+        assertEquals(true, g.tryUpdateActionOnWorld(o,users.get(0)));
+        g.updateGameAfterOneTurn();
+    }
 //    @Test
 //    public void test_sendWorld() throws IOException {
 //        Game g = createAGame(10003, 2);
