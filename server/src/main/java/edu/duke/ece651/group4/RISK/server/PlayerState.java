@@ -90,12 +90,12 @@ public class PlayerState extends State implements Serializable {
         return !isSwitchOut();
     }
 
-    public PlayerState clone(){
-        PlayerState ps = new  PlayerState(username);
-        ps.updateStateTo(this.getState());
-        if(this.isWaiting){
-            ps.setWaiting();
-        }
-        return ps;
-    }
+//    public PlayerState clone(){
+//        PlayerState ps = new  PlayerState(username);
+//        ps.updateStateTo(this.getState());
+//        if(this.isWaiting){
+//            ps.setWaiting();
+//        }
+//        return ps;
+//    }
 }
