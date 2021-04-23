@@ -87,9 +87,6 @@ public class HostApp implements Runnable {
         List<GameInfo> gamesInfo = HibernateTool.getGameInfoList();
         for(GameInfo gInfo: gamesInfo){
             if(gInfo.gameState.isAlive()){
-                if(!gInfo.gameState.isDonePlaceUnits()){
-//                    gInfo.gameState.setGameDead(); // set this game dead if it has not started action phase
-                }
                 Game g =new Game(gInfo);
                 printGameInfo(gInfo);
                 games.add(g);

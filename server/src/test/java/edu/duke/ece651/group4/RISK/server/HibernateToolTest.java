@@ -106,6 +106,7 @@ class HibernateToolTest {
     public void test_AGameInfo(){
         List<GameInfo> gamesInfoRecv = HibernateTool.getGameInfoList();
         GameInfo gameInfo = new GameInfo(10000,2);
+        gameInfo.gameState.setGameDead();
         HibernateTool.deleteGameInfo(gameInfo);
         Game g  = new Game(gameInfo);
         HibernateTool.addGameInfo(g.gInfo);
