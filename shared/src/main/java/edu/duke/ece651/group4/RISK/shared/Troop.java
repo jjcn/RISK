@@ -96,11 +96,11 @@ public class Troop implements Serializable {
      * @return
      */
     public int getRange() {
-        int range = 0;
+        int maxRange = Integer.MIN_VALUE;
         for (Unit unit : this.population) {
-            range = unit.getRange();
+            maxRange = Math.max(maxRange, unit.getRange());
         }
-        return range;
+        return maxRange;
     }
 
     /**
