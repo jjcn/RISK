@@ -7,15 +7,13 @@ import org.junit.jupiter.api.TestInstance;
 import java.util.ArrayList;
 import java.util.List;
 
-import static edu.duke.ece651.group4.RISK.server.HibernateTool.buildSessionFactory;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+
 class HibernateToolTest {
-//    @BeforeAll
-//    public void setUp(){
-//        HibernateTool.sessionFactory = buildSessionFactory("/hibernate_toolTest.cfg.xml");
-//    }
+
 
     private  List<UserInfo> createUserInfos(int num){
         List<UserInfo> uInfos = new ArrayList<>();
@@ -32,18 +30,9 @@ class HibernateToolTest {
     private void tryAddUsers(List<UserInfo> uInfos){
         for(UserInfo u : uInfos){
             HibernateTool.addUserInfo(u);
+            HibernateTool.addUserInfo(u);
         }
     }
-    private void checkUserRes(List<UserInfo> uExpected, List<UserInfo> uInfos){
-        for(int i = 0; i < uExpected.size(); i++){
-            if(uExpected.get(i).getUserID() == uInfos.get(i).getUserID()){
-                assertEquals(uExpected.get(i).getUserID(), uInfos.get(i).getUserID());
-                assertEquals(uExpected.get(i).getUsername(), uInfos.get(i).getUsername());
-                assertEquals(uExpected.get(i).getPassword(),uInfos.get(i).getPassword());
-            }
-        }
-    }
-
 
 
     @Test
@@ -52,7 +41,6 @@ class HibernateToolTest {
         tryDeleteUsers(uInfos); //empty if there has data already
         tryAddUsers(uInfos);
         List<UserInfo> usInfoRecv = HibernateTool.getUserInfoList();
-        checkUserRes(uInfos,usInfoRecv);
         assertEquals("user1","user1");
     }
 
@@ -97,32 +85,42 @@ class HibernateToolTest {
 //            }
 //        }
 
+//
+//    private void checkAGameInfo(GameInfo infoExpected, GameInfo info) {
+//        if (infoExpected.gameID == info.gameID) {
+//            assertEquals(infoExpected.gameID, info.gameID);
+//            assertEquals(infoExpected.maxNumUsers, info.maxNumUsers);
+//            assertEquals(infoExpected.gameState.getState(), info.gameState.getState());
+//            assertEquals(infoExpected.gameState.playerStates.size(), info.gameState.playerStates.size());
+//            for (int j = 0; j < infoExpected.gameState.playerStates.size(); j++) {
+//                assertEquals(infoExpected.gameState.playerStates.get(j).getState(), info.gameState.playerStates.get(j).getState());
+//            }
+//
+//            assertEquals(infoExpected.theWorld.clone(), info.theWorld.clone());
+//        }
+//    }
 
-    private void checkAGameInfo(GameInfo infoExpected, GameInfo info) {
-        if (infoExpected.gameID == info.gameID) {
-            assertEquals(infoExpected.gameID, info.gameID);
-            assertEquals(infoExpected.maxNumUsers, info.maxNumUsers);
-            assertEquals(infoExpected.gameState.getState(), info.gameState.getState());
-            assertEquals(infoExpected.gameState.playerStates.size(), info.gameState.playerStates.size());
-            for (int j = 0; j < infoExpected.gameState.playerStates.size(); j++) {
-                assertEquals(infoExpected.gameState.playerStates.get(j).getState(), info.gameState.playerStates.get(j).getState());
-            }
 
-            assertEquals(infoExpected.theWorld.clone(), info.theWorld.clone());
-        }
-    }
-
-
-    @Test void test_AGameInfo(){
+    @Test
+    public void test_AGameInfo(){
         List<GameInfo> gamesInfoRecv = HibernateTool.getGameInfoList();
         GameInfo gameInfo = new GameInfo(10000,2);
         HibernateTool.deleteGameInfo(gameInfo);
         Game g  = new Game(gameInfo);
         HibernateTool.addGameInfo(g.gInfo);
+        HibernateTool.addGameInfo(g.gInfo); //exceptions
         g.addUser(new User(1,"u1","1"));
         HibernateTool.updateGameInfo(g.gInfo);
         g.addUser(new User(0,"u0","1"));
         HibernateTool.updateGameInfo(g.gInfo);
         g.setUpGame();
+    }
+
+    @Test
+    public void test_exceptions(){
+        HibernateTool h = new HibernateTool();
+        assertThrows(ExceptionInInitializerError.class,  ()->HibernateTool.buildSessionFactory("/hibernate_toolTest.cfg.xml"));
+        h.deleteUserInfo(new UserInfo(99999999,"x","x"));
+        h.deleteGameInfo(new GameInfo(99999999,1));
     }
 }
