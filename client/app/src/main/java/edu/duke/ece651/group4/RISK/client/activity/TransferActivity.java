@@ -89,7 +89,7 @@ public class TransferActivity extends AppCompatActivity {
         // type spinner
         List<String> jobNames = JOB_NAMES;
 
-        typeAfterSpinner = findViewById(R.id.type_after_choices);
+        typeAfterSpinner = findViewById(R.id.type_choices);
         SpinnerAdapter typeAdapter = new ArrayAdapter<>(
                 TransferActivity.this, R.layout.item_choice,
                 jobNames);

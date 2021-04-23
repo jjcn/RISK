@@ -41,7 +41,6 @@ public class BasicOrderActivity extends AppCompatActivity {
     private Button commitBT;
     private SpinnerAdapter desAdapter;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -127,9 +126,30 @@ public class BasicOrderActivity extends AppCompatActivity {
             }
         });
 
+        // type spinner
+        List<String> typeNames = new ArrayList<>();
+        typeNames.add(SOLDIER);
+        typeNames.addAll(JOB_NAMES);
+
+        typeSpinner = findViewById(R.id.unit_type_choices);
+        SpinnerAdapter typeAdapter = new ArrayAdapter<>(
+                BasicOrderActivity.this, R.layout.item_choice,
+                typeNames);
+        typeSpinner.setAdapter(typeAdapter);
+        typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                type = (String) typeAdapter.getItem(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
         // typeNames == level spinner
         List<String> levelNames = getLevelNames();
-        levelSpinner = findViewById(R.id.soldierType);
+        levelSpinner = findViewById(R.id.unit_level_choices);
         SpinnerAdapter levelAdapter = new ArrayAdapter<>(
                 BasicOrderActivity.this,
                 R.layout.item_choice,
@@ -139,27 +159,6 @@ public class BasicOrderActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 level = (String) levelAdapter.getItem(position);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
-        // type spinner
-        List<String> jobNames = new ArrayList<>();
-        jobNames.add(SOLDIER);
-        jobNames.addAll(JOB_NAMES);
-
-        typeSpinner = findViewById(R.id.unit_type_choices);
-        SpinnerAdapter typeAdapter = new ArrayAdapter<>(
-                BasicOrderActivity.this, R.layout.item_choice,
-                jobNames);
-        typeSpinner.setAdapter(typeAdapter);
-        typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                type = (String) typeAdapter.getItem(position);
             }
 
             @Override
