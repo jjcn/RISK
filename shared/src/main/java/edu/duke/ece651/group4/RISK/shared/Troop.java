@@ -317,7 +317,7 @@ public class Troop implements Serializable {
      * @param unitLevel is the level of unit.
      * @return constructed jobName.
      */
-    protected String buildJobName(String unitType, int unitLevel) {
+    public static String buildJobName(String unitType, int unitLevel) {
         String jobName;
         List<String> levelNames = Constant.JOB_DICTIONARY.get(unitType);
         if (levelNames == null) {
@@ -512,7 +512,7 @@ public class Troop implements Serializable {
         return NORM_SPEED;
     }
 
-    public Troop sendRangedAttack(Troop target) {
+    public Troop sendOutRangedAttack(Troop target) {
         if (!this.hasRanged()) {
             throw new IllegalArgumentException("No ranged attack unit");
         }

@@ -804,15 +804,12 @@ public class World implements Serializable {
         }
         // moves troop
         // TODO: can only attack adjacent territories now
-        Troop sendout = start.sendOutTroop(troop);
-        if (troop.hasRanged()) {
-            // if it HAS ranged units, send ranged attack to end territory
-            end.sendRangedAttack(sendout);
-        }
-        else {
-            // it not, move to enemy territory
-            end.sendInEnemyTroop(sendout);
-        }
+        // if it HAS ranged units, send ranged attack to end territory
+        // if not, move to end territory
+        Troop sendout = troop.hasRanged() ?
+                start.sendOutRangedAttack(troop):
+                start.sendOutTroop(troop);
+        end.sendInEnemyTroop(sendout);
     }
 
     /**

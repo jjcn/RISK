@@ -13,6 +13,7 @@ public class HibernateTool {
     public HibernateTool() {
 
     }
+
     private static SessionFactory buildSessionFactory() {
         try {
             if (sessionFactory == null) {

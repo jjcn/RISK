@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
+import java.util.HashMap;
 
 public class AttackOrderCheckerTest {
     protected final String NOT_ATTACK_ORDER_MSG = "This is not an attack order.";
@@ -113,18 +114,36 @@ public class AttackOrderCheckerTest {
     public void testAttackOrderCheckerMelee() {
         World world = createWorld(names, troopsConnected);
 
-        BasicOrder order1 = new BasicOrder("Narnia", "Scadrial", new Troop(3, green), 'A');
-
+        AttackOrder atk1 = new AttackOrder("Narnia", "Scadrial", new Troop(3, green));
         assertEquals(String.format(MELEE_CANT_ATTACK_MSG, "Scadrial", "Narnia"),
-                    aoc.checkMyOrder(order1, world));
+                    aoc.checkMyOrder(atk1, world));
 
-        BasicOrder order2 = new BasicOrder("Scadrial", "Gondor", new Troop(3, blue), 'A');
+        AttackOrder atk2 = new AttackOrder("Scadrial", "Gondor", new Troop(3, blue));
         assertEquals(String.format(MELEE_CANT_ATTACK_MSG, "Gondor", "Scadrial"),
-                    aoc.checkMyOrder(order2, world));
+                    aoc.checkMyOrder(atk2, world));
     }
 
     @Test
     public void testAttackOrderCheckerRanged() {
-        // TODO
+        World world = createWorld(names, troopsConnected);
+        world.registerPlayer(redInfo);
+        world.registerPlayer(greenInfo);
+        world.registerPlayer(blueInfo);
+        world.getPlayerInfoByName("red").gainTech(9999);
+        // transfer one Soldier LV0 -> Archer on Gondor
+        TransferTroopOrder transfer1 = new TransferTroopOrder("Gondor", Constant.ARCHER, 0, 13);
+        world.transferTroop(transfer1,"red");
+        // let it perform attack on Oz (adjacent to Gondor)
+        HashMap<String, Integer> archerTroopDict = new HashMap<>();
+        archerTroopDict.put(Troop.buildJobName(Constant.ARCHER, 0), 13);
+        Troop archerTroop = new Troop(archerTroopDict, red);
+        AttackOrder atk1 = new AttackOrder("Gondor", "Oz", archerTroop);
+
+        assertDoesNotThrow(() -> aoc.checkMyOrder(atk1, world));
+
+        // archer should stay on the territory
+        assertEquals(13, world.findTerritory("Gondor").getTroopSize("red"));
+        world.doAllBattles();
+        System.out.println(world.findTerritory("Oz").checkPopulation());
     }
 }

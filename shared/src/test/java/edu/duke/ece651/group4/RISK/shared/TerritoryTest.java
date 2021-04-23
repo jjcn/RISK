@@ -127,17 +127,17 @@ class TerritoryTest {
         tmpDict.put(ARCHER_NAMES.get(0),2);
         Troop tmp=new Troop(tmpDict,test.getOwner());
 
-        test.sendRangedAttack(tmp);
-        assertThrows(new IllegalArgumentException().getClass(),() ->test.sendRangedAttack(tmp));
+        test.sendOutRangedAttack(tmp);
+        assertThrows(new IllegalArgumentException().getClass(),() ->test.sendOutRangedAttack(tmp));
         System.out.println(test.doBattles());
-        test.sendRangedAttack(tmp);
+        test.sendOutRangedAttack(tmp);
 
 
         Troop enemy=new Troop(10,p2,new Random(1));
         enemy.transfer(SOLDIER,BREAKER, 0,2);
         enemy.transfer(SOLDIER,ARCHER, 0,2);
         Troop dem=new Troop(tmpDict,enemy.getOwner());
-        Troop sent=enemy.sendRangedAttack(dem);
+        Troop sent=enemy.sendOutRangedAttack(dem);
         enemy.receiveTroop(sent);
 
         Troop ally=new Troop(4,p3,new Random(2));
@@ -172,7 +172,7 @@ class TerritoryTest {
         enemy.transfer(SOLDIER,BREAKER, 0,4);
         enemy.transfer(SOLDIER,ARCHER, 0,2);
         Troop dem=new Troop(tmpDict,enemy.getOwner());
-        Troop sent=enemy.sendRangedAttack(dem);
+        Troop sent=enemy.sendOutRangedAttack(dem);
 
 
         Troop ally=new Troop(2,p3,new Random(2));
