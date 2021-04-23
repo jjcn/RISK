@@ -1071,12 +1071,21 @@ public class World implements Serializable {
     }
 
     /**
-     * Get the types a players is allowed to have now.
+     * Get the types a player is allowed to have now.
      * @param playerName is the name of a player.
-     * @return is a type name.
+     * @return a set of all types the player can have now.
      */
-    public Set<String> getAllowedTypes(String playerName) {
-        return getPlayerInfoByName(playerName).getAllowedTypes();
+    public Set<String> getUnlockedTypes(String playerName) throws IllegalArgumentException {
+        return getPlayerInfoByName(playerName).getUnlockedTypes();
+    }
+
+    /**
+     * Get the types a player can unlock.
+     * @param playerName  is the name of a player.
+     * @return
+     */
+    public Set<String> getUnlockableTypes(String playerName) throws IllegalArgumentException {
+        return getPlayerInfoByName(playerName).getUnlockableTypes();
     }
 
     /**

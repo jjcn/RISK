@@ -1,12 +1,9 @@
 package edu.duke.ece651.group4.RISK.shared;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Set;
 
 /**
@@ -40,9 +37,9 @@ public class PlayerInfo implements Serializable {
     protected FoodResource foodResource;
     protected TechResource techResource;
     /**
-     * The type of units a player can have.
+     * The type of units a player have already unlocked.
      */
-    protected Set<String> allowedTypes;
+    protected Set<String> unlockedTypes;
     /**
      * Maximum number of types a player can have (including basic soldier)
      */
@@ -52,12 +49,16 @@ public class PlayerInfo implements Serializable {
      */
     protected static final int MIN_TECH_LEVEL_TO_UNLOCK_TYPE = 1;
     /**
+     * All type of units.
+     */
+    protected static final Set<String> ALL_UNLOCKABLE_TYPES = new HashSet<>(Constant.JOB_NAMES);
+    /**
      * The tech resource consumption of all types.
      */
     protected static final Map<String, Integer> UNLOCK_COSTS;
     static {
         UNLOCK_COSTS = new HashMap<>();
-        for (String type : Constant.JOB_NAMES) {
+        for (String type : ALL_UNLOCKABLE_TYPES) {
             UNLOCK_COSTS.put(type, 1);
         }
     }
@@ -66,12 +67,12 @@ public class PlayerInfo implements Serializable {
                          TechLevelInfo techLevelInfo,
                          FoodResource foodResource,
                          TechResource techResource,
-                         Set<String> allowedTypes) {
+                         Set<String> unlockedTypes) {
         this.playerName = playerName;
         this.techLevelInfo = techLevelInfo;
         this.foodResource = foodResource;
         this.techResource = techResource;
-        this.allowedTypes = allowedTypes;
+        this.unlockedTypes = unlockedTypes;
     }
 
     /**
@@ -104,16 +105,16 @@ public class PlayerInfo implements Serializable {
                 new TechResource(nTech),
                 new HashSet<>()
         );
-        this.allowedTypes = initAllowedTypes();
+        this.unlockedTypes = initUnlockedTypes();
     }
 
     /**
-     * Initialize the allowed type set.
+     * Initialize the unlocked types.
      * Player can only have soldier at the beginning.
      *
      * @return Set of allowed types.
      */
-    protected Set<String> initAllowedTypes() {
+    protected Set<String> initUnlockedTypes() {
         Set<String> ans = new HashSet<>();
         ans.add(Constant.SOLDIER);
         return ans;
@@ -121,7 +122,7 @@ public class PlayerInfo implements Serializable {
 
     protected Set<String> cloneAllowedTypes() {
         Set<String> ans = new HashSet<>();
-        for (String type : allowedTypes) {
+        for (String type : unlockedTypes) {
             ans.add(type);
         }
         return ans;
@@ -153,7 +154,27 @@ public class PlayerInfo implements Serializable {
         return techResource.getQuantity();
     }
 
-    public Set<String> getAllowedTypes() { return allowedTypes; }
+    public Set<String> getUnlockedTypes() { return unlockedTypes; }
+
+    /**
+     * Get all types that are unlockable for a player.
+     *
+     * @return all unlockable types for a player.
+     */
+    public Set<String> getUnlockableTypes() {
+        try {
+            checkCanUnlockMore();
+        } catch (IllegalArgumentException iae) {
+            return new HashSet<>();
+        }
+        Set<String> ans = new HashSet<>();
+        for (String type : ALL_UNLOCKABLE_TYPES) {
+            if (!unlockedTypes.contains(type)) {
+                ans.add(type);
+            }
+        }
+        return ans;
+    }
 
     /**
      * A player gains food resource.
@@ -250,7 +271,7 @@ public class PlayerInfo implements Serializable {
      * Check if a player can unlock more types.
      */
     protected void checkCanUnlockMore() throws IllegalArgumentException {
-        if (allowedTypes.size() >= MAX_TYPE_COUNT) {
+        if (unlockedTypes.size() >= MAX_TYPE_COUNT) {
             throw new IllegalArgumentException(
                     String.format("Reached maximum type count %d. Cannot unlock more types.", MAX_TYPE_COUNT)
             );
@@ -265,7 +286,7 @@ public class PlayerInfo implements Serializable {
         if (!Constant.JOB_NAMES.contains(type)) {
             throw new IllegalArgumentException(String.format("%s is not an unlockable type.", type));
         }
-        if (allowedTypes.contains(type)) {
+        if (unlockedTypes.contains(type)) {
             throw new IllegalArgumentException(String.format("%s is already unlocked.", type));
         }
     }
@@ -296,7 +317,7 @@ public class PlayerInfo implements Serializable {
         checkTypeValidity(type);
         checkTechLevelToUnlockType();
         consumeTech(UNLOCK_COSTS.get(type));
-        allowedTypes.add(type);
+        unlockedTypes.add(type);
     }
 
     @Override

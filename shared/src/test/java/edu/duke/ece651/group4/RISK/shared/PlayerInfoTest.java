@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -113,24 +114,50 @@ public class PlayerInfoTest {
 		assertTrue(set2.containsAll(set1));
 	}
 
+	/**
+	 * Helper function that creates a new set from an indefinite number of objects
+	 * @param objects are the objects
+	 * @param <T> is the object type
+	 * @return a new set containing these objects
+	 */
+	protected <T> Set<T> newSet(T... objects) {
+		Set<T> set = new HashSet<T>();
+		Collections.addAll(set, objects);
+		return set;
+	}
+
 	@Test
 	public void testAllowedType() {
 		PlayerInfo pInfo = new PlayerInfo("newPlayer", 9999, 9999);
 
 		Set<String> expected = new HashSet<>();
 		expected.add(Constant.SOLDIER);
-		assertSetEquals(expected, pInfo.allowedTypes);
+		assertSetEquals(expected, pInfo.unlockedTypes);
 
 		expected.add(Constant.KNIGHT);
 		pInfo.unlockType(Constant.KNIGHT);
-		assertSetEquals(expected, pInfo.allowedTypes);
+		assertSetEquals(expected, pInfo.unlockedTypes);
 
 		expected.add(Constant.BREAKER);
 		pInfo.unlockType(Constant.BREAKER);
-		assertSetEquals(expected, pInfo.allowedTypes);
+		assertSetEquals(expected, pInfo.unlockedTypes);
 
 		assertThrows(IllegalArgumentException.class, () -> pInfo.unlockType(Constant.ARCHER));
-		assertSetEquals(expected, pInfo.allowedTypes);
+		assertSetEquals(expected, pInfo.unlockedTypes);
+	}
+
+	@Test
+	public void testGetUnlockedAndUnlockableTypes() {
+		PlayerInfo pInfo = new PlayerInfo("newPlayer", 9999, 9999);
+		pInfo.unlockType(Constant.KNIGHT);
+
+		assertSetEquals(newSet(Constant.SOLDIER, Constant.KNIGHT), pInfo.getUnlockedTypes());
+		assertSetEquals(newSet(Constant.ARCHER, Constant.BREAKER, Constant.SHIELD), pInfo.getUnlockableTypes());
+
+		pInfo.unlockType(Constant.ARCHER);
+		assertThrows(IllegalArgumentException.class, () -> pInfo.unlockType(Constant.SHIELD));
+		assertSetEquals(newSet(Constant.SOLDIER, Constant.KNIGHT, Constant.ARCHER), pInfo.getUnlockedTypes());
+		assertSetEquals(new HashSet<>(), pInfo.getUnlockableTypes());
 	}
 
 	@Test
@@ -162,6 +189,15 @@ public class PlayerInfoTest {
 	}
 
 	@Test
+	public void testUnlockCosts() {
+		PlayerInfo pInfo = new PlayerInfo("A", 0, 0);
+		assertEquals(1, pInfo.UNLOCK_COSTS.get(Constant.KNIGHT));
+		assertEquals(1, pInfo.UNLOCK_COSTS.get(Constant.ARCHER));
+		assertEquals(1, pInfo.UNLOCK_COSTS.get(Constant.SHIELD));
+		assertEquals(1, pInfo.UNLOCK_COSTS.get(Constant.BREAKER));
+	}
+
+	@Test
 	public void testClone() {
 		PlayerInfo pInfo = new PlayerInfo("");
 		PlayerInfo clonePInfo = pInfo.clone();
@@ -172,7 +208,7 @@ public class PlayerInfoTest {
 		assertEquals(pInfo.techLevelInfo, clonePInfo.techLevelInfo);
 		assertEquals(pInfo.foodResource, clonePInfo.foodResource);
 		assertEquals(pInfo.techResource, clonePInfo.techResource);
-		assertEquals(pInfo.allowedTypes, clonePInfo.allowedTypes);
+		assertEquals(pInfo.unlockedTypes, clonePInfo.unlockedTypes);
 	}
 
 	@Test
