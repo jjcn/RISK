@@ -1,8 +1,5 @@
 package edu.duke.ece651.group4.RISK.client.model;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Base64;
 import com.stfalcon.chatkit.commons.models.IUser;
 
 /**
