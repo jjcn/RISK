@@ -46,7 +46,7 @@ public class Constant {
     public static final String UI_SWITCH_OUT = "SwitchOut";
     public static final String UI_ALLIANCE = "Alliance";
     public static final String UI_CHANGETYPE = "Change soldier type";
-    public static final String UI_UNLOCKTYPE = "Unlock unit types";
+    public static final String UI_UNLOCKTYPE = "Unlock more unit types";
     // For data transfer
     public static final String TERR = "Territory";
 

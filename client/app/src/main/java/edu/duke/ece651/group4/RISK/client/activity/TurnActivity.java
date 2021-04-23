@@ -64,8 +64,9 @@ public class TurnActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-        actions = new ArrayList<>(Arrays.asList(UI_MOVE, UI_ATK, UI_UPTECH, UI_UPTROOP, UI_ALLIANCE, UI_CHANGETYPE, UI_DONE));
-        if(getCurrentRoomSize() < 3){
+        actions = new ArrayList<>(Arrays.asList(UI_MOVE, UI_ATK, UI_UPTECH, UI_UPTROOP,
+                UI_ALLIANCE, UI_CHANGETYPE, UI_UNLOCKTYPE, UI_DONE));
+        if (getCurrentRoomSize() < 3) {
             actions.remove(UI_ALLIANCE);
         }
         actionType = UI_MOVE; // default: move
@@ -222,6 +223,8 @@ public class TurnActivity extends AppCompatActivity {
                 case UI_CHANGETYPE:
                     intent.setComponent(new ComponentName(TurnActivity.this, TransferActivity.class));
                     startActivity(intent);
+                    break;
+                case UI_UNLOCKTYPE:
                     break;
                 default:
                     throw new IllegalStateException("Unexpected value: " + actionType);
