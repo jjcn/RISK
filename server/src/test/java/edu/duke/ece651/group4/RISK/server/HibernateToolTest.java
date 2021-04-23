@@ -12,10 +12,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class HibernateToolTest {
-    @BeforeAll
-    public void setUp(){
-        HibernateTool.sessionFactory = buildSessionFactory("/hibernate_toolTest.cfg.xml");
-    }
+//    @BeforeAll
+//    public void setUp(){
+//        HibernateTool.sessionFactory = buildSessionFactory("/hibernate_toolTest.cfg.xml");
+//    }
 
     private  List<UserInfo> createUserInfos(int num){
         List<UserInfo> uInfos = new ArrayList<>();

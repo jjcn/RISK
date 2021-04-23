@@ -1,3 +1,42 @@
+<!--<?xml version="1.0" encoding="UTF-8"?>-->
+<!--<!DOCTYPE hibernate-configuration PUBLIC-->
+<!--        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"-->
+<!--        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">-->
+
+<!--<hibernate-configuration>-->
+<!--    <session-factory>-->
+
+<!--        &lt;!&ndash; Connection settings &ndash;&gt;-->
+<!--        <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>-->
+<!--        &lt;!&ndash; localhost or postgres &ndash;&gt;-->
+<!--        &lt;!&ndash; Assume risk is the database name &ndash;&gt;-->
+<!--        <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/risk</property>-->
+<!--&lt;!&ndash;        <property name="hibernate.connection.url">jdbc:postgresql://postgres:5432/risk</property>&ndash;&gt;-->
+
+<!--        &lt;!&ndash; postgres or runner &ndash;&gt;-->
+<!--        <property name="hibernate.connection.username">postgres</property>-->
+<!--        <property name="hibernate.connection.password">123456</property>-->
+
+<!--        &lt;!&ndash; SQL dialect &ndash;&gt;-->
+<!--        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>-->
+
+<!--        &lt;!&ndash; <property name="hibernate.transaction.jta.platform">org.hibernate.service.jta.platform.internal.JBossStandAloneJtaPlatform</property> &ndash;&gt;-->
+
+<!--        &lt;!&ndash; Print executed SQL to stdout &ndash;&gt;-->
+<!--        <property name="show_sql">false</property>-->
+
+<!--        &lt;!&ndash; Create database on startup &ndash;&gt;-->
+<!--        <property name="hibernate.hbm2ddl.auto">create</property>-->
+<!--        <property name="hibernate.hbm2ddl.auto">update</property>-->
+
+<!--        &lt;!&ndash; Annotated entity classes &ndash;&gt;-->
+<!--        <mapping class="edu.duke.ece651.group4.RISK.server.UserInfo"/>-->
+<!--        <mapping class="edu.duke.ece651.group4.RISK.server.GameInfo"/>-->
+<!--&lt;!&ndash;        <mapping class="edu.duke.ece651.group4.RISK.server.GameInfoTrial"/>&ndash;&gt;-->
+
+
+<!--    </session-factory>-->
+<!--</hibernate-configuration>-->
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-configuration PUBLIC
         "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
@@ -10,10 +49,10 @@
         <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
         <!-- localhost or postgres -->
         <!-- Assume risk is the database name -->
-        <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/risk</property>
+        <property name="hibernate.connection.url">jdbc:postgresql://postgres:5432/nice_marmot</property>
         <!-- postgres or runner -->
-        <property name="hibernate.connection.username">postgres</property>
-        <property name="hibernate.connection.password">123456</property>
+        <property name="hibernate.connection.username">runner</property>
+        <property name="hibernate.connection.password">''</property>
 
         <!-- SQL dialect -->
         <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
@@ -30,7 +69,7 @@
         <!-- Annotated entity classes -->
         <mapping class="edu.duke.ece651.group4.RISK.server.UserInfo"/>
         <mapping class="edu.duke.ece651.group4.RISK.server.GameInfo"/>
-<!--        <mapping class="edu.duke.ece651.group4.RISK.server.GameInfoTrial"/>-->
+        <!--        <mapping class="edu.duke.ece651.group4.RISK.server.GameInfoTrial"/>-->
 
 
     </session-factory>
