@@ -878,6 +878,11 @@ public class WorldTest {
     }
 
     @Test
+    public void testGetUnlockedTypes() {
+
+    }
+
+    @Test
     public void testDoAllBattles() {
         World world = createWorld(troopsSeparated);
         assertEquals(1, world.getTurnNumber());

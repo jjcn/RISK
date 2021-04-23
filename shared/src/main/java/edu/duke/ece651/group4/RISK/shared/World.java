@@ -871,17 +871,6 @@ public class World implements Serializable {
     }
 
     /**
-     * Construct jobName like: Soldier LV0
-     *
-     * @param unitType is the type of unit defined in shared/Constant.
-     * @param unitLevel is the level of unit.
-     * @return constructed jobName.
-     */
-    protected String buildJobName(String unitType, int unitLevel) {
-        return String.format("%s LV%d",unitType, unitLevel);
-    }
-
-    /**
      * Transfer units to another type via a transfer troop order.
      * Level of units stay the same.
      *
