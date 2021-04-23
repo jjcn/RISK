@@ -167,6 +167,9 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void impAllyBT() {
+        if(getCurrentRoomSize() < 3){
+            selectAlliance();
+        }
         allyBT.setOnClickListener(v -> {
             selectAlliance();
         });

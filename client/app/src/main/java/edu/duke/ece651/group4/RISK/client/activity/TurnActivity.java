@@ -65,6 +65,9 @@ public class TurnActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
         actions = new ArrayList<>(Arrays.asList(UI_MOVE, UI_ATK, UI_UPTECH, UI_UPTROOP, UI_ALLIANCE, UI_CHANGETYPE, UI_DONE));
+        if(getCurrentRoomSize() < 3){
+            actions.remove(UI_ALLIANCE);
+        }
         actionType = UI_MOVE; // default: move
         isWatch = false;
         waitDG = new WaitDialog(TurnActivity.this);
