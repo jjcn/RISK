@@ -426,7 +426,11 @@ public class RISKApplication extends Application {
      */
     public static void doOneMove(MoveOrder order, onResultListener listener) {
         try {
-            MoveOrder tmp = new MoveOrder(order.getSrcName(), order.getDesName(), order.getActTroop().clone(), MOVE_ACTION);
+            Log.i(TAG,order.getActTroop().getSummary());
+
+            Troop clo=order.getActTroop().clone();
+            Log.i(TAG,clo.getSummary());
+            MoveOrder tmp = new MoveOrder(order.getSrcName(), order.getDesName(), clo, MOVE_ACTION);
             theWorld.moveTroop(order, userName);
             send(tmp, listener);
         } catch (Exception e) {
@@ -453,21 +457,21 @@ public class RISKApplication extends Application {
     public static void doOneAttack(AttackOrder order, onResultListener listener) {
         try {
 
-            Log.i(TAG,order.getSrcName()+"\n");
-            Log.i(TAG,order.getDesName()+"\n");
+
 
             Log.i(TAG,order.getActTroop().getSummary());
 
             Troop clo=order.getActTroop().clone();
             Log.i(TAG,clo.getSummary());
 
-            AttackOrder tmp = new AttackOrder(order.getSrcName(), order.getDesName(), order.getActTroop().clone(), ATTACK_ACTION);
-   
+            AttackOrder tmp = new AttackOrder(order.getSrcName(), order.getDesName(), clo, ATTACK_ACTION);
+
             theWorld.attackATerritory(order, userName);
 
             send(tmp, listener);
         } catch (Exception e) {
             listener.onFailure(e.getMessage());
+
         }
     }
 
