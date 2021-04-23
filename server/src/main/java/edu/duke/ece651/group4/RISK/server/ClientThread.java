@@ -202,7 +202,7 @@ public class ClientThread extends Thread {
     protected String checkJoinGame (Game gameToJoin){
         if(gameToJoin == null){
             out.println( "Invalid Join: Game is null");
-            return "Invalid Join: Game is null";
+            return INVALID_JOIN;
         }
         if(gameToJoin.isFull() && !gameToJoin.isUserInGame(ownerUser)){
             out.println( INVALID_JOIN);
