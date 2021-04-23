@@ -583,4 +583,8 @@ public class Territory implements Serializable {
     public Map<String,Integer> checkTypeNumAllay(String typeName){
         return this.checkTypeNumSpec(typeName,this.allianceTroop);
     }
+
+    public int getAttackRange(){
+        return this.ownerTroop.getRange();
+    }
 }

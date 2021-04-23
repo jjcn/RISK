@@ -58,6 +58,7 @@ public class Constant {
     //Archer information
     public static  final List<String> ARCHER_NAMES = Arrays.asList("Archer LV0","Archer LV1",
             "Archer LV2","Archer LV3","Archer LV4","Archer LV5","Archer LV6");
+
     public static final int ARCHER_RANGE=2000;
     public static final int ARCHER_COST=15;
 
@@ -157,4 +158,29 @@ public class Constant {
         return ans;
     }*/
 
+
+    /**
+     * Construct jobName like: Soldier LV0
+     *
+     * @param unitType is the type of unit defined in shared/Constant.
+     * @param unitLevel is the level of unit.
+     * @return constructed jobName.
+     */
+    public static String buildJobName(String unitType, int unitLevel) {
+        String jobName;
+        List<String> levelNames = Constant.JOB_DICTIONARY.get(unitType);
+        if (levelNames == null) {
+            throw new IllegalArgumentException(
+                    String.format("Type %s does not exist.", unitType)
+            );
+        }
+        try {
+            jobName = levelNames.get(unitLevel);
+        } catch (IndexOutOfBoundsException e) {
+            throw new IllegalArgumentException(
+                    String.format("Level %d for type %s does not exist.", unitLevel, unitType)
+            );
+        }
+        return jobName;
+    }
 }

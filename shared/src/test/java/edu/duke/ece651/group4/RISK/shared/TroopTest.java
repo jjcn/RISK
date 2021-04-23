@@ -199,7 +199,7 @@ public class TroopTest {
         troop1.transfer(SOLDIER,ARCHER, 0,2);
         Troop troop2 = new Troop(3, new TextPlayer("test2"), new Random(1));
 //        troop2.transfer(SOLDIER,SHIELD, 0,2);
-
+        assertEquals(troop1.getRange(),ARCHER_RANGE);
         System.out.println(troop1.getSummary());
         System.out.println(troop2.getSummary());
         HashMap<String, Integer> tmpDict=new HashMap<>();
@@ -245,6 +245,16 @@ public class TroopTest {
 //        troop1.transfer(SOLDIER,BREAKER, 0,2);
         Troop test=troop1.clone();
         System.out.println(test.getSummary());
+
+        Troop ran = new Troop(10, new TextPlayer("test1"), new Random(0));
+        ran.transfer(SOLDIER,ARCHER, 0,4);
+
+        HashMap<String, Integer> tmpDict=new HashMap<>();
+        tmpDict.put(ARCHER_NAMES.get(0),2);
+        Troop tmp=new Troop(tmpDict,troop1.getOwner());
+        ran.sendOutRangedAttack(tmp);
+        ran.sendOutRangedAttack(tmp);
+//        ran.sendOutRangedAttack(tmp);
 
     }
 

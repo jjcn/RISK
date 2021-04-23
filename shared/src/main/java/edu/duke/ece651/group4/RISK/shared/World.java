@@ -559,24 +559,24 @@ public class World implements Serializable {
     }
 
     /**
-     * Overloaded function to calculate the shortest path length between 2 vertices for a certain player.
+     * Overloaded function to calculate the shortest path length between 2 territories
+     * for a certain player.
+     *
+     * @param start is the starting territory.
+     * @param end is the ending territory.
+     * @return the shortest path between two territories for a certain player.
      */
-    protected int calculateShortestPath(String startName, String endName, String playerName) {
-        Territory start = findTerritory(startName);
-        Territory end = findTerritory(endName);
+    protected int calculateShortestPath(Territory start, Territory end, String playerName) {
         Set<Territory> allowedTerrs = getAllowedTerritories(playerName);
-
         return calculateShortestPath(start, end, allowedTerrs);
     }
 
-    protected int calculateShortestPath(Territory start, Territory end, String playerName) {
-        Set<Territory> allowedTerrs = getAllowedTerritories(playerName);
-
-        return calculateShortestPath(start, end, allowedTerrs);
+    protected int calculateShortestPath(String startName, String endName, String playerName) {
+        return calculateShortestPath(findTerritory(startName), findTerritory(endName), playerName);
     }
 
     /**
-     * Calculate the shortest path between two territories.
+     * Overloaded function to calculate the shortest path between two territories.
      *
      * @param start is the starting territory.
      * @param end is the ending territory.
@@ -588,8 +588,12 @@ public class World implements Serializable {
         return calculateShortestPath(start, end, allTerrs);
     }
 
+    protected int calculateShortestPath(String startName, String endName) {
+        return calculateShortestPath(findTerritory(startName), findTerritory(endName));
+    }
+
     /**
-     * Calculates the shortest path length between 2 territories for a certain player.
+     * Calculates the shortest path length between 2 territories for certain territories allowed.
      *
      * @param start is the starting territory.
      * @param end   is the ending territory.

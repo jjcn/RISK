@@ -1,6 +1,7 @@
 package edu.duke.ece651.group4.RISK.client.activity;
 
 import android.content.Intent;
+import android.text.Editable;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.*;
@@ -73,6 +74,16 @@ public class PlaceActivity extends AppCompatActivity {
         commitBT.setOnClickListener(v -> {
             commitBT.setClickable(false);
 
+            // check input not empty
+            Editable textA = terrAETInput.getText();
+            Editable textB = terrBETInput.getText();
+            if (textA == null || textB == null) {
+                Log.e(TAG,LOG_FUNC_FAIL+"input text null");
+                return;
+            } else if (textA.toString().equals("") || textB.toString().equals("")) {
+                showByToast(PlaceActivity.this, "Please input the number.");
+                return;
+            }
             // check total number
             numTerrA = Integer.parseInt(String.valueOf(terrAETInput.getText()));
             numTerrB = Integer.parseInt(String.valueOf(terrBETInput.getText()));
