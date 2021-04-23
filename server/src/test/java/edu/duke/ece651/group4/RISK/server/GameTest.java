@@ -25,55 +25,68 @@ class GameTest {
         hostSocket = new ServerSocket(PORT);
     }
 
-//    public static Game createAGame(int gid, int numUser){
-//        Game g = new Game(gid+10000,numUser);
-//        for(int i = 0; i < numUser; i++){
-//            User u = new User(i,"user" + i,"1234");
-//            g.addUser(u);
-//            World t=new World(4);
-//        }
-//        g.gInfo.gameState.setGameDead();
-//        return g;
-//    }
-//
-//    @Test
-//    public void test_barrier(){
-//        this.g = createAGame(1,3);
-//        new Thread(() -> {
-//            System.out.println("wait for others");
-//            this.g.barrierWait();
-//            System.out.println("Done wait");
-//        }).start();
-//        new Thread(() -> {
-//            System.out.println("wait for others");
-//            this.g.barrierWait();
-//            System.out.println("Done wait");
-//        }).start();
-//        new Thread(() -> {
-//            System.out.println("wait for others");
-//            this.g.barrierWait();
-//            System.out.println("Done wait");
-//        }).start();
-//    }
-//
-//    @Test
-//    public void test_setUpGame(){
-//        Game g = createAGame(10001,3);
-//        g.gInfo.gameState.setGameDead();
-//        g.setUpGame();
-//    }
-//
-//
-//    @Test
-//    public void test_getWorld() {
-//
-//        Game g = createAGame(10002, 1);
-////        System.out.println(g.getUserNames().get(0));
-//        g.setUpGame();
-//        g.getTheWorld();
-//    }
-//
-//
+    public static Game createAGame(int gid, int numUser){
+        Game g = new Game(gid+10000,numUser);
+        for(int i = 0; i < numUser; i++){
+            User u = new User(i+10000,"user" + i,"1234");
+            g.addUser(u);
+            World t=new World(4);
+        }
+        g.gInfo.gameState.setGameDead();
+        return g;
+    }
+
+    @Test
+    public void test_barrier(){
+        this.g = createAGame(1,3);
+        new Thread(() -> {
+            System.out.println("wait for others");
+            this.g.barrierWait();
+            System.out.println("Done wait");
+        }).start();
+        new Thread(() -> {
+            System.out.println("wait for others");
+            this.g.barrierWait();
+            System.out.println("Done wait");
+        }).start();
+        new Thread(() -> {
+            System.out.println("wait for others");
+            this.g.barrierWait();
+            System.out.println("Done wait");
+        }).start();
+    }
+
+    @Test
+    public void test_setUpGame(){
+        Game g = createAGame(1,3);
+        g.gInfo.gameState.setGameDead();
+        g.setUpGame();
+    }
+
+
+    @Test
+    public void test_getWorld() {
+        Game g = createAGame(1,3);
+        g.setUpGame();
+        g.getTheWorld();
+    }
+
+    @Test
+    public void test_basic(){
+        Game g = createAGame(1,3);
+        assertEquals(10001,g.getGameID());
+        assertEquals(3,g.getMaxNumUsers());
+        g.setUpGame();
+        Game g1 = new Game(new GameInfo(10000,2));
+        assertEquals(true, g.getTheWorld()!=null);
+        assertEquals(true, g.getGameInfo()!=null);
+        assertEquals(true, g.getUserNames()!=null);
+    }
+
+    @Test
+    public void test_isUserInGame() {}
+
+
 //    @Test
 //    public void test_sendWorld() throws IOException {
 //        Game g = createAGame(10003, 2);
@@ -100,7 +113,7 @@ class GameTest {
 //        g.placeUnitsOnWorld(p);
 //        g.tryUpdateActionOnWorld(p,u0);
 //
-//        MoveOrder m=new MoveOrder("A","A",new Troop(1,new TextPlayer("user0")),'M');
+//        MoveOrder m=new MoveOrder("A","B",new Troop(1,new TextPlayer("user0")),'M');
 //        g.doMoveOnWorld(m,"user0");
 //        g.tryUpdateActionOnWorld(m,u0);
 //
@@ -141,10 +154,11 @@ class GameTest {
 //        assertEquals(strFromServer, "Copy that, this is server");
 //        clientSocket.sendObject(w);
 //        clientSocket.close();
-//
-//
-//
 //    }
+
+
+
+
 //
 //
 //    @Test
@@ -153,9 +167,9 @@ class GameTest {
 //        assertEquals(g.getGameID(),2);
 //        assertEquals(g.getMaxNumUsers(),2);
 //
-//        User u = new User(1,"user0","1");
-//        User u2 = new User(2,"user0","1");
-//        User u3 = new User(3,"user0","1");
+//        User u = new User(10001,"user0","1");
+//        User u2 = new User(10002,"user0","1");
+//        User u3 = new User(10003,"user0","1");
 //        assertEquals(g.isUserInGame(u),false);
 //        g.addUser(u);
 //        g.addUser(u2);
@@ -166,11 +180,6 @@ class GameTest {
 //        assertEquals(g.isAllPlayersSwitchOut(),false);
 //        g.switchInUser(u3);
 //        g.switchInUser(u2);
-//
-//        Game g4=createAGame(1,4);
-//        Game g5=createAGame(1,5);
-//        g4.setUpGame();
-//        g5.setUpGame();
 //
 //    }
 //
