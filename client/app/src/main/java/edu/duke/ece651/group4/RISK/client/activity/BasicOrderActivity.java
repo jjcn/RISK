@@ -13,6 +13,7 @@ import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
 import edu.duke.ece651.group4.RISK.shared.Constant;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static edu.duke.ece651.group4.RISK.client.Constant.*;
@@ -25,10 +26,10 @@ public class BasicOrderActivity extends AppCompatActivity {
     private final String TAG = this.getClass().getSimpleName();
     private String srcName; // source territory name
     private String desName; // destination territory name
-    private String level; // unit type name
+    private String type;
+    private int level; // unit type name
     private int nUnit; // number of units in action
     private String actionType; // type of action, move or attack
-    private String type;
 
     private static final String EXTRA_ACTION_TYPE = "actionType"; // intent extra key
 
@@ -40,7 +41,6 @@ public class BasicOrderActivity extends AppCompatActivity {
     private EditText nUnitET;
     private Button commitBT;
     private SpinnerAdapter desAdapter;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +54,7 @@ public class BasicOrderActivity extends AppCompatActivity {
         srcName = "";
         desName = "";
         type = "";
-        level = "";
+        level = -1;
         nUnit = -1;
 
         // read action type from activity
@@ -84,7 +84,9 @@ public class BasicOrderActivity extends AppCompatActivity {
         List<String> myAndAllyTerrNames = getMyAndAllyTerrNames();
         List<String> enemyTerrNames = getEnemyTerrNames();
 
-        // source terr spinner
+        /**
+         * source terr spinner
+         */
         srcSpinner = findViewById(R.id.terrSrc);
         SpinnerAdapter srcAdapter = new ArrayAdapter<>(
                 BasicOrderActivity.this,
@@ -102,7 +104,9 @@ public class BasicOrderActivity extends AppCompatActivity {
             }
         });
 
-        // des terr spinner
+        /**
+         * des terr spinner
+         */
         desSpinner = findViewById(R.id.terrDes);
         if (actionType.equals(UI_MOVE)) {
             desAdapter = new ArrayAdapter<>(
@@ -127,34 +131,17 @@ public class BasicOrderActivity extends AppCompatActivity {
             }
         });
 
-        // typeNames == level spinner
-        List<String> levelNames = getLevelNames();
-        levelSpinner = findViewById(R.id.soldierType);
-        SpinnerAdapter levelAdapter = new ArrayAdapter<>(
-                BasicOrderActivity.this,
-                R.layout.item_choice,
-                levelNames);
-        levelSpinner.setAdapter(levelAdapter);
-        levelSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                level = (String) levelAdapter.getItem(position);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
-        // type spinner
-        List<String> jobNames = new ArrayList<>();
-        jobNames.add(SOLDIER);
-        jobNames.addAll(JOB_NAMES);
+        /**
+         * unit type spinner
+         */
+        List<String> typeNames = new ArrayList<>();
+        typeNames.add(SOLDIER);
+        typeNames.addAll(JOB_NAMES);
 
         typeSpinner = findViewById(R.id.unit_type_choices);
         SpinnerAdapter typeAdapter = new ArrayAdapter<>(
                 BasicOrderActivity.this, R.layout.item_choice,
-                jobNames);
+                typeNames);
         typeSpinner.setAdapter(typeAdapter);
         typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -167,6 +154,32 @@ public class BasicOrderActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * Unit level spinner
+         *
+         * typeNames == level spinner
+         */
+        List<Integer> levels = Arrays.asList(new Integer[]{0, 1, 2, 3, 4, 5, 6});
+        levelSpinner = findViewById(R.id.unit_level_choices);
+        SpinnerAdapter levelAdapter = new ArrayAdapter<>(
+                BasicOrderActivity.this,
+                R.layout.item_choice,
+                levels);
+        levelSpinner.setAdapter(levelAdapter);
+        levelSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                level = (int) levelAdapter.getItem(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        /**
+         * unit number Edit Text
+         */
         nUnitET = findViewById(R.id.numUnit);
 
         /**
@@ -187,7 +200,7 @@ public class BasicOrderActivity extends AppCompatActivity {
             String result = "";
             // move action
             if (actionType.equals(UI_MOVE)) {
-                doOneMove(buildMoveOrder(srcName, desName, nUnit, level),
+                doOneMove(buildMoveOrder(srcName, desName, nUnit, type, level),
                         new onResultListener() {
                             @Override
                             public void onSuccess() {
@@ -203,7 +216,7 @@ public class BasicOrderActivity extends AppCompatActivity {
             }
             // attack action
             else if (actionType.equals(UI_ATK)) {
-                doOneAttack(buildAttackOrder(srcName, desName, nUnit, level),
+                doOneAttack(buildAttackOrder(srcName, desName, nUnit, type, level),
                         new onResultListener() {
                             @Override
                             public void onSuccess() {
