@@ -596,6 +596,10 @@ public class RISKApplication extends Application {
         return theWorld.getTerritoriesNotOfPlayer(userName);
     }
 
+    /**
+     * Build an alliance order and send to server.
+     * @param allyName
+     */
     public static void requireAlliance(String allyName) {
         Order allyOrder = new AllianceOrder(userName, allyName);
         send(allyOrder, new onResultListener() {
@@ -609,6 +613,21 @@ public class RISKApplication extends Application {
         });
     }
 
+    /**
+     * Get the unit types this player can unlock.
+     * @return a set of all types the player can unlock now.
+     */
+    public static Set<String> getUnlockableTypes() {
+        return theWorld.getUnlockableTypes(userName);
+    }
+
+    /**
+     * A Player tries to unlock a new type.
+     * @param type is a type name.
+     */
+    public static void unlockType(String type) throws IllegalArgumentException {
+        theWorld.unlockType(userName, type);
+    }
 
     /*************** function for chat **************/
 

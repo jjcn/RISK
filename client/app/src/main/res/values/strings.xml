@@ -43,7 +43,7 @@
     <string name="CHANGE_TERR_PROMPT">"Change type of soldiers in territory: "</string>
     <string name="CHANGE_TYPE_PROMPT">"Change type of soldiers to: "</string>
     <string name="CHANGE_TYPE_AFTER">"Change the type to: "</string>
-    <string name="TRANSFER_CHOOSE_TERR_INSTRU">"You want to transfer soldier in territory: "</string>
+    <string name="TRANSFER_CHOOSE_TERR_INSTRU">"You want to change soldier in territory: "</string>
     <string name="CHOOSE_JOB_INSTR">"Choose type of the troop: "</string>
 
 </resources>
