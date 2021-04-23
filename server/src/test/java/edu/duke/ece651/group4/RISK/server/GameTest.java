@@ -26,13 +26,13 @@ class GameTest {
     }
 
     public static Game createAGame(int gid, int numUser){
-        Game g = new Game(gid,numUser);
+        Game g = new Game(gid+10000,numUser);
         for(int i = 0; i < numUser; i++){
             User u = new User(i,"user" + i,"1234");
             g.addUser(u);
             World t=new World(4);
-
         }
+        g.gInfo.gameState.setGameDead();
         return g;
     }
 
@@ -57,9 +57,9 @@ class GameTest {
     }
 
     @Test
-
     public void test_setUpGame(){
-        Game g = createAGame(1,3);
+        Game g = createAGame(10001,3);
+        g.gInfo.gameState.setGameDead();
         g.setUpGame();
     }
 
@@ -67,7 +67,7 @@ class GameTest {
     @Test
     public void test_getWorld() {
 
-        Game g = createAGame(1, 1);
+        Game g = createAGame(10002, 1);
 //        System.out.println(g.getUserNames().get(0));
         g.setUpGame();
         g.getTheWorld();
@@ -76,7 +76,7 @@ class GameTest {
 
     @Test
     public void test_sendWorld() throws IOException {
-        Game g = createAGame(1, 2);
+        Game g = createAGame(10003, 2);
 
 //        System.out.println(g.getUserNames().get(0));
 
@@ -149,7 +149,7 @@ class GameTest {
 
     @Test
     public void test_basic(){
-        Game g=new Game(2,2);
+        Game g=new Game(10003,2);
         assertEquals(g.getGameID(),2);
         assertEquals(g.getMaxNumUsers(),2);
 
@@ -176,7 +176,7 @@ class GameTest {
 
     @Test
     public void test_MoveOrder(){
-        Game g=new Game(2,2);
+        Game g=new Game(10004,2);
         g.addUser(new User(0,"user0","1"));
         g.addUser(new User(1,"user1","1"));
         g.setUpGame();
@@ -196,7 +196,7 @@ class GameTest {
 
     @Test
     public void test_playerInfo(){
-        Game g=new Game(2,2);
+        Game g=new Game(10005,2);
         g.addUser(new User(0,"user0","1"));
         g.addUser(new User(1,"user1","1"));
         g.setUpGame();
@@ -206,7 +206,7 @@ class GameTest {
 
     @Test
     public void test_Turn(){
-        Game g=new Game(2,2);
+        Game g=new Game(10006,2);
         g.addUser(new User(0,"user0","1"));
         g.addUser(new User(1,"user1","1"));
         g.setUpGame();
