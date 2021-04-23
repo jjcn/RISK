@@ -199,7 +199,7 @@ public class TroopTest {
         troop1.transfer(SOLDIER,ARCHER, 0,2);
         Troop troop2 = new Troop(3, new TextPlayer("test2"), new Random(1));
 //        troop2.transfer(SOLDIER,SHIELD, 0,2);
-        assertEquals(troop1.getRange(),2000);
+        assertEquals(troop1.getRange(),ARCHER_RANGE);
         System.out.println(troop1.getSummary());
         System.out.println(troop2.getSummary());
         HashMap<String, Integer> tmpDict=new HashMap<>();
