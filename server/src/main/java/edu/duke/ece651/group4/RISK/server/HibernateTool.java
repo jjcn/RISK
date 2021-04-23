@@ -15,13 +15,9 @@ public class HibernateTool {
 
     }
 
-
     protected static SessionFactory buildSessionFactory(String configureFile) {
         try {
-            if(!isStartTest){
-                if(configureFile.equals("/hibernate_toolTest.cfg.xml")){
-                    isStartTest = true;
-                }
+            if(sessionFactory == null){
                 Configuration configuration = new Configuration()
                         .configure(HibernateTool.class.getResource(configureFile));
                 // TODO: manually add entity classes
