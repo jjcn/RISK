@@ -132,7 +132,7 @@ public class TransferActivity extends AppCompatActivity {
         commitBT.setOnClickListener(v -> {
             Editable text = nUnitET.getText();
             if (text == null) {
-                Log.e(TAG,LOG_FUNC_FAIL+"input text null");
+                Log.e(TAG,LOG_FUNC_FAIL + "input text null");
                 return;
             } else if (text.toString().equals("")) {
                 showByToast(TransferActivity.this, "Please input the number.");
@@ -140,6 +140,8 @@ public class TransferActivity extends AppCompatActivity {
             }
             nUnit = Integer.parseInt(text.toString());
 
+            Log.d(TAG, LOG_FUNC_RUN + "user selected: change " + nUnit + " soldier of level " +
+                    level + " to " + typeAfter);
             doSoldierTransfer(
                     buildTransferTroopOrder(terrName, typeAfter, level, nUnit), new onResultListener() {
                         @Override

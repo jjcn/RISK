@@ -222,6 +222,21 @@ public class PlayerInfoTest {
 	}
 
 	@Test
+	public void testModifyAndClone() {
+		PlayerInfo pInfo = new PlayerInfo("", 9999, 9999);
+		pInfo.unlockAllTypes();
+		PlayerInfo clonePInfo = pInfo.clone();
+
+		assertFalse(pInfo == clonePInfo);
+		assertEquals(pInfo, clonePInfo);
+		assertEquals(pInfo.playerName, clonePInfo.playerName);
+		assertEquals(pInfo.techLevelInfo, clonePInfo.techLevelInfo);
+		assertEquals(pInfo.foodResource, clonePInfo.foodResource);
+		assertEquals(pInfo.techResource, clonePInfo.techResource);
+		assertEquals(pInfo.unlockedTypes, clonePInfo.unlockedTypes);
+	}
+
+	@Test
 	public void testEquals() {
 		PlayerInfo empty1 = new PlayerInfo("");
 		PlayerInfo empty2 = new PlayerInfo("");
