@@ -129,7 +129,7 @@ public class MessageActivity extends AppCompatActivity
         } else {
             targets.add(target);
         }
-        ChatMessageUI message = new ChatMessageUI(getUserName(), input.toString(), user, targets);
+        ChatMessageUI message = new ChatMessageUI(WORLD_CHAT.equals(target)? WORLD_CHAT : getUserName(), input.toString(), user, targets);
 
         Log.i(TAG, LOG_FUNC_RUN + "start send msg target: " + target);
         sendOneMsg(message, new onResultListener() {

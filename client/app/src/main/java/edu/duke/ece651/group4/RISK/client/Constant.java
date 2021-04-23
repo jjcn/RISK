@@ -68,9 +68,8 @@ public class Constant {
     };
     public static final String COLOR_EGG =
             "Developers in Group4 in ECE651:\n Xian Sun\n Zian Geng\n Shenxi Jin\n Wenxin Xu\n\n"+
-                    "*************************************" +
-                    "*********** Special thanks **********" +
-                    "**** to the best TA in the world ****" +
-                    "************* Kewei Xia *************" +
-                    "*************************************";
+                    "*******" +
+                    "Special thanks" +
+                    "to the best TA in the world" +
+                    "Kewei Xia";
 }
