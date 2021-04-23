@@ -9,23 +9,25 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.Session.*;
 public class HibernateTool {
-    private static SessionFactory sessionFactory = buildSessionFactory();
+    protected static SessionFactory sessionFactory = buildSessionFactory("/hibernate.cfg.xml");
+    protected static boolean isStartTest = false;
     public HibernateTool() {
 
     }
-    private static SessionFactory buildSessionFactory() {
+
+    protected static SessionFactory buildSessionFactory(String configureFile) {
         try {
-            if (sessionFactory == null) {
-                Configuration configuration = new Configuration()
-                        .configure(HibernateTool.class.getResource("/hibernate.cfg.xml"));
-                // TODO: manually add entity classes
-                configuration.addAnnotatedClass(UserInfo.class);
-                configuration.addAnnotatedClass(GameInfo.class);
-                StandardServiceRegistryBuilder serviceRegistryBuilder = new StandardServiceRegistryBuilder();
-                serviceRegistryBuilder.applySettings(configuration.getProperties());
-                ServiceRegistry serviceRegistry = serviceRegistryBuilder.build();
-                sessionFactory = configuration.buildSessionFactory(serviceRegistry);
-            }
+
+            Configuration configuration = new Configuration()
+                    .configure(HibernateTool.class.getResource(configureFile));
+            // TODO: manually add entity classes
+            configuration.addAnnotatedClass(UserInfo.class);
+            configuration.addAnnotatedClass(GameInfo.class);
+            StandardServiceRegistryBuilder serviceRegistryBuilder = new StandardServiceRegistryBuilder();
+            serviceRegistryBuilder.applySettings(configuration.getProperties());
+            ServiceRegistry serviceRegistry = serviceRegistryBuilder.build();
+            sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+//                sessionFactory = sessionFactoryTemp;
             return sessionFactory;
         } catch (Throwable ex) {
             System.err.println("Initial SessionFactory creation failed." + ex);
@@ -40,7 +42,7 @@ public class HibernateTool {
             tx = session.beginTransaction();
             session.save(userInfo);
             tx.commit();
-        } catch (HibernateException e) {
+        } catch (Throwable e) {
             if (tx != null) {
                 tx.rollback();
             }
@@ -57,12 +59,7 @@ public class HibernateTool {
         return usersInfo;
     }
 
-//    public static SessionFactory getSessionFactory(){
-//        return sessionFactory;
-//    }
-//    public static void shutdown() {
-//        sessionFactory.close();
-//    }
+
 
     public static void addGameInfo(GameInfo gInfo){
         Session session = sessionFactory.openSession();
@@ -71,7 +68,7 @@ public class HibernateTool {
             tx = session.beginTransaction();
             session.save(gInfo);
             tx.commit();
-        } catch (HibernateException e) {
+        } catch (Throwable e) {
             if (tx != null) {
                 tx.rollback();
             }
@@ -88,7 +85,7 @@ public class HibernateTool {
             tx = session.beginTransaction();
             session.update(GameInfo);
             tx.commit();
-        } catch (HibernateException e) {
+        } catch (Throwable e) {
             if (tx != null) {
                 tx.rollback();
             }
@@ -114,7 +111,7 @@ public class HibernateTool {
             tx = session.beginTransaction();
             session.delete(gInfo);
             tx.commit();
-        } catch (HibernateException e) {
+        } catch (Throwable e) {
             if (tx != null) {
                 tx.rollback();
             }
@@ -126,24 +123,6 @@ public class HibernateTool {
 
 
 
-//    public static void updateUserInfo(UserInfo userInfo) {
-//        Session session = sessionFactory.openSession();
-//        Transaction tx = null;
-//
-//        try {
-//            tx = session.beginTransaction();
-//            session.update(userInfo);
-//            tx.commit();
-//        } catch (HibernateException e) {
-//            if (tx != null) {
-//                tx.rollback();
-//            }
-//            e.printStackTrace();
-//        } finally {
-//            session.close();
-//        }
-//    }
-
     public static void deleteUserInfo(UserInfo uInfo){
         Session session = sessionFactory.openSession();
         Transaction tx = null;
@@ -152,7 +131,7 @@ public class HibernateTool {
             tx = session.beginTransaction();
             session.delete(uInfo);
             tx.commit();
-        } catch (HibernateException e) {
+        } catch (Throwable e) {
             if (tx != null) {
                 tx.rollback();
             }
