@@ -310,31 +310,6 @@ public class Troop implements Serializable {
     }
 
     /**
-     * Construct jobName like: Soldier LV0
-     *
-     * @param unitType is the type of unit defined in shared/Constant.
-     * @param unitLevel is the level of unit.
-     * @return constructed jobName.
-     */
-    public static String buildJobName(String unitType, int unitLevel) {
-        String jobName;
-        List<String> levelNames = Constant.JOB_DICTIONARY.get(unitType);
-        if (levelNames == null) {
-            throw new IllegalArgumentException(
-                    String.format("Type %s does not exist.", unitType)
-            );
-        }
-        try {
-            jobName = levelNames.get(unitLevel);
-        } catch (IndexOutOfBoundsException e) {
-            throw new IllegalArgumentException(
-                    String.format("Level %d for type %s does not exist.", unitLevel, unitType)
-            );
-        }
-        return jobName;
-    }
-
-    /**
      * Upgrades troop using an upgrade troop order. Also checks if there is enough resource.
      * @param utOrder is an upgrade troop order.
      * @param nResource is the number of resource at hand.
@@ -345,7 +320,7 @@ public class Troop implements Serializable {
         int levelAfter = utOrder.getLevelAfter();
         int levelUp = levelAfter - levelBefore;
 
-        String from = buildJobName(utOrder.getTypeName(), levelBefore);
+        String from = Constant.buildJobName(utOrder.getTypeName(), levelBefore);
 
         int nUnit = utOrder.getNUnit();
 

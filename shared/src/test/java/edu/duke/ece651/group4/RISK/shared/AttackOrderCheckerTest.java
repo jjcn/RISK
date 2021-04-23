@@ -136,7 +136,7 @@ public class AttackOrderCheckerTest {
         world.transferTroop(transfer1,"red");
         // let it perform attack on Oz (adjacent to Gondor)
         HashMap<String, Integer> archerTroopDict = new HashMap<>();
-        archerTroopDict.put(Troop.buildJobName(Constant.ARCHER, 0), 13);
+        archerTroopDict.put(Constant.buildJobName(Constant.ARCHER, 0), 13);
         Troop archerTroop = new Troop(archerTroopDict, red);
         AttackOrder atk1 = new AttackOrder("Gondor", "Oz", archerTroop);
 

@@ -445,6 +445,42 @@ public class WorldTest {
     }
 
     @Test
+    public void testMoveWithType() {
+        World world = createWorldAndRegister(troopsConnected);
+        world.getPlayerInfoByName("green").gainFood(9999);
+        world.getPlayerInfoByName("green").gainTech(9999);
+        // transfer 1 knight
+        TransferTroopOrder transfer1 = new TransferTroopOrder("Oz", Constant.KNIGHT, 0, 1);
+        world.transferTroop(transfer1, "green");
+        // stuffs
+        Territory Oz = world.findTerritory("Oz");
+        Territory Narnia = world.findTerritory("Narnia");
+        String knight0 = Constant.buildJobName(Constant.KNIGHT, 0);
+        String soldier0 = Constant.buildJobName(Constant.SOLDIER, 0);
+        // check
+        assertEquals(8, Oz.checkPopulation());
+        assertEquals(1, Oz.checkTroopInfo().get(knight0));
+        assertEquals(7, Oz.checkTroopInfo().get(soldier0));
+        // move 1 knight LV0 from Oz to Narnia
+        HashMap<String, Integer> knightDict = new HashMap<>();
+        knightDict.put(Constant.buildJobName(Constant.KNIGHT, 0), 1);
+        Troop knightTroop = new Troop(knightDict, green);
+        MoveOrder move1 = new MoveOrder("Oz", "Narnia", knightTroop);
+        world.moveTroop(move1, "green");
+        // check population correctness on both territories
+        assertEquals(0, Oz.checkTroopInfo().get(knight0));
+        assertEquals(7, Oz.checkTroopInfo().get(soldier0));
+        assertEquals(1, Narnia.checkTroopInfo().get(knight0));
+        assertEquals(10, Narnia.checkTroopInfo().get(soldier0));
+        // world resolve all battles and check population correctness again
+        world.doAllBattles();
+        assertEquals(0, Oz.checkTroopInfo().get(knight0));
+        assertEquals(7, Oz.checkTroopInfo().get(soldier0));
+        assertEquals(1, Narnia.checkTroopInfo().get(knight0));
+        assertEquals(10, Narnia.checkTroopInfo().get(soldier0));
+    }
+
+    @Test
     public void testAttackValid() {
         World world = createWorldAndRegister(troopsSeparated);
         AttackOrder atk1 = new AttackOrder("Gondor", "Oz", new Troop(13, red));
