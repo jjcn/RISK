@@ -261,6 +261,7 @@ public class TurnActivity extends AppCompatActivity {
             if (isWatch) {
                 switchOut();
             }
+            doneBT.setEnabled(true);
         });
         builder.show();
     }
