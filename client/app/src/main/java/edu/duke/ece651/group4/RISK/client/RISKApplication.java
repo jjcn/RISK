@@ -477,8 +477,19 @@ public class RISKApplication extends Application {
      */
     public static void doOneAttack(AttackOrder order, onResultListener listener) {
         try {
+
+            Log.i(TAG,order.getSrcName()+"\n");
+            Log.i(TAG,order.getDesName()+"\n");
+
+            Log.i(TAG,order.getActTroop().getSummary());
+
+            Troop clo=order.getActTroop().clone();
+            Log.i(TAG,clo.getSummary());
+
             AttackOrder tmp = new AttackOrder(order.getSrcName(), order.getDesName(), order.getActTroop().clone(), ATTACK_ACTION);
+   
             theWorld.attackATerritory(order, userName);
+
             send(tmp, listener);
         } catch (Exception e) {
             listener.onFailure(e.getMessage());
