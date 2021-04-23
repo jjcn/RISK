@@ -205,10 +205,10 @@ public class TroopTest {
         HashMap<String, Integer> tmpDict=new HashMap<>();
         tmpDict.put(ARCHER_NAMES.get(0),2);
         Troop tmp=new Troop(tmpDict,troop1.getOwner());
-        Troop troopRange=troop1.sendRangedAttack(tmp);
-        assertThrows(new IllegalArgumentException().getClass(),() ->troop1.sendRangedAttack(tmp));
+        Troop troopRange=troop1.sendOutRangedAttack(tmp);
+        assertThrows(new IllegalArgumentException().getClass(),() ->troop1.sendOutRangedAttack(tmp));
         troop1.archerReady();
-        troop1.sendRangedAttack(tmp);
+        troop1.sendOutRangedAttack(tmp);
 
 
         System.out.println(troop2.getSummary());

@@ -512,7 +512,7 @@ public class Troop implements Serializable {
         return NORM_SPEED;
     }
 
-    public Troop sendRangedAttack(Troop target) {
+    public Troop sendOutRangedAttack(Troop target) {
         if (!this.hasRanged()) {
             throw new IllegalArgumentException("No ranged attack unit");
         }

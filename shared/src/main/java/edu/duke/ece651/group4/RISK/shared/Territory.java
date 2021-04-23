@@ -514,8 +514,8 @@ public class Territory implements Serializable {
         return this.ownerTroop.transfer(from, to, unitLevel, nUnit);
     }
 
-    public Troop sendRangedAttack(Troop target) {
-        return this.ownerTroop.sendRangedAttack(target);
+    public Troop sendOutRangedAttack(Troop target) {
+        return this.ownerTroop.sendOutRangedAttack(target);
     }
 
     public boolean hasRangedTroop() {
