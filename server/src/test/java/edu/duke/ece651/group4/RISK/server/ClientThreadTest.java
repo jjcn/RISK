@@ -3,6 +3,7 @@ package edu.duke.ece651.group4.RISK.server;
 import edu.duke.ece651.group4.RISK.shared.*;
 import edu.duke.ece651.group4.RISK.shared.message.GameMessage;
 import edu.duke.ece651.group4.RISK.shared.message.LogMessage;
+import org.checkerframework.checker.units.qual.A;
 import org.checkerframework.checker.units.qual.C;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -38,9 +39,10 @@ class ClientThreadTest {
         for(User u: users){
             g.addUser(u);
         }
+        HibernateTool.deleteGameInfo(g.gInfo);
         HibernateTool.addGameInfo(g.gInfo);
-        GameRunner gr = new GameRunner(g);
-        gr.start();
+//        GameRunner gr = new GameRunner(g);
+//        gr.start();
         return g;
     }
 
@@ -236,9 +238,45 @@ class ClientThreadTest {
 //        assertEquals(g.getMaxNumUsers(), ct.findGame(10000).getMaxNumUsers());
 //    }
 
+//    private void simulateAClient(String username, String terr1, String terr2) throws IOException {
+//        /*
+//         * test Log
+//         * */
+//        Client client = new Client(hostname, PORT);
+//        LogMessage gm = new LogMessage(LOG_SIGNIN,username,"1");
+//        LogMessage gm_signup = new LogMessage(LOG_SIGNUP,username,"1");
+//        client.sendObject(gm_signup);
+//        client.recvObject();
+//        client.sendObject(gm);
+//        client.recvObject();
+//
+//        /*
+//         * join Game
+//         * */
+//        GameMessage gc= new GameMessage(GAME_CREATE,-1,2);
+//        GameMessage gj=  new GameMessage(GAME_JOIN,11111,2);
+//        client.sendObject(gj);
+//        client.recvObject();
+//
+//        /*
+//         * Place Units
+//         * */
+//        client.recvObject(); // receive the world
+//        List<Order> pOrders = new ArrayList<>();
+//        pOrders.add(new PlaceOrder(terr1,new Troop(5,new TextPlayer(username))));
+//        pOrders.add(new PlaceOrder(terr2,new Troop(10,new TextPlayer(username))));
+//        client.sendObject(pOrders);
+//    }
 
     @Test
     public void testAClient() throws IOException {
+        new Thread(()->{
+            try {
+                testAClient2();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
         /*
          * test Log
          * */
@@ -257,6 +295,80 @@ class ClientThreadTest {
         GameMessage gj=  new GameMessage(GAME_JOIN,11111,2);
         client.sendObject(gj);
         client.recvObject();
+
+        /*
+        * Place Units
+        * */
+        client.recvObject(); // receive the world
+        List<Order> pOrders = new ArrayList<>();
+        pOrders.add(new PlaceOrder("A",new Troop(5,new TextPlayer("user0"))));
+        pOrders.add(new PlaceOrder("B",new Troop(10,new TextPlayer("user0"))));
+        client.sendObject(pOrders);
+
+        /*
+         * Action
+         * */
+        client.recvObject();
+        MoveOrder m= new MoveOrder("A","B",new Troop(1,new TextPlayer("user0")),'M');
+        AttackOrder a =new AttackOrder("A","C",new Troop(1,new TextPlayer("user0")),'A');
+        UpgradeTechOrder ut= new UpgradeTechOrder(1);
+//        UpgradeTroopOrder utroop=new UpgradeTroopOrder("A",0,1,1);
+//        AllianceOrder oA = new AllianceOrder("user0","user1");
+//        TransferTroopOrder oTtroop = new TransferTroopOrder("A", Constant.SOLDIER, Constant.KNIGHT, 0, 1);
+        BasicOrder oDone=new BasicOrder(null,null,null,'D');
+        client.sendObject(m);
+        client.sendObject(a);
+        client.sendObject(ut);
+        client.sendObject(oDone);
+
+        client.recvObject();
+        BasicOrder o_switch=new BasicOrder(null,null,null,SWITCH_OUT_ACTION);
+        client.sendObject(o_switch);
+
+    }
+
+
+    public void testAClient2() throws IOException {
+        /*
+         * test Log
+         * */
+        Client client = new Client(hostname, PORT);
+        LogMessage gm = new LogMessage(LOG_SIGNIN,"user1","1");
+        LogMessage gm_signup = new LogMessage(LOG_SIGNUP,"user1","1");
+        client.sendObject(gm_signup);
+        client.recvObject();
+        client.sendObject(gm);
+        client.recvObject();
+
+        /*
+         * join Game
+         * */
+        GameMessage gc= new GameMessage(GAME_CREATE,-1,2);
+        GameMessage gj=  new GameMessage(GAME_JOIN,11111,2);
+        client.sendObject(gj);
+        client.recvObject();
+
+        /*
+         * Place Units
+         * */
+        client.recvObject(); // receive the world
+        List<Order> pOrders = new ArrayList<>();
+        pOrders.add(new PlaceOrder("C",new Troop(5,new TextPlayer("user1"))));
+        pOrders.add(new PlaceOrder("D",new Troop(10,new TextPlayer("user1"))));
+        client.sendObject(pOrders);
+
+
+        /*
+        * Action
+        * */
+        client.recvObject();
+        BasicOrder oDone=new BasicOrder(null,null,null,'D');
+        client.sendObject(oDone);
+        client.recvObject();
+
+
+        BasicOrder o_switch=new BasicOrder(null,null,null,SWITCH_OUT_ACTION);
+        client.sendObject(o_switch);
     }
 //    private void simulateOneClientCreate(User u, Client theClient){
 //        Object res = null;

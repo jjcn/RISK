@@ -44,6 +44,7 @@ public class GameRunner extends Thread{
             }
             game.waitTime(1);
         }
+        out.println("Game" + game.getGameID() + "Runner notify allusers: ");
 //        while(!game.gameState.isAllPlayersWaiting()){} // This is to make sure runner notify all after all waits
         synchronized(game){
             game.notifyAll(); // notify all players to start send world and do placement
@@ -76,7 +77,9 @@ public class GameRunner extends Thread{
             notifyAllUsers(); //Initialization
             out.println("Game" +game.getGameID()+" runner notifies all players before action phase");
         }
+
         if(!game.gInfo.gameState.isDonePlaceUnits()){
+            out.println("Game" + game.getGameID() + "gameState.isDonePlaceUnits: " + game.gInfo.gameState.isDonePlaceUnits());
             notifyAllUsers(); //notify all users to place units
         }
         else {
