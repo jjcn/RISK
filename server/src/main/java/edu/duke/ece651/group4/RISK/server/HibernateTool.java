@@ -42,7 +42,7 @@ public class HibernateTool {
             tx = session.beginTransaction();
             session.save(userInfo);
             tx.commit();
-        } catch (HibernateException e) {
+        } catch (Throwable e) {
             if (tx != null) {
                 tx.rollback();
             }
@@ -68,7 +68,7 @@ public class HibernateTool {
             tx = session.beginTransaction();
             session.save(gInfo);
             tx.commit();
-        } catch (HibernateException e) {
+        } catch (Throwable e) {
             if (tx != null) {
                 tx.rollback();
             }
@@ -85,7 +85,7 @@ public class HibernateTool {
             tx = session.beginTransaction();
             session.update(GameInfo);
             tx.commit();
-        } catch (HibernateException e) {
+        } catch (Throwable e) {
             if (tx != null) {
                 tx.rollback();
             }
@@ -111,7 +111,7 @@ public class HibernateTool {
             tx = session.beginTransaction();
             session.delete(gInfo);
             tx.commit();
-        } catch (HibernateException e) {
+        } catch (Throwable e) {
             if (tx != null) {
                 tx.rollback();
             }
@@ -131,7 +131,7 @@ public class HibernateTool {
             tx = session.beginTransaction();
             session.delete(uInfo);
             tx.commit();
-        } catch (HibernateException e) {
+        } catch (Throwable e) {
             if (tx != null) {
                 tx.rollback();
             }
