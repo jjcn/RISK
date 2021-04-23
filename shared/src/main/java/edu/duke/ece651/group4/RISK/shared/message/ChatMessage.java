@@ -1,9 +1,6 @@
 package edu.duke.ece651.group4.RISK.shared.message;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
-
 import static edu.duke.ece651.group4.RISK.shared.Constant.MESS_CHAT;
 
 public class ChatMessage extends BasicMessage {

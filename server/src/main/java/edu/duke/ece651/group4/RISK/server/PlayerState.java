@@ -17,6 +17,7 @@ import static edu.duke.ece651.group4.RISK.server.ServerConstant.*;
  * 5. PLAYER_STATE_UPDATING: after the world updates the world, do final check on state
  * */
 public class PlayerState extends State implements Serializable {
+    private static final long serialVersionUID = 10001L;
     final String username;
     boolean isWaiting;
     /*
@@ -89,12 +90,12 @@ public class PlayerState extends State implements Serializable {
         return !isSwitchOut();
     }
 
-    public PlayerState clone(){
-        PlayerState ps = new  PlayerState(username);
-        ps.updateStateTo(this.getState());
-        if(this.isWaiting){
-            ps.setWaiting();
-        }
-        return ps;
-    }
+//    public PlayerState clone(){
+//        PlayerState ps = new  PlayerState(username);
+//        ps.updateStateTo(this.getState());
+//        if(this.isWaiting){
+//            ps.setWaiting();
+//        }
+//        return ps;
+//    }
 }
