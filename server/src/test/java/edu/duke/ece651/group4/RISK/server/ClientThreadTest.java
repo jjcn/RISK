@@ -86,95 +86,95 @@ class ClientThreadTest {
         List<Game> games = createGames(numGames, 2);
         return new ClientThread(games, users,null, new AtomicInteger(0));
     }
-//    @Test
-//    public void test_userLogIn(){
-//        List<User> users =  createUsers(2);
-//        List<Game> games = createGames(1, 2);
-//        ClientThread ct = new ClientThread(games, users,null, new AtomicInteger(0));
-//        assertEquals( null, ct.tryLogIn("user1", "123"));
-//        assertEquals(true, ct.ownerUser == users.get(1));
-//        assertEquals(false, ct.ownerUser == users.get(0));
-//        assertEquals( INVALID_LOGIN, ct.tryLogIn("user1", "1234"));
-//        assertEquals( INVALID_LOGIN, ct.tryLogIn("u2er1", "123"));
-//        assertEquals( INVALID_LOGIN, ct.tryLogIn(null, "123"));
-//        assertEquals( INVALID_LOGIN, ct.tryLogIn("user1", null));
-//        assertEquals( INVALID_LOGIN, ct.tryLogIn(null, null));
-//    }
-//
-//    @Test
-//    public void test_SignUp(){
-//        List<User> users =  createUsers(2);
-//        List<Game> games = createGames(1, 2);
-//        ClientThread ct = new ClientThread(games, users,null, new AtomicInteger(0));
-//        assertEquals( INVALID_SIGNUP, ct.trySignUp("user1", "123"));
-//        assertEquals( INVALID_SIGNUP, ct.trySignUp("user1", "1234"));
-////        assertEquals( null, ct.trySignUp("user1", "123"));
-//        assertEquals(2,ct.users.size());
-//        assertEquals(1,ct.games.size());
-//        assertEquals( INVALID_SIGNUP, ct.trySignUp(null, "123"));
-//        assertEquals( INVALID_SIGNUP, ct.trySignUp("user1", null));
-//        assertEquals( INVALID_SIGNUP, ct.trySignUp(null, null));
-//    }
-//
-//    @Test
-//    public void test_tryCreateAGame(){
-//        List<User> users =  createUsers(2);
-//        List<Game> games = createGames(10000, 2);
-//        ClientThread ct = new ClientThread(games, users,null, new AtomicInteger(0));
-////        assertEquals(1000, ct.games.size());
-//        assertEquals(null, ct.tryLogIn("user0","123"));
-//        assertEquals( null, ct.tryCreateAGame(new GameMessage(GAME_CREATE, -1, 2)));
-//        ct.gameOnGoing.gInfo.gameState.setGameDead();
-//        HibernateTool.updateGameInfo(ct.gameOnGoing.gInfo);
-//        ct.games.get(1000).addUser(users.get(1));
-//        ct.games.get(1000).gInfo.gameState.changAPlayerStateTo(users.get(0), PLAYER_STATE_SWITCH_OUT);
-//        ct.games.get(1000).gInfo.gameState.changAPlayerStateTo(users.get(1), PLAYER_STATE_SWITCH_OUT);
-//        assertEquals(true,ct.gameOnGoing!=null);
-//        Game g = ct.findGame(10000);
-//        assertEquals(2,g.getMaxNumUsers());
-//    }
-//
-//
-//    @Test
-//    public void test_tryJoinAGame(){
-//        ClientThread ct = createAClientThread(1, 2);
-//        assertEquals( null, ct.tryLogIn("user0","123"));
-//        assertEquals(INVALID_JOIN, ct.tryJoinAGame(new GameMessage(GAME_JOIN, -1, -1)));
-//        assertEquals(INVALID_JOIN, ct.tryJoinAGame(new GameMessage(GAME_JOIN, 10002, -1)));
-//        assertEquals(null, ct.tryJoinAGame(new GameMessage(GAME_JOIN, 10000, -1)));
-//        assertEquals(null, ct.tryJoinAGame(new GameMessage(GAME_JOIN, 10001, -1)));
-//        Game g = ct.findGame(10001);
-//        g.addUser(new User(1,"user1", "123"));
-//        Game g0 = ct.findGame(10000);
-//        g0.addUser(new User(1,"user1", "123"));
-//        g0.addUser(new User(3,"user3", "123"));
-//        assertEquals(null, ct.tryJoinAGame(new GameMessage(GAME_JOIN, 10000, -1)));
-//        assertEquals(null, ct.tryJoinAGame(new GameMessage(GAME_JOIN, 10001, -1)));
-//    }
+    @Test
+    public void test_userLogIn(){
+        List<User> users =  createUsers(2);
+        List<Game> games = createGames(1, 2);
+        ClientThread ct = new ClientThread(games, users,null, new AtomicInteger(0));
+        assertEquals( null, ct.tryLogIn("user1", "123"));
+        assertEquals(true, ct.ownerUser == users.get(1));
+        assertEquals(false, ct.ownerUser == users.get(0));
+        assertEquals( INVALID_LOGIN, ct.tryLogIn("user1", "1234"));
+        assertEquals( INVALID_LOGIN, ct.tryLogIn("u2er1", "123"));
+        assertEquals( INVALID_LOGIN, ct.tryLogIn(null, "123"));
+        assertEquals( INVALID_LOGIN, ct.tryLogIn("user1", null));
+        assertEquals( INVALID_LOGIN, ct.tryLogIn(null, null));
+    }
 
-//    private List<Game> createAliveGames(int num, int maxNumUsers){
-//        List<Game> games = new ArrayList<Game>();
-//        for(int i = 0; i< num; i++){
-//            Game g = new Game(i+10000,maxNumUsers);
-//            games.add(g);
-//        }
-//        return games;
-//    }
-//    @Test
-//    public void test_getRoomInfo(){
-//        List<User> users =  createUsers(2);
-//        List<Game> games = createAliveGames(3, 2);
-//        ClientThread ct = new ClientThread(games, users,null, new AtomicInteger(0));
-//        assertEquals( null, ct.tryLogIn("user0","123"));
-//        assertEquals(3, ct.getAllGameInfo().size());
-//        games.get(0).gInfo.gameState.setGameDead();
-//        assertEquals(2, ct.getAllGameInfo().size());
-//        games.get(1).gInfo.gameState.setGameDead();
-//        assertEquals(1, ct.getAllGameInfo().size());
-//        games.get(2).gInfo.gameState.setGameDead();
-//        assertEquals(0, ct.getAllGameInfo().size());
-//
-//    }
+    @Test
+    public void test_SignUp(){
+        List<User> users =  createUsers(2);
+        List<Game> games = createGames(1, 2);
+        ClientThread ct = new ClientThread(games, users,null, new AtomicInteger(0));
+        assertEquals( INVALID_SIGNUP, ct.trySignUp("user1", "123"));
+        assertEquals( INVALID_SIGNUP, ct.trySignUp("user1", "1234"));
+//        assertEquals( null, ct.trySignUp("user1", "123"));
+        assertEquals(2,ct.users.size());
+        assertEquals(1,ct.games.size());
+        assertEquals( INVALID_SIGNUP, ct.trySignUp(null, "123"));
+        assertEquals( INVALID_SIGNUP, ct.trySignUp("user1", null));
+        assertEquals( INVALID_SIGNUP, ct.trySignUp(null, null));
+    }
+
+    @Test
+    public void test_tryCreateAGame(){
+        List<User> users =  createUsers(2);
+        List<Game> games = createGames(10000, 2);
+        ClientThread ct = new ClientThread(games, users,null, new AtomicInteger(0));
+//        assertEquals(1000, ct.games.size());
+        assertEquals(null, ct.tryLogIn("user0","123"));
+        assertEquals( null, ct.tryCreateAGame(new GameMessage(GAME_CREATE, -1, 2)));
+        ct.gameOnGoing.gInfo.gameState.setGameDead();
+        HibernateTool.updateGameInfo(ct.gameOnGoing.gInfo);
+        ct.games.get(1000).addUser(users.get(1));
+        ct.games.get(1000).gInfo.gameState.changAPlayerStateTo(users.get(0), PLAYER_STATE_SWITCH_OUT);
+        ct.games.get(1000).gInfo.gameState.changAPlayerStateTo(users.get(1), PLAYER_STATE_SWITCH_OUT);
+        assertEquals(true,ct.gameOnGoing!=null);
+        Game g = ct.findGame(10000);
+        assertEquals(2,g.getMaxNumUsers());
+    }
+
+
+    @Test
+    public void test_tryJoinAGame(){
+        ClientThread ct = createAClientThread(1, 2);
+        assertEquals( null, ct.tryLogIn("user0","123"));
+        assertEquals(INVALID_JOIN, ct.tryJoinAGame(new GameMessage(GAME_JOIN, -1, -1)));
+        assertEquals(INVALID_JOIN, ct.tryJoinAGame(new GameMessage(GAME_JOIN, 10002, -1)));
+        assertEquals(null, ct.tryJoinAGame(new GameMessage(GAME_JOIN, 10000, -1)));
+        assertEquals(null, ct.tryJoinAGame(new GameMessage(GAME_JOIN, 10001, -1)));
+        Game g = ct.findGame(10001);
+        g.addUser(new User(1,"user1", "123"));
+        Game g0 = ct.findGame(10000);
+        g0.addUser(new User(1,"user1", "123"));
+        g0.addUser(new User(3,"user3", "123"));
+        assertEquals(null, ct.tryJoinAGame(new GameMessage(GAME_JOIN, 10000, -1)));
+        assertEquals(null, ct.tryJoinAGame(new GameMessage(GAME_JOIN, 10001, -1)));
+    }
+
+    private List<Game> createAliveGames(int num, int maxNumUsers){
+        List<Game> games = new ArrayList<Game>();
+        for(int i = 0; i< num; i++){
+            Game g = new Game(i+10000,maxNumUsers);
+            games.add(g);
+        }
+        return games;
+    }
+    @Test
+    public void test_getRoomInfo(){
+        List<User> users =  createUsers(2);
+        List<Game> games = createAliveGames(3, 2);
+        ClientThread ct = new ClientThread(games, users,null, new AtomicInteger(0));
+        assertEquals( null, ct.tryLogIn("user0","123"));
+        assertEquals(3, ct.getAllGameInfo().size());
+        games.get(0).gInfo.gameState.setGameDead();
+        assertEquals(2, ct.getAllGameInfo().size());
+        games.get(1).gInfo.gameState.setGameDead();
+        assertEquals(1, ct.getAllGameInfo().size());
+        games.get(2).gInfo.gameState.setGameDead();
+        assertEquals(0, ct.getAllGameInfo().size());
+
+    }
     public void waitTime(int t){
         try {
             TimeUnit.SECONDS.sleep(t);
