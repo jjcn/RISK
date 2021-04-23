@@ -520,11 +520,15 @@ public class Troop implements Serializable {
                 if(numReady<num){
                     throw new IllegalArgumentException("No enough archer ready to shoot");
                 }
-
+                int count=0;
                 for (int i = 0; i < this.population.size(); i++) {
-                    if(population.get(i).getJobName().equals(s)){
+                    if(population.get(i).getJobName().equals(s)&&count<num){
+
                         Archer arc=(Archer)population.get(i);
-                        sub.add(arc.shoot());
+                        if(arc.checkReady()) {
+                            sub.add(arc.shoot());
+                            count++;
+                        }
                     }
                 }
                 newDict.put(ARROW_NAMES.get(arrowLevel), num);
