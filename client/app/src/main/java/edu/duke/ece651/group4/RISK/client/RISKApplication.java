@@ -497,9 +497,9 @@ public class RISKApplication extends Application {
      */
     public static void doSoldierUpgrade(UpgradeTroopOrder order, onResultListener listener) {
         try {
-            UpgradeTroopOrder tmp = new UpgradeTroopOrder(order.getSrcName(), order.getLevelBefore(), order.getLevelAfter(), order.getNUnit());
+//            UpgradeTroopOrder tmp = new UpgradeTroopOrder(order.getSrcName(), order.getLevelBefore(), order.getLevelAfter(), order.getNUnit());
             theWorld.upgradeTroop(order, userName);
-            send(tmp, listener);
+            send(order, listener);
         } catch (Exception e) {
             listener.onFailure(e.getMessage());
         }

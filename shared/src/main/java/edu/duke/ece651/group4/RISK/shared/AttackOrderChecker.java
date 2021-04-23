@@ -61,7 +61,7 @@ public class AttackOrderChecker implements Serializable {
             // ranged units can only attack territories within range
             else {
                 int distance = world.calculateShortestPath(start, end);
-                int troopRange = troop.getRange();
+                int troopRange = start.getAttackRange();
                 if (troopRange < distance) {
                     return String.format(RANGED_OUT_OF_REACH_MSG,
                             end.getName(),
