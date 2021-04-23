@@ -625,8 +625,7 @@ public class RISKApplication extends Application {
     }
 
     public static void sendOneMsg(ChatMessageUI message, onResultListener listener) {
-        chatClient.send(message);
-        listener.onSuccess();
+        chatClient.send(message, listener);
     }
 
     public static void addMsg(ChatMessageUI msg) {

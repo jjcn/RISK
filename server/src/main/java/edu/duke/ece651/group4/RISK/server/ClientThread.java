@@ -160,9 +160,6 @@ public class ClientThread extends Thread {
      * */
     synchronized protected String tryCreateAGame(GameMessage gMess){
         int maxNumPlayers = gMess.getNumPlayers();
-        if(maxNumPlayers < 1 || maxNumPlayers > 5){
-            return INVALID_CREATE;
-        }
 //        this.gameOnGoing = new Game(globalID.getAndIncrement(), maxNumPlayers);
         this.gameOnGoing = new Game(games.size(), maxNumPlayers);
         games.add(gameOnGoing);
