@@ -75,9 +75,6 @@ public class GameActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 switchGame();
-                return true;
-            case R.id.menu_rooms:
-                switchGame();
                 finish();
                 return true;
             case R.id.menu_devinfo:

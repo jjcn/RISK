@@ -5,11 +5,6 @@
           app:showAsAction="ifRoom"
     />
 
-    <item android:id="@+id/menu_rooms"
-            android:title="Switch Room"
-          app:showAsAction="never"
-    />
-
     <item android:title="Develop Info"
           android:id="@+id/menu_devinfo"
           app:showAsAction="never"

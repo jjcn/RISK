@@ -84,13 +84,10 @@ public class TurnActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                onBackPressed();
+                switchOut();
                 return true;
             case R.id.menu_chat:
                 goChat();
-                return true;
-            case R.id.menu_rooms:
-                switchOut();
                 return true;
             case R.id.menu_devinfo:
                 showColorEgg();
