@@ -235,7 +235,7 @@ public class WorldFactory implements Serializable {
                 10 * worldSize, // area
                 50 * worldSize, // food
                 100 * worldSize, // tech
-                2000, 2000,
+                200, 200,
                 new Random(0));
     }
 

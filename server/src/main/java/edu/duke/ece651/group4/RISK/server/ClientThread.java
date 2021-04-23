@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static edu.duke.ece651.group4.RISK.server.HostApp.printGameInfo;
 import static edu.duke.ece651.group4.RISK.server.ServerConstant.*;
 import static edu.duke.ece651.group4.RISK.shared.Constant.*;
 
@@ -86,6 +87,7 @@ public class ClientThread extends Thread {
         }
         User newUser = new User(users.size(), username, password);
         users.add(newUser);
+        HibernateTool.addUserInfo(newUser.userInfo); //store this userInfo into database
         out.println("This user signs up successfully");
         return null;
     }
@@ -121,7 +123,6 @@ public class ClientThread extends Thread {
             return;
         }
         //1.send the gameInfo to Client
-//        this.theClient.sendObject(getAllGameInfo());
         //2. select an option
         while(true){
             GameMessage gameMessage = (GameMessage) this.theClient.recvObject();
@@ -136,7 +137,6 @@ public class ClientThread extends Thread {
                     res = tryJoinAGame(gameMessage);
                     break;
                 case GAME_REFRESH:
-//                    out.println("Will send a room info to players");
                     res = getAllGameInfo();
                     break;
                 case GAME_EXIT:
@@ -163,10 +163,12 @@ public class ClientThread extends Thread {
         if(maxNumPlayers < 1 || maxNumPlayers > 5){
             return INVALID_CREATE;
         }
-        this.gameOnGoing = new Game(globalID.getAndIncrement(), maxNumPlayers);
+//        this.gameOnGoing = new Game(globalID.getAndIncrement(), maxNumPlayers);
+        this.gameOnGoing = new Game(games.size(), maxNumPlayers);
         games.add(gameOnGoing);
         GameRunner gameRunner = new GameRunner(gameOnGoing,out);
         gameOnGoing.addUser(ownerUser);
+        HibernateTool.addGameInfo(gameOnGoing.getGameInfo());
         gameRunner.start();
         out.println(ownerUser.getUsername() + " creates a game" + gameOnGoing.getGameID() + " successfully and the number of the game support is " + gameOnGoing.getMaxNumUsers());
         return null;
@@ -185,27 +187,26 @@ public class ClientThread extends Thread {
         Game gameToJoin = findGame(gameID);
         String res = checkJoinGame(gameToJoin);
         if(res != null){return res;}
-        if(!gameToJoin.isFull()){
+        if(!gameToJoin.isFull() && !gameToJoin.isUserInGame(ownerUser)){
             gameToJoin.addUser(ownerUser); // this is synchronized function
-//            out.println(ownerUser.getUsername() + " joins a new game " + gameToJoin.getGameID());
         }
         else{
             gameToJoin.switchInUser(ownerUser); // this is synchronized function
-//            out.println(ownerUser.getUsername() + " switches in  game " + gameToJoin.getGameID() + " AGAIN");
         }
         gameOnGoing = gameToJoin;
+        HibernateTool.updateGameInfo(gameOnGoing.getGameInfo());
         out.println( "Game" + gameOnGoing.getGameID() + " has " + gameOnGoing.getUserNames().size() +" users now.");
         return null;
     }
 
     protected String checkJoinGame (Game gameToJoin){
-        if(gameToJoin == null){ return INVALID_JOIN;}
-        if(gameToJoin.isFull() && !gameToJoin.isUserInGame(ownerUser)){return INVALID_JOIN;}
-        if(!gameToJoin.isFull()){
-            if(gameToJoin.isUserInGame(ownerUser)){
-                return  INVALID_JOIN;
-            }
+        if(gameToJoin == null){
+            out.println( "Invalid Join: Game is null");
+            return "Invalid Join: Game is null";
         }
+        if(gameToJoin.isFull() && !gameToJoin.isUserInGame(ownerUser)){
+            out.println( INVALID_JOIN);
+            return INVALID_JOIN;}
         return null;
     }
 
@@ -230,17 +231,19 @@ public class ClientThread extends Thread {
      * @return a arrayList<RoomInfo> that will be sent to this client
      * */
     protected ArrayList<RoomInfo> getAllGameInfo(){
-        out.println(ownerUser.getUsername() + " push refresh button and the number of games now: " + games.size());
+
         ArrayList<RoomInfo> roomsInfo = new ArrayList<RoomInfo>();
         for(Game g : games){
-            if(g.gameState.isAlive()){
-//                out.println("Game"+ g.getGameID() + " is active and should be shown in room list");
+            if(g.gInfo.gameState.isAlive()){
                 roomsInfo.add(createARoomInfo(g));
             }
         }
+        out.println(ownerUser.getUsername() + " push refresh button and the number of games now: " + roomsInfo.size());
         return roomsInfo;
     }
+
     protected RoomInfo createARoomInfo(Game g){
+        List<String> names =  g.getUserNames();
         return new RoomInfo(g.getGameID(), g.getUserNames(), g.getMaxNumUsers());
     }
 
@@ -253,16 +256,19 @@ public class ClientThread extends Thread {
         if(gameOnGoing == null){
             return;
         }
-        out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " Place Units Phase");
-        if(gameOnGoing.gameState.isDonePlaceUnits()){
+        if(gameOnGoing.gInfo.gameState.isDonePlaceUnits()){
             return;
         }
-        gameOnGoing.barrierWait();
+        out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " Place Units Phase");
+//        gameOnGoing.barrierWait();
         // wait all players to join and runner to set up the game
-        waitNotifyFromRunner(); // This is to make sure runner notify all after all waits
+        if(!gameOnGoing.gInfo.gameState.isSetUp()){
+            waitNotifyFromRunner(); // This is to make sure runner notify all after all waits
+        }
+
         // send the world info
         this.theClient.sendObject(gameOnGoing.getTheWorld());
-        out.println("Game" + gameOnGoing.getGameID() + ": send world to " + ownerUser.getUsername() + " wait for orders" );
+        out.println("Game" + gameOnGoing.getGameID() + ": send world to " + ownerUser.getUsername() + " wait for orders in Place Units Phase" );
         // start to place Units
         List<PlaceOrder> placeOrders = (List<PlaceOrder> )this.theClient.recvObject();
         for(PlaceOrder p: placeOrders){
@@ -270,9 +276,9 @@ public class ClientThread extends Thread {
         }
         out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " finishes placing units and wait for others");
         // wait all players to finish placeUnits
-        gameOnGoing.barrierWait();
-        gameOnGoing.gameState.setDonePlaceUnits(); // if user joins back, he does not need to do place unit phase
-
+//        gameOnGoing.barrierWait();
+        waitNotifyFromRunner();
+        gameOnGoing.setDonePlacementPhase(); // if user joins back, he does not need to do place unit phase
     }
 
 
@@ -292,7 +298,7 @@ public class ClientThread extends Thread {
         out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " action phase");
         doActionPhaseOneTurn();
 
-        if(gameOnGoing.gameState.getAPlayerState(ownerUser).equals(PLAYER_STATE_SWITCH_OUT)){
+        if(gameOnGoing.gInfo.gameState.getAPlayerState(ownerUser).equals(PLAYER_STATE_SWITCH_OUT)){
             out.println("Game" + gameOnGoing.getGameID() + ": Checking Phase :  " + ownerUser.getUsername() + " Switches Out");
             gameOnGoing = null;
             return;
@@ -301,7 +307,7 @@ public class ClientThread extends Thread {
         out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " wait for runner update the world");
         boolean exit = false;
         while(!exit){
-            if(!gameOnGoing.gameState.isDoneUpdateGame()){
+            if(!gameOnGoing.gInfo.gameState.isDoneUpdateGame()){
                 exit = true;
             }
             try {
@@ -328,9 +334,10 @@ public class ClientThread extends Thread {
         while(!exit){
             if(start){
                 this.theClient.sendObject(gameOnGoing.getTheWorld());
+                out.println("Game" + gameOnGoing.getGameID() + ": send world to " + ownerUser.getUsername() + " wait for orders in action phase" );
                 start = false;
             }
-            out.println("Game" + gameOnGoing.getGameID() + ": send world to " + ownerUser.getUsername() + " wait for orders" );
+
             Order order = (Order) this.theClient.recvObject();
             out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " has a order: " + order.getActionName());
             exit = gameOnGoing.tryUpdateActionOnWorld(order,ownerUser);
@@ -350,6 +357,7 @@ public class ClientThread extends Thread {
             out.println("Game" + gameOnGoing.getGameID() + ": Checking Phase :  game END!!!! and winner is " + gameOnGoing.getTheWorld().getWinner() );
             this.theClient.sendObject(gameOnGoing.getTheWorld());
             gameOnGoing.switchOutUser(ownerUser);
+            HibernateTool.updateGameInfo(gameOnGoing.getGameInfo());
             gameOnGoing = null;
             return;
         }
@@ -360,12 +368,14 @@ public class ClientThread extends Thread {
             }*/
         if(gameOnGoing.isUserLose(ownerUser)){
             out.println("Game" + gameOnGoing.getGameID() + ": Checking Phase :  " + ownerUser.getUsername() + " loses");
-            gameOnGoing.gameState.changAPlayerStateTo(ownerUser, PLAYER_STATE_LOSE);
+            gameOnGoing.gInfo.gameState.changAPlayerStateTo(ownerUser, PLAYER_STATE_LOSE);
         }
         else{
             out.println("Game" + gameOnGoing.getGameID() + ": Checking Phase :  " + ownerUser.getUsername() + " go back to do action");
-            gameOnGoing.gameState.changAPlayerStateTo(ownerUser, PLAYER_STATE_ACTION_PHASE);
+            gameOnGoing.gInfo.gameState.changAPlayerStateTo(ownerUser, PLAYER_STATE_ACTION_PHASE);
         }
+        printGameInfo(gameOnGoing.getGameInfo());
+        HibernateTool.updateGameInfo(gameOnGoing.getGameInfo());
     }
 
     /*
@@ -377,9 +387,9 @@ public class ClientThread extends Thread {
 
             synchronized (gameOnGoing){
                 out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " wait for runner's notify");
-                gameOnGoing.gameState.askUserWaiting(ownerUser);
+                gameOnGoing.gInfo.gameState.askUserWaiting(ownerUser);
                 gameOnGoing.wait();
-                gameOnGoing.gameState.askUserDoneWaiting(ownerUser);
+                gameOnGoing.gInfo.gameState.askUserDoneWaiting(ownerUser);
                 out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " get notify from runner");
             }
         } catch (InterruptedException e) {
@@ -428,7 +438,7 @@ public class ClientThread extends Thread {
             trySetUpUser(); //part1 above
             trySetUpGame(); //part2 above
             tryPlaceUnits(); //part3 above
-            tryRunGameOneTurn();//part4 above
+            tryRunGameOneTurn(); //part4 above
         }
     }
 }

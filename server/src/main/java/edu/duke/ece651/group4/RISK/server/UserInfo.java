@@ -1,10 +1,27 @@
 package edu.duke.ece651.group4.RISK.server;
 
-public class UserInfo {
+import javax.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
-    final int userID;
+import java.io.Serializable;
+
+@Entity
+@Getter
+@Setter
+public class UserInfo implements Serializable {
     final String username;
     final String password;
+
+    @Id
+    final int userID;
+
+    // default constructor for hibernate
+    public UserInfo() {
+        userID = -1;
+        username = "";
+        password = "";
+    }
 
     /*
     * This constructs a userInfo
