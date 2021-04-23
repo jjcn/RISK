@@ -395,7 +395,7 @@ public class Troop implements Serializable {
                     }
 
                 }else if (maxLevel < check.getLevel()) {
-                    if(target==null||!BREAKER_NAMES.contains(check.getJobName())) {
+                    if(target==null||!BREAKER_NAMES.contains(target.getJobName())) {
                         maxLevel = check.getLevel();
                         target = check;
                     }
