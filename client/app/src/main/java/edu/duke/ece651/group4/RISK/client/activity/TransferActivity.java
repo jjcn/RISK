@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import edu.duke.ece651.group4.RISK.client.R;
 import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static edu.duke.ece651.group4.RISK.client.Constant.*;
@@ -106,17 +107,16 @@ public class TransferActivity extends AppCompatActivity {
         });
 
         // unit level spinner
-        List<String> levelNames = UNIT_NAMES;
-
+        List<Integer> levels = LEVELS;
         levelSpinner = findViewById(R.id.level_choices);
-        SpinnerAdapter levelAfterAdapter = new ArrayAdapter<>(
+        SpinnerAdapter levelAdapter = new ArrayAdapter<>(
                 TransferActivity.this, R.layout.item_choice,
-                levelNames);
-        levelSpinner.setAdapter(levelAfterAdapter);
+                levels);
+        levelSpinner.setAdapter(levelAdapter);
         levelSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                level = position;
+                level = (int) levelAdapter.getItem(position);
             }
 
             @Override

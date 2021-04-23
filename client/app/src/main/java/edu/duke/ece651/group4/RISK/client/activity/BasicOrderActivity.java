@@ -162,7 +162,7 @@ public class BasicOrderActivity extends AppCompatActivity {
          *
          * typeNames == level spinner
          */
-        List<Integer> levels = Arrays.asList(new Integer[]{0, 1, 2, 3, 4, 5, 6});
+        List<Integer> levels = LEVELS; // TODO: hardcoded
         levelSpinner = findViewById(R.id.unit_level_choices);
         SpinnerAdapter levelAdapter = new ArrayAdapter<>(
                 BasicOrderActivity.this,

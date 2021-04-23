@@ -1,6 +1,8 @@
 package edu.duke.ece651.group4.RISK.client;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 public class Constant {
     //*************CONSTANTS FOR DEBUG************//
@@ -73,4 +75,6 @@ public class Constant {
                     "Special thanks" +
                     "to the best TA in the world" +
                     "Kewei Xia";
+    
+    public static final List<Integer> LEVELS = Arrays.asList(new Integer[]{0, 1, 2, 3, 4, 5, 6}); // TODO: hardcoded
 }
