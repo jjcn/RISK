@@ -72,7 +72,7 @@ class GameTest {
     @Test
     public void test_setUpGame(){
         for(int num = 0; num <= 6; num++){
-            Game g = createAGame(1,3);
+            Game g = createAGame(1,num);
             g.gInfo.gameState.setGameDead();
             g.setUpGame();
         }
