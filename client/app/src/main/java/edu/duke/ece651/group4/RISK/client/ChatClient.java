@@ -14,6 +14,7 @@ import java.nio.channels.SocketChannel;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static edu.duke.ece651.group4.RISK.client.Constant.LOG_FUNC_RUN;
+import static edu.duke.ece651.group4.RISK.client.Constant.WORLD_CHAT;
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.addMsg;
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.getRoomId;
 import static edu.duke.ece651.group4.RISK.shared.Constant.CHAT_SETUP_ACTION;
@@ -97,8 +98,8 @@ public class ChatClient extends Thread {
                     new ChatPlayer(chatMsgReceive.getGameID(), chatMsgReceive.getSource()), chatMsgReceive.getTargetsPlayers());
             addMsg(receivedMsg);
             if (chatReceiveListener != null) {
-                Log.i(TAG, LOG_FUNC_RUN + "ClientChat: " + username + " get from " + chatMsgReceive.getSource()
-                        + " saying " + chatMsgReceive.getChatContent());
+                Log.i(TAG, LOG_FUNC_RUN +"chatID "+ chatMsgReceive.getChatID() + "ClientChat: " + username
+                        + " get from " + chatMsgReceive.getSource() + " saying " + chatMsgReceive.getChatContent());
                 chatReceiveListener.onSuccess(receivedMsg);
                 if (msgReceiveListener != null) {
                     msgReceiveListener.onSuccess(receivedMsg);
@@ -124,12 +125,23 @@ public class ChatClient extends Thread {
      */
     public void send(ChatMessageUI message) {
         new Thread(() -> {
+            Log.i(TAG,LOG_FUNC_RUN+"send id: "+message.getChatId());
             ChatMessage chatMessage = new ChatMessage(message.getChatId(), username, message.getTargets(), message.getText(), getRoomId());
             Log.i(TAG,LOG_FUNC_RUN+message.getTargets().size());
             byte[] chatBytes = SerializationUtils.serialize(chatMessage);
             ByteBuffer writeBuffer = ByteBuffer.wrap(chatBytes);
             try {
                 chatChannel.write(writeBuffer);
+                // for one player himself, the chatID is the target for him to send
+                String chatID = WORLD_CHAT;
+                if(!chatID.equals(message.getChatId())) {
+                    for(String target: message.getTargets()) {
+                        message.setChatId(target);
+                    }
+                    Log.i(TAG,LOG_FUNC_RUN+"change id to "+message.getChatId());
+                }
+                Log.i(TAG,LOG_FUNC_RUN+"when update msg I send, id = "+message.getChatId());
+                chatReceiveListener.onSuccess(message); // update msg in chat from user himself
             } catch (IOException e) {
                 Log.e(TAG, e.toString());
             }

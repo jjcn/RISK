@@ -32,6 +32,11 @@ public class ChatMessageUI implements IMessage {
         return chatID;
     }
 
+    public void setChatId(String chatID) {
+        this.chatID = chatID;
+    }
+
+
     @Override
     public String getId() {
         return chatID + user.getId() + createdAt;
