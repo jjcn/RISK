@@ -117,16 +117,16 @@ class ClientThreadTest {
         ClientThread ct = createAClientThread(1, 2);
         assertEquals( null, ct.tryLogIn("user0","123"));
         assertEquals(INVALID_JOIN, ct.tryJoinAGame(new GameMessage(GAME_JOIN, -1, -1)));
-        assertEquals(INVALID_JOIN, ct.tryJoinAGame(new GameMessage(GAME_JOIN, 2, -1)));
-        assertEquals(null, ct.tryJoinAGame(new GameMessage(GAME_JOIN, 1, -1)));
-        assertEquals(INVALID_JOIN, ct.tryJoinAGame(new GameMessage(GAME_JOIN, 1, -1)));
+        assertEquals(INVALID_JOIN, ct.tryJoinAGame(new GameMessage(GAME_JOIN, 10002, -1)));
+        assertEquals(null, ct.tryJoinAGame(new GameMessage(GAME_JOIN, 10000, -1)));
+        assertEquals(null, ct.tryJoinAGame(new GameMessage(GAME_JOIN, 10001, -1)));
         Game g = ct.findGame(10001);
         g.addUser(new User(1,"user1", "123"));
         Game g0 = ct.findGame(10000);
         g0.addUser(new User(1,"user1", "123"));
         g0.addUser(new User(3,"user3", "123"));
-        assertEquals(INVALID_JOIN, ct.tryJoinAGame(new GameMessage(GAME_JOIN, 0, -1)));
-        assertEquals(null, ct.tryJoinAGame(new GameMessage(GAME_JOIN, 1, -1)));
+        assertEquals(null, ct.tryJoinAGame(new GameMessage(GAME_JOIN, 10000, -1)));
+        assertEquals(null, ct.tryJoinAGame(new GameMessage(GAME_JOIN, 10001, -1)));
     }
 
     @Test
