@@ -487,7 +487,7 @@ public class RISKApplication extends Application {
             Log.i(TAG,clo.getSummary());
 
             AttackOrder tmp = new AttackOrder(order.getSrcName(), order.getDesName(), order.getActTroop().clone(), ATTACK_ACTION);
-   
+
             theWorld.attackATerritory(order, userName);
 
             send(tmp, listener);

@@ -58,7 +58,7 @@ public class Constant {
     //Archer information
     public static  final List<String> ARCHER_NAMES = Arrays.asList("Archer LV0","Archer LV1",
             "Archer LV2","Archer LV3","Archer LV4","Archer LV5","Archer LV6");
-    public static final int ARCHER_RANGE=2;
+    public static final int ARCHER_RANGE=2000;
     public static final int ARCHER_COST=15;
 
     public static  final List<String> SHIELD_NAMES = Arrays.asList("Shield LV0","Shield LV1",
