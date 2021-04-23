@@ -111,14 +111,14 @@ public class ChatActivity extends AppCompatActivity implements DialogsListAdapte
     /**
      * Called on receiving new messages
      *
-     * @param dialogId is the id of dialog that receives the message
+     * @param chatId is the id of dialog that receives the message
      * @param message  is the message
      */
-    private void onNewMessage(String dialogId, IMessage message) {
-        boolean isUpdated = chatListAdapter.updateDialogWithMessage(dialogId, message);
+    private void onNewMessage(String chatId, IMessage message) {
+        boolean isUpdated = chatListAdapter.updateDialogWithMessage(chatId, message);
         if (!isUpdated) {
             //Dialog with this ID doesn't exist, so you can create new Dialog or update all dialogs list
-            Log.e(TAG, LOG_FUNC_FAIL + "chatID not exist: "+dialogId);
+            Log.e(TAG, LOG_FUNC_FAIL + "chatID not exist: "+chatId);
         }
     }
 

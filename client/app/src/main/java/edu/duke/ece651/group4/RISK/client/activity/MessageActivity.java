@@ -123,15 +123,15 @@ public class MessageActivity extends AppCompatActivity
     public boolean onSubmit(CharSequence input) {
         ChatPlayer user = new ChatPlayer(getRoomId(), getUserName());
         Set<String> targets = new HashSet<>();
-        if (target.equals("")) {
+        if (target.equals(WORLD_CHAT)) {
             targets.addAll(getAllPlayersName());
             targets.remove(getUserName());
         } else {
             targets.add(target);
         }
-        ChatMessageUI message = new ChatMessageUI(target, input.toString(), user, targets);
+        ChatMessageUI message = new ChatMessageUI(getUserName(), input.toString(), user, targets);
 
-        Log.i(TAG, LOG_FUNC_RUN + "start send msg chatID" + target);
+        Log.i(TAG, LOG_FUNC_RUN + "start send msg target: " + target);
         sendOneMsg(message, new onResultListener() {
             @Override
             public void onSuccess() {
