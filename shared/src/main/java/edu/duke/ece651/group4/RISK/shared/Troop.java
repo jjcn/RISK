@@ -98,7 +98,7 @@ public class Troop implements Serializable {
     public int getRange() {
         int range = 0;
         for (Unit unit : this.population) {
-            range = unit.getRange();
+            range = range>unit.getRange()?range:unit.getRange();
         }
         return range;
     }

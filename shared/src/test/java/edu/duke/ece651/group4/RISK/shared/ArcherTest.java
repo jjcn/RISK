@@ -32,6 +32,8 @@ class ArcherTest {
         arch.setJob("Archer LV6");
         assertEquals(arch.getLevel(),6);
 
+        assertEquals(arch.getRange(),2000);
+
         String testnames=JOB_DICTIONARY.get(ARCHER).get(4);
         assertEquals(testnames,"Archer LV4");
     }
