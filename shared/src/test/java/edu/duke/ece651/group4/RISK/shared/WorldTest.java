@@ -320,6 +320,7 @@ public class WorldTest {
     @Test
     public void testCalculateMoveConsumption() {
         World world = createWorldAndRegister(troopsConnected);
+        world.getPlayerInfoByName("green").unlockAllTypes();
 
         MoveOrder moveOrder1 = new MoveOrder("Narnia", "Oz", new Troop(3, green));
         assertEquals((10 + 12 + 8) * 3 * 1, world.calculateMoveConsumption(moveOrder1));
@@ -457,6 +458,8 @@ public class WorldTest {
         World world = createWorldAndRegister(troopsConnected);
         world.getPlayerInfoByName("green").gainFood(9999);
         world.getPlayerInfoByName("green").gainTech(9999);
+        world.getPlayerInfoByName("green").unlockAllTypes();
+
         // transfer 1 knight
         TransferTroopOrder transfer1 = new TransferTroopOrder("Oz", Constant.KNIGHT, 0, 1);
         world.transferTroop(transfer1, "green");
@@ -668,6 +671,7 @@ public class WorldTest {
     @Test
     public void testTransferTroopSuccess() {
         World world = createWorldAndRegister(troopsConnected);
+        world.getPlayerInfoByName("green").unlockAllTypes();
         int greenTechResource = world.getPlayerInfoByName("green").getTechQuantity();
 
         // one Soldier LV0 -> Knight LV0
@@ -702,8 +706,9 @@ public class WorldTest {
     }
 
     @Test
-    public void testTransferTroopInvalid() {
+    public void testTransferTroopNotEnough() {
         World world = createWorldAndRegister(troopsConnected);
+        world.getPlayerInfoByName("green").unlockAllTypes();
 
         // not enough troop to transfer
         TransferTroopOrder ttOrder1 = new TransferTroopOrder("Narnia",
@@ -711,6 +716,12 @@ public class WorldTest {
         assertThrows(IllegalArgumentException.class,
                 () -> world.transferTroop(ttOrder1, "green"));
 
+    }
+
+    @Test
+    public void testTransferTroopInvalidTroop() {
+        World world = createWorldAndRegister(troopsConnected);
+        world.getPlayerInfoByName("green").unlockAllTypes();
         // invalid type before
         TransferTroopOrder ttOrder2 = new TransferTroopOrder("Narnia",
                 "unknownType", Constant.KNIGHT, 0, 1);
@@ -719,15 +730,41 @@ public class WorldTest {
 
         // invalid type after
         TransferTroopOrder ttOrder3 = new TransferTroopOrder("Narnia",
-                Constant.SOLDIER, "unknownType",0, 1);
+                Constant.SOLDIER, "unknownType", 0, 1);
         assertThrows(IllegalArgumentException.class,
                 () -> world.transferTroop(ttOrder3, "green"));
+    }
 
+    @Test
+    public void testTransferTroopInvalidUnitLevel() {
+        World world = createWorldAndRegister(troopsConnected);
+        world.getPlayerInfoByName("green").unlockAllTypes();
         // invalid level
         TransferTroopOrder ttOrder4 = new TransferTroopOrder("Narnia",
                 Constant.SOLDIER, "unknownType",1, 1);
         assertThrows(IllegalArgumentException.class,
                 () -> world.transferTroop(ttOrder4, "green"));
+    }
+
+    @Test
+    public void testTransferTroopTypeNotUnlocked() {
+        World world = createWorldAndRegister(troopsConnected);
+        Map<String, Integer> NarniaTroop = world.findTerritory("Narnia").checkTroopInfo();
+
+        TransferTroopOrder ttOrder1 =
+                new TransferTroopOrder("Narnia", Constant.KNIGHT,0, 1);
+        assertThrows(IllegalArgumentException.class, () -> world.transferTroop(ttOrder1, "green"));
+        assertEquals(null, NarniaTroop.get("Knight LV0"));
+        assertEquals(10, NarniaTroop.get("Soldier LV0"));
+
+        world.getPlayerInfoByName("green").reachMinTechLevelToUnlockType();
+        world.unlockType("green", Constant.KNIGHT);
+        world.getPlayerInfoByName("green").techLevelInfo.techLevel = 3; // should be
+        TransferTroopOrder ttOrder2 =
+                new TransferTroopOrder("Narnia", Constant.KNIGHT,0, 1);
+        world.transferTroop(ttOrder2, "green");
+        assertEquals(1, NarniaTroop.get("Knight LV0"));
+        assertEquals(9, NarniaTroop.get("Soldier LV0"));
     }
 
     /**
@@ -885,6 +922,7 @@ public class WorldTest {
         assertTrue(world.isTypeUnlocked("red", Constant.SOLDIER));
         assertFalse(world.isTypeUnlocked("red", Constant.KNIGHT));
 
+        world.getPlayerInfoByName("red").reachMinTechLevelToUnlockType();
         world.unlockType("red", Constant.KNIGHT);
         assertSetEquals(newSet(Constant.SOLDIER, Constant.KNIGHT),
                 world.getPlayerInfoByName("red").getUnlockedTypes());

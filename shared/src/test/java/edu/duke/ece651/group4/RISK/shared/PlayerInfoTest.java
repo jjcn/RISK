@@ -129,6 +129,7 @@ public class PlayerInfoTest {
 	@Test
 	public void testAllowedType() {
 		PlayerInfo pInfo = new PlayerInfo("newPlayer", 9999, 9999);
+		pInfo.reachMinTechLevelToUnlockType();
 
 		Set<String> expected = new HashSet<>();
 		expected.add(Constant.SOLDIER);
@@ -149,6 +150,7 @@ public class PlayerInfoTest {
 	@Test
 	public void testGetUnlockedAndUnlockableTypes() {
 		PlayerInfo pInfo = new PlayerInfo("newPlayer", 9999, 9999);
+		pInfo.reachMinTechLevelToUnlockType();
 		pInfo.unlockType(Constant.KNIGHT);
 
 		assertSetEquals(newSet(Constant.SOLDIER, Constant.KNIGHT), pInfo.getUnlockedTypes());
@@ -163,6 +165,7 @@ public class PlayerInfoTest {
 	@Test
 	public void testUnlockTypeInvalid() {
 		PlayerInfo pInfo = new PlayerInfo("newPlayer", 9999, 9999);
+		pInfo.reachMinTechLevelToUnlockType();
 		assertThrows(IllegalArgumentException.class,
 				() -> pInfo.unlockType("UnknownType"));
 		assertThrows(IllegalArgumentException.class,

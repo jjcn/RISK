@@ -47,7 +47,7 @@ public class PlayerInfo implements Serializable {
     /**
      * The starting tech level that a player is allowed to unlock more types.
      */
-    protected static final int MIN_TECH_LEVEL_TO_UNLOCK_TYPE = 1;
+    protected static final int MIN_TECH_LEVEL_TO_UNLOCK_TYPE = 3;
     /**
      * All type of units.
      */
@@ -306,6 +306,22 @@ public class PlayerInfo implements Serializable {
                   )
             );
         }
+    }
+
+    /**
+     * Debug feature.
+     * Set the player tech level to the minimum required tech level to unlock types.
+     */
+    public void reachMinTechLevelToUnlockType() {
+        techLevelInfo.techLevel = MIN_TECH_LEVEL_TO_UNLOCK_TYPE;
+    }
+
+    /**
+     * Debug feature.
+     * Unlock all types for this player.
+     */
+    public void unlockAllTypes() {
+        unlockedTypes.addAll(ALL_UNLOCKABLE_TYPES);
     }
 
     /**

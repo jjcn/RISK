@@ -877,10 +877,16 @@ public class World implements Serializable {
      * @param ttOrder is a transfer troop order.
      * @param playerName is the name of the player who gives this order.
      */
-    public void transferTroop(TransferTroopOrder ttOrder, String playerName) {
+    public void transferTroop(TransferTroopOrder ttOrder, String playerName) throws IllegalArgumentException {
         Territory terr = findTerritory(ttOrder.getSrcName());
         String typeBefore = ttOrder.getTypeBefore();
         String typeAfter = ttOrder.getTypeAfter();
+        // check if a player can transfer to this type
+        if (!isTypeUnlocked(playerName, typeAfter)) {
+            throw new IllegalArgumentException(
+                    String.format("%s has not unlocked %s.", playerName, typeAfter)
+            );
+        }
         int unitLevel = ttOrder.getUnitLevel();
         int nUnit = ttOrder.getNUnit();
 
