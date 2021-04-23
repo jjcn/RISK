@@ -10,14 +10,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import edu.duke.ece651.group4.RISK.client.R;
 import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static edu.duke.ece651.group4.RISK.client.Constant.*;
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.*;
 import static edu.duke.ece651.group4.RISK.client.utility.Notice.showByToast;
-import static edu.duke.ece651.group4.RISK.shared.Constant.JOB_NAMES;
-import static edu.duke.ece651.group4.RISK.shared.Constant.UNIT_NAMES;
+import static edu.duke.ece651.group4.RISK.shared.Constant.*;
 
 public class TransferActivity extends AppCompatActivity {
 
@@ -88,12 +88,11 @@ public class TransferActivity extends AppCompatActivity {
         });
 
         // type spinner
-        List<String> jobNames = JOB_NAMES;
+        List<String> jobNames = new ArrayList<>(getUnLockedTypesWithoutSoldier());
 
         typeAfterSpinner = findViewById(R.id.type_choices);
         SpinnerAdapter typeAdapter = new ArrayAdapter<>(
-                TransferActivity.this, R.layout.item_choice,
-                jobNames);
+                TransferActivity.this, R.layout.item_choice, jobNames);
         typeAfterSpinner.setAdapter(typeAdapter);
         typeAfterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

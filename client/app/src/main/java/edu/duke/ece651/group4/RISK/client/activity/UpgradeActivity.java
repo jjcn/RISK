@@ -97,7 +97,7 @@ public class UpgradeActivity extends AppCompatActivity {
         // type spinner
         List<String> jobNames = new ArrayList<>();
         jobNames.add(SOLDIER);
-        jobNames.addAll(JOB_NAMES);
+        jobNames.addAll(getUnLockedTypesWithoutSoldier());
 
         typeSpinner = findViewById(R.id.unit_type_choices);
         SpinnerAdapter typeAdapter = new ArrayAdapter<>(

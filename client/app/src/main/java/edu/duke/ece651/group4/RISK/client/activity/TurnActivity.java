@@ -13,6 +13,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import edu.duke.ece651.group4.RISK.client.R;
+import edu.duke.ece651.group4.RISK.client.RISKApplication;
 import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
 import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
 import edu.duke.ece651.group4.RISK.client.utility.SimpleSelector;
@@ -72,7 +73,7 @@ public class TurnActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-        actions = new ArrayList<>(Arrays.asList(UI_MOVE, UI_ATK, UI_UPTROOP, UI_CHANGETYPE));
+        actions = new ArrayList<>(Arrays.asList(UI_MOVE, UI_ATK, UI_UPTROOP, UI_UNLOCKTYPE));
         if (getCurrentRoomSize() < 3) {
             actions.remove(UI_ALLIANCE);
         }
@@ -178,9 +179,7 @@ public class TurnActivity extends AppCompatActivity {
                 }
             });
         });
-        builder.setNegativeButton("No", (dialog, which) -> {
-            upTechBT.setEnabled(true);
-        });
+        builder.setNegativeButton("No", (dialog, which) -> upTechBT.setEnabled(true));
         builder.show();
     }
 
@@ -188,9 +187,7 @@ public class TurnActivity extends AppCompatActivity {
         if (getCurrentRoomSize() < 3) {
             allyBT.setVisibility(View.GONE);
         } else {
-            allyBT.setOnClickListener(v -> {
-                selectAlliance();
-            });
+            allyBT.setOnClickListener(v -> selectAlliance());
         }
     }
 
@@ -219,19 +216,13 @@ public class TurnActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(String errMsg) {
-                Log.e(TAG, errMsg);
+                Log.e(TAG, LOG_FUNC_FAIL + errMsg);
             }
         });
         selector.show();
     }
 
-    private void impChatBT() {
-        chatBT.setOnClickListener(v -> {
-            goChat();
-        });
-    }
-
-    private void goChat(){
+    private void goChat() {
         Intent intent = new Intent(TurnActivity.this, ChatActivity.class);
         startActivity(intent);
     }
@@ -309,25 +300,21 @@ public class TurnActivity extends AppCompatActivity {
     private void showStayDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(TurnActivity.this);
         builder.setTitle(STAY_INSTR)
-                .setPositiveButton("Yes", (dialog, which) -> {
-                    stayInGame(new onReceiveListener() {
-                        @Override
-                        public void onSuccess(Object o) {
-                            World world = (World) o;
-                            showByReport(TurnActivity.this, TURN_END, world.getReport());
-                            updateAllInfo();
-                            watchGame();
-                        }
+                .setPositiveButton("Yes", (dialog, which) -> stayInGame(new onReceiveListener() {
+                    @Override
+                    public void onSuccess(Object o) {
+                        World world = (World) o;
+                        showByReport(TurnActivity.this, TURN_END, world.getReport());
+                        updateAllInfo();
+                        watchGame();
+                    }
 
-                        @Override
-                        public void onFailure(String errMsg) {
-                            Log.e(TAG, LOG_FUNC_FAIL + "watchGame should not fail");
-                        }
-                    });
-                })
-                .setNegativeButton("No", (dialog, which) -> {
-                    switchOut();
-                });
+                    @Override
+                    public void onFailure(String errMsg) {
+                        Log.e(TAG, LOG_FUNC_FAIL + "watchGame should not fail");
+                    }
+                }))
+                .setNegativeButton("No", (dialog, which) -> switchOut());
         builder.show();
     }
 
@@ -339,7 +326,7 @@ public class TurnActivity extends AppCompatActivity {
             if (getAllianceName().equals(NO_ALLY)) {
                 allyBT.setEnabled(true);
             }
-            reportInfo.add("Turn " + getWorld().getTurnNumber() + ": \n" + getWorld().getReport()+"\n\n");
+            reportInfo.add("Turn " + getWorld().getTurnNumber() + ": \n" + getWorld().getReport() + "\n\n");
             waitDG.cancel();
 
             commitBT.setClickable(true);
@@ -444,6 +431,9 @@ public class TurnActivity extends AppCompatActivity {
                     intent.setComponent(new ComponentName(TurnActivity.this, UpgradeActivity.class));
                     startActivity(intent);
                     break;
+                case UI_UNLOCKTYPE:
+                    selectType();
+                    break;
                 case UI_CHANGETYPE:
                     intent.setComponent(new ComponentName(TurnActivity.this, TransferActivity.class));
                     startActivity(intent);
@@ -459,21 +449,28 @@ public class TurnActivity extends AppCompatActivity {
      * Select a unit type from an alert dialog.
      */
     private void selectType() {
-        List<String> types = new ArrayList<>();
-        types.addAll(getUnLockableTypes());
-
+        List<String> types = new ArrayList<>(getUnLockableTypes());
         SimpleSelector selector = new SimpleSelector(TurnActivity.this,
                 CHOOSE_TYPE_INSTR, types, new onReceiveListener() {
             @Override
             public void onSuccess(Object o) {
                 if (o instanceof String) {
                     String type = (String) o;
-                    Log.d(TAG, "User selected in type dialog: " + type);
-                    try {
-                        unlockType(type);
-                    } catch (IllegalArgumentException iae) {
-                        showByToast(TurnActivity.this, iae.getMessage());
-                    }
+                    Log.d(TAG, LOG_FUNC_RUN + "User selected in type dialog: " + type);
+                    unlockType(type, new onResultListener() {
+                        @Override
+                        public void onSuccess() {
+                            if (getUnLockedTypesWithoutSoldier().size() == 0) {
+                                actions.add(UI_CHANGETYPE);
+                                actionAdapter.notifyDataSetChanged();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(String errMsg) {
+                            showByToast(TurnActivity.this, errMsg);
+                        }
+                    });
                 } else {
                     onFailure("not String name");
                 }
@@ -481,26 +478,10 @@ public class TurnActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(String errMsg) {
-                Log.e(TAG, errMsg);
+                Log.e(TAG, LOG_FUNC_FAIL + errMsg);
             }
         });
         selector.show();
-
-    /*ListAdapter choicesAdapter = new ArrayAdapter<String>(TurnActivity.this, R.layout.item_choice, types);
-    AlertDialog dialog = new AlertDialog.Builder(this)
-            .setTitle(CHOOSE_TYPE_INSTR)
-            .setSingleChoiceItems(choicesAdapter, 0, (dialog1, which) -> {
-                String type = types.get(which);
-                Log.d(TAG, "User selected in type dialog: " + type);
-                try {
-                    unlockType(type);
-                } catch (IllegalArgumentException iae) {
-                    showByToast(TurnActivity.this, iae.getMessage());
-                }
-                dialog1.dismiss();
-            })
-            .create();
-    dialog.show();*/
     }
 
     @Override

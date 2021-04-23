@@ -139,7 +139,7 @@ public class BasicOrderActivity extends AppCompatActivity {
          */
         List<String> typeNames = new ArrayList<>();
         typeNames.add(SOLDIER);
-        typeNames.addAll(JOB_NAMES);
+        typeNames.addAll(getUnLockedTypesWithoutSoldier());
 
         typeSpinner = findViewById(R.id.unit_type_choices);
         SpinnerAdapter typeAdapter = new ArrayAdapter<>(
