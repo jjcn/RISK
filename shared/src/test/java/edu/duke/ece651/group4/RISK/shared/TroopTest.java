@@ -258,4 +258,63 @@ public class TroopTest {
 
     }
 
+
+    @Test
+    public void Test_battle_bug() {
+        Troop troop1 = new Troop(10, new TextPlayer("test1"), new Random(0));
+        troop1.updateUnit(UNIT_NAMES.get(0),4,4,10000);
+        troop1.transfer(SOLDIER,SHIELD, 0,2);
+        Troop troop2 = new Troop(10, new TextPlayer("test2"), new Random(1));
+        troop2.transfer(SOLDIER,BREAKER, 0,2);
+        troop2.updateUnit(UNIT_NAMES.get(0),3,4,10000);
+
+        troop2=troop1.doOneCombat(troop2);
+        System.out.println(troop1.getSummary());
+        System.out.println(troop2.getSummary());
+
+        troop1=troop2.doOneCombat(troop1);
+        System.out.println(troop1.getSummary());
+        System.out.println(troop2.getSummary());
+
+        troop2=troop1.doOneCombat(troop2);
+        System.out.println(troop1.getSummary());
+        System.out.println(troop2.getSummary());
+
+        troop1=troop2.doOneCombat(troop1);
+        System.out.println(troop1.getSummary());
+        System.out.println(troop2.getSummary());
+
+        troop2=troop1.doOneCombat(troop2);
+        System.out.println(troop1.getSummary());
+        System.out.println(troop2.getSummary());
+
+        troop1=troop2.doOneCombat(troop1);
+        System.out.println(troop1.getSummary());
+        System.out.println(troop2.getSummary());
+
+        troop2=troop1.doOneCombat(troop2);
+        System.out.println(troop1.getSummary());
+        System.out.println(troop2.getSummary());
+
+        troop1=troop2.doOneCombat(troop1);
+        System.out.println(troop1.getSummary());
+        System.out.println(troop2.getSummary());
+
+
+        troop2=troop1.doOneCombat(troop2);
+        System.out.println(troop1.getSummary());
+        System.out.println(troop2.getSummary());
+
+        troop1=troop2.doOneCombat(troop1);
+        System.out.println(troop1.getSummary());
+        System.out.println(troop2.getSummary());
+
+        troop2=troop1.doOneCombat(troop2);
+        System.out.println(troop1.getSummary());
+        System.out.println(troop2.getSummary());
+
+        troop1=troop2.doOneCombat(troop1);
+        System.out.println(troop1.getSummary());
+        System.out.println(troop2.getSummary());
+    }
 }
