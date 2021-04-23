@@ -2,6 +2,7 @@ package edu.duke.ece651.group4.RISK.client;
 
 import android.util.Log;
 import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
+import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
 import edu.duke.ece651.group4.RISK.client.model.ChatMessageUI;
 import edu.duke.ece651.group4.RISK.client.model.ChatPlayer;
 import edu.duke.ece651.group4.RISK.shared.message.ChatMessage;
@@ -123,11 +124,11 @@ public class ChatClient extends Thread {
      *
      * @param message to send.
      */
-    public void send(ChatMessageUI message) {
+    public void send(ChatMessageUI message, onResultListener listener) {
         new Thread(() -> {
             Log.i(TAG,LOG_FUNC_RUN+"send id: "+message.getChatId());
             ChatMessage chatMessage = new ChatMessage(message.getChatId(), username, message.getTargets(), message.getText(), getRoomId());
-            Log.i(TAG,LOG_FUNC_RUN+message.getTargets().size());
+            Log.i(TAG,LOG_FUNC_RUN+"target number: "+message.getTargets().size());
             byte[] chatBytes = SerializationUtils.serialize(chatMessage);
             ByteBuffer writeBuffer = ByteBuffer.wrap(chatBytes);
             try {
@@ -140,8 +141,10 @@ public class ChatClient extends Thread {
                     }
                     Log.i(TAG,LOG_FUNC_RUN+"change id to "+message.getChatId());
                 }
-                Log.i(TAG,LOG_FUNC_RUN+"when update msg I send, id = "+message.getChatId());
+                Log.i(TAG,LOG_FUNC_RUN+"when update msg myself send, id = "+message.getChatId());
                 chatReceiveListener.onSuccess(message); // update msg in chat from user himself
+                listener.onSuccess();
+
             } catch (IOException e) {
                 Log.e(TAG, e.toString());
             }

@@ -38,9 +38,10 @@ public class PlayerInfo implements Serializable {
     protected FoodResource foodResource;
     protected TechResource techResource;
 
-    protected PlayerInfo(String playerName, TechLevelInfo techLevelInfo,
-                         FoodResource foodResource, TechResource techResource,
-                         Set<String> allianceNames) {
+    protected PlayerInfo(String playerName,
+                         TechLevelInfo techLevelInfo,
+                         FoodResource foodResource,
+                         TechResource techResource) {
         this.playerName = playerName;
         this.techLevelInfo = techLevelInfo;
         this.foodResource = foodResource;
@@ -72,17 +73,16 @@ public class PlayerInfo implements Serializable {
      */
     public PlayerInfo(String playerName, int nFood, int nTech) {
         this(playerName, new TechLevelInfo(1),
-                new FoodResource(nFood), new TechResource(nTech),
-                new HashSet<>());
+                new FoodResource(nFood), new TechResource(nTech));
     }
 
     public PlayerInfo clone() {
-        Set<String> allianceNamesCopy = new HashSet<>();
-        return new PlayerInfo(playerName,
+        return new PlayerInfo(
+                playerName,
                 new TechLevelInfo(techLevelInfo.getTechLevel()),
                 new FoodResource(foodResource.getQuantity()),
-                new TechResource(techResource.getQuantity()),
-                allianceNamesCopy);
+                new TechResource(techResource.getQuantity())
+                );
     }
 
     public String getName() {
