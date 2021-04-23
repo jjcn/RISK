@@ -398,6 +398,7 @@ public class Graph<T> implements Serializable {
         return smallestDistanceVertex;
     }
 
+
     /*@Override
     public boolean equals(Object other) {
         if (other != null && other.getClass().equals(getClass())) {
@@ -416,6 +417,7 @@ public class Graph<T> implements Serializable {
             return false;
         }
     }*/
+
 
     @Override
     public String toString() {

@@ -1,5 +1,7 @@
 package edu.duke.ece651.group4.RISK.server;
 
+import edu.duke.ece651.group4.RISK.shared.World;
+
 import java.io.PrintStream;
 import java.util.concurrent.TimeUnit;
 
@@ -37,7 +39,7 @@ public class GameRunner extends Thread{
     protected void notifyAllUsers(){
         boolean exit0 = false;
         while(!exit0){
-            if(game.gameState.isAllPlayersWaiting()){
+            if(game.gInfo.gameState.isAllPlayersWaiting()){
                 exit0 = true;
             }
             try {
@@ -69,20 +71,27 @@ public class GameRunner extends Thread{
             }
         }
 //        while(!game.isFull()){game.waitTime(1);}
-        out.println("Game" +game.getGameID()+" is FULL!!!!!!");
         // wait all users to join to start the game
+        if(!game.gInfo.gameState.isSetUp()){
+            game.setUpGame();
+            HibernateTool.updateGameInfo(game.getGameInfo());
+            out.println("Game" +game.getGameID()+" runner finishes sets up");
+            notifyAllUsers(); //Initialization
+            out.println("Game" +game.getGameID()+" runner notifies all players before action phase");
+        }
+        if(!game.gInfo.gameState.isDonePlaceUnits()){
+            notifyAllUsers(); //notify all users to place units
+        }
+        else {
+            out.println("Game" + game.getGameID() + " is loaded to enter action phase!");
+        }
 
-        game.setUpGame();
-        out.println("Game" +game.getGameID()+" runner finishes sets up");
-        //Initialization
-        notifyAllUsers();
 
-        out.println("Game" +game.getGameID()+" runner notifies all players");
         //ActionPhase
         while(true){
             boolean exit2 = false;
             while(!exit2){
-                if(game.gameState.isAllPlayersDoneOneTurn()){
+                if(game.gInfo.gameState.isAllPlayersDoneOneTurn()){
                     exit2 = true;
                 }
                 try {
@@ -94,16 +103,16 @@ public class GameRunner extends Thread{
 //            while(!game.gameState.isAllPlayersDoneOneTurn()){game.waitTime(1);}
             //Update the game
             game.updateGameAfterOneTurn();
-            game.gameState.updateStateTo(GAME_STATE_DONE_UPDATE);
-            game.gameState.setActivePlayersStateToUpdating();
+            out.println("Game" +game.getGameID() +" turn number is " + game.gInfo.getTheWorld().getTurnNumber());
+            game.gInfo.gameState.updateStateTo(GAME_STATE_DONE_UPDATE);
+            game.gInfo.gameState.setActivePlayersStateToUpdating();
             out.println("Game" +game.getGameID()+" runner set all active players updating state");
-
             notifyAllUsers(); // notify all players to enter updating state
             out.println("Game" +game.getGameID()+" runner notifies all players");
 
             boolean exit3 = false;
             while(!exit3){
-                if(game.gameState.isAllPlayersDoneUpdatingState()){
+                if(game.gInfo.gameState.isAllPlayersDoneUpdatingState()){
                     exit3 = true;
                 }
                 try {
@@ -117,14 +126,15 @@ public class GameRunner extends Thread{
 //            }
             // wait until all players finish updating their state
 
-
             out.println("Game" +game.getGameID()+" runner knows all players are done updating");
-            if(game.isEndGame() || game.gameState.isAllPlayersSwitchOut()){
-                game.gameState.setGameDead();
+            if(game.isEndGame() || game.gInfo.gameState.isAllPlayersSwitchOut()){
+                game.gInfo.gameState.setGameDead();
                 out.println("Game" +game.getGameID()+" runner ends, set this game dead");
+//                HibernateTool.deleteGameInfo(game.gInfo);
                 break;
             }
-            game.gameState.updateStateTo(GAME_STATE_WAIT_TO_UPDATE);
+            game.gInfo.gameState.updateStateTo(GAME_STATE_WAIT_TO_UPDATE);
+            HibernateTool.updateGameInfo(game.getGameInfo());
         }
     }
 

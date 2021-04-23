@@ -1,8 +1,7 @@
 package edu.duke.ece651.group4.RISK.server;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.io.Serializable;
+import java.util.*;
 
 import static edu.duke.ece651.group4.RISK.server.ServerConstant.*;
 
@@ -13,17 +12,27 @@ import static edu.duke.ece651.group4.RISK.server.ServerConstant.*;
  *            2. GAME_STATE_DONE_UPDATE
  * */
 
-public class GameState extends State{
-    HashSet<PlayerState> playerStates;
+public class GameState extends State implements Serializable{
+    List<PlayerState> playerStates;
     private boolean isDonePlaceUnits;
     private boolean isAlive;
+    private boolean isSetUp;
+
     public GameState(){
         super(GAME_STATE_WAIT_TO_UPDATE);
-        playerStates = new HashSet<PlayerState>();
+        playerStates = new ArrayList<>();
         isDonePlaceUnits = false;
         isAlive = true;
+        isSetUp = false;
     }
 
+    public void DoneSetUp(){
+        isSetUp = true;
+    }
+
+    public boolean isSetUp(){
+        return isSetUp;
+    }
     /*
     * This set the game dead after the game ends
     * */
@@ -196,4 +205,18 @@ public class GameState extends State{
      * */
     public boolean isWaitToUpdate(){return getState().equals(GAME_STATE_WAIT_TO_UPDATE);}
 
+//    public GameState clone(){
+//        GameState gs = new GameState();
+//        for(PlayerState ps: playerStates){
+//            gs.playerStates.add(ps.clone());
+//        }
+//        if(!gs.isAlive){
+//            gs.setGameDead();
+//        }
+//        if(gs.isDonePlaceUnits){
+//            gs.setDonePlaceUnits();
+//        }
+//        if(gs.is)
+//        return gs;
+//    }
 }
