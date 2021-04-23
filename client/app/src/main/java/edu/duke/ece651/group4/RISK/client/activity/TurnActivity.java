@@ -225,6 +225,7 @@ public class TurnActivity extends AppCompatActivity {
                     startActivity(intent);
                     break;
                 case UI_UNLOCKTYPE:
+                    selectType();
                     break;
                 default:
                     throw new IllegalStateException("Unexpected value: " + actionType);
@@ -234,20 +235,55 @@ public class TurnActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Select an alliance from a selector.
+     */
     private void selectAlliance() {
-        ArrayList<String> choices = new ArrayList<>();
+        List<String> choices = new ArrayList<>();
         // you can not ally with yourself
         for (String playerName : getAllPlayersName()) {
             if (!playerName.equals(getUserName())) {
                 choices.add(playerName);
             }
         }
-        SimpleSelector selector = new SimpleSelector(TurnActivity.this, CHOOSE_USER_INSTR, choices, new onReceiveListener() {
+        SimpleSelector selector = new SimpleSelector(TurnActivity.this,
+                CHOOSE_USER_INSTR, choices, new onReceiveListener() {
             @Override
             public void onSuccess(Object o) {
                 if (o instanceof String) {
                     String alliance = (String) o;
                     requireAlliance(alliance);
+                } else {
+                    onFailure("not String name");
+                }
+            }
+
+            @Override
+            public void onFailure(String errMsg) {
+                Log.e(TAG, errMsg);
+            }
+        });
+        selector.show();
+    }
+
+    /**
+     * Select a unit type from a selector.
+     */
+    private void selectType() {
+        List<String> choices = new ArrayList<>();
+        choices.addAll(getUnlockableTypes());
+
+        SimpleSelector selector = new SimpleSelector(TurnActivity.this,
+                CHOOSE_TYPE_INSTR, choices, new onReceiveListener() {
+            @Override
+            public void onSuccess(Object o) {
+                if (o instanceof String) {
+                    String type = (String) o;
+                    try {
+                        unlockType(type);
+                    } catch (IllegalArgumentException iae) {
+                        showByToast(TurnActivity.this, iae.getMessage());
+                    }
                 } else {
                     onFailure("not String name");
                 }

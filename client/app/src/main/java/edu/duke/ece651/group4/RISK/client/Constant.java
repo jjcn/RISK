@@ -34,6 +34,7 @@ public class Constant {
     public static final String CONFIRM = "Do you want to finish this turn?";
     public static final String CONFIRM_ACTION = "(You cannot perform further action this turn if choose yes.)";
     public static final String CHOOSE_USER_INSTR = "You want to ally with: ";
+    public static final String CHOOSE_TYPE_INSTR = "You want to unlock: ";
     public static final String NO_ALLY = "None";
     public static final String SEND_CHAT_FAIL = "Failed to send the message";
     public static final String UPTECH_CONFIRM = "Do you want to upgrade tech?";

@@ -47,7 +47,7 @@ public class PlayerInfo implements Serializable {
     /**
      * The starting tech level that a player is allowed to unlock more types.
      */
-    protected static final int MIN_TECH_LEVEL_TO_UNLOCK_TYPE = 3;
+    protected static final int MIN_TECH_LEVEL_TO_UNLOCK_TYPE = 3; // TODO: when debugging, use 1. Change to 3 when shipping
     /**
      * All type of units.
      */
