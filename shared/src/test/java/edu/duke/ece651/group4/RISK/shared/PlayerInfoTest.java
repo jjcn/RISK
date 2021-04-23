@@ -198,6 +198,13 @@ public class PlayerInfoTest {
 	}
 
 	@Test
+	public void testIsTypeUnlocked() {
+		PlayerInfo pInfo = new PlayerInfo("newPlayer", 9999, 9999);
+		assertTrue(pInfo.isTypeUnlocked(Constant.SOLDIER));
+		assertFalse(pInfo.isTypeUnlocked(Constant.KNIGHT));
+	}
+
+	@Test
 	public void testClone() {
 		PlayerInfo pInfo = new PlayerInfo("");
 		PlayerInfo clonePInfo = pInfo.clone();

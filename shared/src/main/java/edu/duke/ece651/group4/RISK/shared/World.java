@@ -1078,6 +1078,18 @@ public class World implements Serializable {
     }
 
     /**
+     * Check if a type is unlocked for a certain player.
+     *
+     * @param playerName is the name of the player.
+     * @param type is a type name.
+     * @return true, if the type is already unlocked for that player.
+     *          false, if not.
+     */
+    public boolean isTypeUnlocked(String playerName, String type) {
+        return getPlayerInfoByName(playerName).isTypeUnlocked(type);
+    }
+
+    /**
      * Iterate over all territories around the world, and do battles on them.
      *
      * @return A summary of battle info on all territories.

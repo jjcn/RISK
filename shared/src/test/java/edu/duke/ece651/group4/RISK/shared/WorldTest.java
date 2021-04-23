@@ -878,8 +878,26 @@ public class WorldTest {
     }
 
     @Test
-    public void testGetUnlockedTypes() {
+    public void testTypeUnlock() {
+        World world = createWorldAndRegister(troopsConnected);
+        Set<String> soldierSet = newSet(Constant.SOLDIER);
+        assertSetEquals(soldierSet, world.getPlayerInfoByName("red").getUnlockedTypes());
+        assertTrue(world.isTypeUnlocked("red", Constant.SOLDIER));
+        assertFalse(world.isTypeUnlocked("red", Constant.KNIGHT));
 
+        world.unlockType("red", Constant.KNIGHT);
+        assertSetEquals(newSet(Constant.SOLDIER, Constant.KNIGHT),
+                world.getPlayerInfoByName("red").getUnlockedTypes());
+        assertSetEquals(newSet(Constant.ARCHER, Constant.SHIELD, Constant.BREAKER),
+                world.getPlayerInfoByName("red").getUnlockableTypes());
+        assertTrue(world.isTypeUnlocked("red", Constant.SOLDIER));
+        assertTrue(world.isTypeUnlocked("red", Constant.KNIGHT));
+
+        world.unlockType("red", Constant.ARCHER);
+        assertSetEquals(newSet(Constant.SOLDIER, Constant.KNIGHT, Constant.ARCHER),
+                world.getPlayerInfoByName("red").getUnlockedTypes());
+        assertSetEquals(new HashSet<>(),
+                world.getPlayerInfoByName("red").getUnlockableTypes());
     }
 
     @Test

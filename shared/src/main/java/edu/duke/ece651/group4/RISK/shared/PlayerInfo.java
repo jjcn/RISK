@@ -320,6 +320,16 @@ public class PlayerInfo implements Serializable {
         unlockedTypes.add(type);
     }
 
+    /**
+     * Check if a type is unlocked.
+     * @param type is a type name.
+     * @return true, if the type is already unlocked.
+     *          false, if not.
+     */
+    public boolean isTypeUnlocked(String type) {
+        return unlockedTypes.contains(type);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o != null && o.getClass().equals(getClass())) {
