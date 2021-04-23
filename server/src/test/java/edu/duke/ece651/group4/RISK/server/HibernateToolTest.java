@@ -1,5 +1,6 @@
 package edu.duke.ece651.group4.RISK.server;
 
+import org.hibernate.HibernateException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -30,7 +31,7 @@ class HibernateToolTest {
     private void tryAddUsers(List<UserInfo> uInfos){
         for(UserInfo u : uInfos){
             HibernateTool.addUserInfo(u);
-            HibernateTool.addUserInfo(u);
+            assertThrows(HibernateException.class, ()->HibernateTool.addUserInfo(u));
         }
     }
 
@@ -108,7 +109,7 @@ class HibernateToolTest {
         HibernateTool.deleteGameInfo(gameInfo);
         Game g  = new Game(gameInfo);
         HibernateTool.addGameInfo(g.gInfo);
-        HibernateTool.addGameInfo(g.gInfo); //exceptions
+        assertThrows(HibernateException.class, ()->HibernateTool.addGameInfo(g.gInfo)); //exceptions
         g.addUser(new User(1,"u1","1"));
         HibernateTool.updateGameInfo(g.gInfo);
         g.addUser(new User(0,"u0","1"));
