@@ -613,22 +613,6 @@ public class RISKApplication extends Application {
         });
     }
 
-    /**
-     * Get the unit types this player can unlock.
-     * @return a set of all types the player can unlock now.
-     */
-    public static Set<String> getUnlockableTypes() {
-        return theWorld.getUnlockableTypes(userName);
-    }
-
-    /**
-     * A Player tries to unlock a new type.
-     * @param type is a type name.
-     */
-    public static void unlockType(String type) throws IllegalArgumentException {
-        theWorld.unlockType(userName, type);
-    }
-
     /*************** function for chat **************/
 
     public static int getRoomId() {
@@ -689,5 +673,21 @@ public class RISKApplication extends Application {
         List<String> chatPlayerNames = new ArrayList<>(getAllPlayersName());
         chatPlayerNames.remove(userName);
         return chatPlayerNames;
+    }
+
+    /**
+     * Get the unit types this player can unlock.
+     * @return a set of all types the player can unlock now.
+     */
+    public static Set<String> getUnLockableTypes() {
+        return theWorld.getUnlockableTypes(userName);
+    }
+
+    /**
+     * A Player tries to unlock a new type.
+     * @param type is a type name.
+     */
+    public static void unlockType(String type) throws IllegalArgumentException {
+        theWorld.unlockType(userName, type);
     }
 }

@@ -455,6 +455,54 @@ public class TurnActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Select a unit type from an alert dialog.
+     */
+    private void selectType() {
+        List<String> types = new ArrayList<>();
+        types.addAll(getUnLockableTypes());
+
+        SimpleSelector selector = new SimpleSelector(TurnActivity.this,
+                CHOOSE_TYPE_INSTR, types, new onReceiveListener() {
+            @Override
+            public void onSuccess(Object o) {
+                if (o instanceof String) {
+                    String type = (String) o;
+                    Log.d(TAG, "User selected in type dialog: " + type);
+                    try {
+                        unlockType(type);
+                    } catch (IllegalArgumentException iae) {
+                        showByToast(TurnActivity.this, iae.getMessage());
+                    }
+                } else {
+                    onFailure("not String name");
+                }
+            }
+
+            @Override
+            public void onFailure(String errMsg) {
+                Log.e(TAG, errMsg);
+            }
+        });
+        selector.show();
+
+    /*ListAdapter choicesAdapter = new ArrayAdapter<String>(TurnActivity.this, R.layout.item_choice, types);
+    AlertDialog dialog = new AlertDialog.Builder(this)
+            .setTitle(CHOOSE_TYPE_INSTR)
+            .setSingleChoiceItems(choicesAdapter, 0, (dialog1, which) -> {
+                String type = types.get(which);
+                Log.d(TAG, "User selected in type dialog: " + type);
+                try {
+                    unlockType(type);
+                } catch (IllegalArgumentException iae) {
+                    showByToast(TurnActivity.this, iae.getMessage());
+                }
+                dialog1.dismiss();
+            })
+            .create();
+    dialog.show();*/
+    }
+
     @Override
     protected void onResume() {
         Log.i(TAG, LOG_FUNC_RUN + "call on resume");
