@@ -85,6 +85,7 @@ public class TurnActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 switchOut();
+                finish();
                 return true;
             case R.id.menu_chat:
                 goChat();
