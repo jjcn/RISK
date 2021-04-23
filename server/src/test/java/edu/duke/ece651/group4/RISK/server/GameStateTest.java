@@ -3,6 +3,7 @@ package edu.duke.ece651.group4.RISK.server;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static edu.duke.ece651.group4.RISK.server.ServerConstant.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -93,4 +94,34 @@ class GameStateTest {
         assertEquals(true, gs.isAllPlayersSwitchOut());
     }
 
+    private void askAllUsersWaiting(List<User> users, GameState gs){
+        for(User u: users){
+            gs.askUserWaiting(u);
+        }
+    }
+    private void askAllUsersDoneWaiting(List<User> users, GameState gs){
+        for(User u: users){
+            gs.askUserDoneWaiting(u);
+        }
+    }
+    @Test
+    public void test_UserWaiting(){
+        ArrayList<User> users = createUsers(3);
+        GameState gs = createAGameState(users);
+        assertEquals(false, gs.isAllPlayersWaiting());
+        askAllUsersWaiting(users,gs);
+        assertEquals(true, gs.isAllPlayersWaiting());
+        gs.askUserDoneWaiting(users.get(0));
+        assertEquals(false, gs.isAllPlayersWaiting());
+        askAllUsersDoneWaiting(users,gs);
+        assertEquals(false, gs.askUserDoneWaiting(new User(100,"1","1")));
+        assertEquals(false, gs.askUserWaiting(new User(100,"1","1")));
+    }
+
+    @Test
+    public void test_isSetup(){
+        ArrayList<User> users = createUsers(3);
+        GameState gs = createAGameState(users);
+        assertEquals(false, gs.isSetUp());
+    }
 }
