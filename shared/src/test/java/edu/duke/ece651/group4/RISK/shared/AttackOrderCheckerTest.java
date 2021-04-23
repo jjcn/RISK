@@ -125,21 +125,25 @@ public class AttackOrderCheckerTest {
 
     @Test
     public void testAttackOrderCheckerRanged() {
-        // TODO
         World world = createWorld(names, troopsConnected);
         world.registerPlayer(redInfo);
         world.registerPlayer(greenInfo);
         world.registerPlayer(blueInfo);
+        world.getPlayerInfoByName("red").gainTech(9999);
         // transfer one Soldier LV0 -> Archer on Gondor
-        TransferTroopOrder transfer1 = new TransferTroopOrder("Gondor", Constant.ARCHER, 0, 1);
+        TransferTroopOrder transfer1 = new TransferTroopOrder("Gondor", Constant.ARCHER, 0, 13);
         world.transferTroop(transfer1,"red");
         // let it perform attack on Oz (adjacent to Gondor)
         HashMap<String, Integer> archerTroopDict = new HashMap<>();
-        archerTroopDict.put(Troop.buildJobName(Constant.ARCHER, 0), 1);
+        archerTroopDict.put(Troop.buildJobName(Constant.ARCHER, 0), 13);
         Troop archerTroop = new Troop(archerTroopDict, red);
         AttackOrder atk1 = new AttackOrder("Gondor", "Oz", archerTroop);
-        world.attackATerritory(atk1, "red");
 
+        assertDoesNotThrow(() -> aoc.checkMyOrder(atk1, world));
 
+        // archer should stay on the territory
+        assertEquals(13, world.findTerritory("Gondor").getTroopSize("red"));
+        world.doAllBattles();
+        System.out.println(world.findTerritory("Oz").checkPopulation());
     }
 }
