@@ -36,4 +36,10 @@ class ArcherTest {
         String testnames=JOB_DICTIONARY.get(ARCHER).get(4);
         assertEquals(testnames,"Archer LV4");
     }
+
+    @Test
+    public void testGetRange() {
+        Archer archer = new Archer(1);
+        assertEquals(Constant.ARCHER_RANGE, archer.getRange());
+    }
 }

@@ -28,9 +28,9 @@ public class AttackOrderChecker implements Serializable {
         "Your melee units tried to attack %s from %s, which are not adjacent territories. %n" +
         "Melee units can only attack territories directly adjacent to your territories.";
     protected final String RANGED_OUT_OF_REACH_MSG =
-        "Your ranged units tried to attack %s from %s, which is out of reach. %n" +
+        "Your ranged units tried to attack %s from %s,%n" +
+        "Which is %d away, but your units only have a range of %d.%n" +
         "Ranged units can only attack territories within their attack range.";
-
 
     public AttackOrderChecker() {}
 
@@ -60,10 +60,14 @@ public class AttackOrderChecker implements Serializable {
             }
             // ranged units can only attack territories within range
             else {
-                if (world.calculateShortestPath(start, end) > troop.getRange()) {
+                int distance = world.calculateShortestPath(start, end);
+                int troopRange = start.getAttackRange();
+                if (troopRange < distance) {
                     return String.format(RANGED_OUT_OF_REACH_MSG,
                             end.getName(),
-                            start.getName());
+                            start.getName(),
+                            distance,
+                            troopRange);
                 }
             }
             return null;
