@@ -13,10 +13,11 @@ public class AttackOrderCheckerTest {
             "Cannot attack %s, which belongs to you.";
     protected final String MELEE_CANT_ATTACK_MSG =
             "Your melee units tried to attack %s from %s, which are not adjacent territories. %n" +
-                    "Melee units can only attack territories directly adjacent to your territories.";
+            "Melee units can only attack territories directly adjacent to your territories.";
     protected final String RANGED_OUT_OF_REACH_MSG =
-            "Your ranged units tried to attack %s from %s, which is out of reach. %n" +
-                    "Ranged units can only attack territories within their attack range.";
+            "Your ranged units tried to attack %s from %s,%n" +
+             "Which is %d away, but your units only have a range of %d.%n" +
+             "Ranged units can only attack territories within their attack range.";
 
     PrintStream out = null;
     Reader inputReader = null;
@@ -142,6 +143,7 @@ public class AttackOrderCheckerTest {
         assertDoesNotThrow(() -> aoc.checkMyOrder(atk1, world));
 
         // archer should stay on the territory
+        world.attackATerritory(atk1,"red");
         assertEquals(13, world.findTerritory("Gondor").getTroopSize("red"));
         world.doAllBattles();
         System.out.println(world.findTerritory("Oz").checkPopulation());
