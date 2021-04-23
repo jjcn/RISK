@@ -1061,6 +1061,25 @@ public class World implements Serializable {
     }
 
     /**
+     * A Player tries to unlock a new type.
+     * @param playerName is the name of a player.
+     * @param type is a type name.
+     * @throws IllegalArgumentException
+     */
+    public void unlockType(String playerName, String type) throws IllegalArgumentException {
+        getPlayerInfoByName(playerName).unlockType(type);
+    }
+
+    /**
+     * Get the types a players is allowed to have now.
+     * @param playerName is the name of a player.
+     * @return is a type name.
+     */
+    public Set<String> getAllowedTypes(String playerName) {
+        return getPlayerInfoByName(playerName).getAllowedTypes();
+    }
+
+    /**
      * Iterate over all territories around the world, and do battles on them.
      *
      * @return A summary of battle info on all territories.

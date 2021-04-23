@@ -4,6 +4,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class PlayerInfoTest {
 	@Test
 	public void testConstructors() {
@@ -99,6 +102,65 @@ public class PlayerInfoTest {
 		assertEquals(1, pInfo.techLevelInfo.getTechLevel());
 	}
 
+	/**
+	 * Helper function that tests if two sets of Strings are equal
+	 * @param set1
+	 * @param set2
+	 */
+	protected void assertSetEquals(Set<String> set1, Set<String> set2) {
+		assertEquals(set1.size(), set2.size());
+		assertTrue(set1.containsAll(set2));
+		assertTrue(set2.containsAll(set1));
+	}
+
+	@Test
+	public void testAllowedType() {
+		PlayerInfo pInfo = new PlayerInfo("newPlayer", 9999, 9999);
+
+		Set<String> expected = new HashSet<>();
+		expected.add(Constant.SOLDIER);
+		assertSetEquals(expected, pInfo.allowedTypes);
+
+		expected.add(Constant.KNIGHT);
+		pInfo.unlockType(Constant.KNIGHT);
+		assertSetEquals(expected, pInfo.allowedTypes);
+
+		expected.add(Constant.BREAKER);
+		pInfo.unlockType(Constant.BREAKER);
+		assertSetEquals(expected, pInfo.allowedTypes);
+
+		assertThrows(IllegalArgumentException.class, () -> pInfo.unlockType(Constant.ARCHER));
+		assertSetEquals(expected, pInfo.allowedTypes);
+	}
+
+	@Test
+	public void testUnlockTypeInvalid() {
+		PlayerInfo pInfo = new PlayerInfo("newPlayer", 9999, 9999);
+		assertThrows(IllegalArgumentException.class,
+				() -> pInfo.unlockType("UnknownType"));
+		assertThrows(IllegalArgumentException.class,
+				() -> pInfo.unlockType(Constant.SOLDIER));
+
+		pInfo.unlockType(Constant.KNIGHT);
+		assertThrows(IllegalArgumentException.class,
+				() -> pInfo.unlockType(Constant.KNIGHT));
+	}
+
+	@Test
+	public void testUnlockTypeLowTechLevel() {
+		PlayerInfo pInfo = new PlayerInfo("newPlayer", 9999, 9999);
+		pInfo.techLevelInfo.techLevel = 0;
+		assertThrows(IllegalArgumentException.class,
+				() -> pInfo.unlockType(Constant.KNIGHT));
+	}
+
+	@Test
+	public void testUnlockType_not_enough_resource() {
+		PlayerInfo pInfo = new PlayerInfo("A", 0, 0);
+		assertThrows(IllegalArgumentException.class,
+				() -> pInfo.unlockType(Constant.KNIGHT));
+	}
+
 	@Test
 	public void testClone() {
 		PlayerInfo pInfo = new PlayerInfo("");
@@ -110,6 +172,7 @@ public class PlayerInfoTest {
 		assertEquals(pInfo.techLevelInfo, clonePInfo.techLevelInfo);
 		assertEquals(pInfo.foodResource, clonePInfo.foodResource);
 		assertEquals(pInfo.techResource, clonePInfo.techResource);
+		assertEquals(pInfo.allowedTypes, clonePInfo.allowedTypes);
 	}
 
 	@Test
