@@ -195,9 +195,8 @@ public class BasicOrderActivity extends AppCompatActivity {
                 return;
             }
             nUnit = Integer.parseInt(text.toString());
-            Log.d(TAG, LOG_FUNC_RUN + "User selected: from " + srcName + " to " + desName
-                    + " move " + nUnit + " " + level);
-            String result = "";
+            Log.d(TAG, LOG_FUNC_RUN + "User selected: from " + srcName + " to " + desName +
+                    " move " + nUnit + " " + type + " of level " + level);
             // move action
             if (actionType.equals(UI_MOVE)) {
                 doOneMove(buildMoveOrder(srcName, desName, nUnit, type, level),

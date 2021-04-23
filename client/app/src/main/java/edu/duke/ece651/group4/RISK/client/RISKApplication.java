@@ -419,7 +419,7 @@ public class RISKApplication extends Application {
      */
     public static String buildJobName(String unitType, int unitLevel) {
         String jobName;
-        List<String> levelNames = edu.duke.ece651.group4.RISK.shared.Constant.JOB_DICTIONARY.get(unitType);
+        List<String> levelNames = JOB_DICTIONARY.get(unitType);
         if (levelNames == null) {
             throw new IllegalArgumentException(
                     String.format("Type %s does not exist.", unitType)
