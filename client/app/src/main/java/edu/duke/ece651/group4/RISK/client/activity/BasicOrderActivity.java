@@ -13,6 +13,7 @@ import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
 import edu.duke.ece651.group4.RISK.shared.Constant;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static edu.duke.ece651.group4.RISK.client.Constant.*;
@@ -26,7 +27,7 @@ public class BasicOrderActivity extends AppCompatActivity {
     private String srcName; // source territory name
     private String desName; // destination territory name
     private String type;
-    private String level; // unit type name
+    private int level; // unit type name
     private int nUnit; // number of units in action
     private String actionType; // type of action, move or attack
 
@@ -53,7 +54,7 @@ public class BasicOrderActivity extends AppCompatActivity {
         srcName = "";
         desName = "";
         type = "";
-        level = "";
+        level = -1;
         nUnit = -1;
 
         // read action type from activity
@@ -158,17 +159,17 @@ public class BasicOrderActivity extends AppCompatActivity {
          *
          * typeNames == level spinner
          */
-        List<String> levelNames = getLevelNames();
+        List<Integer> levels = Arrays.asList(new Integer[]{0, 1, 2, 3, 4, 5, 6});
         levelSpinner = findViewById(R.id.unit_level_choices);
         SpinnerAdapter levelAdapter = new ArrayAdapter<>(
                 BasicOrderActivity.this,
                 R.layout.item_choice,
-                levelNames);
+                levels);
         levelSpinner.setAdapter(levelAdapter);
         levelSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                level = (String) levelAdapter.getItem(position);
+                level = (int) levelAdapter.getItem(position);
             }
 
             @Override
@@ -199,7 +200,7 @@ public class BasicOrderActivity extends AppCompatActivity {
             String result = "";
             // move action
             if (actionType.equals(UI_MOVE)) {
-                doOneMove(buildMoveOrder(srcName, desName, nUnit, level),
+                doOneMove(buildMoveOrder(srcName, desName, nUnit, type, level),
                         new onResultListener() {
                             @Override
                             public void onSuccess() {
@@ -215,7 +216,7 @@ public class BasicOrderActivity extends AppCompatActivity {
             }
             // attack action
             else if (actionType.equals(UI_ATK)) {
-                doOneAttack(buildAttackOrder(srcName, desName, nUnit, level),
+                doOneAttack(buildAttackOrder(srcName, desName, nUnit, type, level),
                         new onResultListener() {
                             @Override
                             public void onSuccess() {
