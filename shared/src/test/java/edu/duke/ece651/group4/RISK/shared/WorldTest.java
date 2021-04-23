@@ -279,6 +279,14 @@ public class WorldTest {
 
     @Test
     public void testCalculateShortestPath() {
+        World world = createWorldAndRegister(troopsConnected);
+        assertEquals(29, world.calculateShortestPath("Narnia", "Oz"));
+        assertEquals(16, world.calculateShortestPath("Narnia", "Elantris"));
+        assertEquals(21, world.calculateShortestPath("Narnia", "Scadrial"));
+    }
+
+    @Test
+    public void testCalculateShortestPathForAPlayer() {
     	World world = createWorldAndRegister(troopsConnected);
 
         // Narnia -> Midkemia -> Oz
@@ -286,7 +294,7 @@ public class WorldTest {
                 world.calculateShortestPath("Narnia", "Oz", "green"));
     	// Blocked
     	assertThrows(IllegalArgumentException.class,
-                () -> world.calculateShortestPath("Narnia", "Roshar", "green"));
+                () -> world.calculateShortestPath("Narnia", "Elantris", "green"));
     	// Scadrial -> Roshar
     	assertEquals(8,
                 world.calculateShortestPath("Scadrial", "Roshar", "blue"));

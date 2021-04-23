@@ -62,7 +62,7 @@ public class AttackOrderChecker implements Serializable {
             else {
                 int distance = world.calculateShortestPath(start, end);
                 int troopRange = troop.getRange();
-                if (distance > troopRange) {
+                if (troopRange < distance) {
                     return String.format(RANGED_OUT_OF_REACH_MSG,
                             end.getName(),
                             start.getName(),
