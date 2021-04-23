@@ -4,8 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Random;
 
-import static edu.duke.ece651.group4.RISK.shared.Constant.ARCHER;
-import static edu.duke.ece651.group4.RISK.shared.Constant.JOB_DICTIONARY;
+import static edu.duke.ece651.group4.RISK.shared.Constant.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ArcherTest {
@@ -32,7 +31,15 @@ class ArcherTest {
         arch.setJob("Archer LV6");
         assertEquals(arch.getLevel(),6);
 
+        assertEquals(arch.getRange(),ARCHER_RANGE);
+
         String testnames=JOB_DICTIONARY.get(ARCHER).get(4);
         assertEquals(testnames,"Archer LV4");
+    }
+
+    @Test
+    public void testGetRange() {
+        Archer archer = new Archer(1);
+        assertEquals(Constant.ARCHER_RANGE, archer.getRange());
     }
 }

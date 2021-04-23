@@ -119,6 +119,7 @@ class TerritoryTest {
         assertThrows(new IllegalArgumentException().getClass(), () -> test.checkTypeNum("wrong"));
 
         test.transfer(SOLDIER,ARCHER, 0,2);
+        assertEquals(test.getAttackRange(),ARCHER_RANGE);
         test.transfer(SOLDIER,SHIELD, 0,4);
 
         assertEquals(test.hasRangedTroop(),true);
