@@ -1,6 +1,8 @@
 package edu.duke.ece651.group4.RISK.client.activity;
 
+import android.app.Dialog;
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.SoundPool;
 import android.os.Bundle;
@@ -12,6 +14,7 @@ import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 import edu.duke.ece651.group4.RISK.client.R;
 import edu.duke.ece651.group4.RISK.client.utility.SimpleSelector;
 import edu.duke.ece651.group4.RISK.client.listener.onReceiveListener;
@@ -267,34 +270,31 @@ public class TurnActivity extends AppCompatActivity {
     }
 
     /**
-     * Select a unit type from a selector.
+     * Select a unit type from an alert dialog.
      */
     private void selectType() {
         List<String> choices = new ArrayList<>();
         choices.addAll(getUnlockableTypes());
-
-        SimpleSelector selector = new SimpleSelector(TurnActivity.this,
-                CHOOSE_TYPE_INSTR, choices, new onReceiveListener() {
-            @Override
-            public void onSuccess(Object o) {
-                if (o instanceof String) {
-                    String type = (String) o;
-                    try {
-                        unlockType(type);
-                    } catch (IllegalArgumentException iae) {
-                        showByToast(TurnActivity.this, iae.getMessage());
+        ListAdapter choicesAdapter = new ArrayAdapter<String>(TurnActivity.this, R.layout.item_choice, choices);
+        // TODO: should just be a simple alert dialog
+        AlertDialog dialog = new AlertDialog
+                .Builder(this)
+                .setTitle(CHOOSE_TYPE_INSTR)
+                .setSingleChoiceItems(choicesAdapter, -1, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String type = choices.get(which);
+                        Log.d(TAG, "User selected in type dialog: " + type);
+                        try {
+                            unlockType(type);
+                        } catch (IllegalArgumentException iae) {
+                            showByToast(TurnActivity.this, iae.getMessage());
+                        }
+                        dialog.dismiss();
                     }
-                } else {
-                    onFailure("not String name");
-                }
-            }
-
-            @Override
-            public void onFailure(String errMsg) {
-                Log.e(TAG, errMsg);
-            }
-        });
-        selector.show();
+                })
+                .create();
+        dialog.show();
     }
 
     private void showConfirmDialog() {
