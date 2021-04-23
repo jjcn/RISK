@@ -226,6 +226,7 @@ public class RISKApplication extends Application {
         threadPool.execute(() -> {
             try {
                 Object receivedO = playerClient.recvObject();
+                Log.i(TAG,LOG_FUNC_RUN+"receive from server"+receivedO);
                 listener.onSuccess(receivedO);
             } catch (Exception e) {
                 Log.e(TAG, LOG_FUNC_FAIL + e.toString());
@@ -242,6 +243,7 @@ public class RISKApplication extends Application {
             try {
                 playerClient.sendObject(toSendO);
                 Object receivedO = playerClient.recvObject();
+                Log.i(TAG,LOG_FUNC_RUN+"receive from server(want result) "+receivedO);
                 if (receivedO == null) {
                     listener.onSuccess();
                 } else if (receivedO instanceof String) {
@@ -250,7 +252,7 @@ public class RISKApplication extends Application {
                     Log.e(TAG, LOG_FUNC_FAIL + "result not string or null");
                 }
             } catch (Exception e) {
-                Log.e(TAG, e.toString());
+                Log.e(TAG,LOG_FUNC_FAIL+e.toString());
             }
         });
     }
@@ -264,6 +266,7 @@ public class RISKApplication extends Application {
             try {
                 playerClient.sendObject(toSendO);
                 Object receivedO = playerClient.recvObject();
+                Log.i(TAG,LOG_FUNC_RUN+"receive from server(want world) "+receivedO);
                 if (receivedO instanceof String) {
                     listener.onFailure((String) receivedO);
                 } else if (receivedO instanceof World) {
@@ -288,6 +291,7 @@ public class RISKApplication extends Application {
             try {
                 playerClient.sendObject(toSendO);
                 Object receivedO = playerClient.recvObject();
+                Log.i(TAG,LOG_FUNC_RUN+"receive from server(want list) "+receivedO);
                 if (receivedO instanceof String) {
                     listener.onFailure((String) receivedO);
                     listener.onFailure((String) receivedO);
@@ -323,6 +327,7 @@ public class RISKApplication extends Application {
      */
     public static void sendLogIn(String name, String pwd, onResultListener listener) {
         userName = name;
+        Log.i(TAG,LOG_FUNC_RUN+"try log in");
         sendAccountInfo(LOG_SIGNIN, name, pwd, listener);
     }
 
@@ -369,6 +374,7 @@ public class RISKApplication extends Application {
     public static void waitGameStart(onJoinRoomListener listenerWorld) {
         try {
             Object receivedWorld = playerClient.recvObject();
+            Log.i(TAG,LOG_FUNC_RUN+"receive from server wait game start"+receivedWorld);
             if (receivedWorld instanceof World) {
                 Log.i(TAG, LOG_FUNC_RUN + "World received");
                 theWorld = (World) receivedWorld;
@@ -570,13 +576,14 @@ public class RISKApplication extends Application {
 
     public static void backLogin() {
         GameMessage m = new GameMessage(GAME_EXIT, -1, -1);
-        send(m, new onResultListener() {
+        sendAndReceiveResult(m, new onResultListener() {
             @Override
             public void onSuccess() {
             }
 
             @Override
             public void onFailure(String errMsg) {
+                Log.e(TAG,LOG_FUNC_FAIL+errMsg);
             }
         });
     }
