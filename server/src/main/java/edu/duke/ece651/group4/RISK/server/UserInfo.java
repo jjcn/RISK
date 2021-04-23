@@ -10,6 +10,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 public class UserInfo implements Serializable {
+    private static final long serialVersionUID = 10006L;
     final String username;
     final String password;
 

@@ -13,6 +13,7 @@ import static edu.duke.ece651.group4.RISK.server.ServerConstant.*;
  * */
 
 public class GameState extends State implements Serializable{
+    private static final long serialVersionUID = 10003L;
     List<PlayerState> playerStates;
     private boolean isDonePlaceUnits;
     private boolean isAlive;
