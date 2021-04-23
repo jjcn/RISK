@@ -235,4 +235,17 @@ public class TroopTest {
             troop2=troop1.doOneCombat(troop2);
         }
     }
+
+    @Test
+    public void Test_clone_bug() {
+        HashMap<String, Integer> dict = new HashMap<>();
+        dict.put(BREAKER_NAMES.get(0), 4);
+        Troop troop1= new Troop(dict, new TextPlayer("test1"));
+//        Troop troop1 = new Troop(10, new TextPlayer("test1"), new Random(0));
+//        troop1.transfer(SOLDIER,BREAKER, 0,2);
+        Troop test=troop1.clone();
+        System.out.println(test.getSummary());
+
+    }
+
 }
