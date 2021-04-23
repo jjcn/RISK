@@ -52,6 +52,38 @@ public class Game implements Serializable {
         return gInfo.theWorld.clone();
     }
     public GameInfo getGameInfo(){return gInfo;}
+
+    /*
+     * This checks a user if lose
+     * @return true if lose, false otherwise
+     * */
+    public boolean isUserLose(User u){
+        return this.gInfo.theWorld.checkLost(u.getUsername());
+    }
+    /*
+     * This checks if the game is full
+     * @return true if full, false otherwise
+     * */
+    public boolean isFull(){
+        return gInfo.usersOnGame.size() == gInfo.maxNumUsers;
+    }
+
+    /*
+     * This class check if the game is ended.
+     * @return true if ended, false otherwise
+     * */
+    public boolean isEndGame(){
+        return this.gInfo.theWorld.isGameEnd();
+    }
+
+    /*
+     * This checks if all players switch out.
+     * */
+    public boolean isAllPlayersSwitchOut(){
+        return gInfo.gameState.isAllPlayersSwitchOut();
+    }
+
+
     /*
     * This is to get all usernames in this game.
     * @return a list of usernames in the game
@@ -134,44 +166,17 @@ public class Game implements Serializable {
 
 
     /*
-    * This checks a user if lose
-    * @return true if lose, false otherwise
-    * */
-    public boolean isUserLose(User u){
-        return this.gInfo.theWorld.checkLost(u.getUsername());
-    }
-    /*
-     * This checks if the game is full
-     * @return true if full, false otherwise
-     * */
-    public boolean isFull(){
-        return gInfo.usersOnGame.size() == gInfo.maxNumUsers;
-    }
-
-    /*
-    * This class check if the game is ended.
-    * @return true if ended, false otherwise
-    * */
-    public boolean isEndGame(){
-        return this.gInfo.theWorld.isGameEnd();
-    }
-
-    /*
-    * This checks if all players switch out.
-    * */
-    public boolean isAllPlayersSwitchOut(){
-        return gInfo.gameState.isAllPlayersSwitchOut();
-    }
-
-
-
-    /*
      * This is to select territory for each player.
      * This function has to be locked. This is because all players are sharing the
      * same world
      * */
     synchronized protected void placeUnitsOnWorld(PlaceOrder p){
         this.gInfo.theWorld.stationTroop(p.getDesName(),p.getActTroop());
+    }
+
+    synchronized public void setDonePlacementPhase(){
+        gInfo.gameState.setDonePlaceUnits();
+        gInfo.theWorld.setReportToPlacementDone();
     }
     /*
      * This is to upgrade for each player.
@@ -189,6 +194,7 @@ public class Game implements Serializable {
         }
         System.out.println("Game" + gInfo.gameID + ": " + userName + " upgrade Troop");
     }
+
     synchronized protected void doDoneActionFor(User u){
         this.gInfo.gameState.changAPlayerStateTo(u, PLAYER_STATE_END_ONE_TURN);
         System.out.println("Game" + gInfo.gameID + ": " + u.getUsername() + " Done action");
@@ -348,8 +354,5 @@ public class Game implements Serializable {
         }
     }
 
-    synchronized public void setDonePlacementPhase(){
-        gInfo.gameState.setDonePlaceUnits();
-        gInfo.theWorld.setReportToPlacementDone();
-    }
+
 }
