@@ -73,7 +73,6 @@ public class Troop implements Serializable {
 
             for (int i = 0; i < myDict.get(s); i++) {
                 Soldier sol = new Soldier();
-                sol.setJob(s);
                 this.population.add(sol);
             }
         }
