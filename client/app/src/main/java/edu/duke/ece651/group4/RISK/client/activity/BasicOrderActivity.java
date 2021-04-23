@@ -25,10 +25,10 @@ public class BasicOrderActivity extends AppCompatActivity {
     private final String TAG = this.getClass().getSimpleName();
     private String srcName; // source territory name
     private String desName; // destination territory name
+    private String type;
     private String level; // unit type name
     private int nUnit; // number of units in action
     private String actionType; // type of action, move or attack
-    private String type;
 
     private static final String EXTRA_ACTION_TYPE = "actionType"; // intent extra key
 
@@ -83,7 +83,9 @@ public class BasicOrderActivity extends AppCompatActivity {
         List<String> myAndAllyTerrNames = getMyAndAllyTerrNames();
         List<String> enemyTerrNames = getEnemyTerrNames();
 
-        // source terr spinner
+        /**
+         * source terr spinner
+         */
         srcSpinner = findViewById(R.id.terrSrc);
         SpinnerAdapter srcAdapter = new ArrayAdapter<>(
                 BasicOrderActivity.this,
@@ -101,7 +103,9 @@ public class BasicOrderActivity extends AppCompatActivity {
             }
         });
 
-        // des terr spinner
+        /**
+         * des terr spinner
+         */
         desSpinner = findViewById(R.id.terrDes);
         if (actionType.equals(UI_MOVE)) {
             desAdapter = new ArrayAdapter<>(
@@ -126,7 +130,9 @@ public class BasicOrderActivity extends AppCompatActivity {
             }
         });
 
-        // type spinner
+        /**
+         * unit type spinner
+         */
         List<String> typeNames = new ArrayList<>();
         typeNames.add(SOLDIER);
         typeNames.addAll(JOB_NAMES);
@@ -147,7 +153,11 @@ public class BasicOrderActivity extends AppCompatActivity {
             }
         });
 
-        // typeNames == level spinner
+        /**
+         * Unit level spinner
+         *
+         * typeNames == level spinner
+         */
         List<String> levelNames = getLevelNames();
         levelSpinner = findViewById(R.id.unit_level_choices);
         SpinnerAdapter levelAdapter = new ArrayAdapter<>(
@@ -166,6 +176,9 @@ public class BasicOrderActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * unit number Edit Text
+         */
         nUnitET = findViewById(R.id.numUnit);
 
         /**

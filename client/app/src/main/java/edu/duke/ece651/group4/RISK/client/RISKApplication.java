@@ -96,6 +96,31 @@ public class RISKApplication extends Application {
     }
 
     /**
+     * Construct jobName like: Soldier LV0
+     *
+     * @param unitType is the type of unit defined in shared/Constant.
+     * @param unitLevel is the level of unit.
+     * @return constructed jobName.
+     */
+    public static String buildJobName(String unitType, int unitLevel) {
+        String jobName;
+        List<String> levelNames = edu.duke.ece651.group4.RISK.shared.Constant.JOB_DICTIONARY.get(unitType);
+        if (levelNames == null) {
+            throw new IllegalArgumentException(
+                    String.format("Type %s does not exist.", unitType)
+            );
+        }
+        try {
+            jobName = levelNames.get(unitLevel);
+        } catch (IndexOutOfBoundsException e) {
+            throw new IllegalArgumentException(
+                    String.format("Level %d for type %s does not exist.", unitLevel, unitType)
+            );
+        }
+        return jobName;
+    }
+
+    /**
      * @return list of names of soldier at each level
      */
     public static List<String> getLevelNames() {
