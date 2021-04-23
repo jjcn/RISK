@@ -273,28 +273,48 @@ public class TurnActivity extends AppCompatActivity {
      * Select a unit type from an alert dialog.
      */
     private void selectType() {
-        List<String> choices = new ArrayList<>();
-        choices.addAll(getUnlockableTypes());
-        ListAdapter choicesAdapter = new ArrayAdapter<String>(TurnActivity.this, R.layout.item_choice, choices);
-        // TODO: should just be a simple alert dialog
-        AlertDialog dialog = new AlertDialog
-                .Builder(this)
-                .setTitle(CHOOSE_TYPE_INSTR)
-                .setSingleChoiceItems(choicesAdapter, -1, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String type = choices.get(which);
-                        Log.d(TAG, "User selected in type dialog: " + type);
-                        try {
-                            unlockType(type);
-                        } catch (IllegalArgumentException iae) {
-                            showByToast(TurnActivity.this, iae.getMessage());
-                        }
-                        dialog.dismiss();
+        List<String> types = new ArrayList<>();
+        types.addAll(getUnlockableTypes());
+
+        SimpleSelector selector = new SimpleSelector(TurnActivity.this,
+                CHOOSE_TYPE_INSTR, types, new onReceiveListener() {
+            @Override
+            public void onSuccess(Object o) {
+                if (o instanceof String) {
+                    String type = (String) o;
+                    Log.d(TAG, "User selected in type dialog: " + type);
+                    try {
+                        unlockType(type);
+                    } catch (IllegalArgumentException iae) {
+                        showByToast(TurnActivity.this, iae.getMessage());
                     }
+                } else {
+                    onFailure("not String name");
+                }
+            }
+
+            @Override
+            public void onFailure(String errMsg) {
+                Log.e(TAG, errMsg);
+            }
+        });
+        selector.show();
+
+        /*ListAdapter choicesAdapter = new ArrayAdapter<String>(TurnActivity.this, R.layout.item_choice, types);
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(CHOOSE_TYPE_INSTR)
+                .setSingleChoiceItems(choicesAdapter, 0, (dialog1, which) -> {
+                    String type = types.get(which);
+                    Log.d(TAG, "User selected in type dialog: " + type);
+                    try {
+                        unlockType(type);
+                    } catch (IllegalArgumentException iae) {
+                        showByToast(TurnActivity.this, iae.getMessage());
+                    }
+                    dialog1.dismiss();
                 })
                 .create();
-        dialog.show();
+        dialog.show();*/
     }
 
     private void showConfirmDialog() {
