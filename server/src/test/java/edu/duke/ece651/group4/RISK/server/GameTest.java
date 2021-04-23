@@ -1,30 +1,30 @@
-//package edu.duke.ece651.group4.RISK.server;
-//
-//import edu.duke.ece651.group4.RISK.shared.*;
-//import org.junit.jupiter.api.BeforeAll;
-//import org.junit.jupiter.api.Test;
-//
-//import java.io.IOException;
-//import java.net.ServerSocket;
-//import java.net.Socket;
-//
-//import java.util.HashMap;
-//import java.util.HashSet;
-//
-//import static edu.duke.ece651.group4.RISK.shared.Constant.SWITCH_OUT_ACTION;
-//import static org.junit.jupiter.api.Assertions.*;
-//
-//class GameTest {
-//    Game g;
-//    private final static int PORT = 1107;
-//    static ServerSocket hostSocket;
-//    static HashSet<String> testSet;
-//
-//    @BeforeAll
-//    static void setUpAll() throws IOException {
-//        hostSocket = new ServerSocket(PORT);
-//    }
-//
+package edu.duke.ece651.group4.RISK.server;
+
+import edu.duke.ece651.group4.RISK.shared.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+
+import java.util.HashMap;
+import java.util.HashSet;
+
+import static edu.duke.ece651.group4.RISK.shared.Constant.SWITCH_OUT_ACTION;
+import static org.junit.jupiter.api.Assertions.*;
+
+class GameTest {
+    Game g;
+    private final static int PORT = 1107;
+    static ServerSocket hostSocket;
+    static HashSet<String> testSet;
+
+    @BeforeAll
+    static void setUpAll() throws IOException {
+        hostSocket = new ServerSocket(PORT);
+    }
+
 //    public static Game createAGame(int gid, int numUser){
 //        Game g = new Game(gid+10000,numUser);
 //        for(int i = 0; i < numUser; i++){
@@ -214,4 +214,4 @@
 //        g.updateGameAfterOneTurn();
 //        assertEquals(2,g.gInfo.theWorld.getTurnNumber());
 //    }
-//}
+}
