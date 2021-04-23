@@ -284,11 +284,15 @@ public class Troop implements Serializable {
         for (Unit item : population) {
             cloneList.add(item.clone());
         }
+        HashMap<String,Integer> newdict=new HashMap<>();
+        for(String n: this.dict.keySet()){
+            newdict.put(n,this.dict.get(n));
+        }
 
         if (this.owner.getName() == null) {
             return new Troop(cloneList, new TextPlayer(null));
         } else {
-            return new Troop(cloneList, new TextPlayer(new String(this.owner.getName())));
+            return new Troop(cloneList,newdict, new TextPlayer(new String(this.owner.getName())));
         }
     }
 

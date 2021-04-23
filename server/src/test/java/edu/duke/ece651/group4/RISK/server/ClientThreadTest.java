@@ -213,6 +213,7 @@ class ClientThreadTest {
         }
         return placeOrders;
     }
+
     @Test
     public void test_wholeProcess(){
         List<User> users =  createUsers(2);
@@ -239,9 +240,6 @@ class ClientThreadTest {
         new Thread(() -> {
             try {
                 Client theClient = new Client(hostname, PORT);
-//                synchronized (games) {
-//                    games.notify();
-//                }
                 simulateOneClientCreate(users.get(0),theClient);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -250,13 +248,6 @@ class ClientThreadTest {
 
         new Thread(() -> {
             try {
-//                synchronized (games){
-//                    try {
-//                        games.wait();
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
                 try {
                     TimeUnit.SECONDS.sleep(5);
                 } catch (InterruptedException e) {
