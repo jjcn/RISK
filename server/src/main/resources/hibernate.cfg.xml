@@ -49,10 +49,10 @@
         <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
         <!-- localhost or postgres -->
         <!-- Assume risk is the database name -->
-        <property name="hibernate.connection.url">jdbc:postgresql://postgres:5432/nice_marmot</property>
+        <property name="hibernate.connection.url">jdbc:postgresql://postgres:5432/risk</property>
         <!-- postgres or runner -->
-        <property name="hibernate.connection.username">runner</property>
-        <property name="hibernate.connection.password">''</property>
+        <property name="hibernate.connection.username">postgres</property>
+        <property name="hibernate.connection.password">123456</property>
 
         <!-- SQL dialect -->
         <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
