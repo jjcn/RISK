@@ -12,7 +12,7 @@ class GameRunnerTest {
 
     private Game createAGameAndRunner(List<User> users){
         int numPlayers = users.size();
-        Game g = new Game(0, numPlayers);
+        Game g = new Game(10000, numPlayers);
         GameRunner gRunner = new GameRunner(g);
         gRunner.start();
         for( int i = 0; i <numPlayers; i++ ){

@@ -53,9 +53,10 @@ class ClientThreadTest {
     private static List<Game> createGames(int num, int maxNumUsers){
         List<Game> games = new ArrayList<Game>();
         for(int i = 0; i< num; i++){
-            games.add(new Game(i,maxNumUsers));
+            games.add(new Game(i+10000,maxNumUsers));
         }
         return games;
+
     }
     private ClientThread createAClientThread(int numUser, int numGames){
         List<User> users =  createUsers(numUser);
@@ -105,7 +106,7 @@ class ClientThreadTest {
         ct.games.get(1).gInfo.gameState.changAPlayerStateTo(users.get(1), PLAYER_STATE_SWITCH_OUT);
         assertEquals(2, ct.games.size());
         assertEquals(true,ct.gameOnGoing!=null);
-        Game g = ct.findGame(0);
+        Game g = ct.findGame(10000);
         assertEquals(2,g.getMaxNumUsers());
         assertEquals( INVALID_CREATE, ct.tryCreateAGame(new GameMessage(GAME_CREATE, -1, 6)));
     }
@@ -119,9 +120,9 @@ class ClientThreadTest {
         assertEquals(INVALID_JOIN, ct.tryJoinAGame(new GameMessage(GAME_JOIN, 2, -1)));
         assertEquals(null, ct.tryJoinAGame(new GameMessage(GAME_JOIN, 1, -1)));
         assertEquals(INVALID_JOIN, ct.tryJoinAGame(new GameMessage(GAME_JOIN, 1, -1)));
-        Game g = ct.findGame(1);
+        Game g = ct.findGame(10001);
         g.addUser(new User(1,"user1", "123"));
-        Game g0 = ct.findGame(0);
+        Game g0 = ct.findGame(10000);
         g0.addUser(new User(1,"user1", "123"));
         g0.addUser(new User(3,"user3", "123"));
         assertEquals(INVALID_JOIN, ct.tryJoinAGame(new GameMessage(GAME_JOIN, 0, -1)));
@@ -148,9 +149,9 @@ class ClientThreadTest {
         ClientThread ct = createAClientThread(1, 3);
         assertEquals( null, ct.tryLogIn("user0","123"));
         assertEquals(null, ct.findGame(-1));
-        Game g = new Game(0,2);
-        assertEquals(g.getGameID(), ct.findGame(0).getGameID());
-        assertEquals(g.getMaxNumUsers(), ct.findGame(0).getMaxNumUsers());
+        Game g = new Game(10000,2);
+        assertEquals(g.getGameID(), ct.findGame(10000).getGameID());
+        assertEquals(g.getMaxNumUsers(), ct.findGame(10000).getMaxNumUsers());
     }
 
 
@@ -184,7 +185,7 @@ class ClientThreadTest {
         theClient.sendObject(new LogMessage(LOG_SIGNIN,u.getUsername(),u.getPassword()));
         assertEquals(null,theClient.recvObject());
         //Game
-        theClient.sendObject(new GameMessage(GAME_JOIN,1,2));
+        theClient.sendObject(new GameMessage(GAME_JOIN,10001,2));
         assertEquals(null,theClient.recvObject());
 
         //Place Units
