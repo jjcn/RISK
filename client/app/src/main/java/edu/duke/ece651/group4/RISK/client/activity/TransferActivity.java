@@ -39,7 +39,7 @@ public class TransferActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transfer);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Transfer");
+            getSupportActionBar().setTitle(UI_CHANGETYPE);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
