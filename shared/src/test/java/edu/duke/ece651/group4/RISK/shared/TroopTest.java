@@ -235,4 +235,14 @@ public class TroopTest {
             troop2=troop1.doOneCombat(troop2);
         }
     }
+
+    @Test
+    public void Test_clone() {
+//        Troop troop1 = new Troop(10, new TextPlayer("test1"), new Random(0));
+//        troop1.transfer(SOLDIER,BREAKER, 0,2);
+//        Troop test=troop1.clone();
+//        System.out.println(test.getSummary());
+
+    }
+
 }
