@@ -36,7 +36,6 @@ public class HostApp implements Runnable {
         this.globalID = new AtomicInteger(0);
         this.out = System.out;
         this.test_mode = test_mode;
-
     }
 
     public HostApp(ServerSocket s){

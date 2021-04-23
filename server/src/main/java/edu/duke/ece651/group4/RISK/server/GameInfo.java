@@ -14,6 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 public class GameInfo implements Serializable {
+    private static final long serialVersionUID = 10004L;
     public int maxNumUsers;
     @Id
     public final int gameID;
