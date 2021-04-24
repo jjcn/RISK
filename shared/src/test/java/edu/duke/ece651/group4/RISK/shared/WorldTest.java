@@ -188,6 +188,14 @@ public class WorldTest {
     }
 
     @Test
+    public void testGetRoomId() {
+        World world = new World();
+        assertEquals(0, world.getRoomID());
+        world.setRoomID(1);
+        assertEquals(1, world.getRoomID());
+    }
+
+    @Test
     public void testAddTerritory() {
         World world = new World();
         List<Territory> expected = new ArrayList<>();
@@ -591,6 +599,22 @@ public class WorldTest {
     }
 
     @Test
+    public void testGetTerritoriesOfPlayerAndAlliance() {
+        World world = createWorldAndRegister(troopsConnected);
+        // red and blue form alliance
+        world.tryFormAlliance("red", "blue");
+        world.tryFormAlliance("blue", "red");
+        world.doCheckIfAllianceSuccess();
+        // red and blue territories
+        List<Territory> redBlueTerrs = world.getAllTerritories();
+        redBlueTerrs.remove(world.findTerritory("Narnia"));
+        redBlueTerrs.remove(world.findTerritory("Midkemia"));
+        redBlueTerrs.remove(world.findTerritory("Oz"));
+        assertListContentEquals(redBlueTerrs, world.getTerritoriesOfPlayerAndAlliance("red"));
+        assertListContentEquals(redBlueTerrs, world.getTerritoriesOfPlayerAndAlliance("blue"));
+    }
+
+    @Test
     public void testAttackAllianceJoinForce() {
         World world = createWorldAndRegister(troopsSeparated);
         // red and blue form alliance
@@ -650,7 +674,16 @@ public class WorldTest {
         UpgradeTroopOrder utOrder2 = new UpgradeTroopOrder("Elantris", 0, 1, 6);
         world.upgradeTroop(utOrder2, "red");
         assertEquals(100 - 3 * 6, redInfo.getTechQuantity());
-    } 
+    }
+
+    @Test
+    public void testUpgradeTroopExceedTechLevel() {
+        World world = createWorldAndRegister(troopsSeparated);
+        UpgradeTroopOrder utOrder1 = new UpgradeTroopOrder("Narnia", 0, 2, 1);
+        assertThrows(IllegalArgumentException.class,
+                () ->world.upgradeTroop(utOrder1, "green"));
+        assertEquals(100, world.getPlayerInfoByName("green").getTechQuantity());
+    }
 
     @Test
     public void testUpgradeTechLevel() {
@@ -674,6 +707,17 @@ public class WorldTest {
         UpgradeTechOrder uTechOrder = new UpgradeTechOrder(5);
         assertThrows(IllegalArgumentException.class,
                     () -> world.upgradePlayerTechLevelBy(uTechOrder, "red"));
+    }
+
+    @Test
+    public void testUpgradeTechLevelResourceConsumption() {
+        World world = createWorldAndRegister(troopsSeparated);
+        UpgradeTechOrder uTechOrder = new UpgradeTechOrder(1);
+        world.consumeResourceOfPlayerTechUpgrade(uTechOrder, "red");
+        assertEquals(50, world.getPlayerInfoByName("red").getTechQuantity());
+
+        world.doUpgradeTechResourceConsumption(uTechOrder, "red");
+        assertEquals(0, world.getPlayerInfoByName("red").getTechQuantity());
     }
 
     @Test
@@ -723,7 +767,7 @@ public class WorldTest {
     }
 
     @Test
-    public void testTransferTroopNotEnough() {
+    public void testTransferTroopNotEnoughUnit() {
         World world = createWorldAndRegister(troopsConnected);
         world.getPlayerInfoByName("green").unlockAllTypes();
 
@@ -935,24 +979,24 @@ public class WorldTest {
     public void testTypeUnlock() {
         World world = createWorldAndRegister(troopsConnected);
         Set<String> soldierSet = newSet(Constant.SOLDIER);
-        assertSetEquals(soldierSet, world.getPlayerInfoByName("red").getUnlockedTypes());
+        assertSetEquals(soldierSet, world.getUnlockedTypes("red"));
         assertTrue(world.isTypeUnlocked("red", Constant.SOLDIER));
         assertFalse(world.isTypeUnlocked("red", Constant.KNIGHT));
 
         world.getPlayerInfoByName("red").reachMinTechLevelToUnlockType();
         world.unlockType("red", Constant.KNIGHT);
         assertSetEquals(newSet(Constant.SOLDIER, Constant.KNIGHT),
-                world.getPlayerInfoByName("red").getUnlockedTypes());
+                world.getUnlockedTypes("red"));
         assertSetEquals(newSet(Constant.ARCHER, Constant.SHIELD, Constant.BREAKER),
-                world.getPlayerInfoByName("red").getUnlockableTypes());
+                world.getUnlockableTypes("red"));
         assertTrue(world.isTypeUnlocked("red", Constant.SOLDIER));
         assertTrue(world.isTypeUnlocked("red", Constant.KNIGHT));
 
         world.unlockType("red", Constant.ARCHER);
         assertSetEquals(newSet(Constant.SOLDIER, Constant.KNIGHT, Constant.ARCHER),
-                world.getPlayerInfoByName("red").getUnlockedTypes());
+                world.getUnlockedTypes("red"));
         assertSetEquals(new HashSet<>(),
-                world.getPlayerInfoByName("red").getUnlockableTypes());
+                world.getUnlockableTypes("red"));
     }
 
     @Test
@@ -1018,6 +1062,17 @@ public class WorldTest {
             redList.add(new Territory(name));
         }
     	assertEquals(redList, world.getTerritoriesNotOfPlayer("red"));
+    }
+
+    @Test
+    public void testIsAlliance() {
+        World world = createWorldAndRegister(troopsConnected);
+        assertFalse(world.isAlliance("red", "blue"));
+        world.tryFormAlliance("red", "blue");
+        world.tryFormAlliance("blue", "red");
+        assertTrue(world.isAlliance("red", "blue"));
+        world.doCheckIfAllianceSuccess();
+        assertTrue(world.isAlliance("red", "blue"));
     }
 
     @Test
