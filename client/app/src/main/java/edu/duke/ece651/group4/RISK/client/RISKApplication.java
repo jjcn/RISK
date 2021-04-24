@@ -619,7 +619,7 @@ public class RISKApplication extends Application {
             try {
                 chatClient.start();
             } catch (Exception e) {
-                Log.e(TAG, "initChat: " + e.toString());
+                Log.e(TAG, LOG_FUNC_FAIL+"initChat: " + e.toString());
             }
         }).start();
     }
@@ -646,8 +646,11 @@ public class RISKApplication extends Application {
      */
     public static List<ChatMessageUI> getStoredMsg(String chatID) {
         List historyMsg = new ArrayList();
+        Log.i(TAG, LOG_FUNC_RUN+"all stored with size "+storedMsg.size());
         for (ChatMessageUI msg : storedMsg) {
-            if (msg.getRoomId().equals(getRoomId())) {
+            Log.i(TAG, LOG_FUNC_RUN+"msg roomID = "+msg.getRoomId()+"/ roomID = "+getRoomId());
+            if (msg.getRoomId().equals(String.valueOf(getRoomId()))) {
+                Log.i(TAG, LOG_FUNC_RUN+"equal roomID"+"msg chatID = "+msg.getChatId()+"/ chatID = "+chatID);
                 if (chatID == null) {
                     historyMsg.add(msg);
                 } else if (msg.getChatId().equals(chatID)) {
