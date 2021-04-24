@@ -152,6 +152,9 @@ public class TurnActivity extends AppCompatActivity {
 
     // todo: alert to confirm actions.
     private void impUpTechBT() {
+        if(getTechLevel() == TECH_LEVEL_UPGRADE_COSTS.size()){
+            upTechBT.setEnabled(false);
+        }
         upTechBT.setOnClickListener(v -> {
             upTechBT.setEnabled(false); // can only upgrade tech once in a turn
             String msg = "(Upgrade will take effect next turn.)\n" + "To upgrade you will consume: " + TECH_LEVEL_UPGRADE_COSTS.get(getTechLevel());
@@ -312,10 +315,14 @@ public class TurnActivity extends AppCompatActivity {
                     startActivity(backRoom);
                     finish();
                 }
-                else if (world.checkLost(getUserName())) {
+                isWatch = world.checkLost(getUserName());
+                if (isWatch) {
                     Log.i(TAG, LOG_FUNC_RUN + "Lose game.");
                     showByToast(TurnActivity.this, LOSE_MSG);
-                    doneBT.performClick();
+                    shutDownBTinWatch();
+                    runOnUiThread(()->{
+                        doneBT.performClick();
+                    });
                 }else {
                     showByToast(TurnActivity.this, TURN_END);
                     updateAfterTurn();
@@ -329,19 +336,22 @@ public class TurnActivity extends AppCompatActivity {
         });
     }
 
+    private void shutDownBTinWatch() {
+        doneBT.setVisibility(View.GONE);
+        upTechBT.setVisibility(View.GONE);
+        allyBT.setVisibility(View.GONE);
+        commitBT.setVisibility(View.GONE);
+    }
+
     /**
      * send null to server and waiting for receive World.
      */
     private void watchGame() {
         Log.i(TAG,LOG_FUNC_RUN+"watchGame called");
         waitDG.cancel();
-        doneBT.setVisibility(View.GONE);
-        upTechBT.setVisibility(View.GONE);
-        allyBT.setVisibility(View.GONE);
-        commitBT.setVisibility(View.GONE);
+        shutDownBTinWatch();
         showStayDialog();
     }
-
 
     private void updateAfterTurn() {
         runOnUiThread(() -> {
