@@ -152,7 +152,7 @@ public class TurnActivity extends AppCompatActivity {
 
     // todo: alert to confirm actions.
     private void impUpTechBT() {
-        if(getTechLevel() == TECH_LEVEL_UPGRADE_COSTS.size()){
+        if (getTechLevel() == TECH_LEVEL_UPGRADE_COSTS.size()) {
             upTechBT.setEnabled(false);
         }
         upTechBT.setOnClickListener(v -> {
@@ -235,15 +235,16 @@ public class TurnActivity extends AppCompatActivity {
         doneBT.setOnClickListener(v -> {
             doneBT.setEnabled(false);
             if (isWatch) {
+                Log.i(TAG, LOG_FUNC_RUN + "isWatch perform done");
                 showStayDialog();
-            }
-            else {
+            } else {
                 showDoneDialog(CONFIRM, CONFIRM_ACTION);
             }
         });
     }
 
     private void showStayDialog() {
+        Log.i(TAG, LOG_FUNC_RUN + "show stay dialog");
         AlertDialog.Builder builder = new AlertDialog.Builder(TurnActivity.this);
         builder.setTitle(LOSE_MSG)
                 .setMessage(STAY_INSTR)
@@ -307,26 +308,26 @@ public class TurnActivity extends AppCompatActivity {
             @Override
             public void onSuccess(Object o) {
                 World world = (World) o;
-                Log.i(TAG, LOG_FUNC_RUN + "Check end game result: "+ world.isGameEnd());
-                if (world.isGameEnd()) {
-                    // todo: can stay after finish
-                    showByReport(TurnActivity.this, "Game end!", world.getWinner() + " won the game!");
-                    Intent backRoom = new Intent(TurnActivity.this, RoomActivity.class);
-                    startActivity(backRoom);
-                    finish();
-                }
-                isWatch = world.checkLost(getUserName());
+                Log.i(TAG, LOG_FUNC_RUN + "Check end game result: " + world.isGameEnd());
+//                if (world.isGameEnd()) {
+//                    // todo: can stay after finish
+//                    showByReport(TurnActivity.this, "Game end!", world.getWinner() + " won the game!");
+//                    Intent backRoom = new Intent(TurnActivity.this, RoomActivity.class);
+//                    startActivity(backRoom);
+//                    finish();
+//                }
+                isWatch = getWorld().checkLost(getUserName());
                 if (isWatch) {
-                    Log.i(TAG, LOG_FUNC_RUN + "Lose game.");
                     showByToast(TurnActivity.this, LOSE_MSG);
-                    shutDownBTinWatch();
-                    runOnUiThread(()->{
+                    runOnUiThread(() -> {
+                        Log.i(TAG, LOG_FUNC_RUN + "Lose game.");
+                        waitDG.cancel();
+                        shutDownBTinWatch();
                         doneBT.performClick();
                     });
-                }else {
-                    showByToast(TurnActivity.this, TURN_END);
-                    updateAfterTurn();
                 }
+                showByToast(TurnActivity.this, TURN_END);
+                updateAfterTurn();
             }
 
             @Override
@@ -347,7 +348,7 @@ public class TurnActivity extends AppCompatActivity {
      * send null to server and waiting for receive World.
      */
     private void watchGame() {
-        Log.i(TAG,LOG_FUNC_RUN+"watchGame called");
+        Log.i(TAG, LOG_FUNC_RUN + "watchGame called");
         waitDG.cancel();
         shutDownBTinWatch();
         showStayDialog();
