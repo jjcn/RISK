@@ -15,7 +15,7 @@ class PlayerStateTest {
         p.updateStateTo(PLAYER_STATE_LOSE);
         assertEquals(PLAYER_STATE_LOSE, p.getState());
         assertEquals(p.isLose(), true);
-        assertEquals(p.isDoneOneTurn(), true);
+        assertEquals(p.isDoneOneTurn(), false);
         p.updateStateTo(PLAYER_STATE_SWITCH_OUT);
         assertEquals(p.isSwitchOut(), true);
         assertEquals(p.isActive(), false);
