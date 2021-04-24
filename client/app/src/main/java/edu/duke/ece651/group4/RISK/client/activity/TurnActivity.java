@@ -73,7 +73,7 @@ public class TurnActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-        actions = new ArrayList<>(Arrays.asList(UI_MOVE, UI_ATK, UI_UPTROOP, UI_UNLOCKTYPE));
+        actions = new ArrayList<>(Arrays.asList(UI_MOVE, UI_ATK, UI_UPTROOP, UI_UNLOCKTYPE, UI_CHANGETYPE));
         if (getCurrentRoomSize() < 3) {
             actions.remove(UI_ALLIANCE);
         }
