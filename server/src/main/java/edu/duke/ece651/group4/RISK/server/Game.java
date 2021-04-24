@@ -157,10 +157,9 @@ public class Game implements Serializable {
     public void barrierWait(){
         try {
             this.barrier.await();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (BrokenBarrierException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+//            e.printStackTrace();
+//            e.printStackTrace();
         }
     }
 
@@ -361,7 +360,7 @@ public class Game implements Serializable {
         try {
             TimeUnit.SECONDS.sleep(t);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
     }
 

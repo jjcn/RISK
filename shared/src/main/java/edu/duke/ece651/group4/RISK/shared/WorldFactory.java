@@ -234,7 +234,7 @@ public class WorldFactory implements Serializable {
         return assignTerritories(world,  playerNames,
                 10 * worldSize, // area
                 50 * worldSize, // food
-                100 * worldSize, // tech
+                30 * worldSize, // tech
                 200, 200,
                 new Random(0));
     }

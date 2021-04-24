@@ -71,8 +71,8 @@ class ChatHostTest {
         ch.setUpUserChat(cM,chatClient1.chatChannel);
 //        ChatMessage cM_invalid = new ChatMessage("1","user123",new HashSet<>(), "hello",1);
         ch.handleChatMessage(cM);
+        clients.get("user0").exit();
         ch.tryExit();
-//        clients.get("user0").tryExit();
     }
 
 
@@ -134,9 +134,9 @@ class ChatHostTest {
 //                this.chatChannel.close();
 //                System.out.println("close channel");
 //            }
-            if(readBytes<=0){
-                continue;
-            }
+//            if(readBytes<=0){
+//                continue;
+//            }
             ChatMessage chatMsgRecv = (ChatMessage) SerializationUtils.deserialize(readBuffer.array());
             readBuffer.clear();
             //deal with chatMsgRecV to notify android UI

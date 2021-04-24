@@ -277,6 +277,7 @@ public class ClientThread extends Thread {
 //        gameOnGoing.barrierWait();
         waitNotifyFromRunner();
         gameOnGoing.setDonePlacementPhase(); // if user joins back, he does not need to do place unit phase
+        HibernateTool.updateGameInfo(gameOnGoing.getGameInfo());
     }
 
 
@@ -389,6 +390,7 @@ public class ClientThread extends Thread {
             synchronized (gameOnGoing){
                 out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " wait for runner's notify");
                 gameOnGoing.gInfo.gameState.askUserWaiting(ownerUser);
+                HibernateTool.updateGameInfo(gameOnGoing.getGameInfo());
                 gameOnGoing.wait();
                 gameOnGoing.gInfo.gameState.askUserDoneWaiting(ownerUser);
                 out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " get notify from runner");
@@ -421,7 +423,6 @@ public class ClientThread extends Thread {
         //  Initialization info including:
         //      send init World
         //      recv PlaceOrders
-
 
         // Part4 ActionsPhase:
         //        4.0  send World

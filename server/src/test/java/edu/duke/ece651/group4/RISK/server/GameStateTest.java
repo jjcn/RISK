@@ -42,7 +42,7 @@ class GameStateTest {
         gs.changAPlayerStateTo(users.get(2), PLAYER_STATE_SWITCH_OUT );
         assertEquals(true, gs.isAllPlayersDoneOneTurn());
         gs.changAPlayerStateTo(users.get(2), PLAYER_STATE_LOSE );
-        assertEquals(true, gs.isAllPlayersDoneOneTurn());
+        assertEquals(false, gs.isAllPlayersDoneOneTurn());
         gs.changAPlayerStateTo(users.get(2), PLAYER_STATE_LOSE );
     }
 
