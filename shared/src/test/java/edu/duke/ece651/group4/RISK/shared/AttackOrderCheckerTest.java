@@ -77,6 +77,16 @@ public class AttackOrderCheckerTest {
     }
 
     @Test
+    public void testCreation() {
+        AttackOrder atk1 = new AttackOrder("Narnia", "Elantris", new Troop(3, green), 'A');
+        assertEquals(Constant.ATTACK_ACTION, atk1.getActionName());
+        assertEquals("Narnia", atk1.getSrcName());
+        assertEquals("Elantris", atk1.getDesName());
+        assertEquals(3, atk1.getActTroop().size());
+        assertEquals("green", atk1.getActTroop().getOwner().getName());
+    }
+
+    @Test
     public void testAttackOrderCheckerValid() {
         World world = createWorld(names, troopsConnected);
 

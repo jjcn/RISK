@@ -179,7 +179,7 @@ class ClientThreadTest {
         try {
             TimeUnit.SECONDS.sleep(t);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
     }
 
@@ -274,7 +274,7 @@ class ClientThreadTest {
             try {
                 testAClient2();
             } catch (IOException e) {
-                e.printStackTrace();
+//                e.printStackTrace();
             }
         }).start();
         /*
