@@ -277,6 +277,7 @@ public class ClientThread extends Thread {
 //        gameOnGoing.barrierWait();
         waitNotifyFromRunner();
         gameOnGoing.setDonePlacementPhase(); // if user joins back, he does not need to do place unit phase
+        HibernateTool.updateGameInfo(gameOnGoing.getGameInfo());
     }
 
 
@@ -421,7 +422,6 @@ public class ClientThread extends Thread {
         //  Initialization info including:
         //      send init World
         //      recv PlaceOrders
-
 
         // Part4 ActionsPhase:
         //        4.0  send World
