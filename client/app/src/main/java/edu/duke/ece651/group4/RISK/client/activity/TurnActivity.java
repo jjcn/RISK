@@ -309,13 +309,13 @@ public class TurnActivity extends AppCompatActivity {
             public void onSuccess(Object o) {
                 World world = (World) o;
                 Log.i(TAG, LOG_FUNC_RUN + "Check end game result: " + world.isGameEnd());
-//                if (world.isGameEnd()) {
-//                    // todo: can stay after finish
-//                    showByReport(TurnActivity.this, "Game end!", world.getWinner() + " won the game!");
-//                    Intent backRoom = new Intent(TurnActivity.this, RoomActivity.class);
-//                    startActivity(backRoom);
-//                    finish();
-//                }
+                if (world.isGameEnd()) {
+                    // todo: can stay after finish
+                    showByReport(TurnActivity.this, "Game end!", world.getWinner() + " won the game!");
+                    Intent backRoom = new Intent(TurnActivity.this, RoomActivity.class);
+                    startActivity(backRoom);
+                    finish();
+                }
                 isWatch = getWorld().checkLost(getUserName());
                 if (isWatch) {
                     showByToast(TurnActivity.this, LOSE_MSG);
