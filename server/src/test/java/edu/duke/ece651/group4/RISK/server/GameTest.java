@@ -233,11 +233,18 @@ class GameTest {
         Game g = createGame(1,users);
         g.setUpGame();
         placeUnitsFor2Users(g,users);
+        UpgradeTechOrder ut= new UpgradeTechOrder(1);
+        for(int i = 0; i< 3; i++){
+            assertEquals(false, g.tryUpdateActionOnWorld(ut,users.get(0)));
+        }
+        UnlockOrder oU = new UnlockOrder("user0",Constant.KNIGHT);
+        assertEquals(false, g.tryUpdateActionOnWorld(oU,users.get(0)));
         TransferTroopOrder o = new TransferTroopOrder("A", Constant.SOLDIER, Constant.KNIGHT, 0, 1);
         TransferTroopOrder o_invalid = new TransferTroopOrder("A", Constant.SOLDIER, Constant.KNIGHT, 100, 2);
         assertEquals(false, g.tryUpdateActionOnWorld(o,users.get(0)));
         assertEquals(false, g.tryUpdateActionOnWorld(o_invalid,users.get(0)));
     }
+
 
     @Test
     public void test_tryUpdateActionOnWorld(){
