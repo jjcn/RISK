@@ -77,7 +77,8 @@ public class PlayerState extends State implements Serializable {
      * @return true, if it is. otherwise false
      * */
     public boolean isDoneOneTurn(){
-        return getState().equals( PLAYER_STATE_END_ONE_TURN) | isLose() | isSwitchOut();
+//        return getState().equals( PLAYER_STATE_END_ONE_TURN) | isLose() | isSwitchOut();
+        return getState().equals( PLAYER_STATE_END_ONE_TURN)  | isSwitchOut();
     }
     /*
     * This is updating state where the players update's its own state.
