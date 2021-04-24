@@ -689,12 +689,12 @@ public class RISKApplication extends Application {
      * @param type is a type name.
      */
     public static void unlockType(String type, onResultListener listener) {
-//        try {
-//            theWorld.unlockType(userName, type);
-//            Order order = new UnlockOrder(userName, type);
-//            send(order, listener);
-//        } catch (IllegalArgumentException e) {
-//            listener.onFailure(e.getMessage());
-//        }
+        try {
+            theWorld.unlockType(userName, type);
+            Order order = new UnlockOrder(userName, type);
+            send(order, listener);
+        } catch (IllegalArgumentException e) {
+            listener.onFailure(e.getMessage());
+        }
     }
 }
