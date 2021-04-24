@@ -3,6 +3,7 @@ package edu.duke.ece651.group4.RISK.server;
 import edu.duke.ece651.group4.RISK.shared.*;
 import edu.duke.ece651.group4.RISK.shared.message.GameMessage;
 import edu.duke.ece651.group4.RISK.shared.message.LogMessage;
+import org.checkerframework.checker.units.qual.A;
 import org.checkerframework.checker.units.qual.C;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -16,31 +17,50 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static edu.duke.ece651.group4.RISK.server.GameTest.createGame;
 import static edu.duke.ece651.group4.RISK.server.ServerConstant.PLAYER_STATE_SWITCH_OUT;
 import static edu.duke.ece651.group4.RISK.shared.Constant.*;
 import static org.junit.jupiter.api.Assertions.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ClientThreadTest {
-    private final static int TIME = 500;
+    private final static int TIME = 1;
     private final static int PORT = 7777;
     static ServerSocket hostSocket;
     static String hostname = "localhost";
-    Client theClient;
-//    World theWorld;
+    Game g;
+    public static Game createAliveGame(int gid, List<User> users){
+        Game g = new Game(gid+10000,users.size());
+        assertEquals(false, g.isFull());
+        for(User u: users){
+            g.addUser(u);
+        }
+        HibernateTool.deleteGameInfo(g.gInfo);
+        HibernateTool.addGameInfo(g.gInfo);
+//        GameRunner gr = new GameRunner(g);
+//        gr.start();
+        return g;
+    }
+
     @BeforeAll
-    public void setUpAll() throws InterruptedException {
+    public void setUpAll()  {
         new Thread(() -> {
             try {
                 hostSocket = new ServerSocket(PORT);// initialize the server
+//                GameInfo gameInfo
+//                HibernateTool.addGameInfo(gameInfo);
+                List<User> users = createUsers(2);
+                g = createAliveGame(1111,users);
+                HostApp hostApp = new HostApp(hostSocket);
+                hostApp.run();
             } catch (IOException ignored) {
             }
         }).start();
         // pause to give the server some time to setup
-        Thread.sleep(TIME);
     }
 
     public static List<User> createUsers(int num){
@@ -50,6 +70,7 @@ class ClientThreadTest {
         }
         return users;
     }
+
     private static List<Game> createGames(int num, int maxNumUsers){
         List<Game> games = new ArrayList<Game>();
         for(int i = 0; i< num; i++){
@@ -59,6 +80,7 @@ class ClientThreadTest {
         }
         return games;
     }
+
     private ClientThread createAClientThread(int numUser, int numGames){
         List<User> users =  createUsers(numUser);
         List<Game> games = createGames(numGames, 2);
@@ -153,7 +175,59 @@ class ClientThreadTest {
         assertEquals(0, ct.getAllGameInfo().size());
 
     }
+    public void waitTime(int t){
+        try {
+            TimeUnit.SECONDS.sleep(t);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 
+
+//    @Test
+//    public void test_trySetUpUser(){
+//        List<User> users =  createUsers(2);
+//        List<Game> games = createGames(1, 2);
+//        System.out.println("test_trySetUpUser starts");
+//        CountDownLatch countDownLatch = new CountDownLatch(1);
+//        CountDownLatch countDownLatch2 = new CountDownLatch(1);
+//        Thread Thread1 = new Thread(() -> {
+//            System.out.println("test_trySetUpUser thread1 enters");
+//            try {
+//                new Thread(() -> {
+//                    try {
+//                        System.out.println("test_trySetUpUser thread2 tries to connect");
+//                        waitTime(5);
+//                        Client theClient = new Client(hostname, PORT);
+//                        System.out.println("test_trySetUpUser thread2 connected");
+//                        waitTime(5);
+//                        LogMessage gm = new LogMessage(LOG_SIGNIN,"user11","1");
+//                        LogMessage gm_signup = new LogMessage(LOG_SIGNUP,"user11","1");
+//                        theClient.sendObject(gm_signup);
+//                        assertEquals(null, theClient.recvObject()) ;
+//                        theClient.sendObject(gm);
+//                        assertEquals(null, theClient.recvObject()) ;
+//                        System.out.println("test_trySetUpUser thread2 finishes");
+//                    } catch (Throwable e) {
+//                        e.printStackTrace();
+//                    }
+//                }).start();
+//
+//                Socket socket = hostSocket.accept();
+//                Client Client = new Client(socket);
+//                ClientThread ct = new ClientThread(games, users,Client, new AtomicInteger(0));
+//                System.out.println("test_trySetUpUser thread1 has a client");
+//                synchronized(lock0){
+//                    lock0.notifyAll();
+//                }
+//                ct.trySetUpUser();
+//                System.out.println("test_trySetUpUser thread1 finishes");
+//            } catch (Throwable e) {
+//                e.printStackTrace();
+//            }
+//        });
+//        Thread1.start();
+//    }
 //    @Test
 //    public void test_findGame(){
 //        ClientThread ct = createAClientThread(1, 3);
@@ -164,7 +238,138 @@ class ClientThreadTest {
 //        assertEquals(g.getMaxNumUsers(), ct.findGame(10000).getMaxNumUsers());
 //    }
 
+//    private void simulateAClient(String username, String terr1, String terr2) throws IOException {
+//        /*
+//         * test Log
+//         * */
+//        Client client = new Client(hostname, PORT);
+//        LogMessage gm = new LogMessage(LOG_SIGNIN,username,"1");
+//        LogMessage gm_signup = new LogMessage(LOG_SIGNUP,username,"1");
+//        client.sendObject(gm_signup);
+//        client.recvObject();
+//        client.sendObject(gm);
+//        client.recvObject();
+//
+//        /*
+//         * join Game
+//         * */
+//        GameMessage gc= new GameMessage(GAME_CREATE,-1,2);
+//        GameMessage gj=  new GameMessage(GAME_JOIN,11111,2);
+//        client.sendObject(gj);
+//        client.recvObject();
+//
+//        /*
+//         * Place Units
+//         * */
+//        client.recvObject(); // receive the world
+//        List<Order> pOrders = new ArrayList<>();
+//        pOrders.add(new PlaceOrder(terr1,new Troop(5,new TextPlayer(username))));
+//        pOrders.add(new PlaceOrder(terr2,new Troop(10,new TextPlayer(username))));
+//        client.sendObject(pOrders);
+//    }
 
+    @Test
+    public void testAClient() throws IOException {
+        new Thread(()->{
+            try {
+                testAClient2();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+        /*
+         * test Log
+         * */
+        Client client = new Client(hostname, PORT);
+        LogMessage gm = new LogMessage(LOG_SIGNIN,"user0","1");
+        LogMessage gm_signup = new LogMessage(LOG_SIGNUP,"user0","1");
+        client.sendObject(gm_signup);
+        client.recvObject();
+        client.sendObject(gm);
+        client.recvObject();
+
+        /*
+        * join Game
+        * */
+        GameMessage gc= new GameMessage(GAME_CREATE,-1,2);
+        GameMessage gj=  new GameMessage(GAME_JOIN,11111,2);
+        client.sendObject(gj);
+        client.recvObject();
+
+        /*
+        * Place Units
+        * */
+        client.recvObject(); // receive the world
+        List<Order> pOrders = new ArrayList<>();
+        pOrders.add(new PlaceOrder("A",new Troop(5,new TextPlayer("user0"))));
+        pOrders.add(new PlaceOrder("B",new Troop(10,new TextPlayer("user0"))));
+        client.sendObject(pOrders);
+
+        /*
+         * Action
+         * */
+        client.recvObject();
+        MoveOrder m= new MoveOrder("A","B",new Troop(1,new TextPlayer("user0")),'M');
+        AttackOrder a =new AttackOrder("A","C",new Troop(1,new TextPlayer("user0")),'A');
+        UpgradeTechOrder ut= new UpgradeTechOrder(1);
+//        UpgradeTroopOrder utroop=new UpgradeTroopOrder("A",0,1,1);
+//        AllianceOrder oA = new AllianceOrder("user0","user1");
+//        TransferTroopOrder oTtroop = new TransferTroopOrder("A", Constant.SOLDIER, Constant.KNIGHT, 0, 1);
+        BasicOrder oDone=new BasicOrder(null,null,null,'D');
+        client.sendObject(m);
+        client.sendObject(a);
+        client.sendObject(ut);
+        client.sendObject(oDone);
+
+        client.recvObject();
+        BasicOrder o_switch=new BasicOrder(null,null,null,SWITCH_OUT_ACTION);
+        client.sendObject(o_switch);
+
+    }
+
+
+    public void testAClient2() throws IOException {
+        /*
+         * test Log
+         * */
+        Client client = new Client(hostname, PORT);
+        LogMessage gm = new LogMessage(LOG_SIGNIN,"user1","1");
+        LogMessage gm_signup = new LogMessage(LOG_SIGNUP,"user1","1");
+        client.sendObject(gm_signup);
+        client.recvObject();
+        client.sendObject(gm);
+        client.recvObject();
+
+        /*
+         * join Game
+         * */
+        GameMessage gc= new GameMessage(GAME_CREATE,-1,2);
+        GameMessage gj=  new GameMessage(GAME_JOIN,11111,2);
+        client.sendObject(gj);
+        client.recvObject();
+
+        /*
+         * Place Units
+         * */
+        client.recvObject(); // receive the world
+        List<Order> pOrders = new ArrayList<>();
+        pOrders.add(new PlaceOrder("C",new Troop(5,new TextPlayer("user1"))));
+        pOrders.add(new PlaceOrder("D",new Troop(10,new TextPlayer("user1"))));
+        client.sendObject(pOrders);
+
+
+        /*
+        * Action
+        * */
+        client.recvObject();
+        BasicOrder oDone=new BasicOrder(null,null,null,'D');
+        client.sendObject(oDone);
+        client.recvObject();
+
+
+        BasicOrder o_switch=new BasicOrder(null,null,null,SWITCH_OUT_ACTION);
+        client.sendObject(o_switch);
+    }
 //    private void simulateOneClientCreate(User u, Client theClient){
 //        Object res = null;
 //        //logIn

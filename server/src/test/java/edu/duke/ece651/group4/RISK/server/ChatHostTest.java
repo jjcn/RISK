@@ -61,11 +61,12 @@ class ChatHostTest {
         targets.add("user2");
         ChatMessage cM1 = new ChatMessage("user0", targets, "hello everyone!",  0, "");
         clients.get("user0").send(cM1);
+        clients.get("user0").exit();
     }
 
 }
 
-class ChatClient extends Thread {
+ class ChatClient extends Thread {
 
     SocketChannel chatChannel = null;
     String username;
@@ -81,7 +82,7 @@ class ChatClient extends Thread {
             chatChannel = SocketChannel.open();
             chatChannel.connect(new InetSocketAddress(hostname, port));
         } catch (IOException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
         this.username = username;
     }
@@ -99,7 +100,7 @@ class ChatClient extends Thread {
             System.out.println("chat client exits");
 
         } catch (IOException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         } finally {
 
         }
@@ -112,13 +113,16 @@ class ChatClient extends Thread {
         while (!exit.get()) {
             ByteBuffer readBuffer = ByteBuffer.allocate(1024);
             int readBytes = this.chatChannel.read(readBuffer);
-            if (readBytes == 0) {
+//            if (readBytes == 0) {
+//                continue;
+//            }
+//
+//            if (readBytes == -1) {
+//                this.chatChannel.close();
+//                System.out.println("close channel");
+//            }
+            if(readBytes<=0){
                 continue;
-            }
-
-            if (readBytes == -1) {
-                this.chatChannel.close();
-                System.out.println("close channel");
             }
             ChatMessage chatMsgRecv = (ChatMessage) SerializationUtils.deserialize(readBuffer.array());
             readBuffer.clear();
@@ -135,9 +139,9 @@ class ChatClient extends Thread {
             chatChannel.write(writeBuffer);
             System.out.println("Test: "+ chatMessage.getSource()+ " send chat message to chatServer!");
         } catch (IOException e) {
-            System.out.println("IOException when send message to chat server");
-            e.printStackTrace();
-            System.exit(0);
+//            System.out.println("IOException when send message to chat server");
+//            e.printStackTrace();
+//            System.exit(0);
         }
         writeBuffer.clear();
     }
