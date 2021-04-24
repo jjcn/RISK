@@ -109,7 +109,7 @@ class HostAppTest {
                 Client c1 = new Client(hostname, PORT);
                 c1.close();
             } catch (IOException e) {
-                e.printStackTrace();
+//                e.printStackTrace();
             }
 
         }).start();
