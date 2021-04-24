@@ -197,10 +197,11 @@ public class Territory implements Serializable {
             if (allianceTroop == null) {
                 throw new IllegalArgumentException("No alliance troop now");
             } else {
-                allianceTroop.sendTroop(subTroop);
+                Troop target=allianceTroop.sendTroop(subTroop);
                 if (allianceTroop.checkTroopSize() == 0) {
                     allianceTroop = null;
                 }
+                return target;
 
             }
         }
