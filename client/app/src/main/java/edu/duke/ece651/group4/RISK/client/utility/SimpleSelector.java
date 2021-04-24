@@ -32,7 +32,7 @@ public class SimpleSelector extends Dialog {
         builder.setTitle(title)
                 .setSingleChoiceItems(adapter, 0, (dialog, which) -> {
                     chosen = choices.get(which);
-                    builder.setTitle(CHOOSE_USER_INSTR+"\n"+chosen+" chosen now");
+                    builder.setMessage(chosen+" chosen now");
                     showByToast((Activity) context,"You have choose: "+chosen);
                 })
                 .setPositiveButton("Confirm", (dialog, which) -> {

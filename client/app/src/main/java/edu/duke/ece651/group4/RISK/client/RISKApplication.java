@@ -212,7 +212,7 @@ public class RISKApplication extends Application {
                 listener.onSuccess();
             } catch (Exception e) {
                 Log.e(TAG, LOG_FUNC_FAIL + "send function: " + e.toString());
-                listener.onFailure(e.toString());
+                listener.onFailure("Connection Error. Please commit again.");
             }
         });
     }
@@ -226,6 +226,7 @@ public class RISKApplication extends Application {
         threadPool.execute(() -> {
             try {
                 Object receivedO = playerClient.recvObject();
+                Log.i(TAG, LOG_FUNC_RUN + "receive from server" + receivedO);
                 listener.onSuccess(receivedO);
             } catch (Exception e) {
                 Log.e(TAG, LOG_FUNC_FAIL + e.toString());
@@ -242,6 +243,7 @@ public class RISKApplication extends Application {
             try {
                 playerClient.sendObject(toSendO);
                 Object receivedO = playerClient.recvObject();
+                Log.i(TAG, LOG_FUNC_RUN + "receive from server(want result) " + receivedO);
                 if (receivedO == null) {
                     listener.onSuccess();
                 } else if (receivedO instanceof String) {
@@ -250,7 +252,7 @@ public class RISKApplication extends Application {
                     Log.e(TAG, LOG_FUNC_FAIL + "result not string or null");
                 }
             } catch (Exception e) {
-                Log.e(TAG, e.toString());
+                Log.e(TAG, LOG_FUNC_FAIL + e.toString());
             }
         });
     }
@@ -264,6 +266,7 @@ public class RISKApplication extends Application {
             try {
                 playerClient.sendObject(toSendO);
                 Object receivedO = playerClient.recvObject();
+                Log.i(TAG, LOG_FUNC_RUN + "receive from server(want world) " + receivedO);
                 if (receivedO instanceof String) {
                     listener.onFailure((String) receivedO);
                 } else if (receivedO instanceof World) {
@@ -288,6 +291,7 @@ public class RISKApplication extends Application {
             try {
                 playerClient.sendObject(toSendO);
                 Object receivedO = playerClient.recvObject();
+                Log.i(TAG, LOG_FUNC_RUN + "receive from server(want list) " + receivedO);
                 if (receivedO instanceof String) {
                     listener.onFailure((String) receivedO);
                     listener.onFailure((String) receivedO);
@@ -323,6 +327,7 @@ public class RISKApplication extends Application {
      */
     public static void sendLogIn(String name, String pwd, onResultListener listener) {
         userName = name;
+        Log.i(TAG, LOG_FUNC_RUN + "try log in");
         sendAccountInfo(LOG_SIGNIN, name, pwd, listener);
     }
 
@@ -369,6 +374,7 @@ public class RISKApplication extends Application {
     public static void waitGameStart(onJoinRoomListener listenerWorld) {
         try {
             Object receivedWorld = playerClient.recvObject();
+            Log.i(TAG, LOG_FUNC_RUN + "receive from server wait game start" + receivedWorld);
             if (receivedWorld instanceof World) {
                 Log.i(TAG, LOG_FUNC_RUN + "World received");
                 theWorld = (World) receivedWorld;
@@ -426,10 +432,10 @@ public class RISKApplication extends Application {
      */
     public static void doOneMove(MoveOrder order, onResultListener listener) {
         try {
-            Log.i(TAG,order.getActTroop().getSummary());
+            Log.i(TAG, order.getActTroop().getSummary());
 
-            Troop clo=order.getActTroop().clone();
-            Log.i(TAG,clo.getSummary());
+            Troop clo = order.getActTroop().clone();
+            Log.i(TAG, clo.getSummary());
             MoveOrder tmp = new MoveOrder(order.getSrcName(), order.getDesName(), clo, MOVE_ACTION);
             theWorld.moveTroop(order, userName);
             send(tmp, listener);
@@ -456,18 +462,11 @@ public class RISKApplication extends Application {
      */
     public static void doOneAttack(AttackOrder order, onResultListener listener) {
         try {
-
-
-
-            Log.i(TAG,order.getActTroop().getSummary());
-
-            Troop clo=order.getActTroop().clone();
-            Log.i(TAG,clo.getSummary());
-
+            Log.i(TAG, order.getActTroop().getSummary());
+            Troop clo = order.getActTroop().clone();
+            Log.i(TAG, clo.getSummary());
             AttackOrder tmp = new AttackOrder(order.getSrcName(), order.getDesName(), clo, ATTACK_ACTION);
-
             theWorld.attackATerritory(order, userName);
-
             send(tmp, listener);
         } catch (Exception e) {
             listener.onFailure(e.getMessage());
@@ -521,7 +520,8 @@ public class RISKApplication extends Application {
 
 
     /**
-     * Used to send an tech level upgrade order
+     * Used to consume resource when user try to upgrade and send to server.
+     * Check if it's valid first:if one have already try to upgrade this turn.
      */
     public static void doOneUpgrade(onResultListener listener) {
         if (updatedTech) {
@@ -555,6 +555,9 @@ public class RISKApplication extends Application {
         sendAndReceiveWorld(order, listener);
     }
 
+    /**
+     * you don't need to receive anything from server when switch game.
+     */
     public static void switchGame() {
         send(new BasicOrder(null, null, null, SWITCH_OUT_ACTION),
                 new onResultListener() {
@@ -570,13 +573,14 @@ public class RISKApplication extends Application {
 
     public static void backLogin() {
         GameMessage m = new GameMessage(GAME_EXIT, -1, -1);
-        send(m, new onResultListener() {
+        sendAndReceiveResult(m, new onResultListener() {
             @Override
             public void onSuccess() {
             }
 
             @Override
             public void onFailure(String errMsg) {
+                Log.e(TAG, LOG_FUNC_FAIL + errMsg);
             }
         });
     }
@@ -587,6 +591,7 @@ public class RISKApplication extends Application {
 
     /**
      * Build an alliance order and send to server.
+     *
      * @param allyName
      */
     public static void requireAlliance(String allyName) {
@@ -600,22 +605,6 @@ public class RISKApplication extends Application {
             public void onFailure(String errMsg) {
             }
         });
-    }
-
-    /**
-     * Get the unit types this player can unlock.
-     * @return a set of all types the player can unlock now.
-     */
-    public static Set<String> getUnlockableTypes() {
-        return theWorld.getUnlockableTypes(userName);
-    }
-
-    /**
-     * A Player tries to unlock a new type.
-     * @param type is a type name.
-     */
-    public static void unlockType(String type) throws IllegalArgumentException {
-        theWorld.unlockType(userName, type);
     }
 
     /*************** function for chat **************/
@@ -651,14 +640,19 @@ public class RISKApplication extends Application {
         storedMsg.add(msg);
     }
 
+    /**
+     * @param chatID the chatID you want check. if null then get all message in current game.
+     * @return
+     */
     public static List<ChatMessageUI> getStoredMsg(String chatID) {
-        if(chatID == null){
-            return storedMsg;
-        }
         List historyMsg = new ArrayList();
         for (ChatMessageUI msg : storedMsg) {
-            if (msg.getChatId().equals(chatID)) {
-                historyMsg.add(msg);
+            if (msg.getRoomId().equals(getRoomId())) {
+                if (chatID == null) {
+                    historyMsg.add(msg);
+                } else if (msg.getChatId().equals(chatID)) {
+                    historyMsg.add(msg);
+                }
             }
         }
         return historyMsg;
@@ -672,5 +666,35 @@ public class RISKApplication extends Application {
         List<String> chatPlayerNames = new ArrayList<>(getAllPlayersName());
         chatPlayerNames.remove(userName);
         return chatPlayerNames;
+    }
+
+    /**
+     * Get the unit types this player can unlock.
+     *
+     * @return a set of all types the player can unlock now.
+     */
+    public static Set<String> getUnLockableTypes() {
+        return theWorld.getUnlockableTypes(userName);
+    }
+
+    public static Set<String> getUnLockedTypesWithoutSoldier() {
+        Set types = theWorld.getUnlockedTypes(getUserName());
+        types.remove(SOLDIER);
+        return types;
+    }
+
+    /**
+     * A Player tries to unlock a new type.
+     *
+     * @param type is a type name.
+     */
+    public static void unlockType(String type, onResultListener listener) {
+//        try {
+//            theWorld.unlockType(userName, type);
+//            Order order = new UnlockOrder(userName, type);
+//            send(order, listener);
+//        } catch (IllegalArgumentException e) {
+//            listener.onFailure(e.getMessage());
+//        }
     }
 }

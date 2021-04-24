@@ -1,5 +1,6 @@
 package edu.duke.ece651.group4.RISK.client.activity;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -109,6 +110,7 @@ public class ChatActivity extends AppCompatActivity implements DialogsListAdapte
     @Override
     public void onDialogClick(IDialog dialog) {
         Intent intent = new Intent(ChatActivity.this, MessageActivity.class);
+        Log.i(TAG, LOG_FUNC_FAIL + "enter chatId: "+dialog.getId());
         intent.putExtra("TARGET", dialog.getId());
         startActivity(intent);
     }
@@ -120,13 +122,15 @@ public class ChatActivity extends AppCompatActivity implements DialogsListAdapte
      * @param message  is the message
      */
     private void onNewMessage(String chatId, IMessage message) {
-        Log.i(TAG, LOG_FUNC_FAIL + "on new: "+chatId);
+        Log.i(TAG, LOG_FUNC_RUN + "on new chatID: "+chatId);
         boolean isUpdated = chatListAdapter.updateDialogWithMessage(chatId, message);
+        chatListAdapter.notifyDataSetChanged();
         if (!isUpdated) {
             //Dialog with this ID doesn't exist, so you can create new Dialog or update all dialogs list
             Log.e(TAG, LOG_FUNC_FAIL + "chatID not exist: "+chatId);
         }
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

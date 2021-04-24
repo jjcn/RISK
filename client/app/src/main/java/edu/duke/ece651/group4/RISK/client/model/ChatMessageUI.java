@@ -59,4 +59,7 @@ public class ChatMessageUI implements IMessage {
 
     public Set<String> getTargets(){return targets;}
 
+    public String getRoomId() {
+        return user.getRoomId();
+    }
 }
