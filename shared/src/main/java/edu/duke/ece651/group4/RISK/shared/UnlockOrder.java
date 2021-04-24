@@ -39,4 +39,12 @@ public class UnlockOrder implements Order, Serializable {
     public Troop getActTroop() {
         return null;
     }
+
+    public String getPlayerName() {
+        return playerName;
+    }
+
+    public String getTypeName() {
+        return typeName;
+    }
 }
