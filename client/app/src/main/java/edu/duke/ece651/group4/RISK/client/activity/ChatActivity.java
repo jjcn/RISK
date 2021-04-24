@@ -60,7 +60,9 @@ public class ChatActivity extends AppCompatActivity implements DialogsListAdapte
                         Log.i(TAG, LOG_FUNC_RUN + "receive incoming msg success");
                         ChatMessageUI message = (ChatMessageUI) o;
                         // call function to deal with new incoming msg
-                        onNewMessage(message.getChatId(), message);
+                        if(message.getRoomId().equals(getRoomId())) {
+                            onNewMessage(message.getChatId(), message);
+                        }
                     } else {
                         onFailure("receive not ChatMessageUI");
                     }
@@ -127,7 +129,7 @@ public class ChatActivity extends AppCompatActivity implements DialogsListAdapte
         chatListAdapter.notifyDataSetChanged();
         if (!isUpdated) {
             //Dialog with this ID doesn't exist, so you can create new Dialog or update all dialogs list
-            Log.e(TAG, LOG_FUNC_FAIL + "chatID not exist: "+chatId);
+            Log.i(TAG, LOG_FUNC_FAIL + "chatID not exist: "+chatId);
         }
     }
 
