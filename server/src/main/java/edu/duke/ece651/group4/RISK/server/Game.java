@@ -273,7 +273,7 @@ public class Game implements Serializable {
     public void tryUnlockAction(Order order, String userName){
         try{
             UnlockOrder unlockOrder = (UnlockOrder) order;
-//            this.gInfo.theWorld.unlockType(userName, unlockOrder.g);
+            this.gInfo.theWorld.unlockType(userName, unlockOrder.getTypeName());
         } catch (Exception e) {
             e.printStackTrace();
         }
