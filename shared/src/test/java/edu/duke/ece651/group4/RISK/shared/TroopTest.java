@@ -317,4 +317,21 @@ public class TroopTest {
         System.out.println(troop1.getSummary());
         System.out.println(troop2.getSummary());
     }
+
+    @Test
+    public void addCase(){
+        Troop troop1 = new Troop(5, new TextPlayer("test1"), new Random(0));
+        troop1.transfer(SOLDIER,SHIELD, 0,1);
+        troop1.transfer(SOLDIER,ARCHER, 0,2);
+        HashMap<String, Integer> tmpDict=new HashMap<>();
+        tmpDict.put(ARCHER_NAMES.get(0),1);
+        Troop tmp=new Troop(tmpDict,troop1.getOwner());
+        Troop sent=troop1.sendOutRangedAttack(tmp);
+        troop1.receiveTroop(sent);
+
+        Troop troop2 = new Troop(5, new TextPlayer("test2"), new Random(1));
+        troop2.transfer(SOLDIER,BREAKER, 0,2);
+        troop1.combat(troop2);
+
+    }
 }
