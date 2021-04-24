@@ -91,6 +91,7 @@ public class MessageActivity extends AppCompatActivity
     private void getHistoryInfo() {
         Log.i(TAG,LOG_FUNC_RUN+"get history: id "+target);
         List<ChatMessageUI> stored = getStoredMsg(target);
+        Log.i(TAG,LOG_FUNC_RUN+"get stored with size "+stored.size());
         for(ChatMessageUI message:stored){
                 msgAdapter.addToStart(message, true);
         }
