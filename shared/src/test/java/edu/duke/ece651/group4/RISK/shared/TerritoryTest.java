@@ -150,7 +150,14 @@ class TerritoryTest {
 
         System.out.println(test.getInfo());
 
-
+        HashMap<String, Integer> tmpDict2=new HashMap<>();
+        tmpDict2.put(UNIT_NAMES.get(0),1);
+        Troop tmp2=new Troop(tmpDict2,p3);
+        Troop bug=test.sendOutTroop(tmp2);
+        System.out.println(bug.getSummary());
+        System.out.println(test.getInfo());
+        test.sendInTroop(bug);
+        System.out.println(test.getInfo());
     }
 
     @Test

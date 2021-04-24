@@ -56,4 +56,24 @@ public class TechInfoTest {
         assertThrows(IllegalArgumentException.class, () -> TechLevelInfo.checkTechLevelValidity(0));
         assertThrows(IllegalArgumentException.class, () -> TechLevelInfo.checkTechLevelValidity(7));
     }
+
+    @Test
+    public void testEquals() {
+        TechLevelInfo t1 = new TechLevelInfo(1);
+        TechLevelInfo t2 = new TechLevelInfo(1);
+        assertEquals(t1, t2);
+        assertNotEquals(1, t1);
+        t1.upgradeTechLevelBy(1);
+        t2.upgradeTechLevelBy(1);
+        assertEquals(t1, t2);
+        t2.upgradeTechLevelBy(1);
+        assertNotEquals(t1, t2);
+    }
+
+    @Test
+    public void testHashCode() {
+        TechLevelInfo t1 = new TechLevelInfo(1);
+        TechLevelInfo t2 = new TechLevelInfo(1);
+        assertEquals(t1.hashCode(), t2.hashCode());
+    }
 }
