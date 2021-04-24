@@ -59,7 +59,7 @@ public class MessageActivity extends AppCompatActivity
                 runOnUiThread(() -> {
                     if (o instanceof ChatMessageUI) {
                         ChatMessageUI message = (ChatMessageUI) o;
-                        if(message.getChatId().equals(target)) {
+                        if(message.getRoomId().equals(getRoomId()) && message.getChatId().equals(target)) {
                             msgAdapter.addToStart(message, true);
                         }
                     } else {
