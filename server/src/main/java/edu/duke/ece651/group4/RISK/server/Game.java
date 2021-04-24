@@ -270,6 +270,14 @@ public class Game implements Serializable {
         this.gInfo.theWorld.addUnitToAll(1);
     }
 
+    public void tryUnlockAction(Order order, String userName){
+        try{
+            UnlockOrder unlockOrder = (UnlockOrder) order;
+//            this.gInfo.theWorld.unlockType(userName, unlockOrder.g);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     /*
      * This function is used to update world with any order received from the Client
      * @param order is the order from client
@@ -303,6 +311,9 @@ public class Game implements Serializable {
                 break;
             case ALLIANCE_ACTION:
                 tryDoAlliance(order);
+                break;
+            case UNLOCK_ACTION:
+                tryUnlockAction(order,userName);
                 break;
             case SWITCH_OUT_ACTION:
                 switchOutUser(u);
