@@ -22,7 +22,7 @@ public class UnlockOrder implements Order, Serializable {
 
     @Override
     public Character getActionName() {
-        return null;
+        return this.actionName;
     }
 
     @Override
