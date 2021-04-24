@@ -1,6 +1,8 @@
 package edu.duke.ece651.group4.RISK.client;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 public class Constant {
     //*************CONSTANTS FOR DEBUG************//
@@ -32,6 +34,7 @@ public class Constant {
     public static final String CONFIRM = "Do you want to finish this turn?";
     public static final String CONFIRM_ACTION = "(You cannot perform further action this turn if choose yes.)";
     public static final String CHOOSE_USER_INSTR = "You want to ally with: ";
+    public static final String CHOOSE_TYPE_INSTR = "You want to unlock: ";
     public static final String NO_ALLY = "None";
     public static final String SEND_CHAT_FAIL = "Failed to send the message";
     public static final String UPTECH_CONFIRM = "Do you want to upgrade tech?";
@@ -44,6 +47,7 @@ public class Constant {
     public static final String UI_SWITCH_OUT = "SwitchOut";
     public static final String UI_ALLIANCE = "Alliance";
     public static final String UI_CHANGETYPE = "Change soldier type";
+    public static final String UI_UNLOCKTYPE = "Unlock more unit types";
     // For data transfer
     public static final String TERR = "Territory";
 
@@ -72,4 +76,6 @@ public class Constant {
                     "Special thanks" +
                     "to the best TA in the world" +
                     "Kewei Xia";
+    
+    public static final List<Integer> LEVELS = Arrays.asList(new Integer[]{0, 1, 2, 3, 4, 5, 6}); // TODO: hardcoded
 }

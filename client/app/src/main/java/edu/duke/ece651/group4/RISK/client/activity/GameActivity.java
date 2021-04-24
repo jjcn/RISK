@@ -11,6 +11,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import edu.duke.ece651.group4.RISK.client.R;
 import edu.duke.ece651.group4.RISK.client.fragment.TerrFragment;
@@ -37,13 +38,17 @@ public class GameActivity extends AppCompatActivity {
     ImageButton allyBT;
     ImageButton upTechBT;
     ImageButton reportBT;
+    Button doneBT;
+    FloatingActionButton chatBT;
+
     ArrayList<String> noticeInfo;
     ListView worldInfoRC;
     ArrayAdapter worldInfoAdapter;
     List<String> worldInfo;
-    Button doneBT;
-    FloatingActionButton chatBT;
+    RecyclerView myTerrRC;
 
+
+    // UI_MOVE, UI_ATK, UI_UPTROOP, UI_CHANGETYPE
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.i(TAG, LOG_FUNC_RUN + "begin create");
@@ -70,9 +75,6 @@ public class GameActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 switchGame();
-                return true;
-            case R.id.menu_rooms:
-                switchGame();
                 finish();
                 return true;
             case R.id.menu_devinfo:
@@ -92,17 +94,15 @@ public class GameActivity extends AppCompatActivity {
         worldInfoRC = findViewById(R.id.worldInfo);
         chatBT = findViewById(R.id.chatButton);
         reportBT = findViewById(R.id.report);
+        myTerrRC = findViewById(R.id.myTerr_RC);
 
         FragmentManager fm = getSupportFragmentManager();
-        Fragment fragment = fm.findFragmentById(R.id.terrInfo_container);
-        if (fragment == null) {
-            fragment = new TerrFragment();
+        TerrFragment terrFrag = (TerrFragment) fm.findFragmentById(R.id.terrInfo_container);
+        if (terrFrag == null) {
             fm.beginTransaction()  // start a new fragment task
-                    .add(R.id.terrInfo_container, fragment)
+                    .replace(R.id.terrInfo_container, ((TerrFragment) terrFrag).newInstance(getMyTerritory().get(0)))
                     .commit();
         }
-        //addFragment(fm, R.id.terrInfo_container);
-        //addFragment(fm, R.id.fragment_enemyTerr_container);
 
         impReportBT();
         impUpTechBT();
@@ -110,6 +110,11 @@ public class GameActivity extends AppCompatActivity {
         impDoneButton();
         impWorldInfoRC();
         impChatBT();
+        impMyTerrRC();
+    }
+
+    private void impMyTerrRC() {
+        
     }
 
     private void impReportBT() {
@@ -159,6 +164,9 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void impAllyBT() {
+        if(getCurrentRoomSize() < 3){
+            selectAlliance();
+        }
         allyBT.setOnClickListener(v -> {
             selectAlliance();
         });

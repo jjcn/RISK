@@ -10,13 +10,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import edu.duke.ece651.group4.RISK.client.R;
 import edu.duke.ece651.group4.RISK.client.listener.onResultListener;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static edu.duke.ece651.group4.RISK.client.Constant.*;
 import static edu.duke.ece651.group4.RISK.client.RISKApplication.*;
 import static edu.duke.ece651.group4.RISK.client.utility.Notice.showByToast;
-import static edu.duke.ece651.group4.RISK.shared.Constant.JOB_NAMES;
-import static edu.duke.ece651.group4.RISK.shared.Constant.UNIT_NAMES;
+import static edu.duke.ece651.group4.RISK.shared.Constant.*;
 
 public class TransferActivity extends AppCompatActivity {
 
@@ -39,7 +40,7 @@ public class TransferActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transfer);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Transfer");
+            getSupportActionBar().setTitle(UI_CHANGETYPE);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
@@ -87,12 +88,11 @@ public class TransferActivity extends AppCompatActivity {
         });
 
         // type spinner
-        List<String> jobNames = JOB_NAMES;
+        List<String> jobNames = new ArrayList<>(getUnLockedTypesWithoutSoldier());
 
         typeAfterSpinner = findViewById(R.id.type_choices);
         SpinnerAdapter typeAdapter = new ArrayAdapter<>(
-                TransferActivity.this, R.layout.item_choice,
-                jobNames);
+                TransferActivity.this, R.layout.item_choice, jobNames);
         typeAfterSpinner.setAdapter(typeAdapter);
         typeAfterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -106,17 +106,16 @@ public class TransferActivity extends AppCompatActivity {
         });
 
         // unit level spinner
-        List<String> levelNames = UNIT_NAMES;
-
+        List<Integer> levels = LEVELS;
         levelSpinner = findViewById(R.id.level_choices);
-        SpinnerAdapter levelAfterAdapter = new ArrayAdapter<>(
+        SpinnerAdapter levelAdapter = new ArrayAdapter<>(
                 TransferActivity.this, R.layout.item_choice,
-                levelNames);
-        levelSpinner.setAdapter(levelAfterAdapter);
+                levels);
+        levelSpinner.setAdapter(levelAdapter);
         levelSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                level = position;
+                level = (int) levelAdapter.getItem(position);
             }
 
             @Override
@@ -132,7 +131,7 @@ public class TransferActivity extends AppCompatActivity {
         commitBT.setOnClickListener(v -> {
             Editable text = nUnitET.getText();
             if (text == null) {
-                Log.e(TAG,LOG_FUNC_FAIL+"input text null");
+                Log.e(TAG,LOG_FUNC_FAIL + "input text null");
                 return;
             } else if (text.toString().equals("")) {
                 showByToast(TransferActivity.this, "Please input the number.");
@@ -140,6 +139,8 @@ public class TransferActivity extends AppCompatActivity {
             }
             nUnit = Integer.parseInt(text.toString());
 
+            Log.d(TAG, LOG_FUNC_RUN + "user selected: change " + nUnit + " soldier of level " +
+                    level + " to " + typeAfter);
             doSoldierTransfer(
                     buildTransferTroopOrder(terrName, typeAfter, level, nUnit), new onResultListener() {
                         @Override

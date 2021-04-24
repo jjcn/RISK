@@ -39,7 +39,7 @@ public class ChatMessageUI implements IMessage {
 
     @Override
     public String getId() {
-        return chatID + user.getId() + createdAt;
+        return chatID;
     }
 
     @Override
@@ -59,4 +59,7 @@ public class ChatMessageUI implements IMessage {
 
     public Set<String> getTargets(){return targets;}
 
+    public String getRoomId() {
+        return user.getRoomId();
+    }
 }

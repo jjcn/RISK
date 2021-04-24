@@ -337,7 +337,7 @@ public class Territory implements Serializable {
                     enemyTurn = !enemyTurn;
                 }
             }
-            attack=!attack;
+
         }
 
         this.ownerTroop = enemy.checkWin() ? enemy : this.ownerTroop;

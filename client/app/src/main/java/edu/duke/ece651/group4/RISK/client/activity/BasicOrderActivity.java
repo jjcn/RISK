@@ -79,6 +79,9 @@ public class BasicOrderActivity extends AppCompatActivity {
     }
 
     private void impUI() {
+        worldImageView = findViewById(R.id.world_image_view);
+        worldImageView.setImageResource(MAPS.get(getCurrentRoomSize()));
+
         //List<String> myTerrNames = getMyTerrNames();
         List<String> terrNamesWithMyTroop = getTerrNamesWithMyTroop();
         List<String> myAndAllyTerrNames = getMyAndAllyTerrNames();
@@ -136,7 +139,7 @@ public class BasicOrderActivity extends AppCompatActivity {
          */
         List<String> typeNames = new ArrayList<>();
         typeNames.add(SOLDIER);
-        typeNames.addAll(JOB_NAMES);
+        typeNames.addAll(getUnLockedTypesWithoutSoldier());
 
         typeSpinner = findViewById(R.id.unit_type_choices);
         SpinnerAdapter typeAdapter = new ArrayAdapter<>(
@@ -159,7 +162,7 @@ public class BasicOrderActivity extends AppCompatActivity {
          *
          * typeNames == level spinner
          */
-        List<Integer> levels = Arrays.asList(new Integer[]{0, 1, 2, 3, 4, 5, 6});
+        List<Integer> levels = LEVELS; // TODO: hardcoded
         levelSpinner = findViewById(R.id.unit_level_choices);
         SpinnerAdapter levelAdapter = new ArrayAdapter<>(
                 BasicOrderActivity.this,
@@ -187,48 +190,50 @@ public class BasicOrderActivity extends AppCompatActivity {
          */
         commitBT = findViewById(R.id.commit_button);
         commitBT.setOnClickListener(v -> {
-            Editable text = nUnitET.getText();
-            if (text == null) {
-                return;
-            } else if (text.toString() == "") {
-                showByToast(BasicOrderActivity.this, "Please input number.");
-                return;
-            }
-            nUnit = Integer.parseInt(text.toString());
-            Log.d(TAG, LOG_FUNC_RUN + "User selected: from " + srcName + " to " + desName +
-                    " move " + nUnit + " " + type + " of level " + level);
-            // move action
-            if (actionType.equals(UI_MOVE)) {
-                doOneMove(buildMoveOrder(srcName, desName, nUnit, type, level),
-                        new onResultListener() {
-                            @Override
-                            public void onSuccess() {
-                                finish();
-                            }
+                    Editable text = nUnitET.getText();
+                    if (text == null) {
+                    } else {
+                        if (text.toString().equals("")) {
+                            showByToast(BasicOrderActivity.this, "Please input number.");
+                        } else {
+                            nUnit = Integer.parseInt(text.toString());
+                            Log.d(TAG, LOG_FUNC_RUN + "User selected: from " + srcName + " to " + desName +
+                                    " move " + nUnit + " " + type + " of level " + level);
+                            // move action
+                            if (actionType.equals(UI_MOVE)) {
+                                doOneMove(buildMoveOrder(srcName, desName, nUnit, type, level),
+                                        new onResultListener() {
+                                            @Override
+                                            public void onSuccess() {
+                                                finish();
+                                            }
 
-                            @Override
-                            public void onFailure(String errMsg) {
-                                showByToast(BasicOrderActivity.this, errMsg);
-                                Log.e(TAG, errMsg);
+                                            @Override
+                                            public void onFailure(String errMsg) {
+                                                showByToast(BasicOrderActivity.this, errMsg);
+                                                Log.e(TAG, errMsg);
+                                            }
+                                        });
                             }
-                        });
-            }
-            // attack action
-            else if (actionType.equals(UI_ATK)) {
-                doOneAttack(buildAttackOrder(srcName, desName, nUnit, type, level),
-                        new onResultListener() {
-                            @Override
-                            public void onSuccess() {
-                                finish();
-                            }
+                            // attack action
+                            else if (actionType.equals(UI_ATK)) {
+                                doOneAttack(buildAttackOrder(srcName, desName, nUnit, type, level),
+                                        new onResultListener() {
+                                            @Override
+                                            public void onSuccess() {
+                                                finish();
+                                            }
 
-                            @Override
-                            public void onFailure(String errMsg) {
-                                showByToast(BasicOrderActivity.this, errMsg);
-                                Log.e(TAG, errMsg);
+                                            @Override
+                                            public void onFailure(String errMsg) {
+                                                showByToast(BasicOrderActivity.this, errMsg);
+                                                Log.e(TAG, errMsg);
+                                            }
+                                        });
                             }
-                        });
-            }
-        });
+                        }
+                    }
+                }
+        );
     }
 }
