@@ -392,4 +392,11 @@ public class GraphTest {
         assertNotEquals(graph1.hashCode(), graph2.hashCode());
     }
 
+    @Test
+    public void testGraphCase() {
+        GraphFactory test=new GraphFactory();
+        test.createStringGraphSeparated();
+
+    }
+
 }

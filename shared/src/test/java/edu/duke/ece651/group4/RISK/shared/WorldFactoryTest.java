@@ -119,5 +119,15 @@ public class WorldFactoryTest {
     	testCreationByNumPlayer(3);
     	testCreationByNumPlayer(4);
     	testCreationByNumPlayer(5);
+
     }
+
+    @Test
+    public void testFantasy() {
+        WorldFactory factory = new WorldFactory();
+        factory.createFantasyWorld();
+
+    }
+
+
 }

@@ -1233,6 +1233,7 @@ public class WorldTest {
     	groups.get(0).get(0).setArea(5);
     	System.out.println(world.findTerritory("1").getArea());
     	System.out.println(world.findTerritory("2").getArea());
+    	world.getAllTerritoriesWithinRange(world.findTerritory("1"),20);
     }
 
 
