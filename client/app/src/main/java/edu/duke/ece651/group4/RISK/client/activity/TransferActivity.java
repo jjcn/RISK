@@ -88,16 +88,16 @@ public class TransferActivity extends AppCompatActivity {
         });
 
         // type spinner
-        List<String> jobNames = new ArrayList<>(getUnLockedTypesWithoutSoldier());
+        List<String> types = new ArrayList<>(getUnLockedTypesWithoutSoldier());
 
         typeAfterSpinner = findViewById(R.id.type_choices);
         SpinnerAdapter typeAdapter = new ArrayAdapter<>(
-                TransferActivity.this, R.layout.item_choice, jobNames);
+                TransferActivity.this, R.layout.item_choice, types);
         typeAfterSpinner.setAdapter(typeAdapter);
         typeAfterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                typeAfter = JOB_NAMES.get(position);
+                typeAfter = types.get(position);
             }
 
             @Override
