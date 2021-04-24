@@ -315,6 +315,7 @@ public class TurnActivity extends AppCompatActivity {
                 else if (world.checkLost(getUserName())) {
                     Log.i(TAG, LOG_FUNC_RUN + "Lose game.");
                     showByToast(TurnActivity.this, LOSE_MSG);
+                    shutDownBTinWatch();
                     doneBT.performClick();
                 }else {
                     showByToast(TurnActivity.this, TURN_END);
@@ -329,19 +330,22 @@ public class TurnActivity extends AppCompatActivity {
         });
     }
 
+    private void shutDownBTinWatch() {
+        doneBT.setVisibility(View.GONE);
+        upTechBT.setVisibility(View.GONE);
+        allyBT.setVisibility(View.GONE);
+        commitBT.setVisibility(View.GONE);
+    }
+
     /**
      * send null to server and waiting for receive World.
      */
     private void watchGame() {
         Log.i(TAG,LOG_FUNC_RUN+"watchGame called");
         waitDG.cancel();
-        doneBT.setVisibility(View.GONE);
-        upTechBT.setVisibility(View.GONE);
-        allyBT.setVisibility(View.GONE);
-        commitBT.setVisibility(View.GONE);
+        shutDownBTinWatch();
         showStayDialog();
     }
-
 
     private void updateAfterTurn() {
         runOnUiThread(() -> {
