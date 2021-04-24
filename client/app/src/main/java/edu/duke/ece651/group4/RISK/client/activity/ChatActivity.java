@@ -1,5 +1,6 @@
 package edu.duke.ece651.group4.RISK.client.activity;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -55,8 +56,8 @@ public class ChatActivity extends AppCompatActivity implements DialogsListAdapte
             @Override
             public void onSuccess(Object o) {
                 runOnUiThread(() -> {
-                    Log.i(TAG, LOG_FUNC_RUN + "receive incoming msg success");
                     if (o instanceof ChatMessageUI) {
+                        Log.i(TAG, LOG_FUNC_RUN + "receive incoming msg success");
                         ChatMessageUI message = (ChatMessageUI) o;
                         // call function to deal with new incoming msg
                         onNewMessage(message.getChatId(), message);
@@ -74,6 +75,7 @@ public class ChatActivity extends AppCompatActivity implements DialogsListAdapte
     }
 
     private void initAdapter() {
+        Log.i(TAG,LOG_FUNC_RUN+"init Adapter");
         chatListAdapter = new DialogsListAdapter(R.layout.item_dialog, null);
         chatListAdapter.setItems(getChats());
         chatListAdapter.setOnDialogClickListener(this);
@@ -85,6 +87,7 @@ public class ChatActivity extends AppCompatActivity implements DialogsListAdapte
      * @return world chat room and private chat room.
      */
     private List<ChatDialog> getChats() {
+        Log.i(TAG,LOG_FUNC_RUN+"get chats");
         ArrayList<ChatDialog> chats = new ArrayList<>();
         // World chat room, id = ""
         chats.add(new ChatDialog(WORLD_CHAT, "World Chat", new ArrayList<>(getAllPlayersName())));
@@ -98,12 +101,16 @@ public class ChatActivity extends AppCompatActivity implements DialogsListAdapte
         for(ChatMessageUI msg:getStoredMsg(null)){
             onNewMessage(msg.getChatId(),msg);
         }
+        for(ChatDialog dialog : chats){
+            Log.i(TAG,LOG_FUNC_RUN+dialog.getId());
+        }
         return chats;
     }
 
     @Override
     public void onDialogClick(IDialog dialog) {
         Intent intent = new Intent(ChatActivity.this, MessageActivity.class);
+        Log.i(TAG, LOG_FUNC_FAIL + "enter chatId: "+dialog.getId());
         intent.putExtra("TARGET", dialog.getId());
         startActivity(intent);
     }
@@ -115,12 +122,15 @@ public class ChatActivity extends AppCompatActivity implements DialogsListAdapte
      * @param message  is the message
      */
     private void onNewMessage(String chatId, IMessage message) {
+        Log.i(TAG, LOG_FUNC_RUN + "on new chatID: "+chatId);
         boolean isUpdated = chatListAdapter.updateDialogWithMessage(chatId, message);
+        chatListAdapter.notifyDataSetChanged();
         if (!isUpdated) {
             //Dialog with this ID doesn't exist, so you can create new Dialog or update all dialogs list
             Log.e(TAG, LOG_FUNC_FAIL + "chatID not exist: "+chatId);
         }
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

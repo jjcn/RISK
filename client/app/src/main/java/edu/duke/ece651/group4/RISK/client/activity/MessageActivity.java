@@ -33,12 +33,7 @@ public class MessageActivity extends AppCompatActivity
     private MessagesListAdapter msgAdapter;
     private MessagesList msgList;
     private String target;
-//    private static final int TOTAL_MSG = 100;
-//    private Menu menu;
-//    private int selectionCount;
-//    private Date lastLoadedDate;
 
-    //TODO: show sender name (simple string in message now) // avatar
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,19 +79,10 @@ public class MessageActivity extends AppCompatActivity
 
     private void initAdapter() {
         msgAdapter = new MessagesListAdapter<>(getUserName() + getRoomId(), null);
-//                new ImageLoader() {
-//            @Override
-//            public void loadImage(ImageView imageView, @Nullable String url, @Nullable Object payload) {
-        // Picasso.with(MessagesListActivity.this).load(url).into(imageView);
-//                imageView.setImageBitmap(stringToBitmap(url));
-//            }
-//        });
         msgList.setAdapter(msgAdapter);
-//        msgAdapter.setLoadMoreListener(this);
 
         MessageInput input = findViewById(R.id.input);
         input.setInputListener(this);
-//        input.setTypingListener(this);
     }
 
     /**
@@ -131,12 +117,15 @@ public class MessageActivity extends AppCompatActivity
         }
         ChatMessageUI message = new ChatMessageUI(WORLD_CHAT.equals(target)? WORLD_CHAT : getUserName(), input.toString(), user, targets);
 
-        Log.i(TAG, LOG_FUNC_RUN + "start send msg target: " + target);
+        Log.i(TAG, LOG_FUNC_RUN + "create new msg: " + "chatID = "+message.getChatId()+" text: "+message.getText());
         sendOneMsg(message, new onResultListener() {
             @Override
             public void onSuccess() {
-                addMsg(message);
-                msgAdapter.addToStart(message, true);
+//                message.setChatId();
+                runOnUiThread(()->{
+                    addMsg(message);
+                    msgAdapter.addToStart(message, true);
+                });
             }
 
             @Override
@@ -159,57 +148,4 @@ public class MessageActivity extends AppCompatActivity
         }
         return bitmap;
     }
-
-    // todo: load msg
-//    protected void loadMessages() {
-//        new Handler().postDelayed(() -> {
-//            ArrayList<ChatMessage> messages = MessagesFixtures.getMessages(lastLoadedDate);
-//            lastLoadedDate = messages.get(messages.size() - 1).getCreatedAt();
-//            msgAdapter.addToEnd(messages, false);
-//        }, 1000);
-//    }
-//
-////    add to implements:, MessagesListAdapter.OnLoadMoreListener
-//    @Override
-//    public void onLoadMore(int page, int totalItemsCount) {
-//        if (totalItemsCount < TOTAL_MSG) {
-//            loadMessages();
-//        }
-//    }
-
-
-    //    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        this.menu = menu;
-//        getMenuInflater().inflate(R.menu.message_menu,menu);
-//        onSelectionChanged(0);
-//        return super.onCreateOptionsMenu(menu);
-//    }
-
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()) {
-//            case R.id.action_delete:
-//                messagesAdapter.deleteSelectedMessages();
-//                break;
-//            case R.id.action_copy:
-//                messagesAdapter.copySelectedMessagesText(this, getMessageStringFormatter(), true);
-//                AppUtils.showToast(this, R.string.copied_message, true);
-//                break;
-//        }
-//        return true;
-//    }
-
-//    private MessagesListAdapter.Formatter<ChatMessageUI> getMessageStringFormatter() {
-//        return message -> {
-//            String createdAt = new SimpleDateFormat("MMM d, EEE 'at' h:mm a", Locale.getDefault())
-//                    .format(message.getCreatedAt());
-//
-//            String text = message.getText();
-//            if (text == null) text = "[attachment]";
-//
-//            return String.format(Locale.getDefault(), "%s: %s (%s)",
-//                    message.getUser().getName(), text, createdAt);
-//        };
-//    }
 }

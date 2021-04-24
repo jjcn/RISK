@@ -1,10 +1,9 @@
 package edu.duke.ece651.group4.RISK.shared;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -37,14 +36,43 @@ public class PlayerInfo implements Serializable {
      */
     protected FoodResource foodResource;
     protected TechResource techResource;
+    /**
+     * The type of units a player have already unlocked.
+     */
+    protected Set<String> unlockedTypes;
+    /**
+     * Maximum number of types a player can have (including basic soldier)
+     */
+    protected static final int MAX_TYPE_COUNT = 3;
+    /**
+     * The starting tech level that a player is allowed to unlock more types.
+     */
+    protected static final int MIN_TECH_LEVEL_TO_UNLOCK_TYPE = 3; // TODO: when debugging, use 1. Change to 3 when shipping
+    /**
+     * All type of units.
+     */
+    protected static final Set<String> ALL_UNLOCKABLE_TYPES = new HashSet<>(Constant.JOB_NAMES);
+    /**
+     * The tech resource consumption of all types.
+     */
+    protected static final Map<String, Integer> UNLOCK_COSTS;
+    static {
+        UNLOCK_COSTS = new HashMap<>();
+        for (String type : ALL_UNLOCKABLE_TYPES) {
+            UNLOCK_COSTS.put(type, 1);
+        }
+    }
 
-    protected PlayerInfo(String playerName, TechLevelInfo techLevelInfo,
-                         FoodResource foodResource, TechResource techResource,
-                         Set<String> allianceNames) {
+    protected PlayerInfo(String playerName,
+                         TechLevelInfo techLevelInfo,
+                         FoodResource foodResource,
+                         TechResource techResource,
+                         Set<String> unlockedTypes) {
         this.playerName = playerName;
         this.techLevelInfo = techLevelInfo;
         this.foodResource = foodResource;
         this.techResource = techResource;
+        this.unlockedTypes = unlockedTypes;
     }
 
     /**
@@ -71,18 +99,43 @@ public class PlayerInfo implements Serializable {
      * @param nTech is the initial quantity of tech resource.
      */
     public PlayerInfo(String playerName, int nFood, int nTech) {
-        this(playerName, new TechLevelInfo(1),
-                new FoodResource(nFood), new TechResource(nTech),
-                new HashSet<>());
+        this(playerName,
+                new TechLevelInfo(1),
+                new FoodResource(nFood),
+                new TechResource(nTech),
+                new HashSet<>()
+        );
+        this.unlockedTypes = initUnlockedTypes();
+    }
+
+    /**
+     * Initialize the unlocked types.
+     * Player can only have soldier at the beginning.
+     *
+     * @return Set of allowed types.
+     */
+    protected Set<String> initUnlockedTypes() {
+        Set<String> ans = new HashSet<>();
+        ans.add(Constant.SOLDIER);
+        return ans;
+    }
+
+    protected Set<String> cloneAllowedTypes() {
+        Set<String> ans = new HashSet<>();
+        for (String type : unlockedTypes) {
+            ans.add(type);
+        }
+        return ans;
     }
 
     public PlayerInfo clone() {
-        Set<String> allianceNamesCopy = new HashSet<>();
-        return new PlayerInfo(playerName,
+        return new PlayerInfo(
+                playerName,
                 new TechLevelInfo(techLevelInfo.getTechLevel()),
                 new FoodResource(foodResource.getQuantity()),
                 new TechResource(techResource.getQuantity()),
-                allianceNamesCopy);
+                cloneAllowedTypes()
+                );
     }
 
     public String getName() {
@@ -99,6 +152,28 @@ public class PlayerInfo implements Serializable {
 
     public int getTechQuantity() {
         return techResource.getQuantity();
+    }
+
+    public Set<String> getUnlockedTypes() { return unlockedTypes; }
+
+    /**
+     * Get all types that are unlockable for a player.
+     *
+     * @return all unlockable types for a player.
+     */
+    public Set<String> getUnlockableTypes() {
+        try {
+            checkCanUnlockMore();
+        } catch (IllegalArgumentException iae) {
+            return new HashSet<>();
+        }
+        Set<String> ans = new HashSet<>();
+        for (String type : ALL_UNLOCKABLE_TYPES) {
+            if (!unlockedTypes.contains(type)) {
+                ans.add(type);
+            }
+        }
+        return ans;
     }
 
     /**
@@ -190,6 +265,85 @@ public class PlayerInfo implements Serializable {
         int techLevelAfterMod = techLevel + n;
         int consumption = TechLevelInfo.calcConsumption(techLevel, techLevelAfterMod);
         consumeTech(consumption);
+    }
+
+    /**
+     * Check if a player can unlock more types.
+     */
+    protected void checkCanUnlockMore() throws IllegalArgumentException {
+        if (unlockedTypes.size() >= MAX_TYPE_COUNT) {
+            throw new IllegalArgumentException(
+                    String.format("Reached maximum type count %d. Cannot unlock more types.", MAX_TYPE_COUNT)
+            );
+        }
+    }
+
+    /**
+     * Check if a type is unlockable.
+     * @param type is a name to check.
+     */
+    protected void checkTypeValidity(String type) throws IllegalArgumentException {
+        if (!Constant.JOB_NAMES.contains(type)) {
+            throw new IllegalArgumentException(String.format("%s is not an unlockable type.", type));
+        }
+        if (unlockedTypes.contains(type)) {
+            throw new IllegalArgumentException(String.format("%s is already unlocked.", type));
+        }
+    }
+
+    /**
+     * Check if the player has reach the tech level to unlock more types.
+     */
+    protected void checkTechLevelToUnlockType() {
+        int currentTechLevel = getTechLevel();
+        if (currentTechLevel < MIN_TECH_LEVEL_TO_UNLOCK_TYPE) {
+            throw new IllegalArgumentException(
+                  String.format(
+                          "You have to reach tech level %d to unlock more types of units, " +
+                          "but your current tech level is %d.",
+                          MIN_TECH_LEVEL_TO_UNLOCK_TYPE,
+                          currentTechLevel
+                  )
+            );
+        }
+    }
+
+    /**
+     * Debug feature.
+     * Set the player tech level to the minimum required tech level to unlock types.
+     */
+    public void reachMinTechLevelToUnlockType() {
+        techLevelInfo.techLevel = MIN_TECH_LEVEL_TO_UNLOCK_TYPE;
+    }
+
+    /**
+     * Debug feature.
+     * Unlock all types for this player.
+     */
+    public void unlockAllTypes() {
+        unlockedTypes.addAll(ALL_UNLOCKABLE_TYPES);
+    }
+
+    /**
+     * Player tries to unlock a new type.
+     * @param type is a type name.
+     */
+    public void unlockType(String type) throws IllegalArgumentException {
+        checkCanUnlockMore();
+        checkTypeValidity(type);
+        checkTechLevelToUnlockType();
+        consumeTech(UNLOCK_COSTS.get(type));
+        unlockedTypes.add(type);
+    }
+
+    /**
+     * Check if a type is unlocked.
+     * @param type is a type name.
+     * @return true, if the type is already unlocked.
+     *          false, if not.
+     */
+    public boolean isTypeUnlocked(String type) {
+        return unlockedTypes.contains(type);
     }
 
     @Override
