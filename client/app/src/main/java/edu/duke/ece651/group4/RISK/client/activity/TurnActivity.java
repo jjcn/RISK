@@ -232,12 +232,50 @@ public class TurnActivity extends AppCompatActivity {
         doneBT.setOnClickListener(v -> {
             doneBT.setEnabled(false);
             if (isWatch) {
-                showDoneDialog(LOSE_MSG, STAY_INSTR);
-            } else {
+                showStayDialog();
+            }
+            else {
                 showDoneDialog(CONFIRM, CONFIRM_ACTION);
             }
         });
     }
+
+    private void showStayDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(TurnActivity.this);
+        builder.setTitle(LOSE_MSG)
+                .setMessage(STAY_INSTR)
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    waitNextTurn();
+                })
+                .setNegativeButton("No", (dialog, which) -> {
+                    switchOut();
+                });
+        builder.show();
+    }
+
+
+//    private void showStayDialog() {
+//        Log.i(TAG,LOG_FUNC_RUN+"show stay dialog");
+//        AlertDialog.Builder builder = new AlertDialog.Builder(TurnActivity.this);
+//        builder.setTitle(STAY_INSTR)
+//                .setPositiveButton("Yes", (dialog, which) -> stayInGame(new onReceiveListener() {
+//                    @Override
+//                    public void onSuccess(Object o) {
+//                        World world = (World) o;
+//                        Log.i(TAG,LOG_FUNC_RUN+"stay dialog receive world");
+//                        showByReport(TurnActivity.this, TURN_END, world.getReport());
+//                        updateAllInfo();
+//                        doneBT.performClick();
+//                    }
+//
+//                    @Override
+//                    public void onFailure(String errMsg) {
+//                        Log.e(TAG, LOG_FUNC_FAIL + "watchGame should not fail");
+//                    }
+//                }))
+//                .setNegativeButton("No", (dialog, which) -> switchOut());
+//        builder.show();
+//    }
 
     private void showDoneDialog(String title, String msg) {
         Log.i(TAG, LOG_FUNC_RUN + "enter done");
@@ -258,12 +296,15 @@ public class TurnActivity extends AppCompatActivity {
     }
 
     private void waitNextTurn() {
-        waitDG.show();
+        if (!isWatch) {
+            waitDG.show();
+        }
         doneBT.setEnabled(false);
         doDone(new onReceiveListener() {
             @Override
             public void onSuccess(Object o) {
                 World world = (World) o;
+                Log.i(TAG, LOG_FUNC_RUN + "Check end game result: "+ world.isGameEnd());
                 if (world.isGameEnd()) {
                     // todo: can stay after finish
                     showByReport(TurnActivity.this, "Game end!", world.getWinner() + " won the game!");
@@ -271,12 +312,14 @@ public class TurnActivity extends AppCompatActivity {
                     startActivity(backRoom);
                     finish();
                 }
-                if (world.checkLost(getUserName())) {
-                    showByReport(TurnActivity.this, LOSE_MSG, world.getReport());
-                    watchGame();
+                else if (world.checkLost(getUserName())) {
+                    Log.i(TAG, LOG_FUNC_RUN + "Lose game.");
+                    showByToast(TurnActivity.this, LOSE_MSG);
+                    doneBT.performClick();
+                }else {
+                    showByToast(TurnActivity.this, TURN_END);
+                    updateAfterTurn();
                 }
-                showByToast(TurnActivity.this, TURN_END);
-                updateAfterTurn();
             }
 
             @Override
@@ -290,33 +333,15 @@ public class TurnActivity extends AppCompatActivity {
      * send null to server and waiting for receive World.
      */
     private void watchGame() {
+        Log.i(TAG,LOG_FUNC_RUN+"watchGame called");
         waitDG.cancel();
         doneBT.setVisibility(View.GONE);
         upTechBT.setVisibility(View.GONE);
         allyBT.setVisibility(View.GONE);
+        commitBT.setVisibility(View.GONE);
         showStayDialog();
     }
 
-    private void showStayDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(TurnActivity.this);
-        builder.setTitle(STAY_INSTR)
-                .setPositiveButton("Yes", (dialog, which) -> stayInGame(new onReceiveListener() {
-                    @Override
-                    public void onSuccess(Object o) {
-                        World world = (World) o;
-                        showByReport(TurnActivity.this, TURN_END, world.getReport());
-                        updateAllInfo();
-                        watchGame();
-                    }
-
-                    @Override
-                    public void onFailure(String errMsg) {
-                        Log.e(TAG, LOG_FUNC_FAIL + "watchGame should not fail");
-                    }
-                }))
-                .setNegativeButton("No", (dialog, which) -> switchOut());
-        builder.show();
-    }
 
     private void updateAfterTurn() {
         runOnUiThread(() -> {
