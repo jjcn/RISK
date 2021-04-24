@@ -761,8 +761,8 @@ public class World implements Serializable {
      * A: name of the attacker, attackerName
      * B: name of player who is attacked, allyName
      *
-     * If A breaks an alliance with B, and B has units in A’s territories,
-     * then B’s units return to the nearest (break ties randomly) B-owned territory
+     * If A breaks an alliance with B, and B has units in A's territories,
+     * then B's units return to the nearest (break ties randomly) B-owned territory
      * before any other actions are resolved (i.e. are available to defend those territories)
      *
      * @param attackerName is the name of the player who attacks
@@ -820,7 +820,7 @@ public class World implements Serializable {
      * Get a territory's nearest territory that belongs to a certain player.
      * Checks if a path is valid through the move.
      *
-     *  B’s units return to the nearest (break ties randomly) B-owned territory
+     *  B's units return to the nearest (break ties randomly) B-owned territory
      *  Q1: "nearest" in terms of total territory size?
      *  Q2: If this territory is blocked, can B move back?
      *

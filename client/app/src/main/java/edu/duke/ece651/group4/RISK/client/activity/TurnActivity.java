@@ -393,6 +393,7 @@ public class TurnActivity extends AppCompatActivity {
     private void impNoticeInfoRC() {
         noticeInfo = new ArrayList<>();
         noticesAdapter = new ArrayAdapter<>(TurnActivity.this, R.layout.item_choice, noticeInfo);
+        noticeInfoRC.setDividerHeight(0);
         noticeInfoRC.setAdapter(noticesAdapter);
     }
 

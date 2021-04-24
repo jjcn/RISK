@@ -45,7 +45,9 @@ public class GameActivity extends AppCompatActivity {
     ListView worldInfoRC;
     ArrayAdapter worldInfoAdapter;
     List<String> worldInfo;
-    RecyclerView myTerrRC;
+    ArrayList<String> myTerrs;
+    ListView myTerrRC;
+    private ArrayAdapter<String> myTerrsAdapter;
 
 
     // UI_MOVE, UI_ATK, UI_UPTROOP, UI_CHANGETYPE
@@ -85,7 +87,6 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
-    // TODO: historyInfo button
     private void impUI() {
         playerInfo = findViewById(R.id.playerInfo);
         allyBT = findViewById(R.id.ally);
@@ -114,7 +115,15 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void impMyTerrRC() {
-        
+        myTerrs = new ArrayList<>();
+        myTerrsAdapter = new ArrayAdapter<>(GameActivity.this, R.layout.item_choice, myTerrs);
+        myTerrRC.setAdapter(myTerrsAdapter);
+        myTerrRC.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+        });
     }
 
     private void impReportBT() {

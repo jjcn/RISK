@@ -395,7 +395,7 @@ public class Troop implements Serializable {
                     }
 
                 }else if (maxLevel < check.getLevel()) {
-                    if(target==null||!BREAKER_NAMES.contains(check.getJobName())) {
+                    if(target==null||!BREAKER_NAMES.contains(target.getJobName())) {
                         maxLevel = check.getLevel();
                         target = check;
                     }
@@ -417,15 +417,14 @@ public class Troop implements Serializable {
     public Unit getWeakest() {
 
         Unit target = null;
-        int minLevel = Integer.MAX_VALUE;
+        int minLevel = 10;
         for (String s : this.dict.keySet()) {
 
             if (dict.get(s) != 0) {
                 Soldier check = (Soldier) this.getUnit(s);
                 if (SHIELD_NAMES.contains(check.getJobName())) {
                     return check;
-                }
-                if (minLevel > check.getLevel()) {
+                }else if (minLevel > check.getLevel()) {
                     minLevel = check.getLevel();
                     target = check;
                 }
@@ -570,12 +569,11 @@ public class Troop implements Serializable {
             Unit enemyUnit =enemy.getWeakest();
             boolean result=false;
 
-
+            System.out.println(this.getOwner().getName()+myUnit.getJobName()+" Attack "+enemy.getOwner().getName()+enemyUnit.getJobName());
             if(checkIsShield(enemyUnit)){
-                System.out.println(enemyUnit.getJobName()+" defend "+myUnit.getJobName());
                 result=enemyUnit.fight(myUnit);
             }else{
-                System.out.println(myUnit.getJobName()+" defend "+enemyUnit.getJobName());
+
                 result=myUnit.fight(enemyUnit);
             }
 

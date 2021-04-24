@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import androidx.recyclerview.widget.RecyclerView;
 import edu.duke.ece651.group4.RISK.client.R;
 import edu.duke.ece651.group4.RISK.client.activity.GameActivity;
+import edu.duke.ece651.group4.RISK.client.activity.TransferActivity;
 import edu.duke.ece651.group4.RISK.client.model.TerrModel;
 import edu.duke.ece651.group4.RISK.shared.Soldier;
 import edu.duke.ece651.group4.RISK.shared.Territory;
@@ -96,8 +97,8 @@ public class TerrFragment extends Fragment {
 
     private void impTransferBT() {
         transferBT.setOnClickListener(v->{
-//            Intent intent = new Intent(getActivity(),Transfer);
-//            startActivity(intent);
+            Intent intent = new Intent(getActivity(), TransferActivity.class);
+            startActivity(intent);
         });
     }
 
