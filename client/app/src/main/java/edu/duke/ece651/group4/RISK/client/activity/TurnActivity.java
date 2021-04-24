@@ -315,11 +315,14 @@ public class TurnActivity extends AppCompatActivity {
                     startActivity(backRoom);
                     finish();
                 }
-                else if (world.checkLost(getUserName())) {
+                isWatch = world.checkLost(getUserName());
+                if (isWatch) {
                     Log.i(TAG, LOG_FUNC_RUN + "Lose game.");
                     showByToast(TurnActivity.this, LOSE_MSG);
                     shutDownBTinWatch();
-                    doneBT.performClick();
+                    runOnUiThread(()->{
+                        doneBT.performClick();
+                    });
                 }else {
                     showByToast(TurnActivity.this, TURN_END);
                     updateAfterTurn();
