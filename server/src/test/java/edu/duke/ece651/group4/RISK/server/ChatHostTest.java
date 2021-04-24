@@ -2,6 +2,7 @@ package edu.duke.ece651.group4.RISK.server;
 import edu.duke.ece651.group4.RISK.shared.message.ChatMessage;
 import org.apache.commons.lang3.SerializationUtils;
 
+import org.checkerframework.checker.units.qual.C;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -25,6 +26,7 @@ class ChatHostTest {
     Map<String,ChatClient> clients = new HashMap<>();
     int port;
     String host = "localhost";
+    ChatHost ch0 = new ChatHost();
 
     protected void timeWait(int t){
         try {
@@ -61,8 +63,19 @@ class ChatHostTest {
         targets.add("user2");
         ChatMessage cM1 = new ChatMessage("user0", targets, "hello everyone!",  0, "");
         clients.get("user0").send(cM1);
-        clients.get("user0").exit();
+
+        ChatClient chatClient1 = clients.get("user0");
+        HashSet<String> ts = new HashSet<>();
+        ts.add("user0");
+        ChatMessage cM = new ChatMessage("1","user0",ts, "hello",1);
+        ch.setUpUserChat(cM,chatClient1.chatChannel);
+//        ChatMessage cM_invalid = new ChatMessage("1","user123",new HashSet<>(), "hello",1);
+        ch.handleChatMessage(cM);
+        ch.tryExit();
+//        clients.get("user0").tryExit();
     }
+
+
 
 }
 
