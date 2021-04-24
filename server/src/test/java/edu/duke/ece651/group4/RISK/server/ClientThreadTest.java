@@ -325,6 +325,16 @@ class ClientThreadTest {
         BasicOrder o_switch=new BasicOrder(null,null,null,SWITCH_OUT_ACTION);
         client.sendObject(o_switch);
 
+        /*
+        * Exit Rrefresh and exit Game
+        * */
+        GameMessage gr= new GameMessage(GAME_REFRESH,-1,2);
+        GameMessage gE=  new GameMessage(GAME_EXIT,11111,2);
+        client.sendObject(gr);
+        client.recvObject();
+        client.sendObject(gE);
+        client.recvObject();
+        waitTime(5);
     }
 
 
@@ -361,14 +371,42 @@ class ClientThreadTest {
         /*
         * Action
         * */
+//        client.recvObject();
+//        BasicOrder oDone=new BasicOrder(null,null,null,'D');
+//        client.sendObject(oDone);
+//        client.recvObject();
+//
+//        BasicOrder o_switch=new BasicOrder(null,null,null,SWITCH_OUT_ACTION);
+//        client.sendObject(o_switch);
+
         client.recvObject();
+        MoveOrder m= new MoveOrder("C","D",new Troop(1,new TextPlayer("user1")),'M');
+        AttackOrder a =new AttackOrder("C","B",new Troop(1,new TextPlayer("user1")),'A');
+        UpgradeTechOrder ut= new UpgradeTechOrder(1);
+//        UpgradeTroopOrder utroop=new UpgradeTroopOrder("A",0,1,1);
+//        AllianceOrder oA = new AllianceOrder("user0","user1");
+//        TransferTroopOrder oTtroop = new TransferTroopOrder("A", Constant.SOLDIER, Constant.KNIGHT, 0, 1);
         BasicOrder oDone=new BasicOrder(null,null,null,'D');
+        client.sendObject(m);
+        client.sendObject(a);
+        client.sendObject(ut);
         client.sendObject(oDone);
+
         client.recvObject();
-
-
         BasicOrder o_switch=new BasicOrder(null,null,null,SWITCH_OUT_ACTION);
         client.sendObject(o_switch);
+
+
+        /*
+         * Exit Rrefresh and exit Game
+         * */
+        GameMessage gr= new GameMessage(GAME_REFRESH,-1,2);
+        GameMessage gE=  new GameMessage(GAME_EXIT,11111,2);
+        client.sendObject(gr);
+        client.recvObject();
+        client.sendObject(gE);
+        client.recvObject();
+        waitTime(5);
     }
 //    private void simulateOneClientCreate(User u, Client theClient){
 //        Object res = null;
