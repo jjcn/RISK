@@ -23,21 +23,17 @@
     <string name="SWITCH_OUT">SWITCH</string>
     <string name="CHOOSE_ACTION_INSTRU">Choose action here</string>
     <string name="PLAYERINFO">Player Information:\n</string>
-    <string name="COMMIT">COMMIT</string>
-    <string name="CONFIRM">CONFIRM</string>
+
     <string name="CHOOSE_SRC_INSTRU">"You want to send troop from territory: "</string>
     <string name="CHOOSE_DES_INSTRU">You want to send troop to territory:</string>
     <string name="CHOOSE_LEVEL_INSTRU">"Choose the level of units: "</string>
+    <!--for upgrade-->
+    <string name="UPGRADE_CHOOSE_TERR_INSTRU">"Choose the territory to upgrade unit on: "</string>
+    <string name="UPGRADE_TYPE_BEFORE_PROMPT">"Choose type of unit to upgrade:"</string>
+    <string name="UPGRADE_LEVEL_BEFORE_PROMPT">"Upgrade the unit from: "</string>
+    <string name="UPGRADE_LEVEL_AFTER_PROMPT">"Upgrade the unit to: "</string>
 
-    <string name="UPGRADE_TERR_PROMPT">"Upgrade soldiers on which territory?"</string>
-    <string name="UPGRADE_CHOOSE_TERR_INSTRU">"Choose the territory soldiers to upgraded on: "</string>
-    <string name="UPGRADE_TYPE_BEFORE_PROMPT">"Which type of soldier \n would you like to upgrade?"</string>
-    <string name="UPGRADE_TYPE_AFTER_PROMPT">"Upgrade the soldiers to: "</string>
     <string name="hint_enter_a_message">Enter your message here</string>
-    <string name="DONE">DONE</string>
-    <string name="REPORT">REPORT</string>
-    <string name="UPTECH">↑TECH</string>
-    <string name="ALLY">ALLY</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="CHANGE_TERR_PROMPT">"Change type of soldiers in territory: "</string>
@@ -45,5 +41,7 @@
     <string name="CHANGE_TYPE_AFTER">"Change the type to: "</string>
     <string name="TRANSFER_CHOOSE_TERR_INSTRU">"You want to change soldier in territory: "</string>
     <string name="CHOOSE_JOB_INSTR">"Choose type of the troop: "</string>
+    <string name="COMMIT">COMMIT</string>
+    <string name="DONE">DONE</string>
 
 </resources>

@@ -187,13 +187,13 @@ public class RISKApplication extends Application {
         result.append("Alliance: ").append(getAllianceName()).append("\n");
         result.append("Food Resource: ").append(info.getFoodQuantity()).append("\n");
         result.append("Tech Resource: ").append(info.getTechQuantity()).append("\n");
-//        result.append("My Territories: ");
-//        Log.i(TAG,LOG_FUNC_RUN+"start add terr names");
-//        List<Territory> terrs = theWorld.getTerritoriesOfPlayer(userName);
-//        for (Territory t : terrs) {
-//            result.append(t.getName() + "  ");
-//        }
-//        result.append("\n");
+        result.append("My Territories: ");
+        Log.i(TAG,LOG_FUNC_RUN+"start add terr names");
+        List<Territory> terrs = theWorld.getTerritoriesOfPlayer(userName);
+        for (Territory t : terrs) {
+            result.append(t.getName() + "  ");
+        }
+        result.append("\n");
         return result.toString();
     }
 
