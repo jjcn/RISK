@@ -390,6 +390,7 @@ public class ClientThread extends Thread {
             synchronized (gameOnGoing){
                 out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " wait for runner's notify");
                 gameOnGoing.gInfo.gameState.askUserWaiting(ownerUser);
+                HibernateTool.updateGameInfo(gameOnGoing.getGameInfo());
                 gameOnGoing.wait();
                 gameOnGoing.gInfo.gameState.askUserDoneWaiting(ownerUser);
                 out.println("Game" + gameOnGoing.getGameID() + ": " + ownerUser.getUsername() + " get notify from runner");
