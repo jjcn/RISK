@@ -69,13 +69,20 @@ class GameTest {
         }).start();
     }
 
-    @Test
-    public void test_setUpGame(){
-        for(int num = 0; num <= 6; num++){
-            Game g = createAGame(1,5);
+    private void invalidSetUp(int num){
+            Game g = createAGame(1,num);
             g.gInfo.gameState.setGameDead();
             g.setUpGame();
         }
+    @Test
+    public void test_setUpGame(){
+        for(int num = 1; num <= 6; num++){
+            Game g = createAGame(1,num);
+            g.gInfo.gameState.setGameDead();
+            g.setUpGame();
+        }
+        assertThrows(Exception.class,()->invalidSetUp(-1) );
+        assertThrows(Exception.class,()->invalidSetUp(0) );
     }
 
 

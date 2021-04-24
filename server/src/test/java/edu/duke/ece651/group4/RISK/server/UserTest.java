@@ -16,5 +16,7 @@ class UserTest {
         assertEquals(false,u0.checkUsernamePassword(null, "1"));
         assertEquals(false,u0.checkUsernamePassword("user0", "123"));
         assertEquals(true,u0.checkUsernamePassword("user0", "1"));
+        assertEquals("1", u0.getPassword());
+        User emptyUser = new User();
     }
 }
