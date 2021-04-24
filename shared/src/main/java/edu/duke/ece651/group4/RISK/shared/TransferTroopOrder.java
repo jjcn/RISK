@@ -20,9 +20,9 @@ public class TransferTroopOrder implements Order, Serializable {
      * Error messages
      */
     protected static final String NO_DES_MSG =
-            "Place order does not have destination territory.";
+            "Transfer troop order does not have destination territory.";
     protected static final String NO_TROOP_MSG =
-            "Place order does not have troop.";
+            "Transfer troop order does not have troop.";
 
     /**
      * A character that uniquely identifies what type of action it is.

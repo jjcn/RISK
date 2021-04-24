@@ -633,6 +633,14 @@ public class WorldTest {
     }
 
     @Test
+    public void testUpgradeTroopOrder() {
+        UpgradeTroopOrder utOrder1 = new UpgradeTroopOrder("Narnia", 0, 1, 1);
+        assertEquals(Constant.UPTROOP_ACTION, utOrder1.getActionName());
+        assertThrows(NoSuchElementException.class, () -> utOrder1.getDesName());
+        assertThrows(NoSuchElementException.class, () -> utOrder1.getActTroop());
+    }
+
+    @Test
     public void testUpgradeTroopValid() {
         World world = createWorldAndRegister(troopsSeparated);
         UpgradeTroopOrder utOrder1 = new UpgradeTroopOrder("Narnia", 0, 1, 1);
@@ -666,6 +674,15 @@ public class WorldTest {
         UpgradeTechOrder uTechOrder = new UpgradeTechOrder(5);
         assertThrows(IllegalArgumentException.class,
                     () -> world.upgradePlayerTechLevelBy(uTechOrder, "red"));
+    }
+
+    @Test
+    public void testTransferTroopOrder() {
+        TransferTroopOrder ttOrder1 =
+                new TransferTroopOrder("Narnia", Constant.KNIGHT,0, 1);
+        assertEquals(Constant.TRANSFER_TROOP_ACTION, ttOrder1.getActionName());
+        assertThrows(NoSuchElementException.class, () -> ttOrder1.getDesName());
+        assertThrows(NoSuchElementException.class, () -> ttOrder1.getActTroop());
     }
 
     @Test
