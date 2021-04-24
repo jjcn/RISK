@@ -68,9 +68,12 @@ class ChatHostTest {
         HashSet<String> ts = new HashSet<>();
         ts.add("user0");
         ChatMessage cM = new ChatMessage("1","user0",ts, "hello",1);
+        ChatMessage cM_invalid = new ChatMessage("1","xxxx",ts, "hello",1);
         ch.setUpUserChat(cM,chatClient1.chatChannel);
 //        ChatMessage cM_invalid = new ChatMessage("1","user123",new HashSet<>(), "hello",1);
         ch.handleChatMessage(cM);
+        ch.handleChatMessage(cM_invalid);
+
         clients.get("user0").exit();
         ch.tryExit();
     }
