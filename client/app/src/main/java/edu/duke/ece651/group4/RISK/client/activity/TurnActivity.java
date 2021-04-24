@@ -152,6 +152,9 @@ public class TurnActivity extends AppCompatActivity {
 
     // todo: alert to confirm actions.
     private void impUpTechBT() {
+        if(getTechLevel() == TECH_LEVEL_UPGRADE_COSTS.size()){
+            upTechBT.setEnabled(false);
+        }
         upTechBT.setOnClickListener(v -> {
             upTechBT.setEnabled(false); // can only upgrade tech once in a turn
             String msg = "(Upgrade will take effect next turn.)\n" + "To upgrade you will consume: " + TECH_LEVEL_UPGRADE_COSTS.get(getTechLevel());
