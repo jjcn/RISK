@@ -7,8 +7,6 @@ This is for ece651-project1 from group4
 ## Evolution3 Unit Type Transfer Feature
 ### Description
 https://docs.google.com/document/d/1P9i6wgl7DS_BDTSVlzvQ1whGcxe-0AHW_vA2KxTKXNk/edit
-### Values
-https://docs.google.com/document/d/1wXK5LZViY2bjV5_rukBXYH6OmmX61kb4wLNCzdQJhsQ/edit?usp=sharing
 
 ## Evolution2 UX prototype
 https://docs.google.com/presentation/d/176PTTRUj4xIX26alagKeaRLKd9goiVSM8KMmkJsWLHA/edit?usp=sharing
